@@ -1,0 +1,199 @@
+{
+  "project_info": {
+    "project_number": "1058281973456",
+    "firebase_url": "https://phista-81bf8-default-rtdb.firebaseio.com",
+    "project_id": "phista-81bf8",
+    "storage_bucket": "phista-81bf8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058281973456:android:a08880d3320c95df06e0d5",
+        "android_client_info": {
+          "package_name": "com.phista"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058281973456-0o8e37a1vm3bmgle4v0g8rk7ebhre9e5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista",
+            "certificate_hash": "84508bd903f5ed3642188283971c9130b2aa6596"
+          }
+        },
+        {
+          "client_id": "1058281973456-71vanqgi644gt3702t149cgf6ajg844c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista",
+            "certificate_hash": "b618a6d7dc967a5da0f17836f1599d7348df5788"
+          }
+        },
+        {
+          "client_id": "1058281973456-mufbjigvjdbjpiost8n74q9fg10et8ck.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista",
+            "certificate_hash": "8458811f1f5259001a4e20c0b7110111984f4540"
+          }
+        },
+        {
+          "client_id": "1058281973456-sro3hh7u5416q3qk790spomikcfs9upe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista",
+            "certificate_hash": "c5a702628fbd73f3f428725e9c7a7421187fb6fa"
+          }
+        },
+        {
+          "client_id": "1058281973456-8h13bka1k5tp00o1gs05u84sgjrq0su7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEJc6Sl7gweMNPm2OVkyz6A7Vwx1YiCC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1058281973456-8d00stef77ng7nitqt8ltnjcughmtf3j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1058281973456-0ph2lte6sb889tvtiuqoi2tt16dssquo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.phista.owner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058281973456:android:31acb49c6bd3549f06e0d5",
+        "android_client_info": {
+          "package_name": "com.phista.owner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058281973456-8iimtm9ca694omdqirjhlprlspc1c5e3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.owner",
+            "certificate_hash": "b618a6d7dc967a5da0f17836f1599d7348df5788"
+          }
+        },
+        {
+          "client_id": "1058281973456-k3mo8ri8uhhsgo7k7jltc66fj48njkdj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.owner",
+            "certificate_hash": "2a6ff81b0d4b68e70efea9946e417eaaec68a3f4"
+          }
+        },
+        {
+          "client_id": "1058281973456-o3dotqnci9otbib2de1oddujt4n6s5jl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.owner",
+            "certificate_hash": "4234bf95f9a3bf29b451eaec7e8d198575ec89b8"
+          }
+        },
+        {
+          "client_id": "1058281973456-8h13bka1k5tp00o1gs05u84sgjrq0su7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEJc6Sl7gweMNPm2OVkyz6A7Vwx1YiCC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1058281973456-8d00stef77ng7nitqt8ltnjcughmtf3j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1058281973456-0ph2lte6sb889tvtiuqoi2tt16dssquo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.phista.owner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058281973456:android:a9c544a62f18bb5b06e0d5",
+        "android_client_info": {
+          "package_name": "com.phista.watchman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058281973456-gbpe5folpba9bvsj09klia1mabucgbsh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.watchman",
+            "certificate_hash": "e645e4ddbfaf945ccd897e89027e7f3ecb1017bb"
+          }
+        },
+        {
+          "client_id": "1058281973456-mvcj8n4ajsv21b1rqsvp272j945dpqse.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.watchman",
+            "certificate_hash": "6003f6d01d826737f7a537ea37824dac10a59748"
+          }
+        },
+        {
+          "client_id": "1058281973456-racioup39s6do52femtrbumenrdljgci.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.watchman",
+            "certificate_hash": "b618a6d7dc967a5da0f17836f1599d7348df5788"
+          }
+        },
+        {
+          "client_id": "1058281973456-8h13bka1k5tp00o1gs05u84sgjrq0su7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEJc6Sl7gweMNPm2OVkyz6A7Vwx1YiCC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1058281973456-8d00stef77ng7nitqt8ltnjcughmtf3j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1058281973456-0ph2lte6sb889tvtiuqoi2tt16dssquo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.phista.owner"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

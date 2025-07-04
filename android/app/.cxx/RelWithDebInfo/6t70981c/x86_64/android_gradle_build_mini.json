@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/mspc-510/Documents/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/mspc-510/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/mspc-510/Downloads/Phista /source code/Phista/Phista/Phista_customer/android/app/.cxx/RelWithDebInfo/6t70981c/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/mspc-510/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/mspc-510/Downloads/Phista /source code/Phista/Phista/Phista_customer/android/app/.cxx/RelWithDebInfo/6t70981c/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
