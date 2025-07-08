@@ -293,23 +293,78 @@ class ParkingDetailsScreen extends StatelessWidget {
                             width: Get.width,
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                             decoration: BoxDecoration(color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey03, borderRadius: BorderRadius.circular(10)),
-                            child: Column(
+                            child: Row(
                               children: [
-                                Text("Per hour".tr,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: AppThemData.medium,
-                                      color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
-                                    )),
-                                const SizedBox(
-                                  height: 8,
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      Text("Per hour".tr,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: AppThemData.medium,
+                                            color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
+                                          )),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        Constant.amountShow(amount: controller.parkingModel.value.perHrPrice.toString()),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: AppThemData.semiBold,
+                                          color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  Constant.amountShow(amount: controller.parkingModel.value.perHrPrice.toString()),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: AppThemData.semiBold,
-                                    color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      Text("Per day".tr,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: AppThemData.medium,
+                                            color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
+                                          )),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString()),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: AppThemData.semiBold,
+                                          color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      Text("Per month".tr,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: AppThemData.medium,
+                                            color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
+                                          )),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString()),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: AppThemData.semiBold,
+                                          color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],

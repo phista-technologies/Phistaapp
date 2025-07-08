@@ -29,6 +29,7 @@ class Constant {
   static const String appleLoginType = "apple";
   static const String roleType = "customer";
 
+  static String bookingTypeConst = "hourly";
   static bool isSubscriptionModelApplied =
       false; //Check SubscriptionModel is Active or Not in the Admin Panel.
 
@@ -64,11 +65,15 @@ class Constant {
   static const globalUrl = "https://admin.phista.ca/";
 
   static String amountShow({required String? amount}) {
-    if (Constant.currencyModel!.symbolAtRight == true) {
-      return "${double.parse(amount.toString()).toStringAsFixed(Constant.currencyModel!.decimalDigits!)}${Constant.currencyModel!.symbol.toString()}";
-    } else {
-      return "${Constant.currencyModel!.symbol.toString()}${double.parse(amount.toString()).toStringAsFixed(Constant.currencyModel!.decimalDigits!)}";
+    if (amount != ""){
+      if (Constant.currencyModel!.symbolAtRight == true) {
+        return "${double.parse(amount.toString()).toStringAsFixed(Constant.currencyModel!.decimalDigits!)}${Constant.currencyModel!.symbol.toString()}";
+      } else {
+        return "${Constant.currencyModel!.symbol.toString()}${double.parse(amount.toString()).toStringAsFixed(Constant.currencyModel!.decimalDigits!)}";
+      }
     }
+    return "";
+
   }
 
   double calculateTax({String? amount, TaxModel? taxModel}) {

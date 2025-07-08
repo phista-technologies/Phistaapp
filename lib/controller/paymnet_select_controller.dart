@@ -35,13 +35,17 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../utils/utils.dart';
+
 class PaymentSelectController extends GetxController {
   Rx<PaymentModel> paymentModel = PaymentModel().obs;
   RxString selectedPaymentMethod = "".obs;
   RxBool isLoading = false.obs;
 
   Rx<OrderModel> orderModel = OrderModel().obs;
+
   Rx<UserModel> userModel = UserModel().obs;
+  String bookingTypePayment = "";
 
   @override
   void onInit() {
@@ -52,7 +56,11 @@ class PaymentSelectController extends GetxController {
   getArgument() async {
     dynamic argumentData = Get.arguments;
     if (argumentData != null) {
-      orderModel.value = argumentData['orderModel'];
+      bookingTypePayment = Constant.bookingTypeConst;
+
+        orderModel.value = argumentData['orderModel'];
+
+
     }
     await getPaymentData();
     update();
@@ -95,11 +103,9 @@ class PaymentSelectController extends GetxController {
     if (orderModel.value.coupon != null) {
       if (orderModel.value.coupon!.id != null) {
         if (orderModel.value.coupon!.type == "fix") {
-          couponAmount.value =
-              double.parse(orderModel.value.coupon!.amount.toString());
+          couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
         } else {
-          couponAmount.value =
-              double.parse(orderModel.value.subTotal.toString()) *
+          couponAmount.value = double.parse(orderModel.value.subTotal.toString()) *
                   double.parse(orderModel.value.coupon!.amount.toString()) /
                   100;
         }
@@ -160,7 +166,7 @@ class PaymentSelectController extends GetxController {
           token: receiverUserModel.fcmToken.toString(),
           title: 'Booking Placed',
           body:
-              '${orderModel.value.parkingDetails!.name.toString()} Booking placed on ${Constant.timestampToDate(orderModel.value.bookingDate!)}.',
+              '${orderModel.value.parkingDetails!.name.toString()} Booking placed on ${Constant.timestampToDate(Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
           payload: playLoad);
 
       await FireStoreUtils.getWatchman(
@@ -172,7 +178,7 @@ class PaymentSelectController extends GetxController {
               token: value.fcmToken.toString(),
               title: 'Booking Placed',
               body:
-                  '${orderModel.value.parkingDetails!.name.toString()} Booking placed on ${Constant.timestampToDate(orderModel.value.bookingDate!)}.',
+                  '${orderModel.value.parkingDetails!.name.toString()} Booking placed on ${Constant.timestampToDate(Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
               payload: playLoad);
         }
       });
@@ -239,13 +245,16 @@ class PaymentSelectController extends GetxController {
     );
   }
 
-  completeOrder() async {
+  completeOrder({int? index}) async {
     ShowToastDialog.showLoader("Please wait..");
+
     log("Online Pay :: ${orderModel.value.parkingDetails!.userId.toString()}");
-    UserModel? receiverUserModel = await FireStoreUtils.getUserProfile(orderModel.value.parkingDetails!.userId.toString());
+    UserModel? receiverUserModel = await FireStoreUtils.getUserProfile(
+        orderModel.value.parkingDetails!.userId.toString());
     orderModel.value.paymentCompleted = true;
     orderModel.value.paymentType = selectedPaymentMethod.value;
-    orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
+    orderModel.value.adminCommission =
+        receiverUserModel?.adminCommission ?? Constant.adminCommission;
     orderModel.value.createdAt = Timestamp.now();
     orderModel.value.updateAt = Timestamp.now();
 
@@ -270,7 +279,10 @@ class PaymentSelectController extends GetxController {
 
     WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
         id: Constant.getUuid(),
-        amount: "-${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommission: orderModel.value.adminCommission)}",
+        amount: "-${Constant.calculateAdminCommission(
+            amount: (double.parse(orderModel.value.subTotal.toString()) -
+                double.parse(couponAmount.toString())).toString(),
+            adminCommission: orderModel.value.adminCommission)}",
         createdDate: Timestamp.now(),
         paymentType: selectedPaymentMethod.value,
         transactionId: orderModel.value.id,
@@ -283,7 +295,10 @@ class PaymentSelectController extends GetxController {
       if (value == true) {
         await FireStoreUtils.updateOtherUserWallet(
             amount:
-                "-${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommission: orderModel.value.adminCommission)}",
+            "-${Constant.calculateAdminCommission(
+                amount: (double.parse(orderModel.value.subTotal.toString()) -
+                    double.parse(couponAmount.toString())).toString(),
+                adminCommission: orderModel.value.adminCommission)}",
             id: orderModel.value.parkingDetails!.userId.toString());
       }
     });
@@ -296,7 +311,7 @@ class PaymentSelectController extends GetxController {
     // });
 
     await FireStoreUtils.getMyParkingList(
-            orderModel.value.parkingDetails!.userId.toString())
+        orderModel.value.parkingDetails!.userId.toString())
         .then((value) async {
       if (value != null) {
         for (var element in value) {
@@ -322,26 +337,31 @@ class PaymentSelectController extends GetxController {
           token: receiverUserModel.fcmToken.toString(),
           title: 'Booking Placed',
           body:
-              '${orderModel.value.parkingDetails!.name.toString()} Booking placed on ${Constant.timestampToDate(orderModel.value.bookingDate!)}.',
+          '${orderModel.value.parkingDetails!.name
+              .toString()} Booking placed on ${Constant.timestampToDate(
+              Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
           payload: playLoad);
     }
 
     await FireStoreUtils.getWatchman(
-            orderModel.value.parkingDetails!.id.toString(),
-            orderModel.value.parkingDetails!.userId.toString())
+        orderModel.value.parkingDetails!.id.toString(),
+        orderModel.value.parkingDetails!.userId.toString())
         .then((value) async {
       if (value != null) {
         await SendNotification.sendOneNotification(
             token: value.fcmToken.toString(),
             title: 'Booking Placed',
             body:
-                '${orderModel.value.parkingDetails!.name.toString()} Booking placed on ${Constant.timestampToDate(orderModel.value.bookingDate!)}.',
+            '${orderModel.value.parkingDetails!.name
+                .toString()} Booking placed on ${Constant.timestampToDate(
+                Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
             payload: playLoad);
       }
     });
 
     await FireStoreUtils.setOrder(orderModel.value).then((value) {
       if (value == true) {
+        Constant.bookingTypeConst = "hourly";
         ShowToastDialog.closeLoader();
         Get.to(() => const ParkingTicketScreen(),
             arguments: {"orderModel": orderModel.value});

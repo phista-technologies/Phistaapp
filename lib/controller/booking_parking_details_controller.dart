@@ -49,6 +49,7 @@ class BookingParkingDetailsController extends GetxController {
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
+    Constant.bookingTypeConst = "hourly";
     if (argumentData != null) {
       parkingModel.value = argumentData['parkingModel'];
       getParkingDetails();
@@ -72,8 +73,16 @@ class BookingParkingDetailsController extends GetxController {
     });
   }
 
-  calculateParkingAmount() {
-    return double.parse(parkingModel.value.perHrPrice.toString()) * selectedDuration.value;
+  calculateParkingAmount(String type) {
+    if(type == "hourly"){
+      return double.parse(parkingModel.value.perHrPrice.toString()) * selectedDuration.value;
+    }else if(type == "daily"){
+      print(parkingModel.value.dailyPrice.toString());
+      return double.parse(parkingModel.value.dailyPrice.toString()) * selectedDatesDaily.length;
+    }else if(type == "monthly"){
+      //return double.parse(parkingModel.value.perMonthPrice.toString()) * selectedRangeMonth.;
+    }
+
   }
 
   String calculateDuration(String? startTime, String? endTime) {
@@ -141,6 +150,7 @@ class BookingParkingDetailsController extends GetxController {
       startTimeController.value.text = DateFormat('HH:mm').format(startTime.value);
     }
   }
+
 
 
 }

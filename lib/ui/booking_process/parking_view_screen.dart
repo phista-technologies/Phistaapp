@@ -129,8 +129,10 @@ class ParkingViewScreen extends StatelessWidget {
                     if (controller.selectedParking.value.isEmpty) {
                       ShowToastDialog.showToast("Please select your parking".tr);
                     } else {
-                      controller.orderModel.value.parkingSlotId = controller.selectedParking.value;
-                      Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": controller.orderModel.value});
+                        controller.orderModel.value.parkingSlotId = controller.selectedParking.value;
+                        Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": controller.orderModel.value});
+
+
                     }
                   },
                 ),

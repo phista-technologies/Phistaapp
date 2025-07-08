@@ -125,7 +125,7 @@ class HomeScreen extends StatelessWidget {
                                 : Align(
                                     alignment: Alignment.bottomCenter,
                                     child: SizedBox(
-                                      height: Responsive.height(30, context),
+                                      height: Responsive.height(35, context),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
@@ -224,17 +224,57 @@ class HomeScreen extends StatelessWidget {
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                        Text(
-                                                                          "${Constant.amountShow(amount: parkingModel.perHrPrice.toString())} / hour",
-                                                                          style: const TextStyle(
-                                                                            color: AppThemData.blueLight07,
-                                                                            fontSize: 14,
-                                                                            height: 1.57,
-                                                                            fontFamily: AppThemData.medium,
-                                                                            fontWeight: FontWeight.w500,
+
+                                                                      ],
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 7,
+                                                                    ),
+                                                                    Row(
+                                                                      children: [
+                                                                        Expanded(
+                                                                          flex:1,
+                                                                          child: Text(
+                                                                            "${Constant.amountShow(amount: parkingModel.perHrPrice.toString())} / hour",
+                                                                            style: const TextStyle(
+                                                                              color: AppThemData.blueLight07,
+                                                                              fontSize: 14,
+                                                                              height: 1.57,
+                                                                              fontFamily: AppThemData.medium,
+                                                                              fontWeight: FontWeight.w500,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex:1,
+                                                                          child: Text(
+                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())} / daily",
+                                                                            style: const TextStyle(
+                                                                              color: AppThemData.blueLight07,
+                                                                              fontSize: 14,
+                                                                              height: 1.57,
+                                                                              fontFamily: AppThemData.medium,
+                                                                              fontWeight: FontWeight.w500,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex:1,
+                                                                          child: Text(
+                                                                            "${Constant.amountShow(amount: parkingModel.monthlyPrice.toString())} / month",
+                                                                            style: const TextStyle(
+                                                                              color: AppThemData.blueLight07,
+                                                                              fontSize: 14,
+                                                                              height: 1.57,
+                                                                              fontFamily: AppThemData.medium,
+                                                                              fontWeight: FontWeight.w500,
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       ],
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 7,
                                                                     ),
                                                                     Row(
                                                                       children: [

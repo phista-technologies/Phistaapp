@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:phista/constant/constant.dart';
@@ -115,5 +117,29 @@ class Utils {
         ShowToastDialog.showToast("yandexMaps map is not installed");
       }
     }
+  }
+
+
+  static Timestamp stringToTimeStamp(String dateTime){
+    print("stringToTimeStamp:-  $dateTime");
+    String dateString = dateTime;
+    String formattedString = dateString.replaceAll(" at ", " ");
+    DateFormat dateFormat = DateFormat("d MMMM yyyy HH:mm:ss 'UTC+5:30'");
+
+    DateTime parsedDate = dateFormat.parse(formattedString);
+
+    Timestamp timestamp = Timestamp.fromDate(parsedDate);
+
+    print("Parsed DateTime: $parsedDate");
+    print("Firestore Timestamp: $timestamp");
+
+    return timestamp;
+  }
+
+  static String formatTimestampToIST(Timestamp timestamp) {
+    DateTime utcDateTime = timestamp.toDate().toUtc();
+    DateTime istDateTime = utcDateTime.add(const Duration(hours: 5, minutes: 30));
+    String formatted = DateFormat("d MMMM yyyy 'at' HH:mm:ss").format(istDateTime);
+    return "$formatted UTC+5:30";
   }
 }

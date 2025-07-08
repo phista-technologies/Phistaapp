@@ -77,7 +77,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               FlutterClipboard.copy(
-                                      controller.orderModel.value.id.toString())
+                                  controller.orderModel.value.id.toString())
                                   .then((value) {
                                 ShowToastDialog.showToast(
                                     "Parking ID copied".tr);
@@ -106,7 +106,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 ? AppThemData.grey10
                                 : AppThemData.white,
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
+                            const BorderRadius.all(Radius.circular(10)),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -130,8 +130,8 @@ class ReviewSummaryScreen extends StatelessWidget {
                                       horizontal: 12, vertical: 10),
                                   decoration: ShapeDecoration(
                                     color: controller.orderModel.value
-                                                .paymentCompleted ==
-                                            true
+                                        .paymentCompleted ==
+                                        true
                                         ? AppThemData.success02
                                         : AppThemData.error02,
                                     shape: RoundedRectangleBorder(
@@ -140,14 +140,14 @@ class ReviewSummaryScreen extends StatelessWidget {
                                   ),
                                   child: Text(
                                     controller.orderModel.value
-                                                .paymentCompleted ==
-                                            true
+                                        .paymentCompleted ==
+                                        true
                                         ? "Payment completed".tr
                                         : 'Payment Incomplete'.tr,
                                     style: TextStyle(
                                       color: controller.orderModel.value
-                                                  .paymentCompleted ==
-                                              true
+                                          .paymentCompleted ==
+                                          true
                                           ? AppThemData.success08
                                           : AppThemData.error08,
                                       fontSize: 12,
@@ -205,52 +205,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                     Expanded(
                                       child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Icon(Icons.calendar_today,
-                                              color: AppThemData.grey07,
-                                              size: 20),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                Constant.timestampToDate(
-                                                    controller.orderModel.value
-                                                        .bookingDate!),
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily:
-                                                      AppThemData.medium,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "${Constant.timestampToTime(controller.orderModel.value.bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
-                                                style: const TextStyle(
-                                                  color: AppThemData.grey07,
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                      AppThemData.regular,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           const Icon(Icons.local_parking,
                                               color: AppThemData.grey07,
@@ -260,7 +215,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 controller.orderModel.value
@@ -272,7 +227,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       : AppThemData.grey09,
                                                   fontSize: 16,
                                                   fontFamily:
-                                                      AppThemData.medium,
+                                                  AppThemData.medium,
                                                 ),
                                               ),
                                               const SizedBox(
@@ -284,25 +239,18 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   color: AppThemData.grey07,
                                                   fontSize: 12,
                                                   fontFamily:
-                                                      AppThemData.regular,
+                                                  AppThemData.regular,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
+                                    ),
                                     Expanded(
                                       child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           SvgPicture.asset(
                                               "assets/icon/ic_car_image.svg",
@@ -313,7 +261,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 controller
@@ -329,7 +277,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       : AppThemData.grey09,
                                                   fontSize: 16,
                                                   fontFamily:
-                                                      AppThemData.medium,
+                                                  AppThemData.medium,
                                                 ),
                                               ),
                                               const SizedBox(
@@ -341,7 +289,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   color: AppThemData.grey07,
                                                   fontSize: 12,
                                                   fontFamily:
-                                                      AppThemData.regular,
+                                                  AppThemData.regular,
                                                 ),
                                               ),
                                             ],
@@ -349,10 +297,18 @@ class ReviewSummaryScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+
                                     Expanded(
                                       child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           const Icon(Icons.access_time_rounded,
                                               color: AppThemData.grey07,
@@ -362,17 +318,19 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "${controller.orderModel.value.duration.toString()} hours",
+                                                "${controller.orderModel.value
+                                                    .duration
+                                                    .toString()} hours",
                                                 style: TextStyle(
                                                   color: themeChange.getThem()
                                                       ? AppThemData.grey06
                                                       : AppThemData.grey09,
                                                   fontSize: 16,
                                                   fontFamily:
-                                                      AppThemData.medium,
+                                                  AppThemData.medium,
                                                 ),
                                               ),
                                               const SizedBox(
@@ -384,7 +342,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   color: AppThemData.grey07,
                                                   fontSize: 12,
                                                   fontFamily:
-                                                      AppThemData.regular,
+                                                  AppThemData.regular,
                                                 ),
                                               ),
                                             ],
@@ -397,9 +355,74 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
+
+
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent: Get.width/2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    childAspectRatio: 3.5, // Adjust based on design
+                                  ),
+                                  itemCount: controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList().length,
+                                  itemBuilder: (_, index) {
+                                    var dateList = controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList();
+                                    print(dateList[index]);
+                                   var tempDate= controller.sortDateStrings(dateList);
+                                    return Row(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        const Icon(Icons.calendar_today,
+                                            color: AppThemData.grey07,
+                                            size: 20),
+                                        const SizedBox(width: 10,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Text(Constant.timestampToDate(
+                                                Utils.stringToTimeStamp(tempDate[index])),
+                                              style: TextStyle(
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.grey06
+                                                    : AppThemData.grey09,
+                                                fontSize: 16,
+                                                fontFamily: AppThemData
+                                                    .medium,),),
+                                            const SizedBox(height: 5,),
+
+                                            Constant.bookingTypeConst == "hourly"?
+                                            Text("${Constant.timestampToTime(
+                                                controller.orderModel.value
+                                                    .bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
+                                              style: const TextStyle(
+                                                color: AppThemData.grey07,
+                                                fontSize: 12,
+                                                fontFamily: AppThemData
+                                                    .regular,),):
+
+                                            Text("Full day",
+                                              style: const TextStyle(
+                                                color: AppThemData.grey07,
+                                                fontSize: 12,
+                                                fontFamily: AppThemData
+                                                    .regular,),),
+                                          ],),
+                                      ],);
+
+                                  },
+
+                                ),
+
+                                const SizedBox(
+                                  height: 10,
+                                ),
                                 Visibility(
                                   visible: controller.orderModel.value.status ==
-                                          Constant.placed ||
+                                      Constant.placed ||
                                       controller.orderModel.value.status ==
                                           Constant.onGoing,
                                   child: Row(
@@ -425,9 +448,9 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           isRight: false,
                                           onPress: () async {
                                             await FireStoreUtils.getUserProfile(
-                                                    controller.orderModel.value
-                                                        .parkingDetails!.userId
-                                                        .toString())
+                                                controller.orderModel.value
+                                                    .parkingDetails!.userId
+                                                    .toString())
                                                 .then((value) {
                                               UserModel userModel = value!;
                                               Get.to(const ChatScreen(),
@@ -460,16 +483,18 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             ShowToastDialog.showLoader(
                                                 "Please wait".tr);
                                             UserModel? userModel =
-                                                await FireStoreUtils
-                                                    .getUserProfile(controller
-                                                        .orderModel
-                                                        .value
-                                                        .parkingDetails!
-                                                        .userId!
-                                                        .toString());
+                                            await FireStoreUtils
+                                                .getUserProfile(controller
+                                                .orderModel
+                                                .value
+                                                .parkingDetails!
+                                                .userId!
+                                                .toString());
                                             ShowToastDialog.closeLoader();
                                             Constant.makePhoneCall(
-                                                "${userModel!.countryCode}${userModel.phoneNumber}");
+                                                "${userModel!
+                                                    .countryCode}${userModel
+                                                    .phoneNumber}");
                                           },
                                         ),
                                       ),
@@ -486,20 +511,20 @@ class ReviewSummaryScreen extends StatelessWidget {
                         // if (controller.orderModel.value.paymentCompleted == false && controller.orderModel.value.paymentType.toString().toLowerCase() == 'cash'.toLowerCase())
                         Visibility(
                           visible:
-                              controller.orderModel.value.paymentCompleted ==
-                                      true
-                                  ? false
-                                  : true,
+                          controller.orderModel.value.paymentCompleted ==
+                              true
+                              ? false
+                              : true,
                           child: Visibility(
                             visible:
-                                controller.orderModel.value.paymentCompleted ==
-                                            false &&
-                                        controller.orderModel.value.paymentType
-                                                .toString()
-                                                .toLowerCase() ==
-                                            'cash'.toLowerCase()
-                                    ? false
-                                    : true,
+                            controller.orderModel.value.paymentCompleted ==
+                                false &&
+                                controller.orderModel.value.paymentType
+                                    .toString()
+                                    .toLowerCase() ==
+                                    'cash'.toLowerCase()
+                                ? false
+                                : true,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -528,7 +553,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 TextFormField(
                                   keyboardType: TextInputType.text,
                                   textCapitalization:
-                                      TextCapitalization.sentences,
+                                  TextCapitalization.sentences,
                                   controller: controller
                                       .couponCodeTextFieldController.value,
                                   textAlign: TextAlign.start,
@@ -541,15 +566,15 @@ class ReviewSummaryScreen extends StatelessWidget {
                                       fontFamily: AppThemData.medium),
                                   decoration: InputDecoration(
                                       errorStyle:
-                                          const TextStyle(color: Colors.red),
+                                      const TextStyle(color: Colors.red),
                                       isDense: true,
                                       filled: true,
                                       fillColor: themeChange.getThem()
                                           ? AppThemData.grey10
                                           : AppThemData.grey03,
                                       contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 16, horizontal: 16),
+                                      const EdgeInsets.symmetric(
+                                          vertical: 16, horizontal: 16),
                                       suffixIcon: Padding(
                                         padding: const EdgeInsets.only(top: 14),
                                         child: InkWell(
@@ -563,42 +588,42 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   "Please wait".tr);
                                               await FireStoreUtils.fireStore
                                                   .collection(
-                                                      CollectionName.coupon)
+                                                  CollectionName.coupon)
                                                   .where('code',
-                                                      isEqualTo: controller
-                                                          .couponCodeTextFieldController
-                                                          .value
-                                                          .text)
+                                                  isEqualTo: controller
+                                                      .couponCodeTextFieldController
+                                                      .value
+                                                      .text)
                                                   .where('enable',
-                                                      isEqualTo: true)
+                                                  isEqualTo: true)
                                                   .where('validity',
-                                                      isGreaterThanOrEqualTo:
-                                                          Timestamp.now())
+                                                  isGreaterThanOrEqualTo:
+                                                  Timestamp.now())
                                                   .get()
                                                   .then((value) {
                                                 ShowToastDialog.closeLoader();
                                                 if (value.docs.isNotEmpty) {
                                                   controller.selectedCouponModel
-                                                          .value =
+                                                      .value =
                                                       CouponModel.fromJson(value
                                                           .docs.first
                                                           .data());
                                                   controller
-                                                          .couponCodeTextFieldController
-                                                          .value
-                                                          .text =
+                                                      .couponCodeTextFieldController
+                                                      .value
+                                                      .text =
                                                       controller
                                                           .selectedCouponModel
                                                           .value
                                                           .code
                                                           .toString();
                                                   if (controller
-                                                          .selectedCouponModel
-                                                          .value
-                                                          .type ==
+                                                      .selectedCouponModel
+                                                      .value
+                                                      .type ==
                                                       "fix") {
                                                     controller.couponAmount
-                                                            .value =
+                                                        .value =
                                                         double.parse(controller
                                                             .selectedCouponModel
                                                             .value
@@ -607,11 +632,11 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   } else {
                                                     controller.couponAmount
                                                         .value = double.parse(
-                                                            controller
-                                                                .orderModel
-                                                                .value
-                                                                .subTotal
-                                                                .toString()) *
+                                                        controller
+                                                            .orderModel
+                                                            .value
+                                                            .subTotal
+                                                            .toString()) *
                                                         double.parse(controller
                                                             .selectedCouponModel
                                                             .value
@@ -646,7 +671,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       ? AppThemData.secondary07
                                                       : AppThemData.secondary07,
                                                   fontFamily:
-                                                      AppThemData.medium)),
+                                                  AppThemData.medium)),
                                         ),
                                       ),
                                       disabledBorder: UnderlineInputBorder(
@@ -721,7 +746,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 ? AppThemData.grey10
                                 : AppThemData.white,
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
+                            const BorderRadius.all(Radius.circular(10)),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -731,7 +756,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
+                                  const EdgeInsets.symmetric(vertical: 5),
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -764,7 +789,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
+                                  const EdgeInsets.symmetric(vertical: 5),
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -797,46 +822,68 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 controller.orderModel.value.taxList == null
                                     ? const SizedBox()
                                     : ListView.builder(
-                                        itemCount: controller
-                                            .orderModel.value.taxList!.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          TaxModel taxModel = controller
-                                              .orderModel.value.taxList![index];
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 5),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    "${taxModel.title.toString()} (${taxModel.type == "fix" ? Constant.amountShow(amount: taxModel.tax) : "${taxModel.tax}%"})",
-                                                    style: TextStyle(
-                                                      color: themeChange
-                                                              .getThem()
-                                                          ? AppThemData.grey03
-                                                          : AppThemData.grey07,
-                                                      fontSize: 16,
-                                                      fontFamily:
-                                                          AppThemData.medium,
-                                                    ),
-                                                  ),
+                                    itemCount: controller
+                                        .orderModel.value.taxList!.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      TaxModel taxModel = controller
+                                          .orderModel.value.taxList![index];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "${taxModel.title
+                                                    .toString()} (${taxModel
+                                                    .type == "fix"
+                                                    ? Constant.amountShow(
+                                                    amount: taxModel.tax)
+                                                    : "${taxModel.tax}%"})",
+                                                style: TextStyle(
+                                                  color: themeChange
+                                                      .getThem()
+                                                      ? AppThemData.grey03
+                                                      : AppThemData.grey07,
+                                                  fontSize: 16,
+                                                  fontFamily:
+                                                  AppThemData.medium,
                                                 ),
-                                                Text(
-                                                  "${Constant.amountShow(amount: Constant().calculateTax(amount: (double.parse(controller.orderModel.value.subTotal.toString()) - double.parse(controller.couponAmount.value.toString())).toString(), taxModel: taxModel).toStringAsFixed(Constant.currencyModel!.decimalDigits!).toString())} ",
-                                                  style: TextStyle(
-                                                    color: themeChange.getThem()
-                                                        ? AppThemData.grey03
-                                                        : AppThemData.grey07,
-                                                    fontSize: 16,
-                                                    fontFamily:
-                                                        AppThemData.semiBold,
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
-                                          );
-                                        }),
+                                            Text(
+                                              "${Constant.amountShow(
+                                                  amount: Constant()
+                                                      .calculateTax(
+                                                      amount: (double.parse(
+                                                          controller.orderModel
+                                                              .value.subTotal
+                                                              .toString()) -
+                                                          double.parse(
+                                                              controller
+                                                                  .couponAmount
+                                                                  .value
+                                                                  .toString()))
+                                                          .toString(),
+                                                      taxModel: taxModel)
+                                                      .toStringAsFixed(
+                                                      Constant.currencyModel!
+                                                          .decimalDigits!)
+                                                      .toString())} ",
+                                              style: TextStyle(
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.grey03
+                                                    : AppThemData.grey07,
+                                                fontSize: 16,
+                                                fontFamily:
+                                                AppThemData.semiBold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }),
                                 Divider(
                                   thickness: 1,
                                   color: themeChange.getThem()
@@ -845,7 +892,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
+                                  const EdgeInsets.symmetric(vertical: 5),
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -862,8 +909,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                       ),
                                       Text(
                                         Constant.amountShow(
-                                            amount: controller
-                                                .calculateAmount()
+                                            amount: controller.calculateAmount()
                                                 .toString()),
                                         style: TextStyle(
                                           color: themeChange.getThem()
@@ -895,86 +941,85 @@ class ReviewSummaryScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: controller.orderModel.value.status == Constant.completed
                     ? RoundedButtonFill(
-                        title: "Add Review".tr,
-                        color: AppThemData.primary06,
-                        isRight: false,
-                        icon: const Icon(Icons.add),
-                        onPress: () {
-                          Get.to(() => const ReviewScreen(), arguments: {
+                  title: "Add Review".tr,
+                  color: AppThemData.primary06,
+                  isRight: false,
+                  icon: const Icon(Icons.add),
+                  onPress: () {
+                    Get.to(() => const ReviewScreen(), arguments: {
+                      "orderModel": controller.orderModel.value
+                    });
+                  },
+                )
+                    : controller.orderModel.value.paymentCompleted == false &&
+                    controller.orderModel.value.paymentType
+                        .toString()
+                        .toLowerCase() ==
+                        'cash'.toLowerCase()
+                    ? RoundedButtonFill(
+                  title: "Navigate to parking".tr,
+                  color: AppThemData.primary06,
+                  onPress: () {
+                    if (Constant.mapType == "inappmap") {
+                      Get.to(() => const LiveTrackingScreen(),
+                          arguments: {
                             "orderModel": controller.orderModel.value
                           });
-                        },
-                      )
-                    : controller.orderModel.value.paymentCompleted == false &&
-                            controller.orderModel.value.paymentType
-                                    .toString()
-                                    .toLowerCase() ==
-                                'cash'.toLowerCase()
-                        ? RoundedButtonFill(
-                            title: "Navigate to parking".tr,
-                            color: AppThemData.primary06,
-                            onPress: () {
-                              if (Constant.mapType == "inappmap") {
-                                Get.to(() => const LiveTrackingScreen(),
-                                    arguments: {
-                                      "orderModel": controller.orderModel.value
-                                    });
-                              } else {
-                                Utils.redirectMap(
-                                    latitude: controller.orderModel.value
-                                        .parkingDetails!.location!.latitude!,
-                                    longLatitude: controller.orderModel.value
-                                        .parkingDetails!.location!.longitude!,
-                                    name: controller
-                                        .orderModel.value.parkingDetails!.name
-                                        .toString());
-                              }
-                            },
-                          )
-                        : controller.orderModel.value.paymentCompleted == true
-                            ? RoundedButtonFill(
-                                title: "Navigate to parking".tr,
-                                color: AppThemData.primary06,
-                                onPress: () {
-                                  if (Constant.mapType == "inappmap") {
-                                    Get.to(() => const LiveTrackingScreen(),
-                                        arguments: {
-                                          "orderModel":
-                                              controller.orderModel.value
-                                        });
-                                  } else {
-                                    Utils.redirectMap(
-                                        latitude: controller
-                                            .orderModel
-                                            .value
-                                            .parkingDetails!
-                                            .location!
-                                            .latitude!,
-                                        longLatitude: controller
-                                            .orderModel
-                                            .value
-                                            .parkingDetails!
-                                            .location!
-                                            .longitude!,
-                                        name: controller.orderModel.value
-                                            .parkingDetails!.name
-                                            .toString());
-                                  }
-                                },
-                              )
-                            : RoundedButtonFill(
-                                title: "Confirm Payment".tr,
-                                color: AppThemData.primary06,
-                                onPress: () {
-                                  controller.orderModel.value.coupon =
-                                      controller.selectedCouponModel.value;
-                                  Get.to(() => const PaymentSelectScreen(),
-                                      arguments: {
-                                        "orderModel":
-                                            controller.orderModel.value
-                                      });
-                                },
-                              ),
+                    } else {
+                      Utils.redirectMap(
+                          latitude: controller.orderModel.value
+                              .parkingDetails!.location!.latitude!,
+                          longLatitude: controller.orderModel.value
+                              .parkingDetails!.location!.longitude!,
+                          name: controller
+                              .orderModel.value.parkingDetails!.name
+                              .toString());
+                    }
+                  },
+                )
+                    : controller.orderModel.value.paymentCompleted == true
+                    ? RoundedButtonFill(
+                  title: "Navigate to parking".tr,
+                  color: AppThemData.primary06,
+                  onPress: () {
+                    if (Constant.mapType == "inappmap") {
+                      Get.to(() => const LiveTrackingScreen(),
+                          arguments: {
+                            "orderModel":
+                            controller.orderModel.value
+                          });
+                    } else {
+                      Utils.redirectMap(
+                          latitude: controller
+                              .orderModel
+                              .value
+                              .parkingDetails!
+                              .location!
+                              .latitude!,
+                          longLatitude: controller
+                              .orderModel
+                              .value
+                              .parkingDetails!
+                              .location!
+                              .longitude!,
+                          name: controller.orderModel.value
+                              .parkingDetails!.name
+                              .toString());
+                    }
+                  },
+                )
+                    : RoundedButtonFill(
+                  title: "Confirm Payment".tr,
+                  color: AppThemData.primary06,
+                  onPress: () {
+                    controller.orderModel.value.coupon =
+                        controller.selectedCouponModel.value;
+                    Get.to(() => const PaymentSelectScreen(),
+                        arguments: {
+                          "orderModel": controller.orderModel.value,
+                        });
+                  },
+                ),
               ),
             ),
           );
@@ -992,434 +1037,441 @@ class ReviewSummaryScreen extends StatelessWidget {
         ),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.90,
-        minChildSize: 0.20,
-        maxChildSize: 0.92,
-        expand: false,
-        builder: (context, scrollController) {
-          final themeChange = Provider.of<DarkThemeProvider>(context);
-          return Scaffold(
-            body: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Center(
-                    child: Container(
-                      width: 134,
-                      height: 5,
-                      margin: const EdgeInsets.only(top: 12, bottom: 6),
-                      decoration: ShapeDecoration(
-                        color: AppThemData.labelColorLightPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3),
+      builder: (context) =>
+          DraggableScrollableSheet(
+            initialChildSize: 0.90,
+            minChildSize: 0.20,
+            maxChildSize: 0.92,
+            expand: false,
+            builder: (context, scrollController) {
+              final themeChange = Provider.of<DarkThemeProvider>(context);
+              return Scaffold(
+                body: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Center(
+                        child: Container(
+                          width: 134,
+                          height: 5,
+                          margin: const EdgeInsets.only(top: 12, bottom: 6),
+                          decoration: ShapeDecoration(
+                            color: AppThemData.labelColorLightPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Coupon Code'.tr,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: AppThemData.medium,
+                          color: themeChange.getThem()
+                              ? AppThemData.grey01
+                              : AppThemData.grey10,
+                        ),
+                      ),
+                    ),
+                    Divider(
+                        color: themeChange.getThem()
+                            ? AppThemData.grey10
+                            : AppThemData.grey03,
+                        thickness: 1),
+                    Expanded(
+                      child: FutureBuilder<List<CouponModel>?>(
+                          future: FireStoreUtils().getCoupon(),
+                          builder: (context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Constant.loader();
+                              case ConnectionState.done:
+                                if (snapshot.hasError) {
+                                  return Text(snapshot.error.toString());
+                                } else {
+                                  List<CouponModel> couponList = snapshot.data!;
+                                  return couponList.isEmpty
+                                      ? Constant.showEmptyView(
+                                      message: "No coupons found")
+                                      : ListView.builder(
+                                    itemCount: couponList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      CouponModel couponModel =
+                                      couponList[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 18, vertical: 12),
+                                          decoration: ShapeDecoration(
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey10
+                                                : AppThemData.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .end,
+                                                      children: [
+                                                        Text(
+                                                          couponModel.type ==
+                                                              "fix"
+                                                              ? Constant
+                                                              .amountShow(
+                                                              amount: couponModel
+                                                                  .amount
+                                                                  .toString())
+                                                              : "${couponModel
+                                                              .amount
+                                                              .toString()}%",
+                                                          style:
+                                                          const TextStyle(
+                                                            color: AppThemData
+                                                                .primary07,
+                                                            fontSize: 24,
+                                                            fontFamily:
+                                                            AppThemData
+                                                                .semiBold,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w600,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          'off',
+                                                          style: TextStyle(
+                                                            color: themeChange
+                                                                .getThem()
+                                                                ? AppThemData
+                                                                .grey01
+                                                                : AppThemData
+                                                                .grey07,
+                                                            fontSize: 14,
+                                                            fontFamily:
+                                                            AppThemData
+                                                                .medium,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w600,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: RoundedButtonFill(
+                                                      title: "Apply",
+                                                      color:
+                                                      AppThemData.grey04,
+                                                      height: 5,
+                                                      fontSizes: 16,
+                                                      onPress: () {
+                                                        controller
+                                                            .selectedCouponModel
+                                                            .value =
+                                                            couponModel;
+                                                        controller
+                                                            .couponCodeTextFieldController
+                                                            .value
+                                                            .text =
+                                                            controller
+                                                                .selectedCouponModel
+                                                                .value
+                                                                .code
+                                                                .toString();
+                                                        if (couponModel
+                                                            .type ==
+                                                            "fix") {
+                                                          controller
+                                                              .couponAmount
+                                                              .value =
+                                                              double.parse(
+                                                                  couponModel
+                                                                      .amount
+                                                                      .toString());
+                                                        } else {
+                                                          controller
+                                                              .couponAmount
+                                                              .value = double
+                                                              .parse(controller
+                                                              .orderModel
+                                                              .value
+                                                              .subTotal
+                                                              .toString()) *
+                                                              double.parse(
+                                                                  couponModel
+                                                                      .amount
+                                                                      .toString()) /
+                                                              100;
+                                                        }
+                                                        Get.back();
+                                                      },
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              Text(
+                                                couponModel.title.toString(),
+                                                style: TextStyle(
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey01
+                                                      : AppThemData.grey10,
+                                                  fontSize: 16,
+                                                  fontFamily:
+                                                  AppThemData.semiBold,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              TextFormField(
+                                                initialValue: couponModel.code
+                                                    .toString(),
+                                                keyboardType:
+                                                TextInputType.text,
+                                                textCapitalization:
+                                                TextCapitalization
+                                                    .sentences,
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: themeChange
+                                                        .getThem()
+                                                        ? AppThemData.grey01
+                                                        : AppThemData.grey08,
+                                                    fontWeight:
+                                                    FontWeight.w500,
+                                                    fontFamily:
+                                                    AppThemData.medium),
+                                                decoration: InputDecoration(
+                                                    errorStyle:
+                                                    const TextStyle(
+                                                        color:
+                                                        Colors.red),
+                                                    isDense: true,
+                                                    filled: true,
+                                                    fillColor: themeChange
+                                                        .getThem()
+                                                        ? AppThemData.grey08
+                                                        : AppThemData.grey03,
+                                                    contentPadding:
+                                                    const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 16,
+                                                        horizontal: 16),
+                                                    suffixIcon: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(top: 14),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          FlutterClipboard.copy(
+                                                              couponModel
+                                                                  .code
+                                                                  .toString())
+                                                              .then((value) {
+                                                            ShowToastDialog
+                                                                .showToast(
+                                                                "Coupon code copied"
+                                                                    .tr);
+                                                          });
+                                                        },
+                                                        child: Text("Copy".tr,
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: themeChange
+                                                                    .getThem()
+                                                                    ? AppThemData
+                                                                    .secondary07
+                                                                    : AppThemData
+                                                                    .secondary07,
+                                                                fontFamily:
+                                                                AppThemData
+                                                                    .medium)),
+                                                      ),
+                                                    ),
+                                                    disabledBorder:
+                                                    UnderlineInputBorder(
+                                                      borderRadius:
+                                                      const BorderRadius
+                                                          .only(
+                                                          topLeft: Radius
+                                                              .circular(
+                                                              12),
+                                                          topRight: Radius
+                                                              .circular(
+                                                              12)),
+                                                      borderSide: BorderSide(
+                                                          color: themeChange
+                                                              .getThem()
+                                                              ? AppThemData
+                                                              .grey04
+                                                              : AppThemData
+                                                              .grey04,
+                                                          width: 1),
+                                                    ),
+                                                    focusedBorder:
+                                                    UnderlineInputBorder(
+                                                      borderRadius:
+                                                      const BorderRadius
+                                                          .only(
+                                                          topLeft: Radius
+                                                              .circular(
+                                                              12),
+                                                          topRight: Radius
+                                                              .circular(
+                                                              12)),
+                                                      borderSide: BorderSide(
+                                                          color: themeChange
+                                                              .getThem()
+                                                              ? AppThemData
+                                                              .primary06
+                                                              : AppThemData
+                                                              .primary06,
+                                                          width: 1),
+                                                    ),
+                                                    enabledBorder:
+                                                    UnderlineInputBorder(
+                                                      borderRadius:
+                                                      const BorderRadius
+                                                          .only(
+                                                          topLeft: Radius
+                                                              .circular(
+                                                              12),
+                                                          topRight: Radius
+                                                              .circular(
+                                                              12)),
+                                                      borderSide: BorderSide(
+                                                          color: themeChange
+                                                              .getThem()
+                                                              ? AppThemData
+                                                              .grey04
+                                                              : AppThemData
+                                                              .grey04,
+                                                          width: 1),
+                                                    ),
+                                                    errorBorder:
+                                                    UnderlineInputBorder(
+                                                      borderRadius:
+                                                      const BorderRadius
+                                                          .only(
+                                                          topLeft: Radius
+                                                              .circular(
+                                                              12),
+                                                          topRight: Radius
+                                                              .circular(
+                                                              12)),
+                                                      borderSide: BorderSide(
+                                                          color: themeChange
+                                                              .getThem()
+                                                              ? AppThemData
+                                                              .grey04
+                                                              : AppThemData
+                                                              .grey04,
+                                                          width: 1),
+                                                    ),
+                                                    border:
+                                                    UnderlineInputBorder(
+                                                      borderRadius:
+                                                      const BorderRadius
+                                                          .only(
+                                                          topLeft: Radius
+                                                              .circular(
+                                                              12),
+                                                          topRight: Radius
+                                                              .circular(
+                                                              12)),
+                                                      borderSide: BorderSide(
+                                                          color: themeChange
+                                                              .getThem()
+                                                              ? AppThemData
+                                                              .grey04
+                                                              : AppThemData
+                                                              .grey04,
+                                                          width: 1),
+                                                    ),
+                                                    hintText:
+                                                    "Enter Coupon code"
+                                                        .tr,
+                                                    hintStyle: TextStyle(
+                                                        fontSize: 14,
+                                                        color: themeChange
+                                                            .getThem()
+                                                            ? AppThemData
+                                                            .grey06
+                                                            : AppThemData
+                                                            .grey06,
+                                                        fontWeight:
+                                                        FontWeight.w500,
+                                                        fontFamily:
+                                                        AppThemData
+                                                            .medium)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+                              default:
+                                return Text('Error'.tr);
+                            }
+                          }),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Coupon Code'.tr,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: AppThemData.medium,
-                      color: themeChange.getThem()
-                          ? AppThemData.grey01
-                          : AppThemData.grey10,
+                bottomNavigationBar: Container(
+                  color: themeChange.getThem()
+                      ? AppThemData.grey10
+                      : AppThemData.grey11,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 20),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: RoundedButtonFill(
+                      title: "Save",
+                      height: 5.5,
+                      color: AppThemData.primary06,
+                      fontSizes: 16,
+                      onPress: () {},
                     ),
                   ),
                 ),
-                Divider(
-                    color: themeChange.getThem()
-                        ? AppThemData.grey10
-                        : AppThemData.grey03,
-                    thickness: 1),
-                Expanded(
-                  child: FutureBuilder<List<CouponModel>?>(
-                      future: FireStoreUtils().getCoupon(),
-                      builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return Constant.loader();
-                          case ConnectionState.done:
-                            if (snapshot.hasError) {
-                              return Text(snapshot.error.toString());
-                            } else {
-                              List<CouponModel> couponList = snapshot.data!;
-                              return couponList.isEmpty
-                                  ? Constant.showEmptyView(
-                                      message: "No coupons found")
-                                  : ListView.builder(
-                                      itemCount: couponList.length,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        CouponModel couponModel =
-                                            couponList[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 5),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 18, vertical: 12),
-                                            decoration: ShapeDecoration(
-                                              color: themeChange.getThem()
-                                                  ? AppThemData.grey10
-                                                  : AppThemData.white,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Text(
-                                                            couponModel.type ==
-                                                                    "fix"
-                                                                ? Constant.amountShow(
-                                                                    amount: couponModel
-                                                                        .amount
-                                                                        .toString())
-                                                                : "${couponModel.amount.toString()}%",
-                                                            style:
-                                                                const TextStyle(
-                                                              color: AppThemData
-                                                                  .primary07,
-                                                              fontSize: 24,
-                                                              fontFamily:
-                                                                  AppThemData
-                                                                      .semiBold,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Text(
-                                                            'off',
-                                                            style: TextStyle(
-                                                              color: themeChange
-                                                                      .getThem()
-                                                                  ? AppThemData
-                                                                      .grey01
-                                                                  : AppThemData
-                                                                      .grey07,
-                                                              fontSize: 14,
-                                                              fontFamily:
-                                                                  AppThemData
-                                                                      .medium,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 8),
-                                                    Expanded(
-                                                      child: RoundedButtonFill(
-                                                        title: "Apply",
-                                                        color:
-                                                            AppThemData.grey04,
-                                                        height: 5,
-                                                        fontSizes: 16,
-                                                        onPress: () {
-                                                          controller
-                                                              .selectedCouponModel
-                                                              .value = couponModel;
-                                                          controller
-                                                                  .couponCodeTextFieldController
-                                                                  .value
-                                                                  .text =
-                                                              controller
-                                                                  .selectedCouponModel
-                                                                  .value
-                                                                  .code
-                                                                  .toString();
-                                                          if (couponModel
-                                                                  .type ==
-                                                              "fix") {
-                                                            controller
-                                                                    .couponAmount
-                                                                    .value =
-                                                                double.parse(
-                                                                    couponModel
-                                                                        .amount
-                                                                        .toString());
-                                                          } else {
-                                                            controller
-                                                                .couponAmount
-                                                                .value = double
-                                                                    .parse(controller
-                                                                        .orderModel
-                                                                        .value
-                                                                        .subTotal
-                                                                        .toString()) *
-                                                                double.parse(
-                                                                    couponModel
-                                                                        .amount
-                                                                        .toString()) /
-                                                                100;
-                                                          }
-                                                          Get.back();
-                                                        },
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                Text(
-                                                  couponModel.title.toString(),
-                                                  style: TextStyle(
-                                                    color: themeChange.getThem()
-                                                        ? AppThemData.grey01
-                                                        : AppThemData.grey10,
-                                                    fontSize: 16,
-                                                    fontFamily:
-                                                        AppThemData.semiBold,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                TextFormField(
-                                                  initialValue: couponModel.code
-                                                      .toString(),
-                                                  keyboardType:
-                                                      TextInputType.text,
-                                                  textCapitalization:
-                                                      TextCapitalization
-                                                          .sentences,
-                                                  textAlign: TextAlign.start,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: themeChange
-                                                              .getThem()
-                                                          ? AppThemData.grey01
-                                                          : AppThemData.grey08,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily:
-                                                          AppThemData.medium),
-                                                  decoration: InputDecoration(
-                                                      errorStyle:
-                                                          const TextStyle(
-                                                              color:
-                                                                  Colors.red),
-                                                      isDense: true,
-                                                      filled: true,
-                                                      fillColor: themeChange
-                                                              .getThem()
-                                                          ? AppThemData.grey08
-                                                          : AppThemData.grey03,
-                                                      contentPadding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                              vertical: 16,
-                                                              horizontal: 16),
-                                                      suffixIcon: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 14),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            FlutterClipboard.copy(
-                                                                    couponModel
-                                                                        .code
-                                                                        .toString())
-                                                                .then((value) {
-                                                              ShowToastDialog
-                                                                  .showToast(
-                                                                      "Coupon code copied"
-                                                                          .tr);
-                                                            });
-                                                          },
-                                                          child: Text("Copy".tr,
-                                                              style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  color: themeChange.getThem()
-                                                                      ? AppThemData
-                                                                          .secondary07
-                                                                      : AppThemData
-                                                                          .secondary07,
-                                                                  fontFamily:
-                                                                      AppThemData
-                                                                          .medium)),
-                                                        ),
-                                                      ),
-                                                      disabledBorder:
-                                                          UnderlineInputBorder(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        12),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        12)),
-                                                        borderSide: BorderSide(
-                                                            color: themeChange
-                                                                    .getThem()
-                                                                ? AppThemData
-                                                                    .grey04
-                                                                : AppThemData
-                                                                    .grey04,
-                                                            width: 1),
-                                                      ),
-                                                      focusedBorder:
-                                                          UnderlineInputBorder(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        12),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        12)),
-                                                        borderSide: BorderSide(
-                                                            color: themeChange
-                                                                    .getThem()
-                                                                ? AppThemData
-                                                                    .primary06
-                                                                : AppThemData
-                                                                    .primary06,
-                                                            width: 1),
-                                                      ),
-                                                      enabledBorder:
-                                                          UnderlineInputBorder(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        12),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        12)),
-                                                        borderSide: BorderSide(
-                                                            color: themeChange
-                                                                    .getThem()
-                                                                ? AppThemData
-                                                                    .grey04
-                                                                : AppThemData
-                                                                    .grey04,
-                                                            width: 1),
-                                                      ),
-                                                      errorBorder:
-                                                          UnderlineInputBorder(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        12),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        12)),
-                                                        borderSide: BorderSide(
-                                                            color: themeChange
-                                                                    .getThem()
-                                                                ? AppThemData
-                                                                    .grey04
-                                                                : AppThemData
-                                                                    .grey04,
-                                                            width: 1),
-                                                      ),
-                                                      border:
-                                                          UnderlineInputBorder(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        12),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        12)),
-                                                        borderSide: BorderSide(
-                                                            color: themeChange
-                                                                    .getThem()
-                                                                ? AppThemData
-                                                                    .grey04
-                                                                : AppThemData
-                                                                    .grey04,
-                                                            width: 1),
-                                                      ),
-                                                      hintText:
-                                                          "Enter Coupon code"
-                                                              .tr,
-                                                      hintStyle: TextStyle(
-                                                          fontSize: 14,
-                                                          color: themeChange
-                                                                  .getThem()
-                                                              ? AppThemData
-                                                                  .grey06
-                                                              : AppThemData
-                                                                  .grey06,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontFamily:
-                                                              AppThemData
-                                                                  .medium)),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                            }
-                          default:
-                            return Text('Error'.tr);
-                        }
-                      }),
-                ),
-              ],
-            ),
-            bottomNavigationBar: Container(
-              color: themeChange.getThem()
-                  ? AppThemData.grey10
-                  : AppThemData.grey11,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: RoundedButtonFill(
-                  title: "Save",
-                  height: 5.5,
-                  color: AppThemData.primary06,
-                  fontSizes: 16,
-                  onPress: () {},
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
     );
   }
 }

@@ -25,6 +25,7 @@ import 'package:phista/model/vehicle_brand_model.dart';
 import 'package:phista/model/vehicle_model.dart';
 import 'package:phista/model/wallet_transaction_model.dart';
 import 'package:phista/model/withdraw_model.dart';
+import 'package:phista/utils/utils.dart';
 import 'package:phista/widgets/geoflutterfire/src/geoflutterfire.dart';
 
 import '../widgets/geoflutterfire/src/models/point.dart';
@@ -421,8 +422,7 @@ class FireStoreUtils {
   //   return parkingModel;
   // }
 
-  static Future<String?> saveParkingDetails(
-      ParkingModel createSlotModel) async {
+  static Future<String?> saveParkingDetails(ParkingModel createSlotModel) async {
     try {
       await fireStore
           .collection(CollectionName.parking)
@@ -851,21 +851,23 @@ class FireStoreUtils {
 
   static Future<List<OrderModel>?> getOrder(Timestamp date, Timestamp startTime,
       Timestamp endTime, String parkingId) async {
+    
     List<OrderModel> orderList = [];
     await fireStore
         .collection(CollectionName.bookedParkingOrder)
-        .where(
-          'parkingId',
-          isEqualTo: parkingId,
-        )
+        .where('parkingId', isEqualTo: parkingId,)
         .where('status', whereIn: [Constant.placed, Constant.onGoing])
-        .where('bookingDate', isEqualTo: date)
         .get()
         .then((value) async {
-          for (var element in value.docs) {
-            OrderModel orderModel = OrderModel.fromJson(element.data());
-            orderList.add(orderModel);
-          }
+      for (var element in value.docs) {
+        final data = element.data();
+        final bookingDateString = data['bookingDate'] ?? '';
+        final List<dynamic> bookingDates = bookingDateString.split(',').map((e) => e.trim()).toList();
+        if (bookingDates.contains(Utils.formatTimestampToIST(date))) {
+          OrderModel orderModel = OrderModel.fromJson(data);
+          orderList.add(orderModel);
+        }
+      }
         });
     return orderList;
   }

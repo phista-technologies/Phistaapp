@@ -20,6 +20,7 @@ import 'package:phista/ui/booking_process/parking_view_screen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
+import 'package:phista/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -34,530 +35,625 @@ class BookingParkingDetailsScreen extends StatelessWidget {
         builder: (controller) {
           controller.startTimeMonthly.value = DateTime.now();
           return Scaffold(
-            appBar: UiInterface().customAppBar(
-                context, themeChange, "Select Date and Time".tr),
+            appBar: UiInterface()
+                .customAppBar(context, themeChange, "Select Date and Time".tr),
             body: controller.isLoading.value
                 ? Constant.loader()
                 : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      Expanded(flex: 1,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Hourly'.tr,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: AppThemData.medium,
-                                  fontWeight: FontWeight.w700,
-                                  color: themeChange.getThem() ? AppThemData
-                                      .grey07 : AppThemData.grey07,
-                                ),),
-                              Radio<String>(
-                                value: "hourly",
-                                groupValue: controller.radioValue.value,
-                                activeColor: AppThemData.primary07,
-                                materialTapTargetSize: MaterialTapTargetSize
-                                    .shrinkWrap,
-                                onChanged: (value) {
-                                  controller.radioValue.value = value ?? "";
-                                  //controller.resetValue();
-                                },
-                              ),
-                            ],
-                          )
-                      ),
-                      Expanded(flex: 1,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Daily'.tr,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: AppThemData.medium,
-                                  fontWeight: FontWeight.w700,
-                                  color: themeChange.getThem() ? AppThemData
-                                      .grey07 : AppThemData.grey07,
-                                ),),
-                              Radio<String>(
-                                value: "daily",
-                                groupValue: controller.radioValue.value,
-                                activeColor: AppThemData.primary07,
-                                materialTapTargetSize: MaterialTapTargetSize
-                                    .shrinkWrap,
-                                onChanged: (value) {
-                                  controller.radioValue.value = value ?? "";
-                                },
-                              ),
-                            ],
-                          )
-
-
-                      ),
-                      Expanded(flex: 1,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Monthly'.tr,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: AppThemData.medium,
-                                  fontWeight: FontWeight.w700,
-                                  color: themeChange.getThem() ? AppThemData
-                                      .grey07 : AppThemData.grey07,
-                                ),),
-                              Radio<String>(
-                                value: "monthly",
-                                groupValue: controller.radioValue.value,
-                                activeColor: AppThemData.primary07,
-                                materialTapTargetSize: MaterialTapTargetSize
-                                    .shrinkWrap,
-                                onChanged: (value) {
-                                  controller.radioValue.value = value ?? "";
-                                controller.setMonthValue(controller.startTimeMonthly.value, int.parse(controller.bookingMonthsController.value.text.trim()));
-                                },
-                              ),
-                            ],
-                          )
-
-
-                      ),
-                    ],),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    if(controller.radioValue.value == "monthly")
-                      TextFieldWidget(
-                        controller: controller.bookingMonthsController.value,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          TextInputFormatter.withFunction((oldValue, newValue) {
-                            if (newValue.text.isEmpty) return newValue;
-
-                            final value = int.tryParse(newValue.text);
-                            if (value == null || value < 1 || value > 12) {
-                              return oldValue; // reject input outside 1–12
-                            }
-
-                            return newValue; // allow input
-                          }),
-                        ],
-                        title: 'Booking Months'.tr,
-                        onPress: () {},
-                        hintText: 'Enter booking months'.tr,
-                        textInputType: TextInputType.number,
-                        onChanged: (value){
-                          controller.setMonthValue(controller.startTimeMonthly.value, int.parse(controller.bookingMonthsController.value.text.trim()));
-                        },
-                      ),
-
-                    Text(
-                      'select_date'.tr,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: AppThemData.medium,
-                        fontWeight: FontWeight.w700,
-                        color: themeChange.getThem()
-                            ? AppThemData.grey07
-                            : AppThemData.grey07,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Obx(
-                            () {
-                          final selectionMode = controller.selectionModeUser(controller.radioValue.value);
-
-                          print("selectionMode :-- $selectionMode");
-                          return Container(
-                            decoration: BoxDecoration(color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey03,
-                                borderRadius: BorderRadius.circular(15)),
-                            child: SfDateRangePicker(
-                              controller: controller.sfDateRangePickerCtrl,
-                              selectionMode: selectionMode,
-                              view: DateRangePickerView.month,
-                              selectionColor: AppThemData.primary06,
-                              startRangeSelectionColor: AppThemData.primary06,
-                              rangeSelectionColor: AppThemData.primary06,
-                              endRangeSelectionColor: AppThemData.primary06,
-
-                              initialSelectedDate: selectionMode == DateRangePickerSelectionMode.single
-                                  ? controller.selectedDateTime.value
-                                  : null,
-                              initialSelectedDates: selectionMode == DateRangePickerSelectionMode.multiple
-                                  ? controller.selectedDatesDaily.value
-                                  : null,
-
-                              selectionTextStyle: const TextStyle(
-                                  color: Colors.black),
-                              onSelectionChanged: (args) {
-                                switch (selectionMode) {
-                                case DateRangePickerSelectionMode.single:
-                                  controller.selectedDateTime.value = args.value;
-                                  DateTime now = DateTime.now();
-
-                                  controller.startTime.value = DateTime(
-                                      controller.selectedDateTime.value.year,
-                                      controller.selectedDateTime.value.month,
-                                      controller.selectedDateTime.value.day,
-                                    now.hour,
-                                    now.minute,
-                                    now.second);
-
-                                  Duration duration = Duration(hours: controller.selectedDuration.value.toInt());
-
-                                  controller.endTime.value = controller.startTime.value.add(duration);
-
-                                break;
-                                case DateRangePickerSelectionMode.multiple:
-                                controller.selectedDatesDaily.value = args.value;
-                                break;
-
-                                case DateRangePickerSelectionMode.range:
-                                  if(selectionMode == DateRangePickerSelectionMode.range){
-                                    if (args.value is PickerDateRange) {
-                                      final PickerDateRange range = args.value;
-                                      final DateTime? startDate = range.startDate;
-                                      controller.startTimeMonthly.value = range.startDate!;
-                                      if (startDate != null) {
-                                        controller.setMonthValue( controller.startTimeMonthly.value, int.parse(controller.bookingMonthsController.value.text.trim()));
-                                      }
-                                    }
-
-                                  }
-
-                                  controller.selectedRangeMonth.refresh();
-                                  break;
-
-                                default:
-                                break;
-                                }
-                              },
-
-                              minDate: DateTime.now(),
-                            ),
-                          );
-                        }
-
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    if(controller.radioValue.value == "hourly")
-
-                    ///show if hourly is selected
-                      Text(
-                        'duration'.tr,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: AppThemData.medium,
-                          fontWeight: FontWeight.w700,
-                          color: themeChange.getThem()
-                              ? AppThemData.grey07
-                              : AppThemData.grey07,
-                        ),
-                      ),
-                    if(controller.radioValue.value == "hourly")
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    if(controller.radioValue.value == "hourly")
-                      Obx(
-                            () =>
-                            Slider(
-                              value: controller.selectedDuration.value,
-                              onChanged: (value) {
-                                controller.selectedDuration.value = value;
-
-                                controller.startTimeController.value.text = DateFormat('HH:mm').format(controller.startTime.value);
-                                Duration duration = Duration(hours: controller.selectedDuration.value.toInt());
-
-                                controller.endTime.value = controller.startTime.value.add(duration);
-                                controller.endTimeController.value.text = DateFormat('HH:mm').format(controller.endTime.value);
-                              },
-                              autofocus: false,
-                              activeColor: AppThemData.primary06,
-                              inactiveColor: AppThemData.grey03,
-                              min: 0,
-                              max: 8,
-                              divisions: 8,
-                              label: "${controller.selectedDuration.value
-                                  .round().toString()} hours".tr,
-                            ),
-                      ),
-                    if(controller.radioValue.value == "hourly")
-                      const SizedBox(
-                        height: 10,
-                      ),
-
-                    if(controller.radioValue.value == "hourly")
-                    Text(
-                      'Select Time'.tr,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: AppThemData.medium,
-                        fontWeight: FontWeight.w700,
-                        color: themeChange.getThem()
-                            ? AppThemData.grey07
-                            : AppThemData.grey07,
-                      ),
-                    ),
-                    if(controller.radioValue.value == "hourly")
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    if(controller.radioValue.value == "hourly")
-                    Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              TimeOfDay? startTime = await Constant.selectTime(context);
-
-                              if (startTime != null) {
-                                controller.startTime.value = DateTime(
-                                    controller.selectedDateTime.value.year,
-                                    controller.selectedDateTime.value.month,
-                                    controller.selectedDateTime.value.day,
-                                    startTime.hour, startTime.minute);
-
-                                controller.startTimeController.value.text = DateFormat('HH:mm').format(controller.startTime.value);
-
-                                Duration duration = Duration(
-                                    hours: controller.selectedDuration.value
-                                        .toInt());
-
-                                controller.endTime.value = controller.startTime.value.add(duration);
-                                controller.endTimeController.value.text = DateFormat('HH:mm').format(controller.endTime.value);
-                              }
-                            },
-                            child: TextFieldWidget(
-                              onPress: () {},
-                              controller: controller.startTimeController.value,
-                              textInputType: const TextInputType
-                                  .numberWithOptions(
-                                  decimal: true, signed: true),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9]')),
-                              ],
-                              hintText: 'Select Time'.tr,
-                              enable: false,
-                              prefix: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: SvgPicture.asset(
-                                  "assets/icon/ic_clock.svg",
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              TimeOfDay? startTime = await Constant.selectTime(
-                                  context);
-
-                              if (startTime != null) {
-                                controller.endTime.value = DateTime(
-                                    controller.selectedDateTime.value.year,
-                                    controller.selectedDateTime.value.month,
-                                    controller.selectedDateTime.value.day,
-                                    startTime.hour, startTime.minute);
-
-                                controller.endTimeController.value.text = DateFormat('HH:mm').format(controller.endTime.value);
-
-                                Duration duration = Duration(
-                                    hours: controller.selectedDuration.value
-                                        .toInt());
-
-                                controller.startTime.value = controller.endTime.value.subtract(duration);
-                                controller.startTimeController.value.text = DateFormat('HH:mm').format(
-                                        controller.startTime.value);
-                              }
-                            },
-                            child: TextFieldWidget(
-                              onPress: () {},
-                              controller: controller.endTimeController.value,
-                              textInputType: const TextInputType
-                                  .numberWithOptions(
-                                  decimal: true, signed: true),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9]')),
-                              ],
-                              hintText: 'Select Time'.tr,
-                              enable: false,
-                              prefix: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: SvgPicture.asset(
-                                  "assets/icon/ic_clock.svg",
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Vehicle'.tr,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: AppThemData.medium,
-                        fontWeight: FontWeight.w700,
-                        color: themeChange.getThem()
-                            ? AppThemData.grey07
-                            : AppThemData.grey07,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    controller.selectedVehicle.value.id != null
-                        ? Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: themeChange.getThem()
-                            ? AppThemData.grey10
-                            : AppThemData.grey03,
-                      ),
-                      child: Row(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          NetworkImageWidget(
-                            height: 60,
-                            width: 60,
-                            imageUrl: controller.selectedVehicle.value
-                                .vehicleModel!.image.toString(),
+                          Row(
+                            children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Hourly'.tr,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: AppThemData.medium,
+                                          fontWeight: FontWeight.w700,
+                                          color: themeChange.getThem()
+                                              ? AppThemData.grey07
+                                              : AppThemData.grey07,
+                                        ),
+                                      ),
+                                      Radio<String>(
+                                        value: "hourly",
+                                        groupValue: controller.radioValue.value,
+                                        activeColor: AppThemData.primary07,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        onChanged: (value) {
+                                          controller.selectedDuration.value = 1;
+                                          controller.radioValue.value =
+                                              value ?? "";
+                                          //controller.resetValue();
+                                        },
+                                      ),
+                                    ],
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Daily'.tr,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: AppThemData.medium,
+                                          fontWeight: FontWeight.w700,
+                                          color: themeChange.getThem()
+                                              ? AppThemData.grey07
+                                              : AppThemData.grey07,
+                                        ),
+                                      ),
+                                      Radio<String>(
+                                        value: "daily",
+                                        groupValue: controller.radioValue.value,
+                                        activeColor: AppThemData.primary07,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        onChanged: (value) {
+                                          controller.selectedDuration.value =
+                                              24;
+                                          controller.radioValue.value =
+                                              value ?? "";
+                                        },
+                                      ),
+                                    ],
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Monthly'.tr,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: AppThemData.medium,
+                                          fontWeight: FontWeight.w700,
+                                          color: themeChange.getThem()
+                                              ? AppThemData.grey07
+                                              : AppThemData.grey07,
+                                        ),
+                                      ),
+                                      Radio<String>(
+                                        value: "monthly",
+                                        groupValue: controller.radioValue.value,
+                                        activeColor: AppThemData.primary07,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        onChanged: (value) {
+                                          controller.selectedDuration.value =
+                                              24;
+                                          controller.radioValue.value =
+                                              value ?? "";
+                                          controller.setMonthValue(
+                                              controller.startTimeMonthly.value,
+                                              int.parse(controller
+                                                  .bookingMonthsController
+                                                  .value
+                                                  .text
+                                                  .trim()));
+                                        },
+                                      ),
+                                    ],
+                                  )),
+                            ],
                           ),
                           const SizedBox(
-                            width: 15,
+                            height: 7,
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          if (controller.radioValue.value == "monthly")
+                            TextFieldWidget(
+                              controller:
+                                  controller.bookingMonthsController.value,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                TextInputFormatter.withFunction(
+                                    (oldValue, newValue) {
+                                  if (newValue.text.isEmpty) return newValue;
+
+                                  final value = int.tryParse(newValue.text);
+                                  if (value == null ||
+                                      value < 1 ||
+                                      value > 12) {
+                                    return oldValue; // reject input outside 1–12
+                                  }
+
+                                  return newValue; // allow input
+                                }),
+                              ],
+                              title: 'Booking Months'.tr,
+                              onPress: () {},
+                              hintText: 'Enter booking months'.tr,
+                              textInputType: TextInputType.number,
+                              onChanged: (value) {
+                                controller.setMonthValue(
+                                    controller.startTimeMonthly.value,
+                                    int.parse(controller
+                                        .bookingMonthsController.value.text
+                                        .trim()));
+                              },
+                            ),
+                          Text(
+                            'select_date'.tr,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: AppThemData.medium,
+                              fontWeight: FontWeight.w700,
+                              color: themeChange.getThem()
+                                  ? AppThemData.grey07
+                                  : AppThemData.grey07,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Obx(() {
+                            final selectionMode = controller
+                                .selectionModeUser(controller.radioValue.value);
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey10
+                                      : AppThemData.grey03,
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: SfDateRangePicker(
+                                controller: controller.sfDateRangePickerCtrl,
+                                selectionMode: selectionMode,
+                                view: DateRangePickerView.month,
+                                selectionColor: AppThemData.primary06,
+                                startRangeSelectionColor: AppThemData.primary06,
+                                rangeSelectionColor: AppThemData.primary06,
+                                endRangeSelectionColor: AppThemData.primary06,
+                                initialSelectedDate: selectionMode ==
+                                        DateRangePickerSelectionMode.single
+                                    ? controller.selectedDateTime.value
+                                    : null,
+                                initialSelectedDates: selectionMode ==
+                                        DateRangePickerSelectionMode.multiple
+                                    ? controller.selectedDatesDaily.value
+                                    : null,
+                                selectionTextStyle:
+                                    const TextStyle(color: Colors.black),
+                                onSelectionChanged: (args) {
+                                  switch (selectionMode) {
+                                    case DateRangePickerSelectionMode.single:
+                                      controller.selectedDateTime.value =
+                                          args.value;
+                                      DateTime now = DateTime.now();
+
+                                      controller.startTime.value = DateTime(
+                                          controller
+                                              .selectedDateTime.value.year,
+                                          controller
+                                              .selectedDateTime.value.month,
+                                          controller.selectedDateTime.value.day,
+                                          now.hour,
+                                          now.minute,
+                                          now.second);
+
+                                      Duration duration = Duration(
+                                          hours: controller
+                                              .selectedDuration.value
+                                              .toInt());
+
+                                      controller.endTime.value = controller
+                                          .startTime.value
+                                          .add(duration);
+
+                                      break;
+                                    case DateRangePickerSelectionMode.multiple:
+                                      controller.selectedDatesDaily.value =
+                                          args.value;
+                                      break;
+
+                                    case DateRangePickerSelectionMode.range:
+                                      if (selectionMode ==
+                                          DateRangePickerSelectionMode.range) {
+                                        if (args.value is PickerDateRange) {
+                                          final PickerDateRange range =
+                                              args.value;
+                                          final DateTime? startDate =
+                                              range.startDate;
+                                          controller.startTimeMonthly.value =
+                                              range.startDate!;
+                                          if (startDate != null) {
+                                            controller.setMonthValue(
+                                                controller
+                                                    .startTimeMonthly.value,
+                                                int.parse(controller
+                                                    .bookingMonthsController
+                                                    .value
+                                                    .text
+                                                    .trim()));
+                                          }
+                                        }
+                                      }
+
+                                      controller.selectedRangeMonth.refresh();
+                                      break;
+
+                                    default:
+                                      break;
+                                  }
+                                },
+                                minDate: DateTime.now(),
+                              ),
+                            );
+                          }),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          if (controller.radioValue.value == "hourly")
+
+                            ///show if hourly is selected
+                            Text(
+                              'duration'.tr,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: AppThemData.medium,
+                                fontWeight: FontWeight.w700,
+                                color: themeChange.getThem()
+                                    ? AppThemData.grey07
+                                    : AppThemData.grey07,
+                              ),
+                            ),
+                          if (controller.radioValue.value == "hourly")
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          if (controller.radioValue.value == "hourly")
+                            Obx(
+                              () => Slider(
+                                value: controller.selectedDuration.value,
+                                onChanged: (value) {
+                                  controller.selectedDuration.value = value;
+
+                                  controller.startTimeController.value.text =
+                                      DateFormat('HH:mm')
+                                          .format(controller.startTime.value);
+                                  Duration duration = Duration(
+                                      hours: controller.selectedDuration.value
+                                          .toInt());
+
+                                  controller.endTime.value =
+                                      controller.startTime.value.add(duration);
+                                  controller.endTimeController.value.text =
+                                      DateFormat('HH:mm')
+                                          .format(controller.endTime.value);
+                                },
+                                autofocus: false,
+                                activeColor: AppThemData.primary06,
+                                inactiveColor: AppThemData.grey03,
+                                min: 0,
+                                max: 8,
+                                divisions: 8,
+                                label:
+                                    "${controller.selectedDuration.value.round().toString()} hours"
+                                        .tr,
+                              ),
+                            ),
+                          if (controller.radioValue.value == "hourly")
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          if (controller.radioValue.value == "hourly")
+                            Text(
+                              'Select Time'.tr,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: AppThemData.medium,
+                                fontWeight: FontWeight.w700,
+                                color: themeChange.getThem()
+                                    ? AppThemData.grey07
+                                    : AppThemData.grey07,
+                              ),
+                            ),
+                          if (controller.radioValue.value == "hourly")
+                            const SizedBox(
+                              height: 14,
+                            ),
+                          if (controller.radioValue.value == "hourly")
+                            Row(
                               children: [
-                                Text(
-                                  controller.selectedVehicle.value.vehicleModel!
-                                      .name.toString(),
-                                  style:
-                                  TextStyle(fontSize: 16,
-                                      fontFamily: AppThemData.medium,
-                                      color: themeChange.getThem() ? AppThemData
-                                          .grey01 : AppThemData.grey08),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () async {
+                                      TimeOfDay? startTime =
+                                          await Constant.selectTime(context);
+
+                                      if (startTime != null) {
+                                        controller.startTime.value = DateTime(
+                                            controller
+                                                .selectedDateTime.value.year,
+                                            controller
+                                                .selectedDateTime.value.month,
+                                            controller
+                                                .selectedDateTime.value.day,
+                                            startTime.hour,
+                                            startTime.minute);
+
+                                        controller.startTimeController.value
+                                                .text =
+                                            DateFormat('HH:mm').format(
+                                                controller.startTime.value);
+
+                                        Duration duration = Duration(
+                                            hours: controller
+                                                .selectedDuration.value
+                                                .toInt());
+
+                                        controller.endTime.value = controller
+                                            .startTime.value
+                                            .add(duration);
+                                        controller
+                                                .endTimeController.value.text =
+                                            DateFormat('HH:mm').format(
+                                                controller.endTime.value);
+                                      }
+                                    },
+                                    child: TextFieldWidget(
+                                      onPress: () {},
+                                      controller:
+                                          controller.startTimeController.value,
+                                      textInputType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true, signed: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9]')),
+                                      ],
+                                      hintText: 'Select Time'.tr,
+                                      enable: false,
+                                      prefix: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: SvgPicture.asset(
+                                          "assets/icon/ic_clock.svg",
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(
-                                  height: 4,
+                                  width: 10,
                                 ),
-                                Text(
-                                  controller.selectedVehicle.value.vehicleNumber
-                                      .toString(),
-                                  style:
-                                  TextStyle(fontSize: 14,
-                                      fontFamily: AppThemData.medium,
-                                      color: themeChange.getThem() ? AppThemData
-                                          .grey07 : AppThemData.grey07),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () async {
+                                      TimeOfDay? startTime =
+                                          await Constant.selectTime(context);
+
+                                      if (startTime != null) {
+                                        controller.endTime.value = DateTime(
+                                            controller
+                                                .selectedDateTime.value.year,
+                                            controller
+                                                .selectedDateTime.value.month,
+                                            controller
+                                                .selectedDateTime.value.day,
+                                            startTime.hour,
+                                            startTime.minute);
+
+                                        controller
+                                                .endTimeController.value.text =
+                                            DateFormat('HH:mm').format(
+                                                controller.endTime.value);
+
+                                        Duration duration = Duration(
+                                            hours: controller
+                                                .selectedDuration.value
+                                                .toInt());
+
+                                        controller.startTime.value = controller
+                                            .endTime.value
+                                            .subtract(duration);
+                                        controller.startTimeController.value
+                                                .text =
+                                            DateFormat('HH:mm').format(
+                                                controller.startTime.value);
+                                      }
+                                    },
+                                    child: TextFieldWidget(
+                                      onPress: () {},
+                                      controller:
+                                          controller.endTimeController.value,
+                                      textInputType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true, signed: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9]')),
+                                      ],
+                                      hintText: 'Select Time'.tr,
+                                      enable: false,
+                                      prefix: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: SvgPicture.asset(
+                                          "assets/icon/ic_clock.svg",
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                          InkWell(
-                              onTap: () {
-                                VehicleListController vehicleListController = Get
-                                    .put(VehicleListController());
-                                vehicleListController.selectedVehicle.value =
-                                    controller.selectedVehicle.value;
-                                showBottomSheet(context);
-                              },
-                              child: Text(
-                                "Change".tr,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    decoration: TextDecoration.underline,
-                                    fontFamily: AppThemData.regular,
-                                    color: themeChange.getThem() ? AppThemData
-                                        .blueLight07 : AppThemData.blueLight07),
-                              ))
-                        ],
-                      ),
-                    )
-                        : InkWell(
-                      onTap: () {
-                        VehicleListController vehicleListController = Get.put(
-                            VehicleListController());
-                        vehicleListController.selectedVehicle.value =
-                            controller.selectedVehicle.value;
-                        showBottomSheet(context);
-                      },
-                      child: SizedBox(
-                        width: Responsive.width(100, context),
-                        child: DottedBorder(
-                          borderType: BorderType.RRect,
-                          radius: const Radius.circular(40),
-                          color: AppThemData.primary09,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                color: AppThemData.warning03,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(40))),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.add,
-                                    color: AppThemData.primary09,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    'Select Vehicle'.tr,
-                                    style: const TextStyle(
-                                      color: AppThemData.primary09,
-                                      fontSize: 14,
-                                      fontFamily: AppThemData.medium,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          Text(
+                            'Vehicle'.tr,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: AppThemData.medium,
+                              fontWeight: FontWeight.w700,
+                              color: themeChange.getThem()
+                                  ? AppThemData.grey07
+                                  : AppThemData.grey07,
                             ),
                           ),
-                        ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          controller.selectedVehicle.value.id != null
+                              ? Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey10
+                                        : AppThemData.grey03,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      NetworkImageWidget(
+                                        height: 60,
+                                        width: 60,
+                                        imageUrl: controller.selectedVehicle
+                                            .value.vehicleModel!.image
+                                            .toString(),
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              controller.selectedVehicle.value
+                                                  .vehicleModel!.name
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily:
+                                                      AppThemData.medium,
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey01
+                                                      : AppThemData.grey08),
+                                            ),
+                                            const SizedBox(
+                                              height: 4,
+                                            ),
+                                            Text(
+                                              controller.selectedVehicle.value
+                                                  .vehicleNumber
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily:
+                                                      AppThemData.medium,
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey07
+                                                      : AppThemData.grey07),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            VehicleListController
+                                                vehicleListController = Get.put(
+                                                    VehicleListController());
+                                            vehicleListController
+                                                    .selectedVehicle.value =
+                                                controller
+                                                    .selectedVehicle.value;
+                                            showBottomSheet(context);
+                                          },
+                                          child: Text(
+                                            "Change".tr,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                fontFamily: AppThemData.regular,
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.blueLight07
+                                                    : AppThemData.blueLight07),
+                                          ))
+                                    ],
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    VehicleListController
+                                        vehicleListController =
+                                        Get.put(VehicleListController());
+                                    vehicleListController
+                                            .selectedVehicle.value =
+                                        controller.selectedVehicle.value;
+                                    showBottomSheet(context);
+                                  },
+                                  child: SizedBox(
+                                    width: Responsive.width(100, context),
+                                    child: DottedBorder(
+                                      borderType: BorderType.RRect,
+                                      radius: const Radius.circular(40),
+                                      color: AppThemData.primary09,
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                            color: AppThemData.warning03,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(40))),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.add,
+                                                color: AppThemData.primary09,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                'Select Vehicle'.tr,
+                                                style: const TextStyle(
+                                                  color: AppThemData.primary09,
+                                                  fontSize: 14,
+                                                  fontFamily:
+                                                      AppThemData.medium,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
             bottomNavigationBar: Container(
-              color: themeChange.getThem() ? AppThemData.grey10 : AppThemData
-                  .grey11,
+              color: themeChange.getThem()
+                  ? AppThemData.grey10
+                  : AppThemData.grey11,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -565,60 +661,94 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                   title: "Next".tr,
                   color: AppThemData.primary06,
                   onPress: () {
-
-
                     if (controller.selectedVehicle.value.id == null) {
                       ShowToastDialog.showToast(
                           "Please select your vehicle".tr);
-                    }
-                    else if (controller.selectedDuration.value < 1 && controller.radioValue.value == "hourly" ) {
+                    } else if (controller.selectedDuration.value < 1 &&
+                        controller.radioValue.value == "hourly") {
                       ShowToastDialog.showToast(
                           "Please select duration minimum one hour".tr);
-                    }
-                    else {
+                    } else {
                       controller.showPopUp(() {
                         Get.back();
+                        print(controller.radioValue.value);
                         OrderModel orderModel = OrderModel();
-                        orderModel.parkingDetails = controller.parkingModel.value;
-                        orderModel.userVehicle = controller.vehicle.value;
-                        orderModel.duration = controller.selectedDuration.value.toString();
 
-                        if(controller.radioValue.value == "hourly") {
+                        if (controller.radioValue.value == "hourly") {
+                          Constant.bookingTypeConst = "hourly";
                           orderModel.bookingType = "1";
-                        }else if (controller.radioValue.value == "daily"){
+                          orderModel.bookingMonth ="";
+
+                          orderModel.bookingDate = Utils.formatTimestampToIST(
+                              Timestamp.fromDate(DateTime(
+                                  controller.selectedDateTime.value.year,
+                                  controller.selectedDateTime.value.month,
+                                  controller.selectedDateTime.value.day)));
+
+                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
+                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
+
+                        } else if (controller.radioValue.value == "daily") {
+                          List<String> tempBookingTime = [];
+                          Constant.bookingTypeConst = "daily";
                           orderModel.bookingType = "2";
-                        }else{
+                          orderModel.bookingMonth ="";
+                          controller.selectedDuration.value = 24.0;
+
+
+                          if(controller.selectedDatesDaily.isNotEmpty){
+                            controller.startTime.value = DateTime(
+                                controller.selectedDatesDaily[0].year,
+                                controller.selectedDatesDaily[0].month,
+                                controller.selectedDatesDaily[0].day,
+                                controller.selectedDatesDaily[0].hour,
+                                controller.selectedDatesDaily[0].minute,
+                                controller.selectedDatesDaily[0].second);
+                          }
+
+                          Duration duration = Duration(
+                              hours: controller.selectedDuration.value.toInt());
+                          controller.endTime.value = controller.startTime.value.add(duration);
+                          if(controller.selectedDatesDaily.isNotEmpty){
+                            for(var tempValue in controller.selectedDatesDaily){
+                             tempBookingTime.add( Utils.formatTimestampToIST(
+                                 Timestamp.fromDate(DateTime(
+                                     tempValue.year,
+                                     tempValue.month,
+                                     tempValue.day))));
+                            }
+                          }
+
+                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
+                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
+
+                          orderModel.bookingDate = tempBookingTime.join(',');
+
+                          print("orderModel.bookingDate Daily :- ${orderModel.bookingDate}");
+
+                        } else if (controller.radioValue.value == "monthly") {
+                          Constant.bookingTypeConst = "monthly";
                           orderModel.bookingType = "3";
                           orderModel.bookingMonth = controller.bookingMonthsController.value.text;
                         }
 
-                        if(controller.radioValue.value == "hourly") {
-                          orderModel.bookingDate = Timestamp.fromDate(DateTime(
-                                controller.selectedDateTime.value.year,
-                                controller.selectedDateTime.value.month,
-                                controller.selectedDateTime.value.day));
-                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
-                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-
-                        }else if(controller.radioValue.value == "daily"){
-                          orderModel.bookingDate = Timestamp.fromDate(DateTime(
-                              controller.selectedDateTime.value.year,
-                              controller.selectedDateTime.value.month,
-                              controller.selectedDateTime.value.day));
-                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
-                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-                        }
+                        orderModel.parkingDetails = controller.parkingModel.value;
+                        orderModel.userVehicle = controller.vehicle.value;
+                        orderModel.duration = controller.selectedDuration.value.toString();
 
                         orderModel.status = Constant.placed;
                         orderModel.userId = FireStoreUtils.getCurrentUid();
                         orderModel.id = Constant.getUuid();
                         orderModel.parkingId = controller.parkingModel.value.id;
-                        orderModel.subTotal = controller.calculateParkingAmount().toString();
+                        orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value).toString();
                         orderModel.taxList = Constant.taxList;
                         orderModel.userVehicle = controller.selectedVehicle.value;
 
                         Get.to(() => const ParkingViewScreen(),
                             arguments: {"orderModel": orderModel});
+
+                        /*Get.to(() => const ParkingViewScreen(),
+                            arguments: {"orderModel": orderModel, "type": controller.radioValue.value});*/
                       });
                     }
                   },
@@ -640,14 +770,13 @@ class BookingParkingDetailsScreen extends StatelessWidget {
         ),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (context) =>
-          DraggableScrollableSheet(
-            initialChildSize: 0.65,
-            minChildSize: 0.45,
-            maxChildSize: 0.85,
-            expand: false,
-            builder: (_, scrollController) => const SelectVehicleScreen(),
-          ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.65,
+        minChildSize: 0.45,
+        maxChildSize: 0.85,
+        expand: false,
+        builder: (_, scrollController) => const SelectVehicleScreen(),
+      ),
     );
   }
 }

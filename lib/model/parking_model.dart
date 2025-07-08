@@ -16,6 +16,8 @@ class ParkingModel {
   String? image;
   String? parkingSpace;
   String? perHrPrice;
+  String? dailyPrice;
+  String? monthlyPrice;
   String? reviewCount;
   String? reviewSum;
   String? parkingType;
@@ -40,6 +42,8 @@ class ParkingModel {
         this.facilities,
         this.bookmarkedUser,
         this.perHrPrice,
+        this.dailyPrice,
+        this.monthlyPrice,
         this.parkingSpace,
         this.reviewCount,
         this.reviewSum,
@@ -65,6 +69,8 @@ class ParkingModel {
     image = json['image'] ?? '';
     bookmarkedUser = json['bookmarkedUser'] ?? [];
     perHrPrice = json['perHrPrice'] ?? "";
+    dailyPrice = json['dailyPrice'] ?? "";
+    monthlyPrice = json['monthlyPrice'] ?? "";
     parkingSpace = json['parkingSpace'] ?? "";
     reviewCount = json['reviewCount'] ?? "0.0";
     reviewSum = json['reviewSum'] ?? "0.0";
@@ -93,6 +99,8 @@ class ParkingModel {
     data['image'] = image;
     data['bookmarkedUser'] = bookmarkedUser;
     data['perHrPrice'] = perHrPrice;
+    data['dailyPrice'] = dailyPrice;
+    data['monthlyPrice'] = monthlyPrice;
     data['parkingSpace'] = parkingSpace;
     data['reviewCount'] = reviewCount;
     data['reviewSum'] = reviewSum;

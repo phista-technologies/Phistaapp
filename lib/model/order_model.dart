@@ -10,7 +10,8 @@ class OrderModel {
   String? userId;
   String? parkingId;
   String? parkingSlotId;
-  Timestamp? bookingDate;
+  //Timestamp? bookingDate;
+  String? bookingDate;
   Timestamp? bookingStartTime;
   Timestamp? bookingEndTime;
   String? duration;

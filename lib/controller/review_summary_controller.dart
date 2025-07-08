@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/model/coupon_model.dart';
 import 'package:phista/model/order_model.dart';
@@ -9,28 +10,32 @@ class ReviewSummaryController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
-    getArgument();
     super.onInit();
+    getArgument();
   }
 
   Rx<OrderModel> orderModel = OrderModel().obs;
+  var orderModelDailyList = <OrderModel>[].obs;
   RxDouble couponAmount = 0.0.obs;
   Rx<CouponModel> selectedCouponModel = CouponModel().obs;
+  String bookingTypeReview = "";
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
     if (argumentData != null) {
-      orderModel.value = argumentData['orderModel'];
-      if (orderModel.value.coupon != null) {
-        if (orderModel.value.coupon!.id != null) {
-          if (orderModel.value.coupon!.type == "fix") {
-            couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
-          } else {
-            couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+      bookingTypeReview = Constant.bookingTypeConst;
+        orderModel.value = argumentData['orderModel'];
+        if (orderModel.value.coupon != null) {
+          if (orderModel.value.coupon!.id != null) {
+            if (orderModel.value.coupon!.type == "fix") {
+              couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
+            } else {
+              couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+            }
           }
         }
-      }
+
+
     }
     update();
   }
@@ -55,4 +60,26 @@ class ReviewSummaryController extends GetxController {
     }
     return (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())) + double.parse(taxAmount.value);
   }
+
+
+
+
+
+
+  List<String> sortDateStrings(List<String> dateStrings) {
+    DateFormat format = DateFormat("d MMMM yyyy 'at' HH:mm:ss 'UTC+5:30'");
+
+    dateStrings.sort((a, b) {
+      // Remove the "date " prefix before parsing
+      String cleanA = a.replaceFirst('date ', '');
+      String cleanB = b.replaceFirst('date ', '');
+      DateTime dateA = format.parse(cleanA);
+      DateTime dateB = format.parse(cleanB);
+      return dateA.compareTo(dateB);
+    });
+
+    return dateStrings;
+  }
+
+
 }

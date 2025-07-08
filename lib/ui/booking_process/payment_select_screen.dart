@@ -243,13 +243,11 @@ class PaymentSelectScreen extends StatelessWidget {
                   title: "Pay".tr,
                   color: AppThemData.primary06,
                   onPress: () async {
-                    if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.strip?.name) {
+                    if (controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name) {
                       controller.stripeMakePayment(
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.paypal?.name) {
+                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paypal?.name) {
                       controller.paypalPaymentSheet(
                           controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!),
@@ -260,20 +258,17 @@ class PaymentSelectScreen extends StatelessWidget {
                           .calculateAmount()
                           .toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.mercadoPago?.name) {
+                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.mercadoPago?.name) {
                       controller.mercadoPagoMakePayment(
                           context: context,
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.flutterWave?.name) {
+                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.flutterWave?.name) {
                       controller.flutterWaveInitiatePayment(
                           context: context,
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.payfast?.name) {
+                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payfast?.name) {
                       controller.payFastPayment(
                           context: context,
                           amount: controller.calculateAmount().toStringAsFixed(
@@ -282,17 +277,14 @@ class PaymentSelectScreen extends StatelessWidget {
                     // else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paytm?.name) {
                     //   controller.getPaytmCheckSum(context, amount: controller.calculateAmount());
                     // }
-                    else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.xendit?.name) {
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.xendit?.name) {
                       controller.xenditPayment(
                           context, controller.calculateAmount());
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.orangePay?.name) {
+                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.orangePay?.name) {
                       controller.orangeMakePayment(
                           amount: controller.calculateAmount().toString(),
                           context: context);
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.midtrans?.name) {
+                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.midtrans?.name) {
                       controller.midtransMakePayment(
                           amount: controller.calculateAmount().toString(),
                           context: context);
@@ -315,43 +307,36 @@ class PaymentSelectScreen extends StatelessWidget {
                         }
                       });
                     } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.wallet?.name) {
-                      if (double.parse(controller.userModel.value.walletAmount
-                              .toString()) >=
-                          controller.calculateAmount()) {
+                      if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
                         ShowToastDialog.showLoader("Please wait..");
-                        WalletTransactionModel transactionModel =
-                            WalletTransactionModel(
-                                id: Constant.getUuid(),
-                                amount:
-                                    "-${controller.calculateAmount().toString()}",
-                                createdDate: Timestamp.now(),
-                                paymentType:
-                                    controller.selectedPaymentMethod.value,
-                                transactionId: controller.orderModel.value.id,
-                                note: "Parking amount debit".tr,
-                                userId: FireStoreUtils.getCurrentUid(),
-                                isCredit: false);
+                          WalletTransactionModel transactionModel =
+                          WalletTransactionModel(
+                              id: Constant.getUuid(),
+                              amount: "-${controller.calculateAmount().toString()}",
+                              createdDate: Timestamp.now(),
+                              paymentType: controller.selectedPaymentMethod.value,
+                              transactionId: controller.orderModel.value.id,
+                              note: "Parking amount debit".tr,
+                              userId: FireStoreUtils.getCurrentUid(),
+                              isCredit: false);
+                          await FireStoreUtils.setWalletTransaction(transactionModel).then((value) async {
+                            if (value == true) {
+                              await FireStoreUtils.updateUserWallet(
+                                  amount: "-${controller.calculateAmount().toString()}")
+                                  .then((value) {
+                                controller.completeOrder();
+                              });
+                            }
+                          });
 
-                        await FireStoreUtils.setWalletTransaction(
-                                transactionModel)
-                            .then((value) async {
-                          if (value == true) {
-                            await FireStoreUtils.updateUserWallet(
-                                    amount:
-                                        "-${controller.calculateAmount().toString()}")
-                                .then((value) {
-                              controller.completeOrder();
-                            });
-                          }
-                        });
                         ShowToastDialog.closeLoader();
                       } else {
                         ShowToastDialog.closeLoader();
                         ShowToastDialog.showToast(
                             "Wallet Amount Insufficient".tr);
                       }
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.cash?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.cash?.name) {
                       controller.completeCashOrder();
                     }
                   },

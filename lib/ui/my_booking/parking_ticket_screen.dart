@@ -403,7 +403,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                   //         ),
                                   //       ),
                                   //       Text(
-                                  //         Constant.timestampToDate(controller.orderModel.value.bookingDate!),
+                                  //         Constant.timestampToDate(controller.Utils.stringToTimeStamp(orderModel.value.bookingDate!),
                                   //         style: const TextStyle(
                                   //           color: AppThemData.grey08,
                                   //           fontSize: 16,
@@ -505,7 +505,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                               .toString(),
                                           title: 'Booking Canceled'.tr,
                                           body:
-                                              '${controller.orderModel.value.parkingDetails!.name.toString()} Booking canceled on ${Constant.timestampToDate(controller.orderModel.value.bookingDate!)}.'
+                                              '${controller.orderModel.value.parkingDetails!.name.toString()} Booking canceled on ${Constant.timestampToDate(Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!))}.'
                                                   .tr,
                                           payload: playLoad);
                                       if (controller
