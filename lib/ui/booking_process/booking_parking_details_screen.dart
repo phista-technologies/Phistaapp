@@ -46,148 +46,6 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                  flex: 1,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Hourly'.tr,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: AppThemData.medium,
-                                          fontWeight: FontWeight.w700,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey07
-                                              : AppThemData.grey07,
-                                        ),
-                                      ),
-                                      Radio<String>(
-                                        value: "hourly",
-                                        groupValue: controller.radioValue.value,
-                                        activeColor: AppThemData.primary07,
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        onChanged: (value) {
-                                          controller.selectedDuration.value = 1;
-                                          controller.radioValue.value =
-                                              value ?? "";
-                                          //controller.resetValue();
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                              Expanded(
-                                  flex: 1,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Daily'.tr,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: AppThemData.medium,
-                                          fontWeight: FontWeight.w700,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey07
-                                              : AppThemData.grey07,
-                                        ),
-                                      ),
-                                      Radio<String>(
-                                        value: "daily",
-                                        groupValue: controller.radioValue.value,
-                                        activeColor: AppThemData.primary07,
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        onChanged: (value) {
-                                          controller.selectedDuration.value =
-                                              24;
-                                          controller.radioValue.value =
-                                              value ?? "";
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                              Expanded(
-                                  flex: 1,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Monthly'.tr,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: AppThemData.medium,
-                                          fontWeight: FontWeight.w700,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey07
-                                              : AppThemData.grey07,
-                                        ),
-                                      ),
-                                      Radio<String>(
-                                        value: "monthly",
-                                        groupValue: controller.radioValue.value,
-                                        activeColor: AppThemData.primary07,
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        onChanged: (value) {
-                                          controller.selectedDuration.value =
-                                              24;
-                                          controller.radioValue.value =
-                                              value ?? "";
-                                          controller.setMonthValue(
-                                              controller.startTimeMonthly.value,
-                                              int.parse(controller
-                                                  .bookingMonthsController
-                                                  .value
-                                                  .text
-                                                  .trim()));
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          if (controller.radioValue.value == "monthly")
-                            TextFieldWidget(
-                              controller:
-                                  controller.bookingMonthsController.value,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                TextInputFormatter.withFunction(
-                                    (oldValue, newValue) {
-                                  if (newValue.text.isEmpty) return newValue;
-
-                                  final value = int.tryParse(newValue.text);
-                                  if (value == null ||
-                                      value < 1 ||
-                                      value > 12) {
-                                    return oldValue; // reject input outside 1–12
-                                  }
-
-                                  return newValue; // allow input
-                                }),
-                              ],
-                              title: 'Booking Months'.tr,
-                              onPress: () {},
-                              hintText: 'Enter booking months'.tr,
-                              textInputType: TextInputType.number,
-                              onChanged: (value) {
-                                controller.setMonthValue(
-                                    controller.startTimeMonthly.value,
-                                    int.parse(controller
-                                        .bookingMonthsController.value.text
-                                        .trim()));
-                              },
-                            ),
                           Text(
                             'select_date'.tr,
                             style: TextStyle(
@@ -298,19 +156,211 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           const SizedBox(
                             height: 20,
                           ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Hourly'.tr,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: AppThemData.medium,
+                                              fontWeight: FontWeight.w700,
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                            ),
+                                          ),
+                                          Radio<String>(
+                                            value: "hourly",
+                                            groupValue:
+                                                controller.radioValue.value,
+                                            activeColor: AppThemData.primary07,
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
+                                            onChanged: (value) {
+                                              controller
+                                                  .selectedDuration.value = 1;
+                                              controller.radioValue.value =
+                                                  value ?? "";
+                                              //controller.resetValue();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                              /* Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Daily'.tr,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: AppThemData.medium,
+                                              fontWeight: FontWeight.w700,
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                            ),
+                                          ),
+                                          Radio<String>(
+                                            value: "daily",
+                                            groupValue: controller.radioValue.value,
+                                            activeColor: AppThemData.primary07,
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize.shrinkWrap,
+                                            onChanged: (value) {
+                                              controller.selectedDuration.value =
+                                                  24;
+                                              controller.radioValue.value =
+                                                  value ?? "";
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "${Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString())} / daily",
+                                        style:  TextStyle(
+                                          color:themeChange.getThem()
+                                              ? AppThemData.grey07
+                                              : AppThemData.grey07,
+                                          fontSize: 14,
+                                          height: 1.57,
+                                          fontFamily: AppThemData.medium,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      )
+                                    ],
+                                  )),*/
+                              Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Monthly'.tr,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: AppThemData.medium,
+                                              fontWeight: FontWeight.w700,
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                            ),
+                                          ),
+                                          Radio<String>(
+                                            value: "monthly",
+                                            groupValue:
+                                                controller.radioValue.value,
+                                            activeColor: AppThemData.primary07,
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
+                                            onChanged: (value) {
+                                              controller
+                                                  .selectedDuration.value = 24;
+                                              controller.radioValue.value =
+                                                  value ?? "";
+                                              controller.setMonthValue(
+                                                  controller
+                                                      .startTimeMonthly.value,
+                                                  int.parse(controller
+                                                      .bookingMonthsController
+                                                      .value
+                                                      .text
+                                                      .trim()));
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 7,
+                          ),
+                          if (controller.radioValue.value == "monthly")
+                            TextFieldWidget(
+                              controller:
+                                  controller.bookingMonthsController.value,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                TextInputFormatter.withFunction(
+                                    (oldValue, newValue) {
+                                  if (newValue.text.isEmpty) return newValue;
+
+                                  final value = int.tryParse(newValue.text);
+                                  if (value == null ||
+                                      value < 1 ||
+                                      value > 12) {
+                                    return oldValue; // reject input outside 1–12
+                                  }
+
+                                  return newValue; // allow input
+                                }),
+                              ],
+                              title: 'Booking Months'.tr,
+                              onPress: () {},
+                              hintText: 'Enter booking months'.tr,
+                              textInputType: TextInputType.number,
+                              onChanged: (value) {
+                                controller.setMonthValue(
+                                    controller.startTimeMonthly.value,
+                                    int.parse(controller
+                                        .bookingMonthsController.value.text
+                                        .trim()));
+                              },
+                            ),
                           if (controller.radioValue.value == "hourly")
 
                             ///show if hourly is selected
-                            Text(
-                              'duration'.tr,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: AppThemData.medium,
-                                fontWeight: FontWeight.w700,
-                                color: themeChange.getThem()
-                                    ? AppThemData.grey07
-                                    : AppThemData.grey07,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'duration'.tr,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w700,
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    'Full day'.tr,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: AppThemData.medium,
+                                      fontWeight: FontWeight.w700,
+                                      color: themeChange.getThem()
+                                          ? AppThemData.grey07
+                                          : AppThemData.grey07,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           if (controller.radioValue.value == "hourly")
                             const SizedBox(
@@ -322,14 +372,12 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 value: controller.selectedDuration.value,
                                 onChanged: (value) {
                                   controller.selectedDuration.value = value;
-
                                   controller.startTimeController.value.text =
                                       DateFormat('HH:mm')
                                           .format(controller.startTime.value);
                                   Duration duration = Duration(
                                       hours: controller.selectedDuration.value
                                           .toInt());
-
                                   controller.endTime.value =
                                       controller.startTime.value.add(duration);
                                   controller.endTimeController.value.text =
@@ -340,8 +388,8 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 activeColor: AppThemData.primary06,
                                 inactiveColor: AppThemData.grey03,
                                 min: 0,
-                                max: 8,
-                                divisions: 8,
+                                max: 24,
+                                divisions: 24,
                                 label:
                                     "${controller.selectedDuration.value.round().toString()} hours"
                                         .tr,
@@ -351,6 +399,56 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${Constant.amountShow(amount: controller.parkingModel.value.perHrPrice.toString())}/hour",
+                                style: TextStyle(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                  fontSize: 14,
+                                  height: 1.57,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                              ),
+                              Text(
+                                "${Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString())}/daily(8hr+)",
+                                style: TextStyle(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                  fontSize: 14,
+                                  height: 1.57,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                              ),
+                              Text(
+                                "${Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString())}/month",
+                                style: TextStyle(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                  fontSize: 14,
+                                  height: 1.57,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           if (controller.radioValue.value == "hourly")
                             Text(
                               'Select Time'.tr,
@@ -677,7 +775,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                         if (controller.radioValue.value == "hourly") {
                           Constant.bookingTypeConst = "hourly";
                           orderModel.bookingType = "1";
-                          orderModel.bookingMonth ="";
+                          orderModel.bookingMonth = "";
 
                           orderModel.bookingDate = Utils.formatTimestampToIST(
                               Timestamp.fromDate(DateTime(
@@ -685,10 +783,12 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                   controller.selectedDateTime.value.month,
                                   controller.selectedDateTime.value.day)));
 
-                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
-                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-
-                        } else if (controller.radioValue.value == "daily") {
+                          orderModel.bookingStartTime =
+                              Timestamp.fromDate(controller.startTime.value);
+                          orderModel.bookingEndTime =
+                              Timestamp.fromDate(controller.endTime.value);
+                        }
+                        /*else if (controller.radioValue.value == "daily") {
                           List<String> tempBookingTime = [];
                           Constant.bookingTypeConst = "daily";
                           orderModel.bookingType = "2";
@@ -726,23 +826,74 @@ class BookingParkingDetailsScreen extends StatelessWidget {
 
                           print("orderModel.bookingDate Daily :- ${orderModel.bookingDate}");
 
-                        } else if (controller.radioValue.value == "monthly") {
+                        }*/
+                        else if (controller.radioValue.value == "monthly") {
+                          print(
+                              "monthly date startDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.startDate}");
+                          print(
+                              "monthly date endDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.endDate}");
+                          DateTime? startDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.startDate;
+                          DateTime? endDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.endDate;
+
+                          List tempMonthDate = [];
                           Constant.bookingTypeConst = "monthly";
                           orderModel.bookingType = "3";
                           orderModel.bookingMonth = controller.bookingMonthsController.value.text;
+
+                          controller.selectedDuration.value = 24.0;
+
+                          if (startDateMonthly != null) {
+                            controller.startTime.value = DateTime(
+                                startDateMonthly.year,
+                                startDateMonthly.month,
+                                startDateMonthly.day,
+                                startDateMonthly.hour,
+                                startDateMonthly.minute,
+                                startDateMonthly.second);
+                          }
+
+                          Duration duration = Duration(
+                              hours: controller.selectedDuration.value.toInt());
+                          controller.endTime.value =
+                              controller.startTime.value.add(duration);
+                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
+                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
+
+                          if (startDateMonthly != null) {
+                            tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
+                                DateTime(
+                                    startDateMonthly.year,
+                                    startDateMonthly.month,
+                                    startDateMonthly.day))));
+                          }
+
+                          if (endDateMonthly != null) {
+                            tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
+                                DateTime(endDateMonthly.year,
+                                    endDateMonthly.month, endDateMonthly.day))));
+                          }
+
+                           orderModel.bookingDate = tempMonthDate.join(',');
+
+                          print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
                         }
 
                         orderModel.parkingDetails = controller.parkingModel.value;
                         orderModel.userVehicle = controller.vehicle.value;
-                        orderModel.duration = controller.selectedDuration.value.toString();
+                        orderModel.duration =
+                            controller.selectedDuration.value.toString();
 
                         orderModel.status = Constant.placed;
                         orderModel.userId = FireStoreUtils.getCurrentUid();
                         orderModel.id = Constant.getUuid();
                         orderModel.parkingId = controller.parkingModel.value.id;
-                        orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value).toString();
+                        orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value,
+                            controller.bookingMonthsController.value.text.trim()).toString();
                         orderModel.taxList = Constant.taxList;
                         orderModel.userVehicle = controller.selectedVehicle.value;
+
+                        print(
+                            "orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
 
                         Get.to(() => const ParkingViewScreen(),
                             arguments: {"orderModel": orderModel});

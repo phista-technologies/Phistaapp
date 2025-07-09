@@ -205,7 +205,7 @@ class HomeScreen extends StatelessWidget {
                                                                 ),
                                                               ),
                                                               Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
                                                                 child: Column(
                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,40 +235,51 @@ class HomeScreen extends StatelessWidget {
                                                                         Expanded(
                                                                           flex:1,
                                                                           child: Text(
-                                                                            "${Constant.amountShow(amount: parkingModel.perHrPrice.toString())} / hour",
+                                                                            "${Constant.amountShow(amount: parkingModel.perHrPrice.toString())}/hour",
+
                                                                             style: const TextStyle(
+
                                                                               color: AppThemData.blueLight07,
-                                                                              fontSize: 14,
+                                                                              fontSize: 11.5,
                                                                               height: 1.57,
                                                                               fontFamily: AppThemData.medium,
                                                                               fontWeight: FontWeight.w500,
                                                                             ),
+                                                                            maxLines: 1,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            textAlign: TextAlign.center,
                                                                           ),
                                                                         ),
                                                                         Expanded(
-                                                                          flex:1,
+                                                                          flex:2,
                                                                           child: Text(
-                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())} / daily",
+                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())}/daily(8h+)",
                                                                             style: const TextStyle(
                                                                               color: AppThemData.blueLight07,
-                                                                              fontSize: 14,
+                                                                              fontSize: 11.5,
                                                                               height: 1.57,
                                                                               fontFamily: AppThemData.medium,
                                                                               fontWeight: FontWeight.w500,
                                                                             ),
+                                                                            maxLines: 1,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            textAlign: TextAlign.center,
                                                                           ),
                                                                         ),
                                                                         Expanded(
-                                                                          flex:1,
+                                                                          flex:2,
                                                                           child: Text(
-                                                                            "${Constant.amountShow(amount: parkingModel.monthlyPrice.toString())} / month",
-                                                                            style: const TextStyle(
+                                                                            "${Constant.amountShow(amount: parkingModel.monthlyPrice.toString())}/month",
+                                                                              style: const TextStyle(
                                                                               color: AppThemData.blueLight07,
-                                                                              fontSize: 14,
+                                                                              fontSize: 11.5,
                                                                               height: 1.57,
                                                                               fontFamily: AppThemData.medium,
                                                                               fontWeight: FontWeight.w500,
                                                                             ),
+                                                                            maxLines: 1,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            textAlign: TextAlign.center,
                                                                           ),
                                                                         ),
                                                                       ],

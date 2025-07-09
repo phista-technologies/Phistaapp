@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:phista/constant/constant.dart';
@@ -30,14 +31,9 @@ class ParkingViewController extends GetxController {
     if (argumentData != null) {
       bookingTypeTemp = Constant.bookingTypeConst;
       orderModel.value = argumentData['orderModel'];
+      getParkingDetails(orderModel.value.parkingDetails!.id.toString());
 
-      if (bookingTypeTemp == "hourly" && orderModel.value != null) {
-        getParkingDetails(orderModel.value.parkingDetails!.id.toString());
-      } else if (bookingTypeTemp == "daily") {
-        getParkingDetails(orderModel.value.parkingDetails!.id.toString());
-      }
-
-      getBookedParking(bookingTypeTemp);
+      await getBookedParking(bookingTypeTemp);
     }
     update();
   }
@@ -54,22 +50,23 @@ class ParkingViewController extends GetxController {
   RxList<OrderModel> selectedOrderModel = <OrderModel>[].obs;
 
   getBookedParking(String type) async {
-
-    if(type == "hourly"){
+    if (type == "hourly") {
       log("myTime ===>${Utils.stringToTimeStamp(orderModel.value.bookingDate!).toDate()} \n==>StartTime ${orderModel.value.bookingStartTime!.toDate()} \n==>endTime ${orderModel.value.bookingEndTime!.toDate()}");
       await FireStoreUtils.getOrder(
-          Utils.stringToTimeStamp(orderModel.value.bookingDate!),
-          orderModel.value.bookingStartTime!,
-          orderModel.value.bookingEndTime!,
-          orderModel.value.parkingId.toString())
+              Utils.stringToTimeStamp(orderModel.value.bookingDate!),
+              orderModel.value.bookingStartTime!,
+              orderModel.value.bookingEndTime!,
+              orderModel.value.parkingId.toString(),
+              type)
           .then((value) {
         if (value != null) {
           for (var element in value) {
             OrderModel orderModel1 = element;
 
-            if(orderModel1.bookingType.toString() == "1"){
-              if (orderModel1.bookingStartTime!.toDate()
-                  .isBefore(orderModel.value.bookingStartTime!.toDate()) &&
+            if (orderModel1.bookingType.toString() == "1") {
+              if (orderModel1.bookingStartTime!
+                      .toDate()
+                      .isBefore(orderModel.value.bookingStartTime!.toDate()) &&
                   orderModel1.bookingEndTime!
                       .toDate()
                       .isAfter(orderModel.value.bookingStartTime!.toDate())) {
@@ -94,8 +91,8 @@ class ParkingViewController extends GetxController {
                   selectedOrderModel.add(orderModel1);
                   log("parking ===>2 ${orderModel1.parkingSlotId}");
                 } else if (orderModel.value.bookingEndTime!
-                    .toDate()
-                    .isBefore(orderModel1.bookingEndTime!.toDate()) &&
+                        .toDate()
+                        .isBefore(orderModel1.bookingEndTime!.toDate()) &&
                     orderModel.value.bookingEndTime!
                         .toDate()
                         .isAfter(orderModel1.bookingStartTime!.toDate())) {
@@ -107,15 +104,103 @@ class ParkingViewController extends GetxController {
               } else {
                 log("parking ===>1 else");
               }
-            }else if(orderModel1.bookingType.toString() == "2"){
+            }
+            else if (orderModel1.bookingType.toString() == "2") {
               selectedOrderModel.add(orderModel1);
             }
-
+            else if (orderModel1.bookingType.toString() == "3") {
+              final List<dynamic> bookingDates = orderModel1.bookingDate!
+                  .split(',')
+                  .map((e) => e.trim())
+                  .toList();
+              if (bookingDates.length == 2) {
+                Timestamp targetDate =
+                    Utils.stringToTimeStamp(orderModel.value.bookingDate!);
+                Timestamp startDate =
+                    Utils.stringToTimeStamp(bookingDates[0].trim());
+                Timestamp endDate =
+                    Utils.stringToTimeStamp(bookingDates[1].trim());
+                bool isWithinRange =
+                    targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
+                        targetDate.seconds.compareTo(endDate.seconds) <= 0;
+                print("isWithinRange hourly:-- $isWithinRange");
+                if (isWithinRange) {
+                  selectedOrderModel.add(orderModel1);
+                }
+              }
+            }
           }
         }
       });
     }
-    else if(type == "daily" && orderModel.value != null){
+    else if (type == "monthly") {
+      try {
+        FireStoreUtils.getOrder(
+                Utils.stringToTimeStamp(
+                    orderModel.value.bookingDate!), // not use
+                orderModel.value.bookingStartTime!,
+                orderModel.value.bookingEndTime!,
+                orderModel.value.parkingId.toString(),
+                type)
+            .then((value) {
+          if (value != null) {
+            for (var element in value) {
+              OrderModel orderModel1 = element;
+              if (orderModel1.bookingType.toString() == "1") {
+                final List<dynamic> bookingDates = orderModel.value.bookingDate!
+                    .split(',')
+                    .map((e) => e.trim())
+                    .toList();
+                if (bookingDates.length == 2) {
+                  Timestamp targetDate =
+                      Utils.stringToTimeStamp(orderModel1.bookingDate!);
+                  Timestamp startDate =
+                      Utils.stringToTimeStamp(bookingDates[0].trim());
+                  Timestamp endDate =
+                      Utils.stringToTimeStamp(bookingDates[1].trim());
+                  bool isWithinRange =
+                      targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
+                          targetDate.seconds.compareTo(endDate.seconds) <= 0;
+                  print("isWithinRange :-- $isWithinRange");
+                  if (isWithinRange) {
+                    selectedOrderModel.add(orderModel1);
+                  }
+                }
+              } else if (orderModel1.bookingType.toString() == "3") {
+                String bookingDateFromFirebase = orderModel1.bookingDate!;
+                String rangeDate = orderModel.value.bookingDate!;
+                List<String> bookingParts = bookingDateFromFirebase.split(',');
+                List<String> rangeParts = rangeDate.split(',');
+                if (bookingParts.length == 2 && rangeParts.length == 2) {
+                  DateTime bookingStart =
+                      Utils.stringToTimeStamp(bookingParts[0].trim()).toDate();
+                  DateTime bookingEnd =
+                      Utils.stringToTimeStamp(bookingParts[1].trim()).toDate();
+                  DateTime rangeStart =
+                      Utils.stringToTimeStamp(rangeParts[0].trim()).toDate();
+                  DateTime rangeEnd =
+                      Utils.stringToTimeStamp(rangeParts[1].trim()).toDate();
+                  bool noOverlap = bookingEnd.isBefore(rangeStart) ||
+                      bookingStart.isAfter(rangeEnd);
+
+                  if (noOverlap) {
+                    print("No collision. The date ranges do not overlap.");
+                  } else {
+                    print("Collision detected! Date ranges overlap.");
+                    selectedOrderModel.add(orderModel1);
+                  }
+                } else {
+                  print("Invalid date format in input.");
+                }
+              }
+            }
+          }
+        });
+      } catch (e) {
+        print("monthly Exception :-- $e");
+      }
+    }
+    /* else if(type == "daily" && orderModel.value != null){
 
       final List<dynamic> bookingDates = orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList();
 
@@ -134,8 +219,6 @@ class ParkingViewController extends GetxController {
           }
         });
       }
-    }
-
+    }*/
   }
-
 }

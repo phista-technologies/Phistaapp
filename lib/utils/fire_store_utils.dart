@@ -5,6 +5,7 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:phista/constant/collection_name.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/model/admin_commission.dart';
@@ -850,25 +851,46 @@ class FireStoreUtils {
   }
 
   static Future<List<OrderModel>?> getOrder(Timestamp date, Timestamp startTime,
-      Timestamp endTime, String parkingId) async {
+      Timestamp endTime, String parkingId,String type) async {
     
     List<OrderModel> orderList = [];
-    await fireStore
-        .collection(CollectionName.bookedParkingOrder)
-        .where('parkingId', isEqualTo: parkingId,)
-        .where('status', whereIn: [Constant.placed, Constant.onGoing])
-        .get()
-        .then((value) async {
-      for (var element in value.docs) {
-        final data = element.data();
-        final bookingDateString = data['bookingDate'] ?? '';
-        final List<dynamic> bookingDates = bookingDateString.split(',').map((e) => e.trim()).toList();
-        if (bookingDates.contains(Utils.formatTimestampToIST(date))) {
-          OrderModel orderModel = OrderModel.fromJson(data);
-          orderList.add(orderModel);
-        }
-      }
-        });
+   try{
+
+     await fireStore
+         .collection(CollectionName.bookedParkingOrder)
+         .where('parkingId', isEqualTo: parkingId,)
+         .where('status', whereIn: [Constant.placed, Constant.onGoing])
+         .get()
+         .then((value) async {
+           print("getOrder :-- ${value.docs.length}");
+       for (var element in value.docs) {
+         final data = element.data();
+         final bookingDateString = data['bookingDate'] ?? '';
+         final bookingType = data['bookingType'] ?? '';
+
+         if(type == "hourly"){ // for hourly OR daily
+           if(bookingType.toString() == "1"){
+             final List<dynamic> bookingDates = bookingDateString.split(',').map((e) => e.trim()).toList();
+             if (bookingDates.contains(Utils.formatTimestampToIST(date))) {
+               OrderModel orderModel = OrderModel.fromJson(data);
+               orderList.add(orderModel);
+             }
+           }else{
+             OrderModel orderModel = OrderModel.fromJson(data);
+             orderList.add(orderModel);
+           }
+
+         }else if(type == "monthly"){ // for month
+           OrderModel orderModel = OrderModel.fromJson(data);
+           orderList.add(orderModel);
+         }
+
+       }
+     });
+
+   }catch(e){
+     print("Exception :-- e");
+   }
     return orderList;
   }
 

@@ -355,8 +355,123 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
+                                if(Constant.bookingTypeConst == "hourly")
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          const Icon(Icons.calendar_today,
+                                              color: AppThemData.grey07,
+                                              size: 20),
+                                          const SizedBox(width: 10,),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text(Constant.timestampToDate(
+                                                  Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!)),
+                                                style: TextStyle(
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey06
+                                                      : AppThemData.grey09,
+                                                  fontSize: 16,
+                                                  fontFamily: AppThemData
+                                                      .medium,),),
+                                              const SizedBox(height: 5,),
+
+                                              if(Constant.bookingTypeConst == "hourly")
+                                                Text("${Constant.timestampToTime(
+                                                    controller.orderModel.value
+                                                        .bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
+                                                  style: const TextStyle(
+                                                    color: AppThemData.grey07,
+                                                    fontSize: 12,
+                                                    fontFamily: AppThemData
+                                                        .regular,),)
+                                            ],),
+                                        ],),
+                                    ),
+                                  ],
+                                ),
+
+                                if(Constant.bookingTypeConst == "monthly")
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          const Icon(Icons.calendar_today,
+                                              color: AppThemData.grey07,
+                                              size: 20),
+                                          const SizedBox(width: 10,),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text(Constant.timestampToDate(
+                                                  Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList()[0])),
+                                                style: TextStyle(
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey06
+                                                      : AppThemData.grey09,
+                                                  fontSize: 16,
+                                                  fontFamily: AppThemData
+                                                      .medium,),),
+                                              const SizedBox(height: 5,),
+
+                                            ],),
+                                        ],),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text("To",
+                                        style: TextStyle(
+                                          color: themeChange.getThem()
+                                              ? AppThemData.grey06
+                                              : AppThemData.grey09,
+                                          fontSize: 16,
+                                          fontFamily: AppThemData
+                                              .medium,),
+                                      textAlign: TextAlign.center,),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          const Icon(Icons.calendar_today,
+                                              color: AppThemData.grey07,
+                                              size: 20),
+                                          const SizedBox(width: 10,),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text(Constant.timestampToDate(
+                                                  Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList()[1])),
+                                                style: TextStyle(
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey06
+                                                      : AppThemData.grey09,
+                                                  fontSize: 16,
+                                                  fontFamily: AppThemData
+                                                      .medium,),),
+
+                                            ],),
+                                        ],),
+                                    ),
+                                  ],
+                                ),
 
 
+                                if(Constant.bookingTypeConst == "daily")
                                 GridView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),

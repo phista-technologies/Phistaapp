@@ -73,14 +73,18 @@ class BookingParkingDetailsController extends GetxController {
     });
   }
 
-  calculateParkingAmount(String type) {
-    if(type == "hourly"){
+  calculateParkingAmount(String type,String noOfMonth) {
+
+    if(type == "hourly" && selectedDuration.value <= 8.0){
       return double.parse(parkingModel.value.perHrPrice.toString()) * selectedDuration.value;
-    }else if(type == "daily"){
+    }else if(type == "hourly" && selectedDuration.value >  8.0){
       print(parkingModel.value.dailyPrice.toString());
-      return double.parse(parkingModel.value.dailyPrice.toString()) * selectedDatesDaily.length;
+      return double.parse(parkingModel.value.dailyPrice.toString());
     }else if(type == "monthly"){
-      //return double.parse(parkingModel.value.perMonthPrice.toString()) * selectedRangeMonth.;
+      print("type :- $type, $noOfMonth");
+      return double.parse(parkingModel.value.monthlyPrice.toString()) * int.parse(noOfMonth);
+    }else{
+      return "0.0";
     }
 
   }
