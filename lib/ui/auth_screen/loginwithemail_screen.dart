@@ -13,8 +13,10 @@ import '../../constant/show_toast_dialog.dart';
 import '../../themes/app_them_data.dart';
 import '../../themes/responsive.dart';
 import '../../themes/round_button_gradiant.dart';
+import '../../themes/segment_button_gradiant.dart';
 import '../../themes/text_field_widget.dart';
 import '../../utils/dark_theme_provider.dart';
+import 'information_screen.dart';
 
 class LoginWithEmail extends StatelessWidget {
   const LoginWithEmail({super.key});
@@ -142,7 +144,34 @@ class LoginWithEmail extends StatelessWidget {
                         }}
                     },
                   ),
-
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider(thickness: 1)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          "or".tr,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppThemData.grey06,
+                            fontSize: 12,
+                            fontFamily: AppThemData.medium,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  SegmentButtonGradiant(
+                    title: "Create account",
+                    onPress: () {
+                      Get.to(const InformationScreen(), arguments: {
+                        "TypeFrom": "EmailSignup",
+                      });
+                    },),
 
                 ],
               ),

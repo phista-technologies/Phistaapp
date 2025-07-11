@@ -96,6 +96,7 @@ class InformationScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (controller.gmailLogType != "EmailSignup")
                     MobileNumberTextField(
                       title: "Phone Number".tr,
                       controller: controller.phoneNumberController.value,
@@ -186,15 +187,41 @@ class InformationScreen extends StatelessWidget {
                       onPress: () async {
                         if (controller.fullNameController.value.text.isEmpty) {
                           ShowToastDialog.showToast("Please enter full name");
-                        } else if (controller.emailController.text.isEmpty) {
-                          ShowToastDialog.showToast(
-                              "Please enter email address");
-                        } else if (controller
+                        }
+                        else if (controller.gmailLogType != "EmailSignup" && controller
                             .phoneNumberController.value.text.isEmpty) {
                           ShowToastDialog.showToast(
                               "Please enter phone number");
-                        } else {
-                          controller.createAccount();
+                        }
+                        else if (controller.emailController.text.isEmpty) {
+                          ShowToastDialog.showToast(
+                              "Please enter email address");
+                        }
+                        else if (controller.passwordController.value.text.isEmpty)
+                        {
+                          ShowToastDialog.showToast(
+                              "Please enter password");
+                        }
+                        else {
+                         if (controller.gmailLogType != "EmailSignup"){
+                            controller.createAccount();
+                         }
+                         else{
+                           print("email password");
+
+                           final userCred = await controller.createUserWithEmailPassword(email: controller.emailController.text,
+                               password: controller.passwordController.value.text.trim());
+
+                           if (userCred != null) {
+                             print("userCred:--${userCred.additionalUserInfo!.isNewUser}");
+                             print("userCredmmmm:--${userCred}");
+
+
+
+                             controller.createAccountWithEmailNew(userCred.user!.uid);
+                           }
+                         }
+
                         }
                       },
                     ),

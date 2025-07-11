@@ -40,6 +40,7 @@ class BookingParkingDetailsController extends GetxController {
 
   Rx<String> radioValue = "hourly".obs;
   Rx<DateTime> startTimeMonthly = DateTime.now().obs;
+  RxInt bookingMonths = 1.obs;
   @override
   void onInit() {
     getArgument();
@@ -75,9 +76,9 @@ class BookingParkingDetailsController extends GetxController {
 
   calculateParkingAmount(String type,String noOfMonth) {
 
-    if(type == "hourly" && selectedDuration.value <= 8.0){
+    if(type == "hourly" && selectedDuration.value <= 5.0){
       return double.parse(parkingModel.value.perHrPrice.toString()) * selectedDuration.value;
-    }else if(type == "hourly" && selectedDuration.value >  8.0){
+    }else if(type == "hourly" && selectedDuration.value >  5.0){
       print(parkingModel.value.dailyPrice.toString());
       return double.parse(parkingModel.value.dailyPrice.toString());
     }else if(type == "monthly"){

@@ -253,7 +253,7 @@ class HomeScreen extends StatelessWidget {
                                                                         Expanded(
                                                                           flex:2,
                                                                           child: Text(
-                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())}/daily(8h+)",
+                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())}/daily(5h+)",
                                                                             style: const TextStyle(
                                                                               color: AppThemData.blueLight07,
                                                                               fontSize: 11.5,

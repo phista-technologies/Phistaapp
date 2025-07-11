@@ -881,7 +881,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             color: themeChange.getThem()
                                                 ? AppThemData.grey03
                                                 : AppThemData.grey07,
-                                            fontSize: 16,
+                                            fontSize: 17,
                                             fontFamily: AppThemData.medium,
                                           ),
                                         ),
@@ -895,7 +895,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           color: themeChange.getThem()
                                               ? AppThemData.grey03
                                               : AppThemData.grey07,
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           fontFamily: AppThemData.semiBold,
                                         ),
                                       ),
@@ -914,7 +914,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             color: themeChange.getThem()
                                                 ? AppThemData.grey03
                                                 : AppThemData.grey07,
-                                            fontSize: 16,
+                                            fontSize: 17,
                                             fontFamily: AppThemData.medium,
                                           ),
                                         ),
@@ -927,7 +927,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           color: themeChange.getThem()
                                               ? AppThemData.grey03
                                               : AppThemData.grey07,
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           fontFamily: AppThemData.semiBold,
                                         ),
                                       ),
@@ -961,7 +961,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       .getThem()
                                                       ? AppThemData.grey03
                                                       : AppThemData.grey07,
-                                                  fontSize: 16,
+                                                  fontSize: 17,
                                                   fontFamily:
                                                   AppThemData.medium,
                                                 ),
@@ -990,7 +990,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                 color: themeChange.getThem()
                                                     ? AppThemData.grey03
                                                     : AppThemData.grey07,
-                                                fontSize: 16,
+                                                fontSize: 18,
                                                 fontFamily:
                                                 AppThemData.semiBold,
                                               ),
@@ -1017,7 +1017,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             color: themeChange.getThem()
                                                 ? AppThemData.grey03
                                                 : AppThemData.grey07,
-                                            fontSize: 16,
+                                            fontSize: 17,
                                             fontFamily: AppThemData.medium,
                                           ),
                                         ),
@@ -1030,7 +1030,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           color: themeChange.getThem()
                                               ? AppThemData.grey03
                                               : AppThemData.grey07,
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           fontFamily: AppThemData.semiBold,
                                         ),
                                       ),

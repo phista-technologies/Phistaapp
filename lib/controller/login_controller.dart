@@ -224,7 +224,8 @@ class LoginController extends GetxController {
           Get.to(const InformationScreen(), arguments: {
             "userModel": userModel,
           });
-        } else {
+        }
+        else {
           bool userExists = await FireStoreUtils.userExistOrNot(userCredential.user!.uid);
 
           if (userExists) {

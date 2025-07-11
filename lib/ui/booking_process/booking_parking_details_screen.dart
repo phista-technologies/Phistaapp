@@ -134,10 +134,8 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                                 controller
                                                     .startTimeMonthly.value,
                                                 int.parse(controller
-                                                    .bookingMonthsController
-                                                    .value
-                                                    .text
-                                                    .trim()));
+                                                    .bookingMonths
+                                                    .value.toString()));
                                           }
                                         }
                                       }
@@ -282,10 +280,8 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                                   controller
                                                       .startTimeMonthly.value,
                                                   int.parse(controller
-                                                      .bookingMonthsController
-                                                      .value
-                                                      .text
-                                                      .trim()));
+                                                      .bookingMonths
+                                                      .value.toString()));
                                             },
                                           ),
                                         ],
@@ -297,7 +293,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           const SizedBox(
                             height: 7,
                           ),
-                          if (controller.radioValue.value == "monthly")
+                          /*if (controller.radioValue.value == "monthly")
                             TextFieldWidget(
                               controller:
                                   controller.bookingMonthsController.value,
@@ -328,7 +324,63 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                         .bookingMonthsController.value.text
                                         .trim()));
                               },
+                            ),*/
+                          if (controller.radioValue.value == "monthly")
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Booking Months'.tr,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: AppThemData.grey07),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  height: 45,
+                                  width: Responsive.width(35, context),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.remove_circle_outline),
+                                        onPressed: () {
+                                          if (controller.bookingMonths.value > 1) {
+                                            controller.bookingMonths.value--;
+                                            controller.setMonthValue(
+                                              controller.startTimeMonthly.value,
+                                              controller.bookingMonths.value,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                      Obx(() => Text(
+                                        controller.bookingMonths.value.toString(),
+                                        style: TextStyle(fontSize: 18),
+                                      )),
+                                      IconButton(
+                                        icon: Icon(Icons.add_circle_outline),
+                                        onPressed: () {
+                                          if (controller.bookingMonths.value < 12) {
+                                            controller.bookingMonths.value++;
+                                            controller.setMonthValue(
+                                              controller.startTimeMonthly.value,
+                                              controller.bookingMonths.value,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
+                          if (controller.radioValue.value == "monthly")
+                          const SizedBox(
+                            height: 10,
+                          ),
                           if (controller.radioValue.value == "hourly")
 
                             ///show if hourly is selected
@@ -402,6 +454,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              if (controller.radioValue.value == "hourly" && controller.selectedDuration.value <= 5.0)
                               Text(
                                 "${Constant.amountShow(amount: controller.parkingModel.value.perHrPrice.toString())}/hour",
                                 style: TextStyle(
@@ -416,8 +469,9 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 maxLines: 1,
                               ),
+                              if(controller.radioValue.value == "hourly" && controller.selectedDuration.value > 5.0)
                               Text(
-                                "${Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString())}/daily(8hr+)",
+                                "${Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString())}/daily(5h+)",
                                 style: TextStyle(
                                   color: themeChange.getThem()
                                       ? AppThemData.grey07
@@ -430,6 +484,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 maxLines: 1,
                               ),
+                              if (controller.radioValue.value == "monthly")
                               Text(
                                 "${Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString())}/month",
                                 style: TextStyle(
@@ -838,7 +893,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           List tempMonthDate = [];
                           Constant.bookingTypeConst = "monthly";
                           orderModel.bookingType = "3";
-                          orderModel.bookingMonth = controller.bookingMonthsController.value.text;
+                          orderModel.bookingMonth = controller.bookingMonths.value.toString();
 
                           controller.selectedDuration.value = 24.0;
 
@@ -888,7 +943,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                         orderModel.id = Constant.getUuid();
                         orderModel.parkingId = controller.parkingModel.value.id;
                         orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value,
-                            controller.bookingMonthsController.value.text.trim()).toString();
+                            controller.bookingMonths.value.toString()).toString();
                         orderModel.taxList = Constant.taxList;
                         orderModel.userVehicle = controller.selectedVehicle.value;
 

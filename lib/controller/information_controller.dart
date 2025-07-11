@@ -26,6 +26,8 @@ class InformationController extends GetxController {
   final ImagePicker imagePicker = ImagePicker();
   RxString profileImage = "".obs;
   RxBool passwordVisible = true.obs;
+  RxString gmailLogType = "".obs;
+
 
   @override
   void onInit() {
@@ -39,6 +41,11 @@ class InformationController extends GetxController {
   getArgument() async {
     dynamic argumentData = Get.arguments;
     if (argumentData != null) {
+      if (argumentData["TypeFrom"] != null){
+        gmailLogType.value = argumentData['TypeFrom'];
+      }
+
+      print("gdfgdfhdfhdfhdf ${gmailLogType.value}");
       userModel.value = argumentData['userModel'];
       loginType.value = userModel.value.loginType.toString();
       if (loginType.value == Constant.phoneLoginType) {
@@ -122,6 +129,7 @@ class InformationController extends GetxController {
       });
     } else {
       ShowToastDialog.showLoader("please_wait".tr);
+
       UserModel userModelData = userModel.value;
       userModelData.fullName = fullNameController.value.text;
       userModelData.email = emailController.text.trim();
@@ -148,6 +156,101 @@ class InformationController extends GetxController {
       });
     }
   }
+
+  createAccountWithEmailNew(String uid) async {
+
+    String fcmToken = "";
+    if(Platform.isIOS){
+      fcmToken = await NotificationService.getToken();
+    }else{
+      fcmToken = await NotificationService.getToken();
+    }
+    if (profileImage.value.isNotEmpty) {
+      profileImage.value = await Constant.uploadUserImageToFireStorage(
+        File(profileImage.value),
+        "profileImage/${FireStoreUtils.getCurrentUid()}",
+        File(profileImage.value).path.split('/').last,
+      );
+    }
+    if (referralCodeController.value.text.isNotEmpty) {
+      await FireStoreUtils.checkReferralCodeValidOrNot(
+          referralCodeController.value.text)
+          .then((value) async {
+        if (value == true) {
+          ShowToastDialog.showLoader("please_wait".tr);
+          UserModel userModelData = userModel.value;
+          userModelData.id = uid;
+          userModelData.fullName = fullNameController.value.text;
+          userModelData.email = emailController.text.trim();
+          // userModelData.countryCode = countryCode.value.text;
+          // userModelData.phoneNumber = phoneNumberController.value.text;
+          userModelData.profilePic = profileImage.value;
+          userModelData.fcmToken = fcmToken;
+          userModelData.createdAt = Timestamp.now();
+          userModelData.isActive = true;
+          userModelData.role = Constant.roleType;
+          userModelData.password = passwordController.value.text;
+
+          FireStoreUtils.getReferralUserByCode(
+              referralCodeController.value.text.trim())
+              .then((value) async {
+            if (value != null) {
+              ReferralModel ownReferralModel = ReferralModel(
+                  id: FireStoreUtils.getCurrentUid(),
+                  referralBy: value.id,
+                  referralCode: Constant.getReferralCode());
+              await FireStoreUtils.referralAdd(ownReferralModel);
+            } else {
+              ReferralModel referralModel = ReferralModel(
+                  id: FireStoreUtils.getCurrentUid(),
+                  referralBy: "",
+                  referralCode: Constant.getReferralCode());
+              await FireStoreUtils.referralAdd(referralModel);
+            }
+          });
+
+       //   await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
+
+
+          await FireStoreUtils.updateUser(userModelData).then((value) {
+            ShowToastDialog.closeLoader();
+            if (value == true) {
+              Get.offAll(
+                const DashBoardScreen(),
+              );
+            }
+          });
+        } else {
+          ShowToastDialog.showToast("referral_code_invalid".tr);
+        }
+      });
+    } else {
+      ShowToastDialog.showLoader("please_wait".tr);
+      UserModel userModelData = userModel.value;
+      userModelData.id = uid;
+      userModelData.fullName = fullNameController.value.text;
+      userModelData.email = emailController.text.trim();
+      userModelData.profilePic = profileImage.value;
+      userModelData.fcmToken = fcmToken;
+      userModelData.createdAt = Timestamp.now();
+      userModelData.isActive = true;
+      userModelData.role = Constant.roleType;
+      userModelData.password = passwordController.value.text;
+      ReferralModel referralModel = ReferralModel(
+          id: FireStoreUtils.getCurrentUid(),
+          referralBy: "",
+          referralCode: Constant.getReferralCode());
+      await FireStoreUtils.referralAdd(referralModel);
+      //await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
+      await FireStoreUtils.updateUser(userModelData).then((value) {
+        ShowToastDialog.closeLoader();
+        if (value == true) {
+          Get.offAll(const DashBoardScreen());
+        }
+      });
+    }
+  }
+
 
   Future<void> linkUserWithEmail(String email, String password)async{
     User? user = FirebaseAuth.instance.currentUser;
@@ -177,4 +280,31 @@ class InformationController extends GetxController {
       ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
     }
   }
+
+  Future<UserCredential?> createUserWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      ShowToastDialog.showLoader("please_wait".tr);
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return credential;
+    } on FirebaseAuthException catch (e) {
+      ShowToastDialog.closeLoader();
+      if (e.code == 'email-already-in-use') {
+        ShowToastDialog.showToast("Email is already in use".tr);
+      }
+      else if (e.code == 'weak-password') {
+        ShowToastDialog.showToast("Password is too weak".tr);
+      } else {
+        ShowToastDialog.showToast(e.message ?? "Signup failed");
+      }
+    } catch (e) {
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast(e.toString());
+    }
+    return null;
+  }
+
 }

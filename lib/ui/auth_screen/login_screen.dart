@@ -242,7 +242,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 30),
                       SegmentButtonGradiant(
-                        title: "Sign in with Email",
+                        title: "Continue with Email",
                         onPress: () {
                           Get.to(const LoginWithEmail());
                         },),
