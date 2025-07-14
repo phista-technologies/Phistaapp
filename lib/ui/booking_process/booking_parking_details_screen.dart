@@ -452,26 +452,24 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                               height: 10,
                             ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               if (controller.radioValue.value == "hourly" && controller.selectedDuration.value <= 5.0)
                               Text(
-                                "${Constant.amountShow(amount: controller.parkingModel.value.perHrPrice.toString())}/hour",
-                                style: TextStyle(
-                                  color: themeChange.getThem()
-                                      ? AppThemData.grey07
-                                      : AppThemData.grey07,
-                                  fontSize: 14,
-                                  height: 1.57,
-                                  fontFamily: AppThemData.medium,
-                                  fontWeight: FontWeight.w500,
+                                  Constant.amountShow(amount: ((double.tryParse(controller.parkingModel.value.perHrPrice.toString()) ?? 0.0) * controller.selectedDuration.value.toDouble()).toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
+                                    fontSize: 14,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
                                 ),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                              ),
-                              if(controller.radioValue.value == "hourly" && controller.selectedDuration.value > 5.0)
+                              if (controller.radioValue.value == "hourly" && controller.selectedDuration.value > 5.0)
                               Text(
-                                "${Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString())}/daily(5h+)",
+                                Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString()),
                                 style: TextStyle(
                                   color: themeChange.getThem()
                                       ? AppThemData.grey07
@@ -486,7 +484,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                               ),
                               if (controller.radioValue.value == "monthly")
                               Text(
-                                "${Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString())}/month",
+                                Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString()),
                                 style: TextStyle(
                                   color: themeChange.getThem()
                                       ? AppThemData.grey07

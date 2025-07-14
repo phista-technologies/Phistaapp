@@ -11,6 +11,7 @@ class VehicleListController extends GetxController {
   RxBool isLoading = true.obs;
 
   Rx<TextEditingController> vehicleNumberController = TextEditingController().obs;
+  Rx<TextEditingController> vehicleNameController = TextEditingController().obs;
 
   @override
   void onInit() {
@@ -68,6 +69,14 @@ class VehicleListController extends GetxController {
   saveVehicleInformation() async {
     ShowToastDialog.showLoader("Please wait");
     UserVehicleModel userVehicleModel = UserVehicleModel();
+
+   /* userVehicleModel.vehicleModel = VehicleModel(
+      enable: true,
+      name: vehicleNameController.value.text,
+      brandId: "",
+      image: "", // Replace with actual image if needed
+      id: Constant.getUuid(), // or another unique ID
+    );*/
     userVehicleModel.vehicleModel = selectedVehicleModel.value;
     userVehicleModel.vehicleBrand = selectedBrand.value;
     userVehicleModel.vehicleNumber = vehicleNumberController.value.text;

@@ -216,7 +216,7 @@ class CustomDialogBoxOnlyOk extends StatelessWidget {
               width: double.infinity,
               height: Responsive.height(5, context),
               decoration: ShapeDecoration(
-                color: AppThemData.error08,
+                color: AppThemData.success07,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(200),
                 ),

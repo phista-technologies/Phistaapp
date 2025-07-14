@@ -287,6 +287,19 @@ class AddNewVehicleScreen extends StatelessWidget {
                                 style: const TextStyle()),
                           );
                         }).toList()),
+                    /*TextFieldWidget(
+                      title: 'Car Model'.tr,
+                      onPress: () {},
+                      controller: controller.vehicleNameController.value,
+                      hintText: 'Enter Vehicle Model'.tr,
+                      textInputType: TextInputType.emailAddress,
+                      prefix: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SvgPicture.asset(
+                          "assets/icon/ic_car_image.svg",
+                        ),
+                      ),
+                    ),*/
                     const SizedBox(
                       height: 16,
                     ),
@@ -320,13 +333,18 @@ class AddNewVehicleScreen extends StatelessWidget {
                   onPress: () {
                     if (controller.selectedBrand.value.id == null) {
                       ShowToastDialog.showToast("Select Vehicle Brand".tr);
-                    } else if (controller.selectedVehicleModel.value.id ==
-                        null) {
+                    }
+                    else if (controller.selectedVehicleModel.value.id == ""){
                       ShowToastDialog.showToast("Select Vehicle Model".tr);
-                    } else if (controller
+                    }
+                    /*else if (controller.vehicleNameController.value.text.isEmpty){
+                      ShowToastDialog.showToast("Select Vehicle Model".tr);
+                    }*/
+                    else if (controller
                         .vehicleNumberController.value.text.isEmpty) {
                       ShowToastDialog.showToast("Enter Plate Number".tr);
-                    } else {
+                    }
+                    else {
                       controller.saveVehicleInformation();
                     }
                   },
