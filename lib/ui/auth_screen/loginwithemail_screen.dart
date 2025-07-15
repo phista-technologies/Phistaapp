@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../constant/constant.dart';
 import '../../constant/show_toast_dialog.dart';
+import '../../model/user_model.dart';
 import '../../themes/app_them_data.dart';
 import '../../themes/responsive.dart';
 import '../../themes/round_button_gradiant.dart';
@@ -170,6 +171,7 @@ class LoginWithEmail extends StatelessWidget {
                     onPress: () {
                       Get.to(const InformationScreen(), arguments: {
                         "TypeFrom": "EmailSignup",
+                        "userModel" :UserModel()
                       });
                     },),
 

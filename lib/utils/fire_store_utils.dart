@@ -239,7 +239,8 @@ class FireStoreUtils {
   }
 
   static Future<UserModel?> getWatchman(
-      String parkingId, String ownerId) async {
+      String parkingId, String ownerId) async
+  {
     UserModel? userModel;
     await fireStore
         .collection(CollectionName.users)
@@ -335,6 +336,28 @@ class FireStoreUtils {
       return false;
     }
     return isDelete;
+  }
+
+  static Future<String?> getUserPasswordByEmail(String email) async {
+    try {
+      final querySnapshot = await fireStore
+          .collection(CollectionName.users)
+          .where('email', isEqualTo: email.toLowerCase())
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userData = querySnapshot.docs.first.data();
+        final password = userData['password'];
+        log("Password fetched: $password");
+        return password;
+      } else {
+        log("No user found with this email");
+        return null;
+      }
+    } catch (error) {
+      log("Failed to get user password: $error");
+      return null;
+    }
   }
 
   getSettings() async {

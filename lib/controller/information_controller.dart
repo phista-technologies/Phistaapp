@@ -15,6 +15,8 @@ import 'package:phista/ui/dashboard_screen.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/notification_service.dart';
 
+import '../utils/debouncer.dart';
+
 class InformationController extends GetxController {
   Rx<TextEditingController> fullNameController = TextEditingController().obs;
   TextEditingController emailController = TextEditingController();
@@ -27,7 +29,9 @@ class InformationController extends GetxController {
   RxString profileImage = "".obs;
   RxBool passwordVisible = true.obs;
   RxString gmailLogType = "".obs;
-
+  String verificationIdPhone = "";
+  String otpPhone = "";
+  final debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void onInit() {
@@ -44,17 +48,23 @@ class InformationController extends GetxController {
       if (argumentData["TypeFrom"] != null){
         gmailLogType.value = argumentData['TypeFrom'];
       }
+      if (argumentData["verificationId"] != null){
+        verificationIdPhone = argumentData['verificationId'];
+        otpPhone = argumentData['otp'];
+      }
 
       print("gdfgdfhdfhdfhdf ${gmailLogType.value}");
       userModel.value = argumentData['userModel'];
       loginType.value = userModel.value.loginType.toString();
       if (loginType.value == Constant.phoneLoginType) {
         phoneNumberController.value.text =
-            userModel.value.phoneNumber.toString();
-        countryCode.value.text = userModel.value.countryCode.toString();
+            userModel.value.phoneNumber.toString();countryCode.value.text = userModel.value.countryCode.toString();
       } else {
-        emailController.text = userModel.value.email.toString();
-        fullNameController.value.text = userModel.value.fullName ?? '';
+        if (argumentData["TypeFrom"] == null){
+          emailController.text = userModel.value.email.toString();
+          fullNameController.value.text = userModel.value.fullName ?? '';
+        }
+
       }
     }
     update();
@@ -284,7 +294,8 @@ class InformationController extends GetxController {
   Future<UserCredential?> createUserWithEmailPassword({
     required String email,
     required String password,
-  }) async {
+  })
+  async {
     try {
       ShowToastDialog.showLoader("please_wait".tr);
       final credential = await FirebaseAuth.instance
@@ -306,5 +317,82 @@ class InformationController extends GetxController {
     }
     return null;
   }
+
+  Future<void> linkUserWithEmailToPhone(User?  user) async {
+
+    try{
+      PhoneAuthCredential phoneCredential = PhoneAuthProvider.credential(
+        verificationId: verificationIdPhone,
+        smsCode: otpPhone, // OTP entered by the user
+      );
+
+      await user?.linkWithCredential(phoneCredential).then((linkedUser) async{
+        ShowToastDialog.closeLoader();
+        print('Phone number linked to email account');
+        UserModel? userModel = await FireStoreUtils.getUserProfile(user.uid);
+        if (userModel != null) {
+          if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
+            Get.offAll(const DashBoardScreen());
+          } /*else if (userModel.role != "customer") {
+                  await FirebaseAuth.instance.signOut();
+                  ShowToastDialog.showToast("please enter valid credentials".tr);
+                } */else {
+            await FirebaseAuth.instance.signOut();
+            ShowToastDialog.showToast("This user is disable please contact administrator".tr);
+          }
+        }
+
+      }).catchError((e) {
+        ShowToastDialog.closeLoader();
+        if (e is FirebaseAuthException && e.code == 'provider-already-linked') {
+          print('Phone number already linked');
+        } else if (e is FirebaseAuthException && e.code == 'credential-already-in-use') {
+          print('This phone number is already used with another account');
+        } else {
+          print('Linking failed: ${e.message}');
+        }
+      });
+    }catch(e){
+      ShowToastDialog.closeLoader();
+      print("Exception :-- $e");
+    }
+
+
+  }
+
+  signInWithEmailAndPassword(String email, String password) async {
+    ShowToastDialog.showLoader("please_wait".tr);
+    try {
+      FirebaseAuth.instance.signInWithEmailAndPassword(email: email,
+          password: password).then((value) async {
+        await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
+          ShowToastDialog.closeLoader();
+          if (userExit == true) {
+            linkUserWithEmailToPhone(value.user);
+          }
+        });
+
+      }).catchError((error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        debugPrint("errorMessage--->$errorMessage");
+        ShowToastDialog.closeLoader();
+        if (errorCode == "user-not-found") {
+          ShowToastDialog.showToast("Invalid email and password");
+        } else if (errorCode == "wrong-password") {
+          ShowToastDialog.showToast("Wrong password");
+        } else {
+          ShowToastDialog.showToast(errorMessage);
+        }
+      });
+    } catch (e) {
+      debugPrint("catchError--->$e");
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast(e.toString());
+    }
+  }
+
+
+
 
 }

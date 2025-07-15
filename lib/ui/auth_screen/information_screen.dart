@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,6 +19,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../themes/app_them_data.dart';
+import '../../themes/custom_dialog_box.dart';
 
 class InformationScreen extends StatelessWidget {
   const InformationScreen({super.key});
@@ -125,6 +127,51 @@ class InformationScreen extends StatelessWidget {
                           "assets/icon/ic_email.svg",
                         ),
                       ),
+
+                      onChanged: (email){
+                        controller.debouncer.run(() async{
+                          print("email :-- $email");
+                          if(email.isNotEmpty){
+
+                          bool isExist = await FireStoreUtils.getUserEmailExist(email);
+                          print("email Exist :--- $isExist");
+                          if(isExist){
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                    title: '',
+                                    descriptions:
+                                    "This email is already exists. You want to link existing email with this phone number?"
+                                        .tr,
+                                    positiveString: "Ok".tr,
+                                    negativeString: "Cancel".tr,
+                                    positiveClick: () async {
+                                      ShowToastDialog.showLoader("please_wait".tr);
+                                      await FirebaseAuth.instance.currentUser!.delete().then((value) {
+                                        FireStoreUtils.getUserPasswordByEmail(email).then((password) {
+                                          print("User password :-- $password");
+                                          if(password !=null && password.isNotEmpty ){
+                                            controller.signInWithEmailAndPassword( email, password);
+                                          }
+
+
+                                        },);
+                                      });
+                                    },
+                                    negativeClick: () {
+                                      controller.emailController.clear();
+                                      Get.back();
+
+                                    },
+                                    img: Image.asset(
+                                        'assets/images/ic_parking_icon.png'),
+                                  );
+                                });
+                          }
+                          }
+                        },);
+                      },
                     ),
                     TextFieldWidget(
                       title: "Password".tr,

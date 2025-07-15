@@ -119,6 +119,8 @@ class OtpScreen extends StatelessWidget {
                                     ShowToastDialog.closeLoader();
                                     Get.off(const InformationScreen(), arguments: {
                                       "userModel": userModel,
+                                      "verificationId" : controller.verificationId.value,
+                                      "otp" : controller.otpController.value.text,
                                     });
                                   }
                                   else {
