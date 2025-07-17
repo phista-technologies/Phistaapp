@@ -17,6 +17,8 @@ import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
+import 'constant/version_checker.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -62,6 +64,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }
     });
+
     super.initState();
   }
 

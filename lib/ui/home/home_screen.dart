@@ -21,11 +21,18 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../constant/version_checker.dart';
+import '../../themes/custom_dialog_box.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
+
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   VersionChecker().checkForUpdate(context);
+    // });
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return SafeArea(
       child: Scaffold(

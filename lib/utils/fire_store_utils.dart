@@ -338,18 +338,27 @@ class FireStoreUtils {
     return isDelete;
   }
 
-  static Future<String?> getUserPasswordByEmail(String email) async {
+  static Future<Map<String, String>?> getUserPasswordByEmail(String email) async {
     try {
+      log("Searching for email: ${email.trim().toLowerCase()}");
+
       final querySnapshot = await fireStore
           .collection(CollectionName.users)
-          .where('email', isEqualTo: email.toLowerCase())
+          .where('email', isEqualTo: email.trim().toLowerCase())
           .get();
+
+      log("Documents found: ${querySnapshot.docs.length}");
 
       if (querySnapshot.docs.isNotEmpty) {
         final userData = querySnapshot.docs.first.data();
-        final password = userData['password'];
-        log("Password fetched: $password");
-        return password;
+        final password = userData['password'] ?? '';
+        final phoneNumber = userData['phoneNumber'] ?? '';
+        log("Password fetched: $password, Phone: $phoneNumber");
+
+        return {
+          'password': password,
+          'phoneNumber': phoneNumber,
+        };
       } else {
         log("No user found with this email");
         return null;
@@ -433,6 +442,7 @@ class FireStoreUtils {
       }
     });
   }
+
 
   // static Future<ParkingModel?> getUserParkingDetails(String id) async {
   //   ParkingModel? parkingModel;

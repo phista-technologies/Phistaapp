@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phista/constant/constant.dart';
@@ -15,6 +16,7 @@ import 'package:phista/ui/dashboard_screen.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/notification_service.dart';
 
+import '../themes/custom_dialog_box.dart';
 import '../utils/debouncer.dart';
 
 class InformationController extends GetxController {
@@ -24,13 +26,15 @@ class InformationController extends GetxController {
   Rx<TextEditingController> passwordController = TextEditingController().obs;
   Rx<TextEditingController> referralCodeController = TextEditingController().obs;
   Rx<TextEditingController> countryCode = TextEditingController().obs;
+  Rx<TextEditingController> otpController = TextEditingController().obs;
   RxString loginType = "".obs;
   final ImagePicker imagePicker = ImagePicker();
   RxString profileImage = "".obs;
   RxBool passwordVisible = true.obs;
   RxString gmailLogType = "".obs;
-  String verificationIdPhone = "";
-  String otpPhone = "";
+  RxString verificationId = "".obs;
+  var isFirstTimeDelete = false;
+
   final debouncer = Debouncer(milliseconds: 1000);
 
   @override
@@ -48,10 +52,7 @@ class InformationController extends GetxController {
       if (argumentData["TypeFrom"] != null){
         gmailLogType.value = argumentData['TypeFrom'];
       }
-      if (argumentData["verificationId"] != null){
-        verificationIdPhone = argumentData['verificationId'];
-        otpPhone = argumentData['otp'];
-      }
+
 
       print("gdfgdfhdfhdfhdf ${gmailLogType.value}");
       userModel.value = argumentData['userModel'];
@@ -318,7 +319,7 @@ class InformationController extends GetxController {
     return null;
   }
 
-  Future<void> linkUserWithEmailToPhone(User?  user) async {
+  Future<void> linkUserWithEmailToPhone(User?  user,String verificationIdPhone,String otpPhone) async {
 
     try{
       PhoneAuthCredential phoneCredential = PhoneAuthProvider.credential(
@@ -360,7 +361,7 @@ class InformationController extends GetxController {
 
   }
 
-  signInWithEmailAndPassword(String email, String password) async {
+  signInWithEmailAndPassword(BuildContext context,String email, String password) async {
     ShowToastDialog.showLoader("please_wait".tr);
     try {
       FirebaseAuth.instance.signInWithEmailAndPassword(email: email,
@@ -368,7 +369,9 @@ class InformationController extends GetxController {
         await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
           ShowToastDialog.closeLoader();
           if (userExit == true) {
-            linkUserWithEmailToPhone(value.user);
+            await sendCode(context,value.user);
+
+            //linkUserWithEmailToPhone(value.user,verificationId.value,otpController.value.text);
           }
         });
 
@@ -391,6 +394,70 @@ class InformationController extends GetxController {
       ShowToastDialog.showToast(e.toString());
     }
   }
+
+
+  sendCode(BuildContext context,User?  user) async {
+    ShowToastDialog.showLoader("please_wait".tr);
+    await FirebaseAuth.instance
+        .verifyPhoneNumber(
+      phoneNumber: countryCode.value.text + phoneNumberController.value.text,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {
+        debugPrint("FirebaseAuthException--->${e.message}");
+        ShowToastDialog.closeLoader();
+        if (e.code == 'invalid-phone-number') {
+          ShowToastDialog.showToast("Enter valid phone number".tr);
+        } else {
+          ShowToastDialog.showToast(e.code);
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        ShowToastDialog.closeLoader();
+        showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return CustomDialogBoxOtp(
+              title: 'Verify OTP',
+              descriptions: 'Enter the 6-digit code sent to your number.',
+              img:SvgPicture.asset('assets/icon/alert_ico.svg'),
+              buttonText: 'Done',
+              onButtonTap: () async {
+                if (otpController.value.text.length == 6) {
+                  Navigator.of(context).pop(); // Close dialog
+                  ShowToastDialog.showLoader("Verifying OTP...");
+                  try {
+                    // 👉 Step 3: Link the email user with phone number using OTP
+                    await linkUserWithEmailToPhone(
+                      user,
+                      verificationId,
+                      otpController.value.text,
+                    );
+                    ShowToastDialog.closeLoader();
+                    ShowToastDialog.showToast("Verification successful");
+                    // Navigate to next screen or do login success logic
+
+                  } catch (e) {
+                    ShowToastDialog.closeLoader();
+                    ShowToastDialog.showToast("Invalid OTP: $e");
+                  }
+                } else {
+                  ShowToastDialog.showToast("Please enter 6-digit OTP");
+                }
+              },
+              otpController: otpController.value,
+            );
+          },
+        );
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    )
+        .catchError((error) {
+      debugPrint("catchError--->$error");
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast("multiple_time_request".tr);
+    });
+  }
+
 
 
 

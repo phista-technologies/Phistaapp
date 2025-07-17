@@ -132,42 +132,72 @@ class InformationScreen extends StatelessWidget {
                         controller.debouncer.run(() async{
                           print("email :-- $email");
                           if(email.isNotEmpty){
-
                           bool isExist = await FireStoreUtils.getUserEmailExist(email);
                           print("email Exist :--- $isExist");
+
                           if(isExist){
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return CustomDialogBox(
-                                    title: '',
-                                    descriptions:
-                                    "This email is already exists. You want to link existing email with this phone number?"
-                                        .tr,
-                                    positiveString: "Ok".tr,
-                                    negativeString: "Cancel".tr,
-                                    positiveClick: () async {
-                                      ShowToastDialog.showLoader("please_wait".tr);
-                                      await FirebaseAuth.instance.currentUser!.delete().then((value) {
-                                        FireStoreUtils.getUserPasswordByEmail(email).then((password) {
-                                          print("User password :-- $password");
-                                          if(password !=null && password.isNotEmpty ){
-                                            controller.signInWithEmailAndPassword( email, password);
-                                          }
+                            FireStoreUtils.getUserPasswordByEmail(email).then((credentials)async {
+                              print("credentials:---$credentials");
+                              if (credentials != null &&
+                                  credentials['password'] != null &&
+                                  credentials['password']!.isNotEmpty) {
+                                final password = credentials['password']!;
+                                final phoneNumber = credentials['phoneNumber'] ?? '';
+                                print("User password: $password");
+                                print("User phone number: $phoneNumber");
 
+                                if( controller.isFirstTimeDelete){
+                                  await FirebaseAuth.instance.signOut();
+                                }
 
-                                        },);
+                                if (phoneNumber.isEmpty){
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CustomDialogBox(
+                                          title: "Alert".tr,
+                                          descriptions:
+                                          "This email is already exists. You want to link existing email with this phone number?"
+                                              .tr,
+                                          positiveString: "Ok".tr,
+                                          negativeString: "Cancel".tr,
+                                          positiveClick: () async {
+                                            Get.back();
+                                            ShowToastDialog.showLoader("please_wait".tr);
+                                            if(!controller.isFirstTimeDelete){
+                                              await FirebaseAuth.instance.currentUser!.delete().then((value) {
+                                                controller.isFirstTimeDelete =true;
+                                                controller.signInWithEmailAndPassword(context,email, password);
+                                              });
+                                            }else{
+                                              controller.signInWithEmailAndPassword(context,email, password);
+                                            }
+
+                                          },
+                                          negativeClick: () {
+                                            controller.emailController.clear();
+                                            Get.back();
+                                          },
+                                          img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                        );
                                       });
-                                    },
-                                    negativeClick: () {
-                                      controller.emailController.clear();
-                                      Get.back();
-
-                                    },
-                                    img: Image.asset(
-                                        'assets/images/ic_parking_icon.png'),
-                                  );
-                                });
+                                }
+                                else{
+                                  showDialog(context: context, builder: (BuildContext context){
+                                    return CustomDialogBoxOnlyOk(
+                                        title: "Alert".tr,
+                                        descriptions: "This email is already linked with other phone number so please try with different email or phone number.".tr,
+                                        buttonText: "Okay",
+                                        onButtonTap: (){
+                                          controller.emailController.clear();
+                                          Get.back();
+                                        },
+                                      img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                    );
+                                  });
+                                }
+                              }
+                            },);
                           }
                           }
                         },);
