@@ -1126,7 +1126,7 @@ class FireStoreUtils {
     return isAdded;
   }
 
-  static Future<ReferralModel?> getReferral() async {
+  /*static Future<ReferralModel?> getReferral() async {
     ReferralModel? referralModel;
     await fireStore
         .collection(CollectionName.referral)
@@ -1141,7 +1141,44 @@ class FireStoreUtils {
       referralModel = null;
     });
     return referralModel;
+  }*/
+  static Future<ReferralModel?> getReferral() async {
+    try {
+      final uid = FireStoreUtils.getCurrentUid();
+      log("Fetching referral for UID: $uid");
+
+      final snapshot = await fireStore
+          .collection(CollectionName.referral)
+          .doc(uid)
+          .get();
+
+      if (snapshot.exists && snapshot.data() != null) {
+        log("Referral data found: ${snapshot.data()}");
+        return ReferralModel.fromJson(snapshot.data()!);
+      } else {
+        log("Referral document does not exist. Creating one...");
+
+        // Create a new referral document
+        final referralModel = ReferralModel(
+          id: uid,
+          referralBy: "",
+          referralCode: Constant.getReferralCode(),
+        );
+
+        // Save to Firestore
+        await FireStoreUtils.referralAdd(referralModel);
+        log("Referral document created: ${referralModel.referralCode}");
+
+        return referralModel;
+      }
+    } catch (error) {
+      log("Error while fetching or creating referral: $error");
+      return null;
+    }
   }
+
+
+
 
   static Future<bool> getFirestOrderOrNOt(OrderModel orderModel) async {
     bool isFirst = true;

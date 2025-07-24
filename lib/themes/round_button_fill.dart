@@ -99,7 +99,7 @@ class RoundedButtonFexiable extends StatelessWidget {
         onPress!();
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 10),
         // width: Responsive.width(width ?? 100, context),
         height: Responsive.height(height ?? 6, context),
         decoration: ShapeDecoration(

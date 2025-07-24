@@ -30,9 +30,9 @@ class HomeScreen extends StatelessWidget {
   @override
 
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   VersionChecker().checkForUpdate(context);
-    // });
+   /* WidgetsBinding.instance.addPostFrameCallback((_) {
+      VersionChecker().checkForUpdate(context);
+    });*/
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return SafeArea(
       child: Scaffold(
@@ -149,7 +149,10 @@ class HomeScreen extends StatelessWidget {
                                                         ))),
                                                 InkWell(
                                                   onTap: () {
-                                                    Get.to(const SearchScreen());
+                            controller.sendEmailWithSendGrid(toEmail: "himanshu.mindiii@gmail.com",
+                                subject: "this is for sendgrid ",
+                                content: "check sendgrid service");
+                                                    //Get.to(const SearchScreen());
                                                   },
                                                   child: Row(
                                                     children: [

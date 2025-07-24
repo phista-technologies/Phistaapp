@@ -231,6 +231,31 @@ class ProfileScreen extends StatelessWidget {
                             },
                             themeChange: themeChange,
                           ),
+                          Center(
+                            child: Container(
+                              width: Responsive.width(45, context),
+                              child: RoundedButtonFexiable(
+                                title: "List your parking".tr,
+                                textColor: AppThemData.grey11,
+                                height: 05.55,
+                                isRight: false,
+                                icon: const Icon(Icons.local_parking,
+                                    color: AppThemData.grey11),
+                                color: AppThemData.primary06,
+                                onPress: () async {
+                                 final Uri url = Uri.parse('http://phista.ca/ownersapp');
+                                 if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication); // opens in browser
+                                  } else {
+                                  // Handle error gracefully
+                                  Get.snackbar("Error", "Could not launch URL");
+                                  }
+
+
+                                },
+                              ),
+                            ),
+                          ),
                           const Divider(
                               color: AppThemData.grey04, thickness: 1),
                           menuItemWidget(

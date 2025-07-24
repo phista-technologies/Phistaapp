@@ -331,18 +331,23 @@ class InformationController extends GetxController {
         ShowToastDialog.closeLoader();
         print('Phone number linked to email account');
         UserModel? userModel = await FireStoreUtils.getUserProfile(user.uid);
-        if (userModel != null) {
-          if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
-            Get.offAll(const DashBoardScreen());
-          } /*else if (userModel.role != "customer") {
+        userModel?.phoneNumber = phoneNumberController.value.text.trim();
+        await FireStoreUtils.updateUser(userModel!).then((value) async {
+          ShowToastDialog.closeLoader();
+          if (value == true) {
+            if (userModel != null) {
+              if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
+                Get.offAll(const DashBoardScreen());
+              } /*else if (userModel.role != "customer") {
                   await FirebaseAuth.instance.signOut();
                   ShowToastDialog.showToast("please enter valid credentials".tr);
                 } */else {
-            await FirebaseAuth.instance.signOut();
-            ShowToastDialog.showToast("This user is disable please contact administrator".tr);
+                await FirebaseAuth.instance.signOut();
+                ShowToastDialog.showToast("This user is disable please contact administrator".tr);
+              }
+            }
           }
-        }
-
+        });
       }).catchError((e) {
         ShowToastDialog.closeLoader();
         if (e is FirebaseAuthException && e.code == 'provider-already-linked') {
@@ -357,8 +362,6 @@ class InformationController extends GetxController {
       ShowToastDialog.closeLoader();
       print("Exception :-- $e");
     }
-
-
   }
 
   signInWithEmailAndPassword(BuildContext context,String email, String password) async {
