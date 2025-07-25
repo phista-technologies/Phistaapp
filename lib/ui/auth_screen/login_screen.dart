@@ -158,7 +158,122 @@ class LoginScreen extends StatelessWidget {
                       //     ],
                       //   ),
                       // ),
-                      SizedBox(height: Responsive.height(8, context)),
+                      SizedBox(height: Responsive.height(7, context)),
+                      Column(
+                        children: [
+                          Visibility(
+                            visible: Platform.isIOS,
+                            child: InkWell(
+                              onTap: () {
+                                controller.loginWithApple();
+                              },
+                              child: Container(
+                                width: Responsive.width(90, context),
+                                height: Responsive.height(7, context),
+                                decoration: BoxDecoration(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey10
+                                      : AppThemData.grey03,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/icon/ic_apple.svg",
+                                      height: 24,
+                                      width: 24,
+                                      color: themeChange.getThem()
+                                          ? AppThemData.grey01
+                                          : AppThemData.grey08,
+                                    ),
+                                    if (Platform.isIOS)
+                                      const SizedBox(height: 12),
+                                    Text(
+                                      'Continue with Apple'.tr,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: themeChange.getThem()
+                                            ? AppThemData.grey01
+                                            : AppThemData.grey08,
+                                        fontSize: 14,
+                                        fontFamily: AppThemData.medium,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          InkWell(
+                            onTap: () {
+                              controller.loginWithGoogle();
+                            },
+                            child: Container(
+                              width: Responsive.width(90, context),
+                              height: Responsive.height(7, context),
+                              // padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: themeChange.getThem()
+                                    ? AppThemData.grey10
+                                    : AppThemData.grey03,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icon/ic_google.svg",
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Continue with Google'.tr,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: themeChange.getThem()
+                                          ? AppThemData.grey01
+                                          : AppThemData.grey08,
+                                      fontSize: 14,
+                                      fontFamily: AppThemData.medium,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          const Expanded(child: Divider(thickness: 1)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              "or log in with".tr,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: AppThemData.grey06,
+                                fontSize: 12,
+                                fontFamily: AppThemData.medium,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const Expanded(child: Divider()),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                      // controller.fromLoginType.value == "Mobile" ?
                       MobileNumberTextField(
                         title: "Phone Number".tr,
@@ -166,7 +281,6 @@ class LoginScreen extends StatelessWidget {
                         countryCodeController: controller.countryCode.value,
                         onPress: () {},
                       ),
-
                           //:SizedBox.shrink(),
                       // controller.fromLoginType.value == "email"? TextFieldWidget(
                       //   title: 'Email Address'.tr,
@@ -222,7 +336,7 @@ class LoginScreen extends StatelessWidget {
                       //   ),
                       // ):SizedBox.shrink(),
                      // const SizedBox(height: 30),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                       RoundedButtonGradiant(
                         title: "Continue".tr,
                         onPress: () {
@@ -240,13 +354,7 @@ class LoginScreen extends StatelessWidget {
                           }
                         },
                       ),
-                      const SizedBox(height: 30),
-                      SegmentButtonGradiant(
-                        title: "Continue with Email",
-                        onPress: () {
-                          Get.to(const LoginWithEmail());
-                        },),
-                      const SizedBox(height: 44),
+                      const SizedBox(height: 20),
                       Row(
                         children: [
                           const Expanded(child: Divider(thickness: 1)),
@@ -266,8 +374,13 @@ class LoginScreen extends StatelessWidget {
                           const Expanded(child: Divider()),
                         ],
                       ),
-                      const SizedBox(height: 44),
-                      Row(
+                      const SizedBox(height: 20),
+                      SegmentButtonGradiant(
+                        title: "Continue with Email",
+                        onPress: () {
+                          Get.to(const LoginWithEmail());
+                        },),
+                     /* Row(
                         children: [
                           Visibility(
                             visible: Platform.isIOS,
@@ -360,7 +473,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ],
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

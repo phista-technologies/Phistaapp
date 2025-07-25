@@ -24,6 +24,8 @@ import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'downloadAppScreen.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -243,15 +245,7 @@ class ProfileScreen extends StatelessWidget {
                                     color: AppThemData.grey11),
                                 color: AppThemData.primary06,
                                 onPress: () async {
-                                 final Uri url = Uri.parse('http://phista.ca/ownersapp');
-                                 if (await canLaunchUrl(url)) {
-                                  await launchUrl(url, mode: LaunchMode.externalApplication); // opens in browser
-                                  } else {
-                                  // Handle error gracefully
-                                  Get.snackbar("Error", "Could not launch URL");
-                                  }
-
-
+                                  Get.to(DownloadAppScreen());
                                 },
                               ),
                             ),

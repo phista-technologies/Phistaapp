@@ -224,6 +224,7 @@ class Constant {
     FocusScope.of(context).requestFocus(FocusNode()); //remove focus
     TimeOfDay? newTime = await showTimePicker(
       context: context,
+      initialEntryMode: TimePickerEntryMode.input,
       initialTime: TimeOfDay.now(),
     );
     if (newTime != null) {

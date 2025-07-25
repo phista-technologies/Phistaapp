@@ -483,20 +483,19 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 maxLines: 1,
                               ),
                               if (controller.radioValue.value == "monthly")
-                              Text(
-                                Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString()),
-                                style: TextStyle(
-                                  color: themeChange.getThem()
-                                      ? AppThemData.grey07
-                                      : AppThemData.grey07,
-                                  fontSize: 14,
-                                  height: 1.57,
-                                  fontFamily: AppThemData.medium,
-                                  fontWeight: FontWeight.w500,
+                                Text(
+                                  Constant.amountShow(amount: ((double.tryParse(controller.parkingModel.value.monthlyPrice.toString()) ?? 0.0) * controller.bookingMonths.value.toDouble()).toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
+                                    fontSize: 14,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
                                 ),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                              )
+
                             ],
                           ),
                           const SizedBox(

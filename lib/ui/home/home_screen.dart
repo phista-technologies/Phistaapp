@@ -149,10 +149,10 @@ class HomeScreen extends StatelessWidget {
                                                         ))),
                                                 InkWell(
                                                   onTap: () {
-                            controller.sendEmailWithSendGrid(toEmail: "himanshu.mindiii@gmail.com",
+                          /*  controller.sendEmailWithSendGrid(toEmail: "himanshu.mindiii@gmail.com",
                                 subject: "this is for sendgrid ",
-                                content: "check sendgrid service");
-                                                    //Get.to(const SearchScreen());
+                                content: "check sendgrid service");*/
+                                                    Get.to(const SearchScreen());
                                                   },
                                                   child: Row(
                                                     children: [

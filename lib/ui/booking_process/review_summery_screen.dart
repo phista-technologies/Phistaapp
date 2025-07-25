@@ -1124,7 +1124,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                   },
                 )
                     : RoundedButtonFill(
-                  title: "Confirm Payment".tr,
+                  title: "Go to payment".tr,
                   color: AppThemData.primary06,
                   onPress: () {
                     controller.orderModel.value.coupon =
