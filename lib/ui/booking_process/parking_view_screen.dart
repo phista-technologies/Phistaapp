@@ -22,97 +22,100 @@ class ParkingViewScreen extends StatelessWidget {
         builder: (controller) {
           return Scaffold(
             appBar: UiInterface().customAppBar(context, themeChange, "pick_parking_spot".tr),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    'You can park in any available space, you don’t need to park in the exact spot selected, parkings are not mapped.'.tr,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: AppThemData.medium,
-                      fontWeight: FontWeight.w700,
-                      color: themeChange.getThem() ? AppThemData.grey09 : AppThemData.grey09,
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      'You can park in any available space, you don’t need to park in the exact spot selected, parkings are not mapped.'.tr,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: AppThemData.medium,
+                        fontWeight: FontWeight.w700,
+                        color: themeChange.getThem() ? AppThemData.grey09 : AppThemData.grey09,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-                controller.isLoading.value
-                    ? Constant.loader()
-                    : Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: GridView.builder(
-                      itemCount: int.parse(controller.parkingModel.value.parkingSpace.toString()),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(4.0),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5),
-                      itemBuilder: (context, int index) {
-                        return Obx(
-                              () {
-                            var isBooked = controller.selectedOrderModel.where((element) => element.parkingSlotId.toString() == "A-${index + 1}");
-                            return InkWell(
-                              onTap: () {
-                                if (isBooked.isEmpty) {
-                                  controller.selectedParking.value = "A-${index + 1}";
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        right: index.isEven ? const BorderSide(color: AppThemData.grey04) : BorderSide.none,
-                                        bottom: const BorderSide(color: AppThemData.grey04),
-                                        top: const BorderSide(color: AppThemData.grey04),
-                                        left: index.isOdd ? const BorderSide(color: AppThemData.grey04) : BorderSide.none)),
-                                child: isBooked.isNotEmpty
-                                    ? Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Image.asset(
-                                    "assets/images/car_image.png",
-                                  ),
-                                )
-                                    : controller.selectedParking.value == "A-${index + 1}"
-                                    ? Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey04),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset("assets/icon/ic_parking_select.svg", width: 24, height: 24),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
+                  controller.isLoading.value
+                      ? Constant.loader()
+                      : Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: GridView.builder(
+                        itemCount: int.parse(controller.parkingModel.value.parkingSpace.toString()),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(4.0),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5),
+                        itemBuilder: (context, int index) {
+                          return Obx(
+                                () {
+                              var isBooked = controller.selectedOrderModel.where((element) => element.parkingSlotId.toString() == "A-${index + 1}");
+                              return InkWell(
+                                onTap: () {
+                                  if (isBooked.isEmpty) {
+                                    controller.selectedParking.value = "A-${index + 1}";
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          right: index.isEven ? const BorderSide(color: AppThemData.grey04) : BorderSide.none,
+                                          bottom: const BorderSide(color: AppThemData.grey04),
+                                          top: const BorderSide(color: AppThemData.grey04),
+                                          left: index.isOdd ? const BorderSide(color: AppThemData.grey04) : BorderSide.none)),
+                                  child: isBooked.isNotEmpty
+                                      ? Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Image.asset(
+                                      "assets/images/car_image.png",
+                                    ),
+                                  )
+                                      : controller.selectedParking.value == "A-${index + 1}"
+                                      ? Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey04),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset("assets/icon/ic_parking_select.svg", width: 24, height: 24),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          'A-${index + 1}',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: AppThemData.medium,
+                                            color: themeChange.getThem() ? AppThemData.primary06 : AppThemData.primary07,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                      : Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: Center(
+                                      child: Text(
                                         'A-${index + 1}',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontFamily: AppThemData.medium,
-                                          color: themeChange.getThem() ? AppThemData.primary06 : AppThemData.primary07,
+                                          color: themeChange.getThem() ? AppThemData.grey08 : AppThemData.grey08,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                                    : Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: Center(
-                                    child: Text(
-                                      'A-${index + 1}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: AppThemData.medium,
-                                        color: themeChange.getThem() ? AppThemData.grey08 : AppThemData.grey08,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      }),
-                ),
-              ],
+                              );
+                            },
+                          );
+                        }),
+                  ),
+                ],
+              ),
             ),
 
 

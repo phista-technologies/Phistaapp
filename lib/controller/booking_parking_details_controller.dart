@@ -156,6 +156,41 @@ class BookingParkingDetailsController extends GetxController {
     }
   }
 
+  TimeOfDay parseSelectedTime(String timeString) {
+    final parts = timeString.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
+  double timeHourDifference(String startTimeStr, String endTimeStr){
+    DateTime now = DateTime.now();
+    DateTime startTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(startTimeStr.split(":")[0]),
+      int.parse(startTimeStr.split(":")[1]),
+    );
+
+    DateTime endTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(endTimeStr.split(":")[0]),
+      int.parse(endTimeStr.split(":")[1]),
+    );
+
+    Duration diff = endTime.difference(startTime);
+
+    // Get total hours
+    int hours = diff.inHours;
+
+
+    print("Difference: $hours hours ");
+    return hours.toDouble();
+  }
+
 
 
 }

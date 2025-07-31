@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class VersionChecker {
 
-  Future<void> checkForUpdate(BuildContext context) async {
+  static Future<bool> checkForUpdate(BuildContext context) async {
     final remoteConfig = FirebaseRemoteConfig.instance;
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
       fetchTimeout: const Duration(seconds: 10),
@@ -15,20 +17,29 @@ class VersionChecker {
     ));
 
     await remoteConfig.fetchAndActivate();
-    final latestVersion = remoteConfig.getString('force_update_version');
+    var latestVersion = "";
+    if(Platform.isIOS){
+      latestVersion = remoteConfig.getString('force_update_version_driver');
+    }else{
+      latestVersion = remoteConfig.getString('force_update_version_driver_android');
+    }
+
 
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersion = packageInfo.version;
     print("packageInfo:-->$packageInfo");
     print("latestVersion:-->$latestVersion");
 
-    if (_isVersionLower(currentVersion, latestVersion)) {
+    /*if (_isVersionLower(currentVersion, latestVersion)) {
       _showForceUpdateDialog(context);
-    }
+    }*/
+
+
+    return isVersionLower(currentVersion, latestVersion);
   }
 
   /// Compare versions like 1.0.0 < 2.0.0
-  bool _isVersionLower(String current, String latest) {
+  static bool isVersionLower(String current, String latest) {
     List<int> currentParts = current.split('.').map(int.parse).toList();
     List<int> latestParts = latest.split('.').map(int.parse).toList();
 
@@ -39,7 +50,7 @@ class VersionChecker {
     return false;
   }
 
-  void _showForceUpdateDialog(BuildContext context) {
+ static void showForceUpdateDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -49,9 +60,13 @@ class VersionChecker {
         actions: [
           TextButton(
             onPressed: () {
-              // Replace with your app store / play store URL
-              const appUrl = 'https://play.google.com/store/apps/details?id=com.phista';
-              launchUrl(Uri.parse(appUrl), mode: LaunchMode.externalApplication);
+              if(Platform.isIOS){
+                const appUrl = 'https://apps.apple.com/us/app/phista-drivers/id6746747690';
+                launchUrl(Uri.parse(appUrl), mode: LaunchMode.externalApplication);
+              }else{
+                const appUrl = 'https://play.google.com/store/apps/details?id=com.phista';
+                launchUrl(Uri.parse(appUrl), mode: LaunchMode.externalApplication);
+              }
             },
             child: Text("Update Now"),
           ),

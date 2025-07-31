@@ -4,6 +4,8 @@ import 'package:phista/model/parking_facilities_model.dart';
 import 'package:phista/model/positions_model.dart';
 import 'package:phista/model/subscription_plan_model.dart';
 
+import 'AvailabilityWeekModel.dart';
+
 class ParkingModel {
   String? id;
   String? userId;
@@ -22,6 +24,7 @@ class ParkingModel {
   String? reviewSum;
   String? parkingType;
   List<ParkingFacilitiesModel>? facilities;
+  List<AvailabilityWeekModel>? availabilityList;
   List<dynamic>? bookmarkedUser;
   Timestamp? createdAt;
   String? subscriptionTotalOrders;
@@ -40,6 +43,7 @@ class ParkingModel {
         this.description,
         this.image,
         this.facilities,
+        this.availabilityList,
         this.bookmarkedUser,
         this.perHrPrice,
         this.dailyPrice,
@@ -58,6 +62,12 @@ class ParkingModel {
       facilities = <ParkingFacilitiesModel>[];
       json['facilities'].forEach((v) {
         facilities!.add(ParkingFacilitiesModel.fromJson(v));
+      });
+    }
+    if (json['availabilityList'] != null) {
+      availabilityList = <AvailabilityWeekModel>[];
+      json['availabilityList'].forEach((v) {
+        availabilityList!.add(AvailabilityWeekModel.fromJson(v));
       });
     }
     id = json['id'];
@@ -89,6 +99,9 @@ class ParkingModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (facilities != null) {
       data['facilities'] = facilities!.map((v) => v.toJson()).toList();
+    }
+    if (availabilityList != null) {
+      data['availabilityList'] = availabilityList!.map((v) => v.toJson()).toList();
     }
     data['id'] = id;
     data['userId'] = userId;

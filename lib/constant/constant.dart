@@ -220,12 +220,12 @@ class Constant {
     return null;
   }
 
-  static Future<TimeOfDay?> selectTime(context) async {
+  static Future<TimeOfDay?> selectTime(context,TimeOfDay? selectedTime) async {
     FocusScope.of(context).requestFocus(FocusNode()); //remove focus
     TimeOfDay? newTime = await showTimePicker(
       context: context,
       initialEntryMode: TimePickerEntryMode.input,
-      initialTime: TimeOfDay.now(),
+      initialTime: selectedTime??TimeOfDay.now(),
     );
     if (newTime != null) {
       return newTime;

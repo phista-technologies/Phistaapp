@@ -30,9 +30,7 @@ class HomeScreen extends StatelessWidget {
   @override
 
   Widget build(BuildContext context) {
-   /* WidgetsBinding.instance.addPostFrameCallback((_) {
-      VersionChecker().checkForUpdate(context);
-    });*/
+
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return SafeArea(
       child: Scaffold(

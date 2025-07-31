@@ -9,6 +9,7 @@ import 'package:phista/model/parking_model.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/utils.dart';
 
+import '../constant/collection_name.dart';
 import '../themes/custom_dialog_box.dart';
 
 class ParkingViewController extends GetxController {
@@ -41,7 +42,9 @@ class ParkingViewController extends GetxController {
   getParkingDetails(String parkingId) async {
     await FireStoreUtils.getParkingDetails(parkingId).then((value) {
       if (value != null) {
+
         parkingModel.value = value;
+        print("value:--->> ${parkingModel.value.availabilityList}");
       }
     });
     isLoading.value = false;
@@ -59,6 +62,7 @@ class ParkingViewController extends GetxController {
               orderModel.value.parkingId.toString(),
               type)
           .then((value) {
+        print("value:---$value");
         if (value != null) {
           for (var element in value) {
             OrderModel orderModel1 = element;
@@ -134,6 +138,9 @@ class ParkingViewController extends GetxController {
       });
     }
     else if (type == "monthly") {
+      bool closed = isMonthParkingAvailable();
+      print("Is any day closed? $closed");
+
       try {
         FireStoreUtils.getOrder(
                 Utils.stringToTimeStamp(
@@ -143,56 +150,69 @@ class ParkingViewController extends GetxController {
                 orderModel.value.parkingId.toString(),
                 type)
             .then((value) {
+              print("value:---$value");
           if (value != null) {
             for (var element in value) {
               OrderModel orderModel1 = element;
-              if (orderModel1.bookingType.toString() == "1") {
-                final List<dynamic> bookingDates = orderModel.value.bookingDate!
-                    .split(',')
-                    .map((e) => e.trim())
-                    .toList();
-                if (bookingDates.length == 2) {
-                  Timestamp targetDate =
-                      Utils.stringToTimeStamp(orderModel1.bookingDate!);
-                  Timestamp startDate =
-                      Utils.stringToTimeStamp(bookingDates[0].trim());
-                  Timestamp endDate =
-                      Utils.stringToTimeStamp(bookingDates[1].trim());
-                  bool isWithinRange =
-                      targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
-                          targetDate.seconds.compareTo(endDate.seconds) <= 0;
-                  print("isWithinRange :-- $isWithinRange");
-                  if (isWithinRange) {
-                    selectedOrderModel.add(orderModel1);
+
+              if (isMonthParkingAvailable()){
+
+
+              }else{
+                if (orderModel1.bookingType.toString() == "1") {
+                  final List<dynamic> bookingDates = orderModel.value.bookingDate!
+                      .split(',')
+                      .map((e) => e.trim())
+                      .toList();
+                  if (bookingDates.length == 2) {
+                    Timestamp targetDate =
+                    Utils.stringToTimeStamp(orderModel1.bookingDate!);
+                    Timestamp startDate =
+                    Utils.stringToTimeStamp(bookingDates[0].trim());
+                    Timestamp endDate =
+                    Utils.stringToTimeStamp(bookingDates[1].trim());
+                    bool isWithinRange =
+                        targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
+                            targetDate.seconds.compareTo(endDate.seconds) <= 0;
+                    print("isWithinRange :-- $isWithinRange");
+                    if (isWithinRange) {
+                      selectedOrderModel.add(orderModel1);
+                    }
                   }
                 }
-              } else if (orderModel1.bookingType.toString() == "3") {
-                String bookingDateFromFirebase = orderModel1.bookingDate!;
-                String rangeDate = orderModel.value.bookingDate!;
-                List<String> bookingParts = bookingDateFromFirebase.split(',');
-                List<String> rangeParts = rangeDate.split(',');
-                if (bookingParts.length == 2 && rangeParts.length == 2) {
-                  DateTime bookingStart =
-                      Utils.stringToTimeStamp(bookingParts[0].trim()).toDate();
-                  DateTime bookingEnd =
-                      Utils.stringToTimeStamp(bookingParts[1].trim()).toDate();
-                  DateTime rangeStart =
-                      Utils.stringToTimeStamp(rangeParts[0].trim()).toDate();
-                  DateTime rangeEnd =
-                      Utils.stringToTimeStamp(rangeParts[1].trim()).toDate();
-                  bool noOverlap = bookingEnd.isBefore(rangeStart) ||
-                      bookingStart.isAfter(rangeEnd);
+                else if (orderModel1.bookingType.toString() == "3") {
+                  String bookingDateFromFirebase = orderModel1.bookingDate!;
+                  String rangeDate = orderModel.value.bookingDate!;
+                  List<String> bookingParts = bookingDateFromFirebase.split(',');
+                  List<String> rangeParts = rangeDate.split(',');
+                  if (bookingParts.length == 2 && rangeParts.length == 2) {
+                    DateTime bookingStart =
+                    Utils.stringToTimeStamp(bookingParts[0].trim()).toDate();
+                    DateTime bookingEnd =
+                    Utils.stringToTimeStamp(bookingParts[1].trim()).toDate();
+                    DateTime rangeStart =
+                    Utils.stringToTimeStamp(rangeParts[0].trim()).toDate();
+                    DateTime rangeEnd =
+                    Utils.stringToTimeStamp(rangeParts[1].trim()).toDate();
+                    bool noOverlap = bookingEnd.isBefore(rangeStart) ||
+                        bookingStart.isAfter(rangeEnd);
 
-                  if (noOverlap) {
-                    print("No collision. The date ranges do not overlap.");
+                    if (noOverlap) {
+                      print("No collision. The date ranges do not overlap.");
+                    } else {
+                      print("Collision detected! Date ranges overlap.");
+                      selectedOrderModel.add(orderModel1);
+                    }
                   } else {
-                    print("Collision detected! Date ranges overlap.");
-                    selectedOrderModel.add(orderModel1);
+                    print("Invalid date format in input.");
                   }
-                } else {
-                  print("Invalid date format in input.");
                 }
               }
+
+
+
+
+
             }
           }
         });
@@ -220,5 +240,28 @@ class ParkingViewController extends GetxController {
         });
       }
     }*/
+
   }
+
+  bool isMonthParkingAvailable() {
+    final list = parkingModel.value.availabilityList;
+    // Treat null or empty as fully closed
+    if (list == null || list.isEmpty) {
+      return true;
+    }
+
+    for (var day in list) {
+      if (day.isAvailable == false) {
+        // You can optionally print the closed day
+        print("Closed on: ${day.day}");
+        return true;
+      }
+    }
+
+    return false; // All days are open
+  }
+
+
+
+
 }

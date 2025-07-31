@@ -523,8 +523,10 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () async {
+
+                                      TimeOfDay timeSelected = controller.parseSelectedTime(controller.startTimeController.value.text);
                                       TimeOfDay? startTime =
-                                          await Constant.selectTime(context);
+                                          await Constant.selectTime(context,timeSelected);
 
                                       if (startTime != null) {
                                         controller.startTime.value = DateTime(
@@ -538,8 +540,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                             startTime.minute);
 
                                         controller.startTimeController.value
-                                                .text =
-                                            DateFormat('HH:mm').format(
+                                                .text = DateFormat('HH:mm').format(
                                                 controller.startTime.value);
 
                                         Duration duration = Duration(
@@ -584,8 +585,10 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () async {
+                                      TimeOfDay timeSelected = controller.parseSelectedTime(controller.endTimeController.value.text);
                                       TimeOfDay? startTime =
-                                          await Constant.selectTime(context);
+                                      await Constant.selectTime(context,timeSelected);
+
 
                                       if (startTime != null) {
                                         controller.endTime.value = DateTime(
@@ -603,7 +606,12 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                             DateFormat('HH:mm').format(
                                                 controller.endTime.value);
 
-                                        Duration duration = Duration(
+                                        double duration = controller.timeHourDifference(controller.startTimeController.value.text.trim(), controller.endTimeController.value.text.trim());
+                                        print("duration:--- $duration");
+                                        controller.selectedDuration.value = duration;
+                                        controller.selectedDuration.refresh();
+
+                                        /*Duration duration = Duration(
                                             hours: controller
                                                 .selectedDuration.value
                                                 .toInt());
@@ -614,7 +622,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                         controller.startTimeController.value
                                                 .text =
                                             DateFormat('HH:mm').format(
-                                                controller.startTime.value);
+                                                controller.startTime.value);*/
                                       }
                                     },
                                     child: TextFieldWidget(

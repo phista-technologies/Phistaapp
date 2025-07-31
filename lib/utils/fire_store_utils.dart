@@ -136,7 +136,8 @@ class FireStoreUtils {
   }
 
   static Future<ReferralModel?> getReferralUserByCode(
-      String referralCode) async {
+      String referralCode)
+  async {
     ReferralModel? referralModel;
     try {
       await fireStore
@@ -469,6 +470,9 @@ class FireStoreUtils {
     return null;
   }
 
+
+
+
   // static Future<String?> deleteParking(ParkingModel parkingModel) async {
   //   try {
   //     await fireStore
@@ -515,7 +519,8 @@ class FireStoreUtils {
   Stream<List<ParkingModel>> getParkingNearest({
     double? latitude,
     double? longLatitude,
-  }) async* {
+  })
+  async* {
     // Close previous controller if already opened
     getNearestOrderRequestController?.close();
 
@@ -649,7 +654,8 @@ class FireStoreUtils {
   // }
 
   Future<List<ParkingModel>> getParkingNearestFuture(
-      {double? latitude, double? longLatitude}) async {
+      {double? latitude, double? longLatitude})
+  async {
     List<ParkingModel> ordersList = [];
     var query = fireStore
         .collection(CollectionName.parking)
@@ -705,7 +711,8 @@ class FireStoreUtils {
       {double? latitude,
       double? longLatitude,
       String? parkingType,
-      String? distance}) async* {
+      String? distance})
+  async* {
     getNearestFilterParking = StreamController<List<ParkingModel>>.broadcast();
     List<ParkingModel> ordersList = [];
 
@@ -885,7 +892,6 @@ class FireStoreUtils {
 
   static Future<List<OrderModel>?> getOrder(Timestamp date, Timestamp startTime,
       Timestamp endTime, String parkingId,String type) async {
-    
     List<OrderModel> orderList = [];
    try{
 
@@ -1077,7 +1083,8 @@ class FireStoreUtils {
   }
 
   static Future<bool?> updateBankDetails(
-      BankDetailsModel bankDetailsModel) async {
+      BankDetailsModel bankDetailsModel)
+  async {
     bool isAdded = false;
     await fireStore
         .collection(CollectionName.bankDetails)
