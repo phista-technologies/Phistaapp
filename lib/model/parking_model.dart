@@ -24,7 +24,7 @@ class ParkingModel {
   String? reviewSum;
   String? parkingType;
   List<ParkingFacilitiesModel>? facilities;
-  List<AvailabilityWeekModel>? availabilityList;
+  List<AvailabilityWeekModel>? availibilityWeekList;
   List<dynamic>? bookmarkedUser;
   Timestamp? createdAt;
   String? subscriptionTotalOrders;
@@ -43,7 +43,7 @@ class ParkingModel {
         this.description,
         this.image,
         this.facilities,
-        this.availabilityList,
+        this.availibilityWeekList,
         this.bookmarkedUser,
         this.perHrPrice,
         this.dailyPrice,
@@ -64,10 +64,10 @@ class ParkingModel {
         facilities!.add(ParkingFacilitiesModel.fromJson(v));
       });
     }
-    if (json['availabilityList'] != null) {
-      availabilityList = <AvailabilityWeekModel>[];
-      json['availabilityList'].forEach((v) {
-        availabilityList!.add(AvailabilityWeekModel.fromJson(v));
+    if (json['availibilityWeekList'] != null) {
+      availibilityWeekList = <AvailabilityWeekModel>[];
+      json['availibilityWeekList'].forEach((v) {
+        availibilityWeekList!.add(AvailabilityWeekModel.fromJson(v));
       });
     }
     id = json['id'];
@@ -100,8 +100,8 @@ class ParkingModel {
     if (facilities != null) {
       data['facilities'] = facilities!.map((v) => v.toJson()).toList();
     }
-    if (availabilityList != null) {
-      data['availabilityList'] = availabilityList!.map((v) => v.toJson()).toList();
+    if (availibilityWeekList != null) {
+      data['availibilityWeekList'] = availibilityWeekList!.map((v) => v.toJson()).toList();
     }
     data['id'] = id;
     data['userId'] = userId;

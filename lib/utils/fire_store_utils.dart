@@ -730,7 +730,6 @@ class FireStoreUtils {
             radius: double.parse(distance.toString()),
             field: 'position',
             strictMode: true);
-
     stream.listen((List<DocumentSnapshot> documentList) {
       ordersList.clear();
       for (var document in documentList) {
@@ -751,7 +750,7 @@ class FireStoreUtils {
         .collection(CollectionName.parking)
         .doc(uuid)
         .get()
-        .then((value) {
+        .then((value){
       if (value.exists) {
         slotModel = ParkingModel.fromJson(value.data()!);
       }
@@ -1149,6 +1148,7 @@ class FireStoreUtils {
     });
     return referralModel;
   }*/
+
   static Future<ReferralModel?> getReferral() async {
     try {
       final uid = FireStoreUtils.getCurrentUid();

@@ -51,6 +51,7 @@ class ParkingViewScreen extends StatelessWidget {
                         itemBuilder: (context, int index) {
                           return Obx(
                                 () {
+                                  print("isNotAvailableAnyDay:-- ${controller.isNotAvailableAnyDay}");
                               var isBooked = controller.selectedOrderModel.where((element) => element.parkingSlotId.toString() == "A-${index + 1}");
                               return InkWell(
                                 onTap: () {
@@ -58,7 +59,7 @@ class ParkingViewScreen extends StatelessWidget {
                                     controller.selectedParking.value = "A-${index + 1}";
                                   }
                                 },
-                                child: Container(
+                                child: controller.isNotAvailableAnyDay.value == false ? Container(
                                   decoration: BoxDecoration(
                                       border: Border(
                                           right: index.isEven ? const BorderSide(color: AppThemData.grey04) : BorderSide.none,
@@ -107,6 +108,16 @@ class ParkingViewScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
+                                  ),
+                                ):Container(
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          right: index.isEven ? const BorderSide(color: AppThemData.grey04) : BorderSide.none,
+                                          bottom: const BorderSide(color: AppThemData.grey04),
+                                          top: const BorderSide(color: AppThemData.grey04),
+                                          left: index.isOdd ? const BorderSide(color: AppThemData.grey04) : BorderSide.none)),
+                                  child: Image.asset(
+                                    "assets/images/close_ico.png",
                                   ),
                                 ),
                               );

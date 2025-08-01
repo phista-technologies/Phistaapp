@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:phista/constant/constant.dart';
@@ -26,6 +27,7 @@ class ParkingViewController extends GetxController {
 
   Rx<ParkingModel> parkingModel = ParkingModel().obs;
   String bookingTypeTemp = "";
+  RxBool isNotAvailableAnyDay = false.obs;
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
@@ -33,18 +35,20 @@ class ParkingViewController extends GetxController {
       bookingTypeTemp = Constant.bookingTypeConst;
       orderModel.value = argumentData['orderModel'];
       getParkingDetails(orderModel.value.parkingDetails!.id.toString());
-
       await getBookedParking(bookingTypeTemp);
     }
     update();
   }
 
   getParkingDetails(String parkingId) async {
-    await FireStoreUtils.getParkingDetails(parkingId).then((value) {
+    await FireStoreUtils.getParkingDetails(parkingId).then((value) async {
       if (value != null) {
-
+        print("value:--->> ${value}");
         parkingModel.value = value;
-        print("value:--->> ${parkingModel.value.availabilityList}");
+        isNotAvailableAnyDay.value =  await isMonthParkingAvailable(bookingTypeTemp);
+
+
+        print("availabilityList:--->> ${parkingModel.value.availibilityWeekList}");
       }
     });
     isLoading.value = false;
@@ -54,7 +58,7 @@ class ParkingViewController extends GetxController {
 
   getBookedParking(String type) async {
     if (type == "hourly") {
-      log("myTime ===>${Utils.stringToTimeStamp(orderModel.value.bookingDate!).toDate()} \n==>StartTime ${orderModel.value.bookingStartTime!.toDate()} \n==>endTime ${orderModel.value.bookingEndTime!.toDate()}");
+      log("myTime ===> ${Utils.stringToTimeStamp(orderModel.value.bookingDate!).toDate()} \n==>StartTime ${orderModel.value.bookingStartTime!.toDate()} \n==>endTime ${orderModel.value.bookingEndTime!.toDate()}");
       await FireStoreUtils.getOrder(
               Utils.stringToTimeStamp(orderModel.value.bookingDate!),
               orderModel.value.bookingStartTime!,
@@ -68,9 +72,9 @@ class ParkingViewController extends GetxController {
             OrderModel orderModel1 = element;
 
             if (orderModel1.bookingType.toString() == "1") {
-              if (orderModel1.bookingStartTime!
-                      .toDate()
+              if (orderModel1.bookingStartTime!.toDate()
                       .isBefore(orderModel.value.bookingStartTime!.toDate()) &&
+
                   orderModel1.bookingEndTime!
                       .toDate()
                       .isAfter(orderModel.value.bookingStartTime!.toDate())) {
@@ -118,12 +122,9 @@ class ParkingViewController extends GetxController {
                   .map((e) => e.trim())
                   .toList();
               if (bookingDates.length == 2) {
-                Timestamp targetDate =
-                    Utils.stringToTimeStamp(orderModel.value.bookingDate!);
-                Timestamp startDate =
-                    Utils.stringToTimeStamp(bookingDates[0].trim());
-                Timestamp endDate =
-                    Utils.stringToTimeStamp(bookingDates[1].trim());
+                Timestamp targetDate = Utils.stringToTimeStamp(orderModel.value.bookingDate!);
+                Timestamp startDate = Utils.stringToTimeStamp(bookingDates[0].trim());
+                Timestamp endDate = Utils.stringToTimeStamp(bookingDates[1].trim());
                 bool isWithinRange =
                     targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
                         targetDate.seconds.compareTo(endDate.seconds) <= 0;
@@ -138,27 +139,19 @@ class ParkingViewController extends GetxController {
       });
     }
     else if (type == "monthly") {
-      bool closed = isMonthParkingAvailable();
-      print("Is any day closed? $closed");
-
       try {
-        FireStoreUtils.getOrder(
-                Utils.stringToTimeStamp(
-                    orderModel.value.bookingDate!), // not use
-                orderModel.value.bookingStartTime!,
-                orderModel.value.bookingEndTime!,
-                orderModel.value.parkingId.toString(),
-                type)
-            .then((value) {
-              print("value:---$value");
-          if (value != null) {
-            for (var element in value) {
-              OrderModel orderModel1 = element;
-
-              if (isMonthParkingAvailable()){
-
-
-              }else{
+        if (!isNotAvailableAnyDay.value){
+          FireStoreUtils.getOrder(
+              Utils.stringToTimeStamp(
+                  orderModel.value.bookingDate!), // not use
+              orderModel.value.bookingStartTime!,
+              orderModel.value.bookingEndTime!,
+              orderModel.value.parkingId.toString(),
+              type)
+              .then((value) {
+            if (value != null) {
+              for (var element in value) {
+                OrderModel orderModel1 = element;
                 if (orderModel1.bookingType.toString() == "1") {
                   final List<dynamic> bookingDates = orderModel.value.bookingDate!
                       .split(',')
@@ -207,15 +200,17 @@ class ParkingViewController extends GetxController {
                     print("Invalid date format in input.");
                   }
                 }
+                print("isNotAvailableAnyDay1");
+
+
+
+
+
+
               }
-
-
-
-
-
             }
-          }
-        });
+          });
+        }
       } catch (e) {
         print("monthly Exception :-- $e");
       }
@@ -243,25 +238,85 @@ class ParkingViewController extends GetxController {
 
   }
 
-  bool isMonthParkingAvailable() {
-    final list = parkingModel.value.availabilityList;
+  Future<bool>isMonthParkingAvailable(String type) async {
+    final list = parkingModel.value.availibilityWeekList;
+    print("$list");
     // Treat null or empty as fully closed
     if (list == null || list.isEmpty) {
-      return true;
+      print("return--null");
+      return false;
     }
 
-    for (var day in list) {
-      if (day.isAvailable == false) {
-        // You can optionally print the closed day
-        print("Closed on: ${day.day}");
-        return true;
+    if (type == "hourly"){
+      var dayTemp = weekName(orderModel.value.bookingDate??"");
+      Timestamp?  startTime = orderModel.value.bookingStartTime;
+      Timestamp? endTime = orderModel.value.bookingEndTime;
+
+
+
+      print("startTime :-- ${startTime?.toDate()} , endTime :-- $endTime ");
+
+
+      print("bookingDay --> $dayTemp");
+      for (var day in list) {
+        print("within Range :-- ${isWithinTimeRange(endTime!.toDate(), day.startTime??"", day.endTime??"")}");
+        if (day.isAvailable == false ) {
+          if((day.day != null) && (dayTemp.toString().toLowerCase() == day.day.toString().toLowerCase()) ){
+            print("Closed on 22 : ${day.day}");
+            return true;
+          }
+        }
+        else if((day.isAvailable == true && !isWithinTimeRange(startTime!.toDate(), day.startTime??"", day.endTime??"")) ||
+            (day.isAvailable == true && !isWithinTimeRange(endTime!.toDate(), day.startTime??"", day.endTime??""))){
+          return true;
+        }
+      }
+
+    }
+    else if(type == "monthly"){
+      for (var day in list) {
+        if (day.isAvailable == false ) {
+          print("Closed on: ${day.day}");
+          return true;
+        }
+        else if ((day.isAvailable == true && day.startTime != "00:00") || (day.isAvailable == true && day.endTime != "23:59") ){
+          print("return25");
+          return true;
+        }
       }
     }
-
+    print("return2");
     return false; // All days are open
   }
 
+  String weekName(String dateLocal){
+    String input = dateLocal;
+    input = input.replaceAll(' at ', ' ');
+    DateFormat format = DateFormat("d MMMM yyyy HH:mm:ss 'UTC'+H:mm");
+    DateTime date = format.parse(input);
 
+    String weekday = DateFormat('EEEE').format(date);
+
+    return weekday;
+  }
+
+
+  bool isWithinTimeRange(DateTime dateTime, String startTimeStr, String endTimeStr) {
+    final timeOnly = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+
+    final startParts = startTimeStr.split(":");
+    final endParts = endTimeStr.split(":");
+    final startTime = TimeOfDay(hour: int.parse(startParts[0]), minute: int.parse(startParts[1]));
+    final endTime = TimeOfDay(hour: int.parse(endParts[0]), minute: int.parse(endParts[1]));
+
+    return _compareTimeOfDay(timeOnly, startTime) >= 0 &&
+        _compareTimeOfDay(timeOnly, endTime) <= 0;
+  }
+
+  int _compareTimeOfDay(TimeOfDay a, TimeOfDay b) {
+    if (a.hour != b.hour) return a.hour.compareTo(b.hour);
+    return a.minute.compareTo(b.minute);
+  }
 
 
 }

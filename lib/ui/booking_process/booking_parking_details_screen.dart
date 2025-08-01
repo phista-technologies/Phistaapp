@@ -831,12 +831,10 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                         Get.back();
                         print(controller.radioValue.value);
                         OrderModel orderModel = OrderModel();
-
                         if (controller.radioValue.value == "hourly") {
                           Constant.bookingTypeConst = "hourly";
                           orderModel.bookingType = "1";
                           orderModel.bookingMonth = "";
-
                           orderModel.bookingDate = Utils.formatTimestampToIST(
                               Timestamp.fromDate(DateTime(
                                   controller.selectedDateTime.value.year,
