@@ -92,6 +92,17 @@ class PaymentSelectScreen extends StatelessWidget {
                                       themeChange,
                                       "assets/images/apple_pay_icon.png"),
                                 ),
+
+                                //Google pay
+                                Visibility(
+                                  visible: controller.paymentModel.value.strip != null &&
+                                      controller.paymentModel.value.strip?.enable == true,
+                                  child: cardDecoration(
+                                      controller,
+                                      controller.GOOGLE_PAY,
+                                      themeChange,
+                                      "assets/images/google_pay_icon.png"),
+                                ),
                                 Visibility(
                                   visible:
                                       controller.paymentModel.value.paypal !=
@@ -250,7 +261,7 @@ class PaymentSelectScreen extends StatelessWidget {
                   color: AppThemData.primary06,
                   onPress: () async {
                     if ((controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name)
-                        || (controller.selectedPaymentMethod.value == controller.APPLE_PAY)) {
+                        || (controller.selectedPaymentMethod.value == controller.APPLE_PAY)  || (controller.selectedPaymentMethod.value == controller.GOOGLE_PAY)) {
                       controller.stripeMakePayment(
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));

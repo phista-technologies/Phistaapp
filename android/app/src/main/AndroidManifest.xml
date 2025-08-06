@@ -63,6 +63,10 @@
             android:value="2" />
 
         <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBWpknhgETEcPdExDw13FsmKIbazhH-BpI" />
 
@@ -84,9 +88,7 @@
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
             android:exported="false" />
 
-        <meta-data
-            android:name="com.google.android.gms.wallet.api.enabled"
-            android:value="true" />
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

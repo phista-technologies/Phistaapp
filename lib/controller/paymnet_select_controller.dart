@@ -49,6 +49,7 @@ class PaymentSelectController extends GetxController {
   Rx<UserModel> userModel = UserModel().obs;
   String bookingTypePayment = "";
   String APPLE_PAY = "Apple Pay";
+  String GOOGLE_PAY = "Google Pay";
 
   @override
   void onInit() {
@@ -395,7 +396,14 @@ class PaymentSelectController extends GetxController {
          ShowToastDialog.showToast("Payment fail");
        }
 
-        }else {
+        }
+        else  if(selectedPaymentMethod.value.toString() == GOOGLE_PAY){ //  for Google pay
+
+          await initGooglePayPaymentSheet(paymentIntentData['client_secret']);
+          await presentPaymentSheet();
+
+        }
+        else {
           await STRIPE.Stripe.instance.initPaymentSheet(
               paymentSheetParameters: STRIPE.SetupPaymentSheetParameters(
                   paymentIntentClientSecret: paymentIntentData['client_secret'],
@@ -1125,6 +1133,42 @@ class PaymentSelectController extends GetxController {
       return responseData['payment_url'];
     } else {
       return '';
+    }
+  }
+
+
+  ///Google pay
+  Future<void> initGooglePayPaymentSheet(String clientSecret) async {
+
+    var gPay= STRIPE.PaymentSheetGooglePay(
+      merchantCountryCode: 'CA',
+      currencyCode: "CAD",
+      testEnv: true,
+    );
+
+    await STRIPE.Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: STRIPE.SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
+          googlePay: gPay,
+          style: ThemeMode.system,
+          appearance: const STRIPE.PaymentSheetAppearance(
+            colors: STRIPE.PaymentSheetAppearanceColors(
+              primary: AppThemData.primary06,
+            ),
+          ),
+          merchantDisplayName: 'Phista'
+      ),
+    );
+  }
+
+  Future<void> presentPaymentSheet() async {
+    try {
+      await STRIPE.Stripe.instance.presentPaymentSheet().then((value) {
+        print("presentPaymentSheet :-- $value");
+      },);
+      print('Payment completed');
+    } catch (e) {
+      print('Error: $e');
     }
   }
 }

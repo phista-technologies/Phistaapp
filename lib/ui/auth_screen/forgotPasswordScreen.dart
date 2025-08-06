@@ -207,35 +207,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                         const SizedBox(
                           height: 21,
                         ),
-                        Text.rich(
-                          textAlign: TextAlign.center,
-                          TextSpan(
-                            text: "${'Did’t Receive a code ?'.tr} ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                              fontFamily: AppThemData.medium,
-                              color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    controller.otpController.value.clear();
 
-                                  },
-                                text: 'Resend Code'.tr,
-                                style: TextStyle(
-                                  color: themeChange.getThem() ? AppThemData.blueLight : AppThemData.blueLight,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  fontFamily: AppThemData.medium,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
                       ],
                     )
                   ],
