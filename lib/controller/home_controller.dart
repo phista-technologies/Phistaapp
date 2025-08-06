@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
+import 'package:phista/env.dart';
 import 'package:phista/model/location_lat_lng.dart';
 import 'package:phista/model/parking_model.dart';
 import 'package:phista/ui/parking_details_screen/parking_details_screen.dart';
@@ -16,6 +18,7 @@ import 'package:phista/utils/utils.dart';
 
 import '../constant/version_checker.dart';
 import '../themes/custom_dialog_box.dart';
+import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   RxBool isLoading = true.obs;
@@ -29,6 +32,7 @@ class HomeController extends GetxController {
   Image? currentLocationMarkerOSM; //OSM
   Image? parkingMarkerOSM; //OSM
   Rx<TextEditingController> otpController = TextEditingController().obs;
+
 
   @override
   void onInit() {
@@ -170,6 +174,87 @@ class HomeController extends GetxController {
           arguments: {"parkingModel": value!});
     });
   }
+
+
+
+  Future<void> sendEmailWithTemplate({
+    required String toEmail,
+    required String templateId,
+    required Map<String, dynamic> dynamicTemplateData,
+  })
+  async {
+    final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
+
+
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ENV.sandGridApiKey}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "personalizations": [
+          {
+            "to": [
+              {"email": toEmail}
+            ],
+            "dynamic_template_data": dynamicTemplateData,
+          }
+        ],
+        "from": {"email": "support@phista.ca"},
+        "template_id": templateId,
+      }),
+    );
+
+    if (response.statusCode == 202) {
+      print("✅ Email sent with template!");
+    } else {
+      print("❌ Failed to send email: ${response.statusCode}\n${response.body}");
+    }
+  }
+
+
+  Future<void> sendEmailWithSendGrid({
+    required String toEmail,
+    required String subject,
+    required String content,
+  })
+  async {
+    final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ENV.sandGridApiKey}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "personalizations": [
+          {
+            "to": [
+              {"email": toEmail}
+            ],
+            "subject": subject,
+          }
+        ],
+        "from": {"email": "support@phista.ca"}, // must be verified
+        "content": [
+          {
+            "type": "text/plain",
+            "value": content,
+          }
+        ],
+      }),
+    );
+
+    if (response.statusCode == 202) {
+      print("Email sent!");
+    } else {
+      print("Failed to send email: ${response.body}");
+    }
+  }
+
 
   @override
   void dispose() {

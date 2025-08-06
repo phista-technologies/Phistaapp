@@ -86,27 +86,32 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       },
       child: Consumer<DarkThemeProvider>(
         builder: (context, value, child) {
-          return GetMaterialApp(
-            title: 'phista'.tr,
-            debugShowCheckedModeBanner: false,
-            theme: Styles.themeData(
-              themeChangeProvider.darkTheme == 0
-                  ? true
-                  : themeChangeProvider.darkTheme == 1
-                  ? false
-                  : themeChangeProvider.getSystemThem(),
-              context,
-            ),
-            localizationsDelegates: const [CountryLocalizations.delegate],
-            locale: LocalizationService.locale,
-            fallbackLocale: LocalizationService.locale,
-            translations: LocalizationService(),
-            builder: EasyLoading.init(),
-            home: GetBuilder<GlobalSettingController>(
-              init: GlobalSettingController(),
-              builder: (context) {
-                return const SplashScreen();
-              },
+          return GestureDetector(
+            onTap: (){
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            child: GetMaterialApp(
+              title: 'phista'.tr,
+              debugShowCheckedModeBanner: false,
+              theme: Styles.themeData(
+                themeChangeProvider.darkTheme == 0
+                    ? true
+                    : themeChangeProvider.darkTheme == 1
+                    ? false
+                    : themeChangeProvider.getSystemThem(),
+                context,
+              ),
+              localizationsDelegates: const [CountryLocalizations.delegate],
+              locale: LocalizationService.locale,
+              fallbackLocale: LocalizationService.locale,
+              translations: LocalizationService(),
+              builder: EasyLoading.init(),
+              home: GetBuilder<GlobalSettingController>(
+                init: GlobalSettingController(),
+                builder: (context) {
+                  return const SplashScreen();
+                },
+              ),
             ),
           );
         },

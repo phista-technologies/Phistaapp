@@ -34,6 +34,7 @@ class InformationController extends GetxController {
   RxString gmailLogType = "".obs;
   RxString verificationId = "".obs;
   var isFirstTimeDelete = false;
+  var isoCode = "";
 
   final debouncer = Debouncer(milliseconds: 1000);
 
@@ -105,6 +106,8 @@ class InformationController extends GetxController {
           userModelData.role = Constant.roleType;
           userModelData.password = passwordController.value.text;
 
+
+
           FireStoreUtils.getReferralUserByCode(
                   referralCodeController.value.text.trim())
               .then((value) async {
@@ -125,6 +128,10 @@ class InformationController extends GetxController {
 
           await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
 
+         /* if(userModelData.loginType.toString() == "apple"){
+            await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationId.value,
+              otpController.value.text);
+          }*/
 
           await FireStoreUtils.updateUser(userModelData).then((value) {
             ShowToastDialog.closeLoader();
@@ -159,6 +166,11 @@ class InformationController extends GetxController {
           referralCode: Constant.getReferralCode());
       await FireStoreUtils.referralAdd(referralModel);
       await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
+
+     /* if(userModelData.loginType.toString() == "apple"){
+        await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationId.value,
+            otpController.value.text);
+      }*/
       await FireStoreUtils.updateUser(userModelData).then((value) {
         ShowToastDialog.closeLoader();
         if (value == true) {
@@ -418,6 +430,7 @@ class InformationController extends GetxController {
         ShowToastDialog.closeLoader();
         showDialog(
           context: Get.context!,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return CustomDialogBoxOtp(
               title: 'Verify OTP',

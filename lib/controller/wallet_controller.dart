@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
+import 'package:phista/env.dart';
 import 'package:phista/model/bank_details_model.dart';
 import 'package:phista/model/payment/xenditModel.dart';
 import 'package:phista/model/payment_method_model.dart';
@@ -63,8 +64,7 @@ class WalletController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          Stripe.publishableKey =
-              paymentModel.value.strip!.clientpublishableKey.toString();
+          Stripe.publishableKey = ENV.pkTestPublishableKey??"";//paymentModel.value.strip!.clientpublishableKey.toString();
           Stripe.merchantIdentifier = 'Phista';
           Stripe.instance.applySettings();
         }
@@ -230,8 +230,9 @@ class WalletController extends GetxController {
         "shipping[address][state]": "AB",
         "shipping[address][country]": "CA",
       };
-      log(paymentModel.value.strip!.stripeSecret.toString());
-      var stripeSecret = paymentModel.value.strip!.stripeSecret;
+
+      var stripeSecret =ENV.skTestSecretKey; //paymentModel.value.strip!.stripeSecret;
+      log(stripeSecret!);
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
           body: body,

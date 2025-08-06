@@ -11,12 +11,14 @@ import 'package:phista/themes/mobile_number_textfield.dart';
 import 'package:phista/themes/responsive.dart';
 import 'package:phista/themes/round_button_gradiant.dart';
 import 'package:phista/themes/segment_button_gradiant.dart';
+import 'package:phista/ui/auth_screen/forgotPasswordScreen.dart';
 import 'package:phista/ui/terms_and_condition/terms_and_condition_screen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../constant/constant.dart';
 import '../../themes/text_field_widget.dart';
+import '../../utils/utils.dart';
 import 'loginwithemail_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -353,6 +355,25 @@ class LoginScreen extends StatelessWidget {
                             }
                           }
                         },
+                      ),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () async {
+                            Get.to(ForgotPasswordScreen());
+                          },
+                          child: Text(
+                            "Forgot Password?".tr,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: AppThemData.warning06,
+                              fontSize: 17,
+                              fontFamily: AppThemData.medium,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Row(

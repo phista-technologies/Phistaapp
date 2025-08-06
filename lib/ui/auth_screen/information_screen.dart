@@ -16,6 +16,7 @@ import 'package:phista/themes/round_button_gradiant.dart';
 import 'package:phista/themes/text_field_widget.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
+import 'package:phista/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../themes/app_them_data.dart';
@@ -109,7 +110,46 @@ class InformationScreen extends StatelessWidget {
                               : true,
                       dailCode: controller.loginType.value == Constant.phoneLoginType?
                       controller.countryCode.value.text == "+1" ? "CA" : controller.countryCode.value.text :"CA",
-                      onPress: () {},
+                      onPress: () {
+                      },
+                      isoCode: (isoCode){
+                        print("isoCode :-- $isoCode");
+                        controller.isoCode = isoCode;
+                      },
+                      onChange: (number) {
+                        controller.debouncer.run(() async{
+                          print("number :-- $number");
+                          if (number.isNotEmpty){
+                            bool isExist = await FireStoreUtils.getUserPhoneExist(number);
+                            print("isExist :-- $isExist");
+                            if (isExist){
+                              showDialog(context: context, builder: (BuildContext context){
+                                return CustomDialogBoxOnlyOk(
+                                  title: "Alert".tr,
+                                  descriptions: "This phone number is already exists. You want to link existing phone number with your email?".tr,
+                                  buttonText: "Okay",
+                                  onButtonTap: (){
+                                    controller.phoneNumberController.value.clear();
+                                    Get.back();
+                                  },
+                                  img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                );
+                              });
+                            }else{
+
+                           var isValid =   await Utils
+                                  .getPhoneNumberValidation(
+                                  controller.phoneNumberController.value.text.trim(),  controller.isoCode,controller.countryCode.value.text.trim());
+
+                           if(isValid){
+                             controller.sendCode(context, FirebaseAuth.instance.currentUser);
+                           }
+
+                            }
+                          }
+                        },);
+                      },
+
                     ),
                     TextFieldWidget(
                       title: 'Email Address'.tr,
@@ -262,6 +302,7 @@ class InformationScreen extends StatelessWidget {
                     RoundedButtonGradiant(
                       title: "create_account".tr,
                       onPress: () async {
+
                         if (controller.fullNameController.value.text.isEmpty) {
                           ShowToastDialog.showToast("Please enter full name");
                         }
@@ -292,8 +333,6 @@ class InformationScreen extends StatelessWidget {
                            if (userCred != null) {
                              print("userCred:--${userCred.additionalUserInfo!.isNewUser}");
                              print("userCredmmmm:--${userCred}");
-
-
 
                              controller.createAccountWithEmailNew(userCred.user!.uid);
                            }

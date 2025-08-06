@@ -49,6 +49,8 @@ class Constant {
   static String selectedMapType = 'google';
   static String? locationUpdate = "20";
 
+  static int forgotPassOTP = -1;
+
   static LocationLatLng? currentLocation =
       LocationLatLng(latitude: 23.0225, longitude: 72.5714);
   static List<TaxModel>? taxList;

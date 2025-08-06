@@ -59,7 +59,8 @@ class ParkingViewScreen extends StatelessWidget {
                                     controller.selectedParking.value = "A-${index + 1}";
                                   }
                                 },
-                                child: controller.isNotAvailableAnyDay.value == false ? Container(
+                                child: controller.isNotAvailableAnyDay.value == false ?
+                                Container(
                                   decoration: BoxDecoration(
                                       border: Border(
                                           right: index.isEven ? const BorderSide(color: AppThemData.grey04) : BorderSide.none,
@@ -109,7 +110,8 @@ class ParkingViewScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                ):Container(
+                                ):
+                                Container(
                                   decoration: BoxDecoration(
                                       border: Border(
                                           right: index.isEven ? const BorderSide(color: AppThemData.grey04) : BorderSide.none,
@@ -128,9 +130,6 @@ class ParkingViewScreen extends StatelessWidget {
                 ],
               ),
             ),
-
-
-
             bottomNavigationBar: Container(
               color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey11,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -140,11 +139,17 @@ class ParkingViewScreen extends StatelessWidget {
                   title: "Next".tr,
                   color: AppThemData.primary06,
                   onPress: () {
-                    if (controller.selectedParking.value.isEmpty) {
-                      ShowToastDialog.showToast("Please select your parking".tr);
-                    } else {
-                        controller.orderModel.value.parkingSlotId = controller.selectedParking.value;
-                        Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": controller.orderModel.value});
+                   if (controller.isNotAvailableAnyDay.value == true){
+                     ShowToastDialog.showToast("Unfortunately,this parking is not available at the selected time".tr);
+
+                   }else{
+                     if (controller.selectedParking.value.isEmpty) {
+                       ShowToastDialog.showToast("Please select your parking".tr);
+                     } else {
+                       controller.orderModel.value.parkingSlotId = controller.selectedParking.value;
+                       Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": controller.orderModel.value});
+                   }
+
 
 
                     }

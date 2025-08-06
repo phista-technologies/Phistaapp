@@ -1,6 +1,10 @@
+import 'dart:developer';
+import 'dart:math' as MATH;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:location/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:phista/constant/constant.dart';
@@ -142,4 +146,34 @@ class Utils {
     String formatted = DateFormat("d MMMM yyyy 'at' HH:mm:ss").format(istDateTime);
     return "$formatted UTC+5:30";
   }
+
+
+  //For validate number
+  static Future<bool> getPhoneNumberValidation(String phoneNumber, isoCode, countryCode)
+  async {
+    try {
+      log("ISO Code :-- ", error: isoCode);
+      log("country_code :-- ", error: countryCode);
+      log("phone_number :-- ", error: phoneNumber.replaceAll(" ", ""));
+      var phoneNumberValid = PhoneNumber(
+          countryISOCode: isoCode,
+          countryCode: countryCode,
+          number: phoneNumber.replaceAll(" ", ""));
+      bool? isValid = phoneNumberValid.isValidNumber();
+      log("isValid :-- ", error: isValid);
+      return isValid!;
+    } catch (e) {
+      log("getPhoneNumberValidation Exception :- ", error: e.toString());
+      return false;
+    }
+  }
+
+  static int generateSixDigitCode() {
+    final random = MATH.Random();
+    return 100000 + random.nextInt(900000); // Range: 100000 to 999999
+  }
+
+
+
+
 }

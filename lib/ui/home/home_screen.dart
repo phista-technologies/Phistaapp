@@ -19,6 +19,7 @@ import 'package:phista/ui/search/search_screen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
+import 'package:phista/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../constant/version_checker.dart';
@@ -146,11 +147,28 @@ class HomeScreen extends StatelessWidget {
                                                           fontFamily: AppThemData.semiBold,
                                                         ))),
                                                 InkWell(
-                                                  onTap: () {
-                          /*  controller.sendEmailWithSendGrid(toEmail: "himanshu.mindiii@gmail.com",
-                                subject: "this is for sendgrid ",
-                                content: "check sendgrid service");*/
-                                                    Get.to(const SearchScreen());
+                                                  onTap: () async {
+
+                                                    Constant.forgotPassOTP = Utils.generateSixDigitCode();
+                                                    print("Constant.forgotPassOTP :-- ${Constant.forgotPassOTP}");
+                                                    await controller.sendEmailWithTemplate(
+                                                    toEmail: 'himanshu.mindiii@gmail.com',
+                                                    templateId: 'd-9bc2f671fe9d4a94aa82d36d46c823a9',
+                                                    dynamicTemplateData: {
+                                                      "name": "OTP for forgot password",
+                                                      "app_name": "Phista App ",
+                                                      "code": "${Constant.forgotPassOTP}"
+                                                    },
+                                                    );
+
+                                                    /*await controller.sendEmailWithSendGrid(
+                                                      toEmail: 'mindiii.satyam@gmail.com',
+                                                      subject: 'OTP for forgot password',
+                                                      content: '${Constant.forgotPassOTP} -- OTP',
+                                                    );*/
+
+
+                                                    //Get.to(const SearchScreen());
                                                   },
                                                   child: Row(
                                                     children: [

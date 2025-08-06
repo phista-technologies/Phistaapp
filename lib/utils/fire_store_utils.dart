@@ -1187,7 +1187,7 @@ class FireStoreUtils {
 
 
 
-  static Future<bool> getFirestOrderOrNOt(OrderModel orderModel) async {
+  static Future<bool> getFirstOrderOrNOt(OrderModel orderModel) async {
     bool isFirst = true;
     await fireStore
         .collection(CollectionName.bookedParkingOrder)
@@ -1273,5 +1273,42 @@ class FireStoreUtils {
       log(error.toString());
     });
     return couponModel;
+  }
+
+
+  static Future<bool> updateUserPassword(String userEmail, String password) async {
+    try {
+      log("Searching for email: ${userEmail.trim().toLowerCase()}");
+
+      final querySnapshot = await fireStore
+          .collection(CollectionName.users)
+          .where('email', isEqualTo: userEmail.trim().toLowerCase())
+          .get();
+
+      log("Documents found: ${querySnapshot.docs.length}");
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userData = querySnapshot.docs.first.data();
+        final userId = userData['id'] ?? '';
+
+        try {
+          await fireStore
+              .collection(CollectionName.users)
+              .doc(userId)
+              .update({'password': password});
+          print("Password updated");
+          return true;
+        } catch (error) {
+          print('Update failed: $error');
+          return false;
+        }
+      } else {
+        log("No user found with this email");
+        return false;
+      }
+    } catch (error) {
+      log("Failed to get user password: $error");
+      return false;
+    }
   }
 }

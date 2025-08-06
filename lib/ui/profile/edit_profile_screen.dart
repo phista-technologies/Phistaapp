@@ -160,15 +160,14 @@ class EditProfileScreen extends StatelessWidget {
                                 ),
                                 MobileNumberTextField(
                                   title: "Phone Number".tr,
-                                  controller:
-                                      controller.phoneNumberController.value,
-                                  countryCodeController:
-                                      controller.countryCodeController.value,
+                                  controller: controller.phoneNumberController.value,
+                                  countryCodeController: controller.countryCodeController.value,
                                   enabled:
                                       controller.userModel.value.loginType ==
                                               Constant.phoneLoginType
                                           ? false
                                           : true,
+                                  dailCode: controller.countryCodeController.value.text,
                                   onPress: () {},
                                 ),
                                 // Text("Gender".tr, style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 14, color: AppThemData.grey07)),

@@ -5,8 +5,9 @@ import 'dart:math' as maths;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as STRIPE;
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:phista/constant/constant.dart';
@@ -35,6 +36,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../env.dart';
 import '../utils/utils.dart';
 
 class PaymentSelectController extends GetxController {
@@ -46,6 +48,7 @@ class PaymentSelectController extends GetxController {
 
   Rx<UserModel> userModel = UserModel().obs;
   String bookingTypePayment = "";
+  String APPLE_PAY = "Apple Pay";
 
   @override
   void onInit() {
@@ -71,10 +74,9 @@ class PaymentSelectController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          Stripe.publishableKey =
-              paymentModel.value.strip!.clientpublishableKey.toString();
-          Stripe.merchantIdentifier = 'Phista';
-          Stripe.instance.applySettings();
+          STRIPE.Stripe.publishableKey =ENV.pkTestPublishableKey??""; //paymentModel.value.strip!.clientpublishableKey.toString();
+          STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";//'Phista';
+          STRIPE.Stripe.instance.applySettings();
         }
         setRef();
         selectedPaymentMethod.value = orderModel.value.paymentType.toString();
@@ -253,8 +255,7 @@ class PaymentSelectController extends GetxController {
         orderModel.value.parkingDetails!.userId.toString());
     orderModel.value.paymentCompleted = true;
     orderModel.value.paymentType = selectedPaymentMethod.value;
-    orderModel.value.adminCommission =
-        receiverUserModel?.adminCommission ?? Constant.adminCommission;
+    orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
     orderModel.value.createdAt = Timestamp.now();
     orderModel.value.updateAt = Timestamp.now();
 
@@ -373,32 +374,49 @@ class PaymentSelectController extends GetxController {
   Future<void> stripeMakePayment({required String amount}) async {
     log(double.parse(amount).toStringAsFixed(0));
     try {
-      Map<String, dynamic>? paymentIntentData =
-          await createStripeIntent(amount: amount);
+      Map<String, dynamic>? paymentIntentData = await createStripeIntent(amount: amount);
+      print(" paymentIntentData['client_secret']:-- ${ paymentIntentData?['client_secret']}");
       if (paymentIntentData!.containsKey("error")) {
         Get.back();
         ShowToastDialog.showToast(
             "Something went wrong, please contact admin.");
       } else {
-        await Stripe.instance.initPaymentSheet(
-            paymentSheetParameters: SetupPaymentSheetParameters(
-                paymentIntentClientSecret: paymentIntentData['client_secret'],
-                allowsDelayedPaymentMethods: false,
-                googlePay: PaymentSheetGooglePay(
-                  merchantCountryCode: 'CA',
-                  testEnv: paymentModel.value.strip?.isSandbox == true
-                      ? true
-                      : false,
-                  currencyCode: "CAD",
-                ),
-                style: ThemeMode.system,
-                appearance: const PaymentSheetAppearance(
-                  colors: PaymentSheetAppearanceColors(
-                    primary: AppThemData.primary06,
+        if(selectedPaymentMethod.value.toString() == APPLE_PAY){ //  for Apple pay
+       bool? status =  await payWithApplePay(
+            paymentIntentData['client_secret'],
+              amount);
+
+       print("payWithApplePay :-- ${status}");
+
+       if(status??false){
+         ShowToastDialog.showToast("Payment successfully");
+         completeOrder();
+       }else{
+         ShowToastDialog.showToast("Payment fail");
+       }
+
+        }else {
+          await STRIPE.Stripe.instance.initPaymentSheet(
+              paymentSheetParameters: STRIPE.SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: paymentIntentData['client_secret'],
+                  allowsDelayedPaymentMethods: false,
+                  googlePay: STRIPE.PaymentSheetGooglePay(
+                    merchantCountryCode: 'CA',
+                    testEnv: paymentModel.value.strip?.isSandbox == true
+                        ? true
+                        : false,
+                    currencyCode: "CAD",
                   ),
-                ),
-                merchantDisplayName: 'Phista'));
-        displayStripePaymentSheet(amount: amount);
+                  style: ThemeMode.system,
+                  appearance: const STRIPE.PaymentSheetAppearance(
+                    colors: STRIPE.PaymentSheetAppearanceColors(
+                      primary: AppThemData.primary06,
+                    ),
+                  ),
+                  merchantDisplayName: 'Phista'));
+          displayStripePaymentSheet(amount: amount);
+        }
+
       }
     } catch (e, s) {
       log("$e \n$s");
@@ -408,11 +426,11 @@ class PaymentSelectController extends GetxController {
 
   displayStripePaymentSheet({required String amount}) async {
     try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
+      await STRIPE.Stripe.instance.presentPaymentSheet().then((value) {
         ShowToastDialog.showToast("Payment successfully");
         completeOrder();
       });
-    } on StripeException catch (e) {
+    } on STRIPE.StripeException catch (e) {
       var lo1 = jsonEncode(e);
       var lo2 = jsonDecode(lo1);
       StripePayFailedModel lom = StripePayFailedModel.fromJson(lo2);
@@ -436,8 +454,9 @@ class PaymentSelectController extends GetxController {
         "shipping[address][state]": "AB",
         "shipping[address][country]": "CA",
       };
-      log(paymentModel.value.strip!.stripeSecret.toString());
-      var stripeSecret = paymentModel.value.strip!.stripeSecret;
+
+      var stripeSecret = ENV.skTestSecretKey; //paymentModel.value.strip!.stripeSecret;
+      log(stripeSecret.toString());
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
           body: body,
@@ -454,7 +473,8 @@ class PaymentSelectController extends GetxController {
 
   //mercadoo
   mercadoPagoMakePayment(
-      {required BuildContext context, required String amount}) async {
+      {required BuildContext context, required String amount}) async
+  {
     final headers = {
       'Authorization': 'Bearer ${paymentModel.value.mercadoPago!.accessToken}',
       'Content-Type': 'application/json',
@@ -507,7 +527,8 @@ class PaymentSelectController extends GetxController {
   }
 
   flutterWaveInitiatePayment(
-      {required BuildContext context, required String amount}) async {
+      {required BuildContext context, required String amount}) async
+  {
     final url = Uri.parse('https://api.flutterwave.com/v3/payments');
     final headers = {
       'Authorization':
@@ -616,6 +637,75 @@ class PaymentSelectController extends GetxController {
         ShowToastDialog.showToast("Payment Failed");
       }
     });
+  }
+
+  ///For Apple pay
+  Future<bool?> payWithApplePay(
+      String clientSecret,
+      String amount,) async {
+   try {
+      final STRIPE.PaymentIntent paymentIntent = await STRIPE.Stripe.instance.confirmPlatformPayPaymentIntent(
+        clientSecret: clientSecret,
+        confirmParams: STRIPE.PlatformPayConfirmParams.applePay(
+          applePay: STRIPE.ApplePayParams(
+            merchantCountryCode: 'CA',
+            currencyCode:"CAD",
+            cartItems: [
+              STRIPE.ApplePayCartSummaryItem.immediate(
+                label: "Phista",
+                amount: amount,
+              ),
+            ],
+          /*  cartItems: [
+              if (isWallet != "1")
+                STRIPE.ApplePayCartSummaryItem.immediate(
+                  label: "Recharge Amount",
+                  amount: rechargeAmount ?? "",
+                ),
+
+
+
+              STRIPE.ApplePayCartSummaryItem.immediate(
+                label: "Processing Fee",
+                amount: processingFee ?? "",
+              ),
+              STRIPE.ApplePayCartSummaryItem.immediate(
+                label: "Phista",
+                amount: amount,
+              ),
+            ],*/
+          ),
+        ),
+      );
+
+      print("Apple payment paymentIntent :-- ${paymentIntent.status}");
+      if (paymentIntent.status == STRIPE.PaymentIntentsStatus.Succeeded) {
+        log('Payment Successful');
+        print('Apple intent Payment :- $paymentIntent');
+
+       /* reController.clientSecretId.value = paymentIntent.id;
+        print(
+            " reController.clientSecretId.value ${reController.clientSecretId.value}");
+        print(" isWallet ${isWallet}");
+        reController.payPalId.value = "";
+
+        if (isWallet == "1") {
+          walletModuleController.addMoney("", welcomeCodeStatus);
+        } else {
+          rechargePayment();
+        }*/
+
+        return true;
+      }
+      else {
+        throw Exception(paymentIntent.status);
+      }
+    } on PlatformException catch (exception) {
+      log(exception.message ?? 'Something went wrong');
+    } catch (exception) {
+      log(exception.toString());
+    }
+    return false;
   }
 
   ///Paytm payment function

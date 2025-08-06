@@ -17,8 +17,7 @@ class EditProfileController extends GetxController {
   Rx<TextEditingController> emailController = TextEditingController().obs;
   Rx<TextEditingController> dateOfBirthController = TextEditingController().obs;
   Rx<TextEditingController> phoneNumberController = TextEditingController().obs;
-  Rx<TextEditingController> countryCodeController =
-      TextEditingController(text: "+1").obs;
+  Rx<TextEditingController> countryCodeController = TextEditingController(text: "+1").obs;
 
   Rx<GlobalKey<FormState>> formKey = GlobalKey<FormState>().obs;
 
@@ -39,15 +38,13 @@ class EditProfileController extends GetxController {
         .then((value) {
       if (value != null) {
         userModel.value = value;
+        countryCodeController.value.text = userModel.value.countryCode.toString();
+        print("countrycode :-- ${countryCodeController.value.text}");
 
-        phoneNumberController.value.text =
-            userModel.value.phoneNumber.toString();
-        countryCodeController.value.text =
-            userModel.value.countryCode.toString();
+        phoneNumberController.value.text = userModel.value.phoneNumber.toString();
         emailController.value.text = userModel.value.email.toString();
         fullNameController.value.text = userModel.value.fullName.toString();
-        dateOfBirthController.value.text =
-            userModel.value.dateOfBirth.toString();
+        dateOfBirthController.value.text = userModel.value.dateOfBirth.toString();
         profileImage.value = userModel.value.profilePic.toString();
         isLoading.value = false;
       }

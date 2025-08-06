@@ -17,6 +17,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../constant/extension_data.dart';
 
+
 class LoginController extends GetxController {
 
   Rx<TextEditingController> phoneNumberController = TextEditingController().obs;
@@ -317,5 +318,9 @@ class LoginController extends GetxController {
       return null;
     }
   }
+
+
+
+
 
 }

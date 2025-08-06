@@ -1,4 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,12 +71,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                       "assets/images/wallet.png"),
                                 ),
                                 Visibility(
-                                  visible:
-                                      controller.paymentModel.value.strip !=
-                                              null &&
-                                          controller.paymentModel.value.strip
-                                                  ?.enable ==
-                                              true,
+                                  visible: controller.paymentModel.value.strip != null && controller.paymentModel.value.strip?.enable == true,
                                   child: cardDecoration(
                                       controller,
                                       controller
@@ -85,6 +81,16 @@ class PaymentSelectScreen extends StatelessWidget {
                                       controller.paymentModel.value.strip
                                               ?.image ??
                                           "assets/images/strip.png"),
+                                ),
+                                //Apple pay
+                                Visibility(
+                                  visible: controller.paymentModel.value.strip != null &&
+                                      controller.paymentModel.value.strip?.enable == true && Platform.isIOS,
+                                  child: cardDecoration(
+                                      controller,
+                                      controller.APPLE_PAY,
+                                      themeChange,
+                                      "assets/images/apple_pay_icon.png"),
                                 ),
                                 Visibility(
                                   visible:
@@ -243,11 +249,13 @@ class PaymentSelectScreen extends StatelessWidget {
                   title: "Pay".tr,
                   color: AppThemData.primary06,
                   onPress: () async {
-                    if (controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name) {
+                    if ((controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name)
+                        || (controller.selectedPaymentMethod.value == controller.APPLE_PAY)) {
                       controller.stripeMakePayment(
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paypal?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paypal?.name) {
                       controller.paypalPaymentSheet(
                           controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!),
@@ -309,8 +317,7 @@ class PaymentSelectScreen extends StatelessWidget {
                     } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.wallet?.name) {
                       if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
                         ShowToastDialog.showLoader("Please wait..");
-                          WalletTransactionModel transactionModel =
-                          WalletTransactionModel(
+                          WalletTransactionModel transactionModel = WalletTransactionModel(
                               id: Constant.getUuid(),
                               amount: "-${controller.calculateAmount().toString()}",
                               createdDate: Timestamp.now(),

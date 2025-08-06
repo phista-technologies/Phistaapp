@@ -90,6 +90,10 @@
 	<string>This app requires access to your location while it is open to show nearby events, personalized recommendations, or map-based navigation.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need permission to save QR codes to your gallery</string>
+	<key>com.apple.developer.in-app-payments</key>
+    <array>
+      <string>merchant.com.phista.ios</string>
+    </array>
 	<key>SERVER_CLIENT_ID</key>
 	<string>557822680761-8bhasjl651u33j4qu6stl09njvrjaivm.apps.googleusercontent.com</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
