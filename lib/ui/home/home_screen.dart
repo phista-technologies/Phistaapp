@@ -148,27 +148,7 @@ class HomeScreen extends StatelessWidget {
                                                         ))),
                                                 InkWell(
                                                   onTap: () async {
-
-                                                    Constant.forgotPassOTP = Utils.generateSixDigitCode();
-                                                    print("Constant.forgotPassOTP :-- ${Constant.forgotPassOTP}");
-                                                    await controller.sendEmailWithTemplate(
-                                                    toEmail: 'himanshu.mindiii@gmail.com',
-                                                    templateId: 'd-9bc2f671fe9d4a94aa82d36d46c823a9',
-                                                    dynamicTemplateData: {
-                                                      "name": "OTP for forgot password",
-                                                      "app_name": "Phista App ",
-                                                      "code": "${Constant.forgotPassOTP}"
-                                                    },
-                                                    );
-
-                                                    /*await controller.sendEmailWithSendGrid(
-                                                      toEmail: 'mindiii.satyam@gmail.com',
-                                                      subject: 'OTP for forgot password',
-                                                      content: '${Constant.forgotPassOTP} -- OTP',
-                                                    );*/
-
-
-                                                    //Get.to(const SearchScreen());
+                                                    Get.to(const SearchScreen());
                                                   },
                                                   child: Row(
                                                     children: [

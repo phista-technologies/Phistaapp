@@ -123,7 +123,10 @@ class InformationScreen extends StatelessWidget {
                             bool isExist = await FireStoreUtils.getUserPhoneExist(number);
                             print("isExist :-- $isExist");
                             if (isExist){
-                              showDialog(context: context, builder: (BuildContext context){
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context){
                                 return CustomDialogBoxOnlyOk(
                                   title: "Alert".tr,
                                   descriptions: "This phone number is already exists. You want to link existing phone number with your email?".tr,
@@ -192,6 +195,7 @@ class InformationScreen extends StatelessWidget {
 
                                 if (phoneNumber.isEmpty){
                                   showDialog(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return CustomDialogBox(
@@ -223,7 +227,9 @@ class InformationScreen extends StatelessWidget {
                                       });
                                 }
                                 else{
-                                  showDialog(context: context, builder: (BuildContext context){
+                                  showDialog(context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context){
                                     return CustomDialogBoxOnlyOk(
                                         title: "Alert".tr,
                                         descriptions: "This email is already linked with other phone number so please try with different email or phone number.".tr,

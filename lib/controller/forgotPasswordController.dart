@@ -3,12 +3,16 @@
 
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:phista/env.dart';
+
+import '../constant/show_toast_dialog.dart';
+import '../utils/fire_store_utils.dart';
 
 class ForgotPasswordController extends GetxController {
   Rx<TextEditingController> otpController = TextEditingController().obs;
@@ -111,6 +115,37 @@ class ForgotPasswordController extends GetxController {
       print("Email sent!");
     } else {
       print("Failed to send email: ${response.body}");
+    }
+  }
+
+
+  signInWithEmailAndPassword(BuildContext context,String email, String password) async {
+
+    try {
+      FirebaseAuth.instance.signInWithEmailAndPassword(email: email,
+          password: password).then((value) async {
+        await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
+
+
+        });
+
+      }).catchError((error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        debugPrint("errorMessage--->$errorMessage");
+        ShowToastDialog.closeLoader();
+        if (errorCode == "user-not-found") {
+          ShowToastDialog.showToast("Invalid email and password");
+        } else if (errorCode == "wrong-password") {
+          ShowToastDialog.showToast("Wrong password");
+        } else {
+          ShowToastDialog.showToast(errorMessage);
+        }
+      });
+    } catch (e) {
+      debugPrint("catchError--->$e");
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast(e.toString());
     }
   }
 

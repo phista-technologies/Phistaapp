@@ -85,48 +85,51 @@ class ProfileScreen extends StatelessWidget {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      controller.userModel.value.fullName
-                                          .toString(),
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontFamily: AppThemData.medium,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey01
-                                              : AppThemData.grey10),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      controller.userModel.value.email
-                                          .toString(),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: AppThemData.medium,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey06
-                                              : AppThemData.grey06),
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    RoundedButtonFexiable(
-                                      title: "Edit Details".tr,
-                                      textColor: AppThemData.grey11,
-                                      height: 05.55,
-                                      isRight: false,
-                                      icon: const Icon(Icons.edit,
-                                          color: AppThemData.grey11),
-                                      color: AppThemData.primary06,
-                                      onPress: () {
-                                        Get.to(const EditProfileScreen());
-                                      },
-                                    )
-                                  ],
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        controller.userModel.value.fullName
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontFamily: AppThemData.medium,
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey01
+                                                : AppThemData.grey10),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        controller.userModel.value.email
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: AppThemData.medium,
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey06
+                                                : AppThemData.grey06),
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      RoundedButtonFexiable(
+                                        title: "Edit Details".tr,
+                                        textColor: AppThemData.grey11,
+                                        height: 05.55,
+                                        isRight: false,
+                                        icon: const Icon(Icons.edit,
+                                            color: AppThemData.grey11),
+                                        color: AppThemData.primary06,
+                                        onPress: () {
+                                          Get.to(const EditProfileScreen());
+                                        },
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -258,6 +261,7 @@ class ProfileScreen extends StatelessWidget {
                             onTap: () {
                               showDialog(
                                   context: context,
+                                  barrierDismissible: false,
                                   builder: (BuildContext context) {
                                     return CustomDialogBox(
                                       title: "Signing out for now?".tr,

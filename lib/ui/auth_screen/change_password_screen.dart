@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,6 @@ import '../../themes/round_button_gradiant.dart';
 import '../../themes/text_field_widget.dart';
 import '../../utils/dark_theme_provider.dart';
 import '../../utils/fire_store_utils.dart';
-
 
 class ChangePasswordScreen extends StatelessWidget {
   const ChangePasswordScreen({super.key});
@@ -50,7 +50,6 @@ class ChangePasswordScreen extends StatelessWidget {
                     const SizedBox(
                       height: 30,
                     ),
-
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -58,7 +57,9 @@ class ChangePasswordScreen extends StatelessWidget {
                           "Please enter new password".tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                            color: themeChange.getThem()
+                                ? AppThemData.grey01
+                                : AppThemData.grey10,
                             fontSize: 24,
                             fontFamily: AppThemData.semiBold,
                             fontWeight: FontWeight.w400,
@@ -84,23 +85,28 @@ class ChangePasswordScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(12),
                             child: InkWell(
                                 onTap: () {
-                                  controller.passwordVisible.value = !controller.passwordVisible.value;
+                                  controller.passwordVisible.value =
+                                      !controller.passwordVisible.value;
                                 },
                                 child: controller.passwordVisible.value
                                     ? SvgPicture.asset(
-                                  "assets/icon/ic_password_show.svg",
-                                  colorFilter: ColorFilter.mode(
-                                    themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
-                                    BlendMode.srcIn,
-                                  ),
-                                )
+                                        "assets/icon/ic_password_show.svg",
+                                        colorFilter: ColorFilter.mode(
+                                          themeChange.getThem()
+                                              ? AppThemData.grey02
+                                              : AppThemData.grey08,
+                                          BlendMode.srcIn,
+                                        ),
+                                      )
                                     : SvgPicture.asset(
-                                  "assets/icon/ic_password_close.svg",
-                                  colorFilter: ColorFilter.mode(
-                                    themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
-                                    BlendMode.srcIn,
-                                  ),
-                                )),
+                                        "assets/icon/ic_password_close.svg",
+                                        colorFilter: ColorFilter.mode(
+                                          themeChange.getThem()
+                                              ? AppThemData.grey02
+                                              : AppThemData.grey08,
+                                          BlendMode.srcIn,
+                                        ),
+                                      )),
                           ),
                         ),
                         TextFieldWidget(
@@ -120,23 +126,28 @@ class ChangePasswordScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(12),
                             child: InkWell(
                                 onTap: () {
-                                  controller.confirmPasswordVisible.value = !controller.confirmPasswordVisible.value;
+                                  controller.confirmPasswordVisible.value =
+                                      !controller.confirmPasswordVisible.value;
                                 },
                                 child: controller.confirmPasswordVisible.value
                                     ? SvgPicture.asset(
-                                  "assets/icon/ic_password_show.svg",
-                                  colorFilter: ColorFilter.mode(
-                                    themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
-                                    BlendMode.srcIn,
-                                  ),
-                                )
+                                        "assets/icon/ic_password_show.svg",
+                                        colorFilter: ColorFilter.mode(
+                                          themeChange.getThem()
+                                              ? AppThemData.grey02
+                                              : AppThemData.grey08,
+                                          BlendMode.srcIn,
+                                        ),
+                                      )
                                     : SvgPicture.asset(
-                                  "assets/icon/ic_password_close.svg",
-                                  colorFilter: ColorFilter.mode(
-                                    themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
-                                    BlendMode.srcIn,
-                                  ),
-                                )),
+                                        "assets/icon/ic_password_close.svg",
+                                        colorFilter: ColorFilter.mode(
+                                          themeChange.getThem()
+                                              ? AppThemData.grey02
+                                              : AppThemData.grey08,
+                                          BlendMode.srcIn,
+                                        ),
+                                      )),
                           ),
                         ),
                         const SizedBox(
@@ -145,34 +156,82 @@ class ChangePasswordScreen extends StatelessWidget {
                         RoundedButtonGradiant(
                           title: "Save".tr,
                           onPress: () async {
-                            if (controller.passwordController.text.trim().isEmpty) {
-                              ShowToastDialog.showToast("please enter password".tr);
-                            }else if (controller.confirmPasswordController.text.trim().isEmpty){
-                              ShowToastDialog.showToast("please enter confirm password".tr);
-                            }else if (controller.passwordController.text.trim() != controller.confirmPasswordController.text.trim()){
-                              ShowToastDialog.showToast("confirm password does not match".tr);
-                            }else{
+                            if (controller.passwordController.text
+                                .trim()
+                                .isEmpty) {
+                              ShowToastDialog.showToast(
+                                  "please enter password".tr);
+                            } else if (controller.confirmPasswordController.text
+                                .trim()
+                                .isEmpty) {
+                              ShowToastDialog.showToast(
+                                  "please enter confirm password".tr);
+                            } else if (controller.passwordController.text
+                                    .trim() !=
+                                controller.confirmPasswordController.text
+                                    .trim()) {
+                              ShowToastDialog.showToast(
+                                  "confirm password does not match".tr);
+                            } else {
                               ShowToastDialog.showLoader("");
-                           var isUpdated = await  FireStoreUtils.updateUserPassword(controller.emailController.text.trim(),
-                                  controller.confirmPasswordController.text.trim());
-                           log("isUpdated :-- $isUpdated");
-                              ShowToastDialog.closeLoader();
-                           if(isUpdated){
-                             ShowToastDialog.showToast("password updated successfully".tr);
-                             Get.offAll(LoginScreen());
-                           }else{
-                             ShowToastDialog.showToast("password update failed".tr);
-                           }
+
+                              FireStoreUtils.getUserPasswordByEmail(
+                                      controller.emailController.text.trim())
+                                  .then(
+                                (credentials) async {
+                                  print("credentials:---$credentials");
+                                  if (credentials != null &&
+                                      credentials['password'] != null &&
+                                      credentials['password']!.isNotEmpty) {
+                                    final password = credentials['password']!;
+                                    print("User password: $password");
+                                    await FirebaseAuth.instance
+                                        .signInWithEmailAndPassword(
+                                            email: controller
+                                                .emailController.text
+                                                .trim(),
+                                            password: password)
+                                        .then(
+                                      (user) async {
+                                        if (user != null) {
+                                          await user.user?.updatePassword(
+                                              controller
+                                                  .confirmPasswordController
+                                                  .text
+                                                  .trim());
+                                          var isUpdated = await FireStoreUtils
+                                              .updateUserPassword(
+                                                  controller
+                                                      .emailController.text
+                                                      .trim(),
+                                                  controller
+                                                      .confirmPasswordController
+                                                      .text
+                                                      .trim());
+                                          log("isUpdated :-- $isUpdated");
+                                          ShowToastDialog.closeLoader();
+                                          if (isUpdated) {
+                                            ShowToastDialog.showToast(
+                                                "password updated successfully"
+                                                    .tr);
+                                            await FirebaseAuth.instance
+                                                .signOut();
+                                            Get.offAll(LoginScreen());
+                                          } else {
+                                            ShowToastDialog.showToast(
+                                                "password update failed".tr);
+                                          }
+                                        }
+                                      },
+                                    );
+                                  }
+                                },
+                              );
                             }
-
-
-
                           },
                         ),
                       ],
                     )
-
-
                   ],
                 ),
               ),
@@ -180,9 +239,4 @@ class ChangePasswordScreen extends StatelessWidget {
           );
         });
   }
-
-
-
-
-
 }

@@ -94,7 +94,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                 ),
 
                                 //Google pay
-                                Visibility(
+                               /* Visibility(
                                   visible: controller.paymentModel.value.strip != null &&
                                       controller.paymentModel.value.strip?.enable == true,
                                   child: cardDecoration(
@@ -102,7 +102,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                       controller.GOOGLE_PAY,
                                       themeChange,
                                       "assets/images/google_pay_icon.png"),
-                                ),
+                                ),*/
                                 Visibility(
                                   visible:
                                       controller.paymentModel.value.paypal !=

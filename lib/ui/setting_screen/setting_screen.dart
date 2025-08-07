@@ -99,6 +99,7 @@ class SettingScreen extends StatelessWidget {
                     onTap: () {
                       showDialog(
                           context: context,
+                          barrierDismissible: false,
                           builder: (BuildContext context) {
                             return CustomDialogBox(
                               title: "Delete Account".tr,
