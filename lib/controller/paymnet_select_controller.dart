@@ -14,6 +14,7 @@ import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/send_notification.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
 import 'package:phista/model/order_model.dart';
+import 'package:phista/model/parking_model.dart';
 import 'package:phista/model/payment/xenditModel.dart';
 import 'package:phista/model/payment_method_model.dart';
 import 'package:phista/model/user_model.dart';
@@ -31,6 +32,7 @@ import 'package:phista/payment/xenditScreen.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/ui/my_booking/parking_ticket_screen.dart';
 import 'package:phista/utils/fire_store_utils.dart';
+import 'package:phista/utils/pdf_%20generater.dart';
 
 // import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -50,12 +52,49 @@ class PaymentSelectController extends GetxController {
   String bookingTypePayment = "";
   String APPLE_PAY = "Apple Pay";
   String GOOGLE_PAY = "Google Pay";
-
+  Rx<ParkingModel> parkingDetail = ParkingModel().obs;
+  Rx<UserModel> ownerUserModel = UserModel().obs;
+  File? invoicePdf;
   @override
   void onInit() {
     getArgument();
     super.onInit();
+    getParkingDetail(orderModel.value.parkingId??"");
+    createdPdf();
   }
+
+
+  void createdPdf()async{
+     await sendPdfByEmail(orderModel.value.parkingDetails?.name??"",
+        orderModel.value.parkingDetails?.address??"",
+        orderModel.value.parkingSlotId??"",
+        orderModel.value.userVehicle?.vehicleModel?.name??"",
+        orderModel.value.duration.toString()).then((value) {
+       invoicePdf =value;
+      print("invoice send :-- $invoicePdf" );
+
+    },);
+  }
+
+  void getParkingDetail(String parkingId)async{
+  try{
+    ShowToastDialog.showLoader("");
+    await FireStoreUtils.getParkingDetails(parkingId).then((parkingDetail) async{
+
+      await FireStoreUtils.getUserProfile(parkingDetail?.userId??"").then((userDetail) {
+        ShowToastDialog.closeLoader();
+        if(userDetail != null) {
+          ownerUserModel.value = userDetail;
+        }
+      },);
+    },);
+  }catch(e){
+    ShowToastDialog.closeLoader();
+  }
+
+  }
+
+
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
@@ -361,10 +400,34 @@ class PaymentSelectController extends GetxController {
       }
     });
 
-    await FireStoreUtils.setOrder(orderModel.value).then((value) {
+    log("invoicePdf :-- ",error: invoicePdf?.path);
+    if(invoicePdf !=null){
+      await Utils.sendEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdSendBilling, dynamicTemplateData: {},attachmentFile: invoicePdf);
+    }
+    await FireStoreUtils.setOrder(orderModel.value).then((value) async {
       if (value == true) {
         Constant.bookingTypeConst = "hourly";
+      try{
+        Map<String,dynamic> senMap = {
+          "hostFullName":ownerUserModel.value.fullName,
+          "address":orderModel.value.parkingDetails?.address??"",
+          "clientFullName" :Constant.currentUserModel.value?.fullName,
+          "vehicleLicensePlate" :orderModel.value.userVehicle?.vehicleNumber??""
+        };
+
+        print("senMap :- $senMap");
+
+      await  Utils.sendEmailWithTemplate(toEmail: ownerUserModel.value.email??"",
+            templateId: ENV.templateIdNewReservation,
+            dynamicTemplateData: senMap).then((value) {
+          ShowToastDialog.closeLoader();
+            },);
+      }catch(e){
         ShowToastDialog.closeLoader();
+        log("Exception :-- ",error: e.toString());
+      }
+
         Get.to(() => const ParkingTicketScreen(),
             arguments: {"orderModel": orderModel.value});
       }
@@ -652,6 +715,7 @@ class PaymentSelectController extends GetxController {
       String clientSecret,
       String amount,) async {
    try {
+
       final STRIPE.PaymentIntent paymentIntent = await STRIPE.Stripe.instance.confirmPlatformPayPaymentIntent(
         clientSecret: clientSecret,
         confirmParams: STRIPE.PlatformPayConfirmParams.applePay(

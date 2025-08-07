@@ -102,19 +102,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                                   Constant.forgotPassOTP = Utils.generateSixDigitCode();
                                   print("Constant.forgotPassOTP :-- ${Constant.forgotPassOTP}");
                                   ShowToastDialog.showLoader("");
-/*                           await controller.sendEmailWithTemplate(
-                                                      toEmail: 'himanshu.mindiii@gmail.com',
-                                                      templateId: 'd-9bc2f671fe9d4a94aa82d36d46c823a9',
-                                                      dynamicTemplateData: {
-                                                        "name": "OTP for forgot password",
-                                                        "app_name": "Phista App ",
-                                                        "code": "${Constant.forgotPassOTP}"
-                                                      },
-                                                    );*/
+
                                   await controller.sendEmailWithSendGrid(
                                     toEmail: controller.emailController.text.trim(),
-                                    subject: 'OTP for forgot password',
-                                    content: '${Constant.forgotPassOTP} -- OTP',
+                                    subject: 'OTP for reset password',
+                                    content: 'Here is your one time OTP to reset your password - \n${Constant.forgotPassOTP}',
                                   ).then((value) {
                                     controller.otpSend.value = true;
                                     ShowToastDialog.closeLoader();

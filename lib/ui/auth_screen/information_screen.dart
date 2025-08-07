@@ -145,9 +145,8 @@ class InformationScreen extends StatelessWidget {
                                   controller.phoneNumberController.value.text.trim(),  controller.isoCode,controller.countryCode.value.text.trim());
 
                            if(isValid){
-                             controller.sendCode(context, FirebaseAuth.instance.currentUser);
+                             controller.sendCode(context, FirebaseAuth.instance.currentUser,'Enter the 6-digit code sent to your number, to link your number.',"phoneTextFrom");
                            }
-
                             }
                           }
                         },);

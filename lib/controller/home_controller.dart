@@ -39,6 +39,17 @@ class HomeController extends GetxController {
 
     getLocation();
     super.onInit();
+      getCurrentUser();
+
+
+
+  }
+
+  void getCurrentUser()async{
+    await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) {
+      Constant.currentUserModel.value = value;
+    },);
+
   }
 
   getLocation() async {

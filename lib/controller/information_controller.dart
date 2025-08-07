@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
+import 'package:phista/env.dart';
 import 'package:phista/model/referral_model.dart';
 import 'package:phista/model/user_model.dart';
 import 'package:phista/ui/dashboard_screen.dart';
@@ -18,6 +19,7 @@ import 'package:phista/utils/notification_service.dart';
 
 import '../themes/custom_dialog_box.dart';
 import '../utils/debouncer.dart';
+import '../utils/utils.dart';
 
 class InformationController extends GetxController {
   Rx<TextEditingController> fullNameController = TextEditingController().obs;
@@ -32,7 +34,8 @@ class InformationController extends GetxController {
   RxString profileImage = "".obs;
   RxBool passwordVisible = true.obs;
   RxString gmailLogType = "".obs;
-  RxString verificationId = "".obs;
+  RxString verificationIdAL = "".obs;
+  RxString otpTextAL = "".obs;
   var isFirstTimeDelete = false;
   var isoCode = "";
 
@@ -127,18 +130,30 @@ class InformationController extends GetxController {
           });
 
           await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
+          await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationIdAL.value,
+              otpTextAL.value);
 
-         /* if(userModelData.loginType.toString() == "apple"){
-            await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationId.value,
-              otpController.value.text);
-          }*/
-
-          await FireStoreUtils.updateUser(userModelData).then((value) {
-            ShowToastDialog.closeLoader();
+          await FireStoreUtils.updateUser(userModelData).then((value) async{
+           // ShowToastDialog.closeLoader();
             if (value == true) {
-              Get.offAll(
-                const DashBoardScreen(),
-              );
+              try{
+                await Utils.sendEmailWithTemplate(
+                  toEmail: emailController.text.trim().toString(),
+                  templateId: ENV.templateIdCreateAccount,
+                  dynamicTemplateData: {
+                    "fullName": fullNameController.value.text.trim().toString()
+                  },
+                ).then((value) {
+                  ShowToastDialog.closeLoader();
+                },);
+              }catch(e){
+                ShowToastDialog.closeLoader();
+                log("Exception sending template :- ",error: e.toString());
+              }
+
+              Get.offAll(const DashBoardScreen(),);
+            }else{
+              ShowToastDialog.closeLoader();
             }
           });
         } else {
@@ -166,15 +181,33 @@ class InformationController extends GetxController {
           referralCode: Constant.getReferralCode());
       await FireStoreUtils.referralAdd(referralModel);
       await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
+      if(verificationIdAL.value.isNotEmpty){
+        await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationIdAL.value,
+            otpTextAL.value);
+      }
 
-     /* if(userModelData.loginType.toString() == "apple"){
-        await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationId.value,
-            otpController.value.text);
-      }*/
-      await FireStoreUtils.updateUser(userModelData).then((value) {
-        ShowToastDialog.closeLoader();
+      await FireStoreUtils.updateUser(userModelData).then((value) async{
+       // ShowToastDialog.closeLoader();
         if (value == true) {
+
+
+          try{
+            await Utils.sendEmailWithTemplate(
+              toEmail: emailController.text.trim().toString(),
+              templateId: ENV.templateIdCreateAccount,
+              dynamicTemplateData: {
+                "fullName": fullNameController.value.text.trim().toString()
+              },
+            ).then((value) {
+              ShowToastDialog.closeLoader();
+            },);
+          }catch(e){
+            ShowToastDialog.closeLoader();
+            log("Exception sending template :- ",error: e.toString());
+          }
           Get.offAll(const DashBoardScreen());
+        }else{
+          ShowToastDialog.closeLoader();
         }
       });
     }
@@ -205,8 +238,8 @@ class InformationController extends GetxController {
           userModelData.id = uid;
           userModelData.fullName = fullNameController.value.text;
           userModelData.email = emailController.text.trim();
-          // userModelData.countryCode = countryCode.value.text;
-          // userModelData.phoneNumber = phoneNumberController.value.text;
+           userModelData.countryCode = "CA";
+           userModelData.phoneNumber = "";
           userModelData.profilePic = profileImage.value;
           userModelData.fcmToken = fcmToken;
           userModelData.createdAt = Timestamp.now();
@@ -232,15 +265,27 @@ class InformationController extends GetxController {
             }
           });
 
-       //   await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
-
-
-          await FireStoreUtils.updateUser(userModelData).then((value) {
-            ShowToastDialog.closeLoader();
+          await FireStoreUtils.updateUser(userModelData).then((value) async{
             if (value == true) {
+              try{
+                await Utils.sendEmailWithTemplate(
+                  toEmail: emailController.text.trim().toString(),
+                  templateId: ENV.templateIdCreateAccount,
+                  dynamicTemplateData: {
+                    "fullName": fullNameController.value.text.trim().toString()
+                  },
+                ).then((value) {
+                  ShowToastDialog.closeLoader();
+                },);
+              }catch(e){
+                ShowToastDialog.closeLoader();
+                log("Exception sending template :- ",error: e.toString());
+              }
               Get.offAll(
                 const DashBoardScreen(),
               );
+            }else{
+              ShowToastDialog.closeLoader();
             }
           });
         } else {
@@ -253,6 +298,8 @@ class InformationController extends GetxController {
       userModelData.id = uid;
       userModelData.fullName = fullNameController.value.text;
       userModelData.email = emailController.text.trim();
+      userModelData.countryCode = "CA";
+      userModelData.phoneNumber = "";
       userModelData.profilePic = profileImage.value;
       userModelData.fcmToken = fcmToken;
       userModelData.createdAt = Timestamp.now();
@@ -264,11 +311,25 @@ class InformationController extends GetxController {
           referralBy: "",
           referralCode: Constant.getReferralCode());
       await FireStoreUtils.referralAdd(referralModel);
-      //await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
-      await FireStoreUtils.updateUser(userModelData).then((value) {
-        ShowToastDialog.closeLoader();
+      await FireStoreUtils.updateUser(userModelData).then((value) async{
         if (value == true) {
+          try{
+            await Utils.sendEmailWithTemplate(
+              toEmail: emailController.text.trim().toString(),
+              templateId: ENV.templateIdCreateAccount,
+              dynamicTemplateData: {
+                "fullName": fullNameController.value.text.trim().toString()
+              },
+            ).then((value) {
+              ShowToastDialog.closeLoader();
+            },);
+          }catch(e){
+            ShowToastDialog.closeLoader();
+            log("Exception sending template :- ",error: e.toString());
+          }
           Get.offAll(const DashBoardScreen());
+        }else{
+          ShowToastDialog.closeLoader();
         }
       });
     }
@@ -384,7 +445,7 @@ class InformationController extends GetxController {
         await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
           ShowToastDialog.closeLoader();
           if (userExit == true) {
-            await sendCode(context,value.user);
+            await sendCode(context,value.user,'Enter the 6-digit code sent to your number.',"");
 
             //linkUserWithEmailToPhone(value.user,verificationId.value,otpController.value.text);
           }
@@ -411,7 +472,7 @@ class InformationController extends GetxController {
   }
 
 
-  sendCode(BuildContext context,User?  user) async {
+  sendCode(BuildContext context,User?  user,String descMsg, type) async {
     ShowToastDialog.showLoader("please_wait".tr);
     await FirebaseAuth.instance
         .verifyPhoneNumber(
@@ -434,7 +495,7 @@ class InformationController extends GetxController {
           builder: (BuildContext context) {
             return CustomDialogBoxOtp(
               title: 'Verify OTP',
-              descriptions: 'Enter the 6-digit code sent to your number.',
+              descriptions: descMsg,
               img:SvgPicture.asset('assets/icon/alert_ico.svg'),
               buttonText: 'Done',
               onButtonTap: () async {
@@ -442,12 +503,18 @@ class InformationController extends GetxController {
                   Navigator.of(context).pop(); // Close dialog
                   ShowToastDialog.showLoader("Verifying OTP...");
                   try {
-                    // 👉 Step 3: Link the email user with phone number using OTP
-                    await linkUserWithEmailToPhone(
-                      user,
-                      verificationId,
-                      otpController.value.text,
-                    );
+
+                    if(type == ""){
+                      await linkUserWithEmailToPhone(
+                        user,
+                        verificationId,
+                        otpController.value.text,
+                      );
+                    }else{
+                      verificationIdAL.value = verificationId;
+                      otpTextAL.value = otpController.value.text.trim().toString();
+                    }
+
                     ShowToastDialog.closeLoader();
                     ShowToastDialog.showToast("Verification successful");
                     // Navigate to next screen or do login success logic

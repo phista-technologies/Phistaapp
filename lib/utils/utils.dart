@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math' as MATH;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +11,9 @@ import 'package:location/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
+import 'package:http/http.dart' as http;
+
+import '../env.dart';
 
 class Utils {
   static Future<Position?> getCurrentLocation() async {
@@ -171,6 +176,63 @@ class Utils {
   static int generateSixDigitCode() {
     final random = MATH.Random();
     return 100000 + random.nextInt(900000); // Range: 100000 to 999999
+  }
+
+  static Future<void> sendEmailWithTemplate({
+    required String toEmail,
+    required String templateId,
+    required Map<String,dynamic> dynamicTemplateData,
+    File? attachmentFile, // Optional PDF file to attach
+  })
+  async {
+    final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
+
+
+    Map<String, dynamic> body = {
+      "personalizations": [
+        {
+          "to": [
+            {"email": toEmail}
+          ],
+          "dynamic_template_data": dynamicTemplateData,
+        }
+      ],
+      "from": {"email": "support@phista.ca"},
+      "template_id": templateId,
+    };
+
+    // 🔗 Attach PDF if provided
+    if (attachmentFile != null && await attachmentFile.exists()) {
+      final bytes = await attachmentFile.readAsBytes();
+      final base64Pdf = base64Encode(bytes);
+
+      body["attachments"] = [
+        {
+          "content": base64Pdf,
+          "filename": "ParkingInfo.pdf",
+          "type": "application/pdf",
+          "disposition": "attachment",
+        }
+      ];
+    }
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ENV.sandGridApiKey}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+
+
+
+    if (response.statusCode == 202) {
+      print("Email sent with template!");
+    } else {
+      print("Failed to send email: ${response.statusCode}\n${response.body}");
+    }
   }
 
 
