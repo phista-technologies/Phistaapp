@@ -47,7 +47,6 @@ class ParkingViewController extends GetxController {
         parkingModel.value = value;
         isNotAvailableAnyDay.value =  await isMonthParkingAvailable(bookingTypeTemp);
 
-
         print("availabilityList:--->> ${parkingModel.value.availibilityWeekList}");
       }
     });
@@ -179,16 +178,11 @@ class ParkingViewController extends GetxController {
                   List<String> bookingParts = bookingDateFromFirebase.split(',');
                   List<String> rangeParts = rangeDate.split(',');
                   if (bookingParts.length == 2 && rangeParts.length == 2) {
-                    DateTime bookingStart =
-                    Utils.stringToTimeStamp(bookingParts[0].trim()).toDate();
-                    DateTime bookingEnd =
-                    Utils.stringToTimeStamp(bookingParts[1].trim()).toDate();
-                    DateTime rangeStart =
-                    Utils.stringToTimeStamp(rangeParts[0].trim()).toDate();
-                    DateTime rangeEnd =
-                    Utils.stringToTimeStamp(rangeParts[1].trim()).toDate();
-                    bool noOverlap = bookingEnd.isBefore(rangeStart) ||
-                        bookingStart.isAfter(rangeEnd);
+                    DateTime bookingStart = Utils.stringToTimeStamp(bookingParts[0].trim()).toDate();
+                    DateTime bookingEnd = Utils.stringToTimeStamp(bookingParts[1].trim()).toDate();
+                    DateTime rangeStart = Utils.stringToTimeStamp(rangeParts[0].trim()).toDate();
+                    DateTime rangeEnd = Utils.stringToTimeStamp(rangeParts[1].trim()).toDate();
+                    bool noOverlap = bookingEnd.isBefore(rangeStart) || bookingStart.isAfter(rangeEnd);
 
                     if (noOverlap) {
                       print("No collision. The date ranges do not overlap.");
@@ -201,12 +195,6 @@ class ParkingViewController extends GetxController {
                   }
                 }
                 print("isNotAvailableAnyDay1");
-
-
-
-
-
-
               }
             }
           });

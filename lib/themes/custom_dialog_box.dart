@@ -312,7 +312,7 @@ class CustomDialogBoxOtp extends StatelessWidget {
           PinCodeTextField(
             length: 6,
             appContext: context,
-            keyboardType: TextInputType.phone,
+            keyboardType: TextInputType.number,
             enablePinAutofill: true,
             hintCharacter: "-",
             hintStyle: TextStyle(

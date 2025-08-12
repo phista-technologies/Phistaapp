@@ -14,6 +14,8 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
+import '../../constant/constant.dart';
+
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
@@ -90,6 +92,39 @@ class SettingScreen extends StatelessWidget {
                               width: 10,
                             ),
                             Icon(Icons.arrow_forward_ios, size: 16, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showThem(context, controller);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          Image.asset("assets/images/App_version_Icon.png",color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08 ,height: 25,width: 20,),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                              child: Text("App Version".tr,
+                                  style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
+                          Row(children: [
+                            Text(
+                              controller.lightDarkMode.value,
+                              style: TextStyle(color: themeChange.getThem() ? AppThemData.primary07 : AppThemData.primary07, fontFamily: AppThemData.medium, fontSize: 14),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(Constant.currentAppVersion,
+                                style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))
                           ]),
                         ],
                       ),

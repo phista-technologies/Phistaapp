@@ -918,7 +918,8 @@ class FireStoreUtils {
              orderList.add(orderModel);
            }
 
-         }else if(type == "monthly"){ // for month
+         }
+         else if(type == "monthly"){ // for month
            OrderModel orderModel = OrderModel.fromJson(data);
            orderList.add(orderModel);
          }

@@ -18,6 +18,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/notification_service.dart';
 
 import '../themes/custom_dialog_box.dart';
+import '../ui/auth_screen/otp_screen.dart';
 import '../utils/debouncer.dart';
 import '../utils/utils.dart';
 
@@ -27,7 +28,7 @@ class InformationController extends GetxController {
   Rx<TextEditingController> phoneNumberController = TextEditingController().obs;
   Rx<TextEditingController> passwordController = TextEditingController().obs;
   Rx<TextEditingController> referralCodeController = TextEditingController().obs;
-  Rx<TextEditingController> countryCode = TextEditingController().obs;
+  Rx<TextEditingController> countryCode = TextEditingController(text: "+1").obs;
   Rx<TextEditingController> otpController = TextEditingController().obs;
   RxString loginType = "".obs;
   final ImagePicker imagePicker = ImagePicker();
@@ -38,6 +39,9 @@ class InformationController extends GetxController {
   RxString otpTextAL = "".obs;
   var isFirstTimeDelete = false;
   var isoCode = "";
+
+  var fromEmailCheckExist = "0"; // 0= intial value , 1= exit, 2= not exit
+  var fromPhoneNumberExist = "0"; // 0= intial value , 1= exit, 2= not exit
 
   final debouncer = Debouncer(milliseconds: 1000);
 
@@ -445,7 +449,8 @@ class InformationController extends GetxController {
         await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
           ShowToastDialog.closeLoader();
           if (userExit == true) {
-            await sendCode(context,value.user,'Enter the 6-digit code sent to your number.',"");
+            await sendCode(context,user: value.user,
+                descMsg: 'Enter the 6-digit code sent to your number.',type: "");
 
             //linkUserWithEmailToPhone(value.user,verificationId.value,otpController.value.text);
           }
@@ -472,7 +477,7 @@ class InformationController extends GetxController {
   }
 
 
-  sendCode(BuildContext context,User?  user,String descMsg, type) async {
+  sendCode(BuildContext context, {User? user, String? descMsg, String? type}) async {
     ShowToastDialog.showLoader("please_wait".tr);
     await FirebaseAuth.instance
         .verifyPhoneNumber(
@@ -489,48 +494,79 @@ class InformationController extends GetxController {
       },
       codeSent: (String verificationId, int? resendToken) {
         ShowToastDialog.closeLoader();
-        showDialog(
-          context: Get.context!,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CustomDialogBoxOtp(
-              title: 'Verify OTP',
-              descriptions: descMsg,
-              img:SvgPicture.asset('assets/icon/alert_ico.svg'),
-              buttonText: 'Done',
-              onButtonTap: () async {
-                if (otpController.value.text.length == 6) {
-                  Navigator.of(context).pop(); // Close dialog
-                  ShowToastDialog.showLoader("Verifying OTP...");
-                  try {
+         if(type == "loginExist"){
+        Get.to(const OtpScreen(), arguments: {
+        "countryCode": countryCode.value.text,
+        "phoneNumber": phoneNumberController.value.text,
+        "verificationId": verificationId,
+          "screenType":"info"
+        });
+        }else{
+           showDialog(
+             context: Get.context!,
+             barrierDismissible: false,
+             builder: (BuildContext context) {
+               return CustomDialogBoxOtp(
+                 title: 'Verify OTP',
+                 descriptions: descMsg??"",
+                 img:SvgPicture.asset('assets/icon/alert_ico.svg'),
+                 buttonText: 'Done',
+                 onButtonTap: () async {
+                   if (otpController.value.text.length == 6) {
+                     Navigator.of(context).pop(); // Close dialog
+                     ShowToastDialog.showLoader("Verifying OTP...");
+                     try {
 
-                    if(type == ""){
-                      await linkUserWithEmailToPhone(
-                        user,
-                        verificationId,
-                        otpController.value.text,
-                      );
-                    }else{
-                      verificationIdAL.value = verificationId;
-                      otpTextAL.value = otpController.value.text.trim().toString();
-                    }
+                       if(type == ""){
+                         await linkUserWithEmailToPhone(
+                           user,
+                           verificationId,
+                           otpController.value.text,
+                         );
+                       }
+                       else{
+                         verificationIdAL.value = verificationId;
+                         otpTextAL.value = otpController.value.text.trim().toString();
 
-                    ShowToastDialog.closeLoader();
-                    ShowToastDialog.showToast("Verification successful");
-                    // Navigate to next screen or do login success logic
+                         if (gmailLogType != "EmailSignup"){
+                          createAccount();
+                         }
+                         else{
+                           print("email password");
+                           final userCred = await createUserWithEmailPassword(email:emailController.text,
+                               password: passwordController.value.text.trim());
 
-                  } catch (e) {
-                    ShowToastDialog.closeLoader();
-                    ShowToastDialog.showToast("Invalid OTP: $e");
-                  }
-                } else {
-                  ShowToastDialog.showToast("Please enter 6-digit OTP");
-                }
-              },
-              otpController: otpController.value,
-            );
-          },
-        );
+                           if (userCred != null) {
+                             print("userCred:--${userCred.additionalUserInfo!.isNewUser}");
+                             print("userCredmmmm:--${userCred}");
+
+                           createAccountWithEmailNew(userCred.user!.uid);
+                           }
+                         }
+
+
+                       }
+
+                       ShowToastDialog.closeLoader();
+                       ShowToastDialog.showToast("Verification successful");
+                       // Navigate to next screen or do login success logic
+
+                     } catch (e) {
+                       ShowToastDialog.closeLoader();
+                       ShowToastDialog.showToast("Invalid OTP: $e");
+                     }
+                   } else {
+                     ShowToastDialog.showToast("Please enter 6-digit OTP");
+                   }
+                 },
+                 otpController: otpController.value,
+               );
+             },
+           );
+         }
+
+
+
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     )

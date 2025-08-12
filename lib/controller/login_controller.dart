@@ -50,6 +50,7 @@ class LoginController extends GetxController {
           "countryCode": countryCode.value.text,
           "phoneNumber": phoneNumberController.value.text,
           "verificationId": verificationId,
+          "screenType":""
         });
       },
       codeAutoRetrievalTimeout: (String verificationId) {},

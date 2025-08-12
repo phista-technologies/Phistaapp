@@ -33,12 +33,14 @@ import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/ui/my_booking/parking_ticket_screen.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/pdf_%20generater.dart';
+import 'package:printing/printing.dart';
 
 // import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../env.dart';
+import '../model/tax_model.dart';
 import '../utils/utils.dart';
 
 class PaymentSelectController extends GetxController {
@@ -55,6 +57,10 @@ class PaymentSelectController extends GetxController {
   Rx<ParkingModel> parkingDetail = ParkingModel().obs;
   Rx<UserModel> ownerUserModel = UserModel().obs;
   File? invoicePdf;
+  String couponAmountReview = "";
+  String totalAmountReview = "";
+  List<TaxModel>? taxList = [];
+
   @override
   void onInit() {
     getArgument();
@@ -69,9 +75,16 @@ class PaymentSelectController extends GetxController {
         orderModel.value.parkingDetails?.address??"",
         orderModel.value.parkingSlotId??"",
         orderModel.value.userVehicle?.vehicleModel?.name??"",
-        orderModel.value.duration.toString()).then((value) {
+        orderModel.value.duration.toString(),
+         Constant.amountShow(amount: orderModel.value.subTotal.toString()),
+         Constant.amountShow(amount: couponAmountReview),
+         Constant.amountShow(amount: totalAmountReview),
+       taxList
+     ).then((value) async {
        invoicePdf =value;
       print("invoice send :-- $invoicePdf" );
+       // Preview the saved file
+      // await Printing.layoutPdf(onLayout: (_) => invoicePdf!.readAsBytes());
 
     },);
   }
@@ -100,9 +113,10 @@ class PaymentSelectController extends GetxController {
     dynamic argumentData = Get.arguments;
     if (argumentData != null) {
       bookingTypePayment = Constant.bookingTypeConst;
-
-        orderModel.value = argumentData['orderModel'];
-
+      orderModel.value = argumentData['orderModel'];
+      couponAmountReview = argumentData['couponAmount'];
+      totalAmountReview = argumentData['totalAmount'];
+      taxList = argumentData['taxList'];
 
     }
     await getPaymentData();
@@ -1205,7 +1219,7 @@ class PaymentSelectController extends GetxController {
   Future<void> initGooglePayPaymentSheet(String clientSecret) async {
 
     var gPay= STRIPE.PaymentSheetGooglePay(
-      merchantCountryCode: 'CA',
+      merchantCountryCode:'CA',
       currencyCode: "CAD",
       testEnv: true,
     );

@@ -937,12 +937,10 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 controller.orderModel.value.taxList == null
                                     ? const SizedBox()
                                     : ListView.builder(
-                                    itemCount: controller
-                                        .orderModel.value.taxList!.length,
+                                    itemCount: controller.orderModel.value.taxList!.length,
                                     shrinkWrap: true,
                                     itemBuilder: (context, index) {
-                                      TaxModel taxModel = controller
-                                          .orderModel.value.taxList![index];
+                                      TaxModel taxModel = controller.orderModel.value.taxList![index];
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 5),
@@ -950,9 +948,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                "${taxModel.title
-                                                    .toString()} (${taxModel
-                                                    .type == "fix"
+                                                "${taxModel.title.toString()} (${taxModel.type == "fix"
                                                     ? Constant.amountShow(
                                                     amount: taxModel.tax)
                                                     : "${taxModel.tax}%"})",
@@ -1132,6 +1128,9 @@ class ReviewSummaryScreen extends StatelessWidget {
                     Get.to(() => const PaymentSelectScreen(),
                         arguments: {
                           "orderModel": controller.orderModel.value,
+                          "couponAmount" : controller.couponAmount.toString(),
+                          "totalAmount" : controller.calculateAmount().toString(),
+                          "taxList" : controller.orderModel.value.taxList
                         });
                   },
                 ),

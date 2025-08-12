@@ -236,7 +236,15 @@ class ProfileScreen extends StatelessWidget {
                             },
                             themeChange: themeChange,
                           ),
-                          Center(
+                          menuItemWidgetForListParking(
+                            title: "List your parking".tr,
+                            svgImage: "assets/icon/ic_parking_icon.png",
+                            onTap: () {
+                              Get.to(() => const DownloadAppScreen());
+                            },
+                            themeChange: themeChange,
+                          ),
+                         /* Center(
                             child: Container(
                               width: Responsive.width(45, context),
                               child: RoundedButtonFexiable(
@@ -252,7 +260,7 @@ class ProfileScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                          ),
+                          ),*/
                           const Divider(
                               color: AppThemData.grey04, thickness: 1),
                           menuItemWidget(
@@ -330,6 +338,35 @@ class ProfileScreen extends StatelessWidget {
                 : themeChange.getThem()
                     ? AppThemData.grey01
                     : AppThemData.grey09),
+      ),
+    );
+  }
+
+  Widget menuItemWidgetForListParking({
+    required String svgImage,
+    required String title,
+    required VoidCallback onTap,
+    required themeChange,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+      horizontalTitleGap: 6,
+      onTap: onTap,
+      trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+      leading: Image.asset(
+        svgImage,
+        height: 26,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16,
+            fontFamily: AppThemData.medium,
+            color: title == "Log Out"
+                ? AppThemData.primary07
+                : themeChange.getThem()
+                ? AppThemData.primary07
+                : AppThemData.primary07),
       ),
     );
   }

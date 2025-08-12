@@ -358,25 +358,7 @@ class LoginScreen extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          onTap: () async {
-                            Get.to(ForgotPasswordScreen());
-                          },
-                          child: Text(
-                            "Forgot Password?".tr,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: AppThemData.warning06,
-                              fontSize: 17,
-                              fontFamily: AppThemData.medium,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
+
                       Row(
                         children: [
                           const Expanded(child: Divider(thickness: 1)),

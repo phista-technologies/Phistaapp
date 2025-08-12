@@ -5,6 +5,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:phista/constant/constant.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VersionChecker {
@@ -23,13 +24,11 @@ class VersionChecker {
     }else{
       latestVersion = remoteConfig.getString('force_update_version_driver_android');
     }
-
-
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersion = packageInfo.version;
+    Constant.currentAppVersion =  currentVersion;
     print("packageInfo:-->$packageInfo");
     print("latestVersion:-->$latestVersion");
-
     /*if (_isVersionLower(currentVersion, latestVersion)) {
       _showForceUpdateDialog(context);
     }*/

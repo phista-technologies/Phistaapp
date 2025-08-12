@@ -225,17 +225,12 @@ class Utils {
       body: jsonEncode(body),
     );
 
-
-
-
     if (response.statusCode == 202) {
       print("Email sent with template!");
     } else {
       print("Failed to send email: ${response.statusCode}\n${response.body}");
     }
   }
-
-
 
 
 }

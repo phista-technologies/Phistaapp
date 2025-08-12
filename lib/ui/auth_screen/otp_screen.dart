@@ -71,7 +71,7 @@ class OtpScreen extends StatelessWidget {
                           PinCodeTextField(
                             length: 6,
                             appContext: context,
-                            keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.number,
                             enablePinAutofill: true,
                             hintCharacter: "-",
                             hintStyle: TextStyle(color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey06, fontFamily: AppThemData.regular),
@@ -96,6 +96,11 @@ class OtpScreen extends StatelessWidget {
                             onPress: () async {
                               if (controller.otpController.value.text.length == 6) {
                                 ShowToastDialog.showLoader("verify_OTP".tr);
+
+                                if(controller.screenType == "info"){
+                                  FirebaseAuth.instance.currentUser?.delete();
+                                }
+
 
                                 PhoneAuthCredential credential =
                                     PhoneAuthProvider.credential(verificationId: controller.verificationId.value, smsCode: controller.otpController.value.text);

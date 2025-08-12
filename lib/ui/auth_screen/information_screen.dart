@@ -120,34 +120,16 @@ class InformationScreen extends StatelessWidget {
                         controller.debouncer.run(() async{
                           print("number :-- $number");
                           if (number.isNotEmpty){
-                            bool isExist = await FireStoreUtils.getUserPhoneExist(number);
-                            print("isExist :-- $isExist");
-                            if (isExist){
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context){
-                                return CustomDialogBoxOnlyOk(
-                                  title: "Alert".tr,
-                                  descriptions: "This phone number is already exists. You want to link existing phone number with your email?".tr,
-                                  buttonText: "Okay",
-                                  onButtonTap: (){
-                                    controller.phoneNumberController.value.clear();
-                                    Get.back();
-                                  },
-                                  img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                                );
-                              });
-                            }else{
+                           var isExist = await FireStoreUtils.getUserPhoneExist(number);
 
-                           var isValid =   await Utils
-                                  .getPhoneNumberValidation(
-                                  controller.phoneNumberController.value.text.trim(),  controller.isoCode,controller.countryCode.value.text.trim());
-
-                           if(isValid){
-                             controller.sendCode(context, FirebaseAuth.instance.currentUser,'Enter the 6-digit code sent to your number, to link your number.',"phoneTextFrom");
+                           if(isExist){
+                             controller.fromPhoneNumberExist = "1";
+                           }else{
+                             controller.fromPhoneNumberExist = "2";
                            }
-                            }
+
+                            print("isExist :-- ${controller.fromPhoneNumberExist}");
+
                           }
                         },);
                       },
@@ -176,73 +158,11 @@ class InformationScreen extends StatelessWidget {
                           if(email.isNotEmpty){
                           bool isExist = await FireStoreUtils.getUserEmailExist(email);
                           print("email Exist :--- $isExist");
-
                           if(isExist){
-                            FireStoreUtils.getUserPasswordByEmail(email).then((credentials)async {
-                              print("credentials:---$credentials");
-                              if (credentials != null &&
-                                  credentials['password'] != null &&
-                                  credentials['password']!.isNotEmpty) {
-                                final password = credentials['password']!;
-                                final phoneNumber = credentials['phoneNumber'] ?? '';
-                                print("User password: $password");
-                                print("User phone number: $phoneNumber");
+                            controller.fromEmailCheckExist = "1";
 
-                                if( controller.isFirstTimeDelete){
-                                  await FirebaseAuth.instance.signOut();
-                                }
-
-                                if (phoneNumber.isEmpty){
-                                  showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return CustomDialogBox(
-                                          title: "Alert".tr,
-                                          descriptions:
-                                          "This email is already exists. You want to link existing email with this phone number?"
-                                              .tr,
-                                          positiveString: "Ok".tr,
-                                          negativeString: "Cancel".tr,
-                                          positiveClick: () async {
-                                            Get.back();
-                                            ShowToastDialog.showLoader("please_wait".tr);
-                                            if(!controller.isFirstTimeDelete){
-                                              await FirebaseAuth.instance.currentUser!.delete().then((value) {
-                                                controller.isFirstTimeDelete =true;
-                                                controller.signInWithEmailAndPassword(context,email, password);
-                                              });
-                                            }else{
-                                              controller.signInWithEmailAndPassword(context,email, password);
-                                            }
-
-                                          },
-                                          negativeClick: () {
-                                            controller.emailController.clear();
-                                            Get.back();
-                                          },
-                                          img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                                        );
-                                      });
-                                }
-                                else{
-                                  showDialog(context: context,
-                                      barrierDismissible: false,
-                                      builder: (BuildContext context){
-                                    return CustomDialogBoxOnlyOk(
-                                        title: "Alert".tr,
-                                        descriptions: "This email is already linked with other phone number so please try with different email or phone number.".tr,
-                                        buttonText: "Okay",
-                                        onButtonTap: (){
-                                          controller.emailController.clear();
-                                          Get.back();
-                                        },
-                                      img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                                    );
-                                  });
-                                }
-                              }
-                            },);
+                          }else{
+                            controller.fromEmailCheckExist = "2";
                           }
                           }
                         },);
@@ -326,12 +246,111 @@ class InformationScreen extends StatelessWidget {
                               "Please enter password");
                         }
                         else {
-                         if (controller.gmailLogType != "EmailSignup"){
+                          if (controller.fromPhoneNumberExist.toString() == "1"){
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context){
+                                  return CustomDialogBox(title: "Alert".tr,
+                                    descriptions: "This phone number is already exists. You want to login with existing (******${controller.phoneNumberController.value.text.trim().substring(controller.phoneNumberController.value.text.trim().length - 4)}) number?".tr,
+                                    img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                    positiveString: "Login",
+                                    negativeString: "Cancel",
+                                    positiveClick: (){
+                                      print("login");
+                                      controller.sendCode(context,type: "loginExist");
+                                    },
+                                    negativeClick: (){
+                                      print("cancel");
+                                      controller.phoneNumberController.value.clear();
+                                      Get.back();
+                                    },
+                                  );
+                                });
+                          }
+                          else  if (controller.fromPhoneNumberExist.toString() == "2"){
+                            var isValid =   await Utils
+                                .getPhoneNumberValidation(
+                                controller.phoneNumberController.value.text.trim(),  controller.isoCode,controller.countryCode.value.text.trim());
+                            if(isValid){
+                              controller.sendCode(context, user: FirebaseAuth.instance.currentUser,
+                                  descMsg: 'Enter the 6-digit code sent to your number, to link your number.',
+                                  type: "phoneTextFrom");
+                            }
+                          }
+                          else if (controller.fromEmailCheckExist.toString() == "1"){
+                            FireStoreUtils.getUserPasswordByEmail(controller.emailController.text.trim()).then((credentials)async {
+                              print("credentials:---$credentials");
+                              if (credentials != null &&
+                                  credentials['password'] != null &&
+                                  credentials['password']!.isNotEmpty) {
+                                final password = credentials['password']!;
+                                final phoneNumber = credentials['phoneNumber'] ?? '';
+                                print("User password: $password");
+                                print("User phone number: $phoneNumber");
+
+                                if( controller.isFirstTimeDelete){
+                                  await FirebaseAuth.instance.signOut();
+                                }
+
+                                if (phoneNumber.isEmpty){
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CustomDialogBox(
+                                          title: "Alert".tr,
+                                          descriptions:
+                                          "This email is already exists. You want to link existing email with this phone number?"
+                                              .tr,
+                                          positiveString: "Ok".tr,
+                                          negativeString: "Cancel".tr,
+                                          positiveClick: () async {
+                                            Get.back();
+                                            ShowToastDialog.showLoader("please_wait".tr);
+                                            if(!controller.isFirstTimeDelete){
+                                              await FirebaseAuth.instance.currentUser!.delete().then((value) {
+                                                controller.isFirstTimeDelete =true;
+                                                controller.signInWithEmailAndPassword(context,controller.emailController.text.trim(), password);
+                                              });
+                                            }else{
+                                              controller.signInWithEmailAndPassword(context,controller.emailController.text.trim(), password);
+                                            }
+
+                                          },
+                                          negativeClick: () {
+                                            controller.emailController.clear();
+                                            Get.back();
+                                          },
+                                          img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                        );
+                                      });
+                                }
+                                else{
+                                  showDialog(context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context){
+                                        return CustomDialogBoxOnlyOk(
+                                          title: "Alert".tr,
+                                          descriptions: "This email is already linked with other phone number so please try with different email or phone number.".tr,
+                                          buttonText: "Okay",
+                                          onButtonTap: (){
+                                            controller.emailController.clear();
+                                            Get.back();
+                                          },
+                                          img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                        );
+                                      });
+                                }
+                              }
+                            },);
+                          }
+                          else {
+                             if (controller.gmailLogType != "EmailSignup"){
                             controller.createAccount();
                          }
                          else{
                            print("email password");
-
                            final userCred = await controller.createUserWithEmailPassword(email: controller.emailController.text,
                                password: controller.passwordController.value.text.trim());
 
@@ -342,6 +361,7 @@ class InformationScreen extends StatelessWidget {
                              controller.createAccountWithEmailNew(userCred.user!.uid);
                            }
                          }
+                          }
 
                         }
                       },

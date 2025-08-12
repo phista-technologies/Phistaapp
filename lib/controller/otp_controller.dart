@@ -8,7 +8,7 @@ class OtpController extends GetxController {
   RxString countryCode = "".obs;
   RxString phoneNumber = "".obs;
   RxString verificationId = "".obs;
-
+  String screenType = "";
   // RxInt resendToken = 0.obs;
   RxBool isLoading = true.obs;
 
@@ -24,6 +24,7 @@ class OtpController extends GetxController {
       countryCode.value = argumentData['countryCode'];
       phoneNumber.value = argumentData['phoneNumber'];
       verificationId.value = argumentData['verificationId'];
+      screenType = argumentData['screenType'];
     }
     isLoading.value = false;
     update();

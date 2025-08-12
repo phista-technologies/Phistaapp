@@ -17,6 +17,7 @@ import '../../themes/round_button_gradiant.dart';
 import '../../themes/segment_button_gradiant.dart';
 import '../../themes/text_field_widget.dart';
 import '../../utils/dark_theme_provider.dart';
+import 'forgotPasswordScreen.dart';
 import 'information_screen.dart';
 
 class LoginWithEmail extends StatelessWidget {
@@ -133,6 +134,25 @@ class LoginWithEmail extends StatelessWidget {
                           )),
                     ),
                   ),
+                  //const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () async {
+                        Get.to(ForgotPasswordScreen());
+                      },
+                      child: Text(
+                        "Forgot Password?".tr,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: AppThemData.warning06,
+                          fontSize: 17,
+                          fontFamily: AppThemData.medium,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 30),
                   RoundedButtonGradiant(
                     title: "Login".tr,
@@ -140,7 +160,6 @@ class LoginWithEmail extends StatelessWidget {
                       if (controller.checkValidation() != null) {
                         ShowToastDialog.showToast(controller.checkValidation().toString());
                       } else {
-
                           controller.signInWithEmailAndPassword();
                         }
                     },

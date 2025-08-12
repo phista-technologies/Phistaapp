@@ -52,6 +52,7 @@ class Constant {
   static String? locationUpdate = "20";
 
   static int forgotPassOTP = -1;
+  static String currentAppVersion = "";
 
   static LocationLatLng? currentLocation =
       LocationLatLng(latitude: 23.0225, longitude: 72.5714);

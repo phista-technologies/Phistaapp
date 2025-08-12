@@ -94,7 +94,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                 ),
 
                                 //Google pay
-                               /* Visibility(
+                                Visibility(
                                   visible: controller.paymentModel.value.strip != null &&
                                       controller.paymentModel.value.strip?.enable == true,
                                   child: cardDecoration(
@@ -102,7 +102,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                       controller.GOOGLE_PAY,
                                       themeChange,
                                       "assets/images/google_pay_icon.png"),
-                                ),*/
+                                ),
                                 Visibility(
                                   visible:
                                       controller.paymentModel.value.paypal !=
@@ -275,23 +275,26 @@ class PaymentSelectScreen extends StatelessWidget {
                           controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!),
                           context);
-                    } else if (controller.selectedPaymentMethod.value ==
-                        controller.paymentModel.value.payStack?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payStack?.name) {
                       controller.payStackPayment(controller
                           .calculateAmount()
                           .toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.mercadoPago?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.mercadoPago?.name) {
                       controller.mercadoPagoMakePayment(
                           context: context,
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.flutterWave?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.flutterWave?.name) {
                       controller.flutterWaveInitiatePayment(
                           context: context,
                           amount: controller.calculateAmount().toStringAsFixed(
                               Constant.currencyModel!.decimalDigits!));
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payfast?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payfast?.name) {
                       controller.payFastPayment(
                           context: context,
                           amount: controller.calculateAmount().toStringAsFixed(
@@ -303,15 +306,18 @@ class PaymentSelectScreen extends StatelessWidget {
                     else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.xendit?.name) {
                       controller.xenditPayment(
                           context, controller.calculateAmount());
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.orangePay?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.orangePay?.name) {
                       controller.orangeMakePayment(
                           amount: controller.calculateAmount().toString(),
                           context: context);
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.midtrans?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.midtrans?.name) {
                       controller.midtransMakePayment(
                           amount: controller.calculateAmount().toString(),
                           context: context);
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.razorpay?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.razorpay?.name) {
                       RazorPayController()
                           .createOrderRazorPay(
                               amount: controller.calculateAmount().toInt(),
@@ -329,7 +335,8 @@ class PaymentSelectScreen extends StatelessWidget {
                               orderId: result.id);
                         }
                       });
-                    } else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.wallet?.name) {
+                    }
+                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.wallet?.name) {
                       if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
                         ShowToastDialog.showLoader("Please wait..");
                           WalletTransactionModel transactionModel = WalletTransactionModel(
