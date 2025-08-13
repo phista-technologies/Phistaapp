@@ -12,6 +12,9 @@ import 'package:phista/ui/chat/model/chat_model.dart';
 import 'package:phista/ui/chat/model/inbox_model.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 
+import '../env.dart';
+import '../utils/utils.dart';
+
 class ChatController extends GetxController {
   final messageTextEditorController = TextEditingController().obs;
 
@@ -120,7 +123,7 @@ class ChatController extends GetxController {
         .collection("inbox")
         .doc(senderUserModel.value.id.toString())
         .set(inboxModel.toJson());
-
+    await sendMsgEmail();
     ChatModel chatModel = ChatModel(
         type: "text",
         timestamp: Timestamp.now(),
@@ -152,6 +155,25 @@ class ChatController extends GetxController {
 
     await SendNotification.sendOneNotification(
         token: receiverUserModel.value.fcmToken.toString(), title: receiverUserModel.value.fullName.toString(), body: text, payload: playLoad);
+  }
+
+  Future<bool> sendMsgEmail() async {
+    print("false msg");
+    print("receiverUserModel.value.email!${receiverUserModel.value.email!}");
+    print("receiverUserModel.value.msg!${messageTextEditorController.value.text.trim().toString()}");
+    bool sendMail = false;
+    await Utils.sendEmailWithTemplate(
+      toEmail:receiverUserModel.value.email!,
+      templateId: ENV.templateIdSendMsg,
+      dynamicTemplateData: {
+        "message": messageTextEditorController.value.text.trim().toString()
+      },
+    ).then((value) {
+      print("true msg");
+      sendMail = true;
+      // ShowToastDialog.closeLoader();
+    },);
+    return sendMail;
   }
 
   @override

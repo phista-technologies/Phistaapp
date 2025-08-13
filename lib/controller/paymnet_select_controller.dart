@@ -71,6 +71,7 @@ class PaymentSelectController extends GetxController {
 
 
   void createdPdf()async{
+
      await sendPdfByEmail(orderModel.value.parkingDetails?.name??"",
         orderModel.value.parkingDetails?.address??"",
         orderModel.value.parkingSlotId??"",
@@ -84,7 +85,7 @@ class PaymentSelectController extends GetxController {
        invoicePdf =value;
       print("invoice send :-- $invoicePdf" );
        // Preview the saved file
-      // await Printing.layoutPdf(onLayout: (_) => invoicePdf!.readAsBytes());
+       //await Printing.layoutPdf(onLayout: (_) => invoicePdf!.readAsBytes());
 
     },);
   }
@@ -93,7 +94,6 @@ class PaymentSelectController extends GetxController {
   try{
     ShowToastDialog.showLoader("");
     await FireStoreUtils.getParkingDetails(parkingId).then((parkingDetail) async{
-
       await FireStoreUtils.getUserProfile(parkingDetail?.userId??"").then((userDetail) {
         ShowToastDialog.closeLoader();
         if(userDetail != null) {
@@ -192,8 +192,7 @@ class PaymentSelectController extends GetxController {
         orderModel.value.parkingDetails!.userId.toString());
     orderModel.value.paymentCompleted = false;
     orderModel.value.paymentType = selectedPaymentMethod.value;
-    orderModel.value.adminCommission =
-        receiverUserModel?.adminCommission ?? Constant.adminCommission;
+    orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
     orderModel.value.createdAt = Timestamp.now();
     orderModel.value.updateAt = Timestamp.now();
     // await FireStoreUtils.getFirestOrderOrNOt(orderModel.value)
@@ -416,6 +415,7 @@ class PaymentSelectController extends GetxController {
 
     log("invoicePdf :-- ",error: invoicePdf?.path);
     if(invoicePdf !=null){
+      print("currentUserModel-Email ${Constant.currentUserModel.value?.email}");
       await Utils.sendEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdSendBilling, dynamicTemplateData: {},attachmentFile: invoicePdf);
     }

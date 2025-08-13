@@ -66,35 +66,30 @@ class LoginController extends GetxController {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
 
-      // 🧹 Force logout previous session to allow fresh account selection
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.disconnect();
         await googleSignIn.signOut();
       }
-
-      // ✅ This will now show the account selection popup
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         ShowToastDialog.closeLoader();
         ShowToastDialog.showToast("Login cancelled");
         return null;
       }
-
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
       return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
+    }catch(e){
       debugPrint("signInWithGoogle error: $e");
       ShowToastDialog.closeLoader();
       ShowToastDialog.showToast("Something went wrong. Try again.");
       return null;
     }
   }
+
 
 
   Future<Map<String, dynamic>?> signInWithApple() async {
@@ -164,7 +159,8 @@ class LoginController extends GetxController {
             "userModel": userModel,
           });
 
-        } else {
+        }
+        else {
           FireStoreUtils.userExistOrNot(uid).then((userExists) async {
             if (userExists) {
               UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
