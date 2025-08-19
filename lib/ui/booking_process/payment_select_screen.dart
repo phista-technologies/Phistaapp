@@ -261,9 +261,6 @@ class PaymentSelectScreen extends StatelessWidget {
                   color: AppThemData.primary06,
                   onPress: () async {
 
-
-
-
                     if ((controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name)
                         || (controller.selectedPaymentMethod.value == controller.APPLE_PAY)  || (controller.selectedPaymentMethod.value == controller.GOOGLE_PAY)) {
                       controller.stripeMakePayment(

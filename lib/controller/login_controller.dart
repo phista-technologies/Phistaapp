@@ -16,6 +16,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../constant/extension_data.dart';
+import '../model/payment/AppleUserDataModel.dart';
 
 
 class LoginController extends GetxController {
@@ -66,23 +67,54 @@ class LoginController extends GetxController {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
 
+      // Ensure fresh login (optional)
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.disconnect();
         await googleSignIn.signOut();
       }
+
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         ShowToastDialog.closeLoader();
         ShowToastDialog.showToast("Login cancelled");
         return null;
       }
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      debugPrint("Google User Email: ${googleUser.email}");
+
+      // Check if user exists in Firestore with password
+      final credentials = await FireStoreUtils.getUserPasswordByEmail(googleUser.email);
+
+      if (credentials != null && credentials['password'] != null && credentials['password']!.isNotEmpty) {
+        final password = credentials['password']!;
+        debugPrint("User password (Google): $password");
+
+        try {
+          final value = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: googleUser.email.trim(),
+            password: password,
+          );
+
+          ShowToastDialog.closeLoader();
+          debugPrint("Firebase Sign-in success");
+
+          return value;
+        } catch (e) {
+          debugPrint("Firebase Email/Password Sign-in failed: $e");
+        }
+      }
+
+      // If no password found -> proceed with normal Google Sign-in
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    }catch(e){
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      return userCredential;
+    } catch (e) {
       debugPrint("signInWithGoogle error: $e");
       ShowToastDialog.closeLoader();
       ShowToastDialog.showToast("Something went wrong. Try again.");
@@ -90,10 +122,9 @@ class LoginController extends GetxController {
     }
   }
 
-
-
   Future<Map<String, dynamic>?> signInWithApple() async {
     try {
+      String appleUserEmail = "";
       final rawNonce = generateNonce();
       final nonce = sha256ofString(rawNonce);
 
@@ -106,6 +137,45 @@ class LoginController extends GetxController {
         nonce: nonce,
         // webAuthenticationOptions: WebAuthenticationOptions(clientId: clientID, redirectUri: Uri.parse(redirectURL)),
       );
+
+      debugPrint("userIdentifier : ${appleCredential.userIdentifier}");
+      final tempAppleEmail = await FireStoreUtils.getAppleUserData(appleCredential.userIdentifier??"N/A");
+
+      debugPrint("appleEmail : $tempAppleEmail");
+
+      if(tempAppleEmail != null){
+        appleUserEmail = tempAppleEmail.email??"N/A";
+      }else{
+        appleUserEmail = appleCredential.email??"N/A";
+        debugPrint("appleCredential.email : ${appleCredential.email}");
+      }
+
+      debugPrint("appleEmail : $tempAppleEmail");
+
+      final credentials = await FireStoreUtils.getUserPasswordByEmail(appleUserEmail);
+
+      if (credentials != null && credentials['password'] != null && credentials['password']!.isNotEmpty) {
+        final password = credentials['password']!;
+        debugPrint("User password (Apple): $password");
+
+        try {
+          final value = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: appleUserEmail,
+            password: password,
+          );
+
+          ShowToastDialog.closeLoader();
+          debugPrint("Firebase Sign-in success");
+
+          return {
+            "userCredential" :value,
+            "appleCredential" :appleCredential
+          };
+        } catch (e) {
+          debugPrint("Firebase Email/Password Sign-in failed: $e");
+        }
+      }
+
 
       // Create an `OAuthCredential` from the credential returned by Apple.
       final oauthCredential = OAuthProvider("apple.com").credential(
@@ -202,26 +272,61 @@ class LoginController extends GetxController {
   loginWithApple() async {
     try {
       ShowToastDialog.showLoader("please_wait".tr);
-
       final result = await signInWithApple();
-
       ShowToastDialog.closeLoader();
-
       if (result != null) {
         Map<String, dynamic> map = result;
+        AuthorizationCredentialAppleID appleCredential = map['appleCredential'];
         UserCredential userCredential = map['userCredential'];
 
-        if (userCredential.additionalUserInfo?.isNewUser == true) {
-          UserModel userModel = UserModel();
-          userModel.id = userCredential.user?.uid;
-          userModel.email = userCredential.user?.email;
-          userModel.profilePic = userCredential.user?.photoURL;
-          userModel.loginType = Constant.appleLoginType;
-          userModel.role = Constant.roleType;
 
-          Get.to(const InformationScreen(), arguments: {
-            "userModel": userModel,
-          });
+        print("appleCredential :- ${appleCredential.givenName}");
+        print("userCredential :- $userCredential");
+
+
+        AppleUserDataModel? appleUserDataModel;
+        if (appleCredential.givenName?.isNotEmpty??false){
+          appleUserDataModel = AppleUserDataModel(
+            userIdentifier: appleCredential.userIdentifier,
+            email: appleCredential.email,
+            givenName: appleCredential.givenName,
+            familyName: appleCredential.familyName,
+            authorizationCode: appleCredential.authorizationCode,
+            identityToken: appleCredential.identityToken,
+            state: appleCredential.state,
+          );
+          FireStoreUtils.appleUserData(appleUserDataModel);
+        }
+        else{
+          appleUserDataModel = await FireStoreUtils.getAppleUserData(appleCredential.userIdentifier??"");
+        }
+
+        if (userCredential.additionalUserInfo?.isNewUser == true) {
+
+          UserModel userModel = UserModel();
+          if (appleCredential.givenName?.isNotEmpty??false){
+
+            userModel.id = userCredential.user!.uid;
+            userModel.email = userCredential.user!.email ?? appleCredential.email;
+            userModel.fullName = "${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}".trim();
+            userModel.profilePic = userCredential.user!.photoURL;
+            userModel.loginType = Constant.appleLoginType;
+            userModel.role = Constant.roleType;
+            userModel.isActive = true;
+
+          }
+          else{
+            userModel.id = userCredential.user!.uid;
+            userModel.email = appleUserDataModel?.email;
+            userModel.fullName = "${ appleUserDataModel?.givenName ?? ''} ${ appleUserDataModel?.familyName ?? ''}".trim();
+            userModel.profilePic = userCredential.user!.photoURL;
+            userModel.loginType = Constant.appleLoginType;
+            userModel.role = Constant.roleType;
+            userModel.isActive = true;
+          }
+
+          // await FireStoreUtils.updateUser(userModel);
+          Get.to(const InformationScreen(), arguments: {"userModel": userModel});
         }
         else {
           bool userExists = await FireStoreUtils.userExistOrNot(userCredential.user!.uid);
@@ -232,10 +337,8 @@ class LoginController extends GetxController {
             if (userModel != null) {
               if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
                 Get.offAll(const DashBoardScreen());
-              } /*else if (userModel.role != "customer") {
-                await FirebaseAuth.instance.signOut();
-                ShowToastDialog.showToast("please enter valid credentials".tr);
-              } */else {
+              }
+              else {
                 await FirebaseAuth.instance.signOut();
                 ShowToastDialog.showToast("This user is disabled. Please contact administrator.".tr);
               }
@@ -243,11 +346,10 @@ class LoginController extends GetxController {
           } else {
             UserModel userModel = UserModel();
             userModel.id = userCredential.user?.uid;
-            userModel.email = userCredential.user?.email;
+            userModel.email = userCredential.user!.email ?? appleCredential.email;
             userModel.profilePic = userCredential.user?.photoURL;
             userModel.loginType = Constant.appleLoginType;
             userModel.role = Constant.roleType;
-
             Get.to(const InformationScreen(), arguments: {
               "userModel": userModel,
             });
@@ -315,9 +417,5 @@ class LoginController extends GetxController {
       return null;
     }
   }
-
-
-
-
 
 }

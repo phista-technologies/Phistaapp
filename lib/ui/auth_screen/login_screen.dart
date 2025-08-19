@@ -17,6 +17,7 @@ import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../constant/constant.dart';
+import '../../env.dart';
 import '../../themes/text_field_widget.dart';
 import '../../utils/pdf_ generater.dart';
 import '../../utils/utils.dart';
@@ -343,8 +344,7 @@ class LoginScreen extends StatelessWidget {
                       RoundedButtonGradiant(
                         title: "Continue".tr,
                         onPress: () {
-                          if (controller
-                              .phoneNumberController.value.text.isEmpty) {
+                          if (controller.phoneNumberController.value.text.isEmpty) {
                             ShowToastDialog.showToast(
                               "Enter valid phone number",
                             );

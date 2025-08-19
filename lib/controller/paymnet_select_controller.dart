@@ -192,9 +192,12 @@ class PaymentSelectController extends GetxController {
         orderModel.value.parkingDetails!.userId.toString());
     orderModel.value.paymentCompleted = false;
     orderModel.value.paymentType = selectedPaymentMethod.value;
-    orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
+
+   // orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
+    orderModel.value.adminCommission = Constant.adminCommission;
     orderModel.value.createdAt = Timestamp.now();
     orderModel.value.updateAt = Timestamp.now();
+
     // await FireStoreUtils.getFirestOrderOrNOt(orderModel.value)
     //     .then((value) async {
     //   if (value == true) {
@@ -308,7 +311,9 @@ class PaymentSelectController extends GetxController {
         orderModel.value.parkingDetails!.userId.toString());
     orderModel.value.paymentCompleted = true;
     orderModel.value.paymentType = selectedPaymentMethod.value;
-    orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
+
+   // orderModel.value.adminCommission = receiverUserModel?.adminCommission ?? Constant.adminCommission;
+   orderModel.value.adminCommission =  Constant.adminCommission;
     orderModel.value.createdAt = Timestamp.now();
     orderModel.value.updateAt = Timestamp.now();
 

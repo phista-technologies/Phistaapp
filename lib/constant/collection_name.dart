@@ -19,4 +19,5 @@ class CollectionName {
   static const String bankDetails = "bank_details";
   static const String chat = "chat";
   static const String coupon = "coupon";
+  static const String appleUserData = "appleUserData";
 }

@@ -25,7 +25,7 @@ Future<File> generateAndSavePdf(
   final pdf = pw.Document();
 
   // Load the asset image first (async)
-  final imageData = await rootBundle.load('assets/images/PhistaOwnerLogo.png');
+  final imageData = await rootBundle.load('assets/images/phistaIcon.png');
   final image = pw.MemoryImage(imageData.buffer.asUint8List());
   final String formattedDate = "Date: ${DateFormat('MMMM d, yyyy').format(DateTime.now())}";
 
@@ -40,10 +40,11 @@ Future<File> generateAndSavePdf(
              // pw.SizedBox(height: 20),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Container(
-                    width: 50,
-                    height: 50,
+                    width: 105,
+                    height: 52,
                     child: pw.Image(image, fit: pw.BoxFit.cover),
                   ),
                   pw.Text(
@@ -64,7 +65,7 @@ Future<File> generateAndSavePdf(
                     "Phista Technologies inc.",
                     style: pw.TextStyle(
                         color: PdfColor.fromInt(0xFF000000),
-                        fontSize: 18,
+                        fontSize: 15.5,
                         fontWeight: pw.FontWeight.normal
                     ),
                   ),
@@ -72,7 +73,7 @@ Future<File> generateAndSavePdf(
                     "2551 Saint-Louis, Gatineau, QC J8V 1A4",
                     style: pw.TextStyle(
                         color: PdfColor.fromInt(0xFF000000),
-                        fontSize: 18,
+                        fontSize: 15.5,
                         fontWeight: pw.FontWeight.normal
                     ),
                   ),
@@ -80,7 +81,7 @@ Future<File> generateAndSavePdf(
                     ENV.adminEmail,
                     style: pw.TextStyle(
                         color: PdfColor.fromInt(0xFF000000),
-                        fontSize: 18,
+                        fontSize: 15.5,
                         fontWeight: pw.FontWeight.normal
                     ),
                   ),
@@ -91,7 +92,7 @@ Future<File> generateAndSavePdf(
                 formattedDate,
                 style: pw.TextStyle(
                     color: PdfColor.fromInt(0xFF000000),
-                    fontSize: 18,
+                    fontSize: 15.5,
                     fontWeight: pw.FontWeight.normal
                 ),
               ),
@@ -100,7 +101,7 @@ Future<File> generateAndSavePdf(
                 "Bill to:",
                 style: pw.TextStyle(
                     color: PdfColor.fromInt(0xFF000000),
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: pw.FontWeight.bold
                 ),
               ),
@@ -110,7 +111,7 @@ Future<File> generateAndSavePdf(
                     "Name: ",
                     style: pw.TextStyle(
                         color: PdfColor.fromInt(0xFF000000),
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: pw.FontWeight.normal
                     ),
                   ),
@@ -118,7 +119,7 @@ Future<File> generateAndSavePdf(
                     Constant.currentUserModel.value?.fullName??"",
                     style: pw.TextStyle(
                         color: PdfColor.fromInt(0xFF000000),
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: pw.FontWeight.normal
                     ),
                   ),
@@ -131,7 +132,7 @@ Future<File> generateAndSavePdf(
                       "Email: ",
                       style: pw.TextStyle(
                           color: PdfColor.fromInt(0xFF000000),
-                          fontSize: 18,
+                          fontSize: 15,
                           fontWeight: pw.FontWeight.normal
                       ),
                     ),
@@ -139,7 +140,7 @@ Future<File> generateAndSavePdf(
                       Constant.currentUserModel.value?.email??"",
                       style: pw.TextStyle(
                           color: PdfColor.fromInt(0xFF000000),
-                          fontSize: 18,
+                          fontSize: 15,
                           fontWeight: pw.FontWeight.normal
                       ),
                     ),
@@ -152,7 +153,7 @@ Future<File> generateAndSavePdf(
                       "Phone: ",
                       style: pw.TextStyle(
                           color: PdfColor.fromInt(0xFF000000),
-                          fontSize: 18,
+                          fontSize: 15,
                           fontWeight: pw.FontWeight.normal
                       ),
                     ),
@@ -160,7 +161,7 @@ Future<File> generateAndSavePdf(
                       Constant.currentUserModel.value?.phoneNumber??"",
                       style: pw.TextStyle(
                           color: PdfColor.fromInt(0xFF000000),
-                          fontSize: 18,
+                          fontSize: 15,
                           fontWeight: pw.FontWeight.normal
                       ),
                     ),
@@ -172,7 +173,7 @@ Future<File> generateAndSavePdf(
                 "Description:",
                 style: pw.TextStyle(
                     color: PdfColor.fromInt(0xFF000000),
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: pw.FontWeight.bold
                 ),
               ),
@@ -191,8 +192,8 @@ Future<File> generateAndSavePdf(
                           pw.Text(
                             "ParkingName: $parkingDetailName",
                             style: pw.TextStyle(
-                              color: PdfColor.fromInt(0xFF3B5F75),
-                              fontSize: 18,
+                              color: PdfColor.fromInt(0xFF000000),
+                              fontSize: 15.5,
                               fontWeight: pw.FontWeight.normal
                             ),
                           ),
@@ -200,8 +201,8 @@ Future<File> generateAndSavePdf(
                           pw.Text(
                             address,
                             style: pw.TextStyle(
-                              color: PdfColor.fromInt(0xFF2C4A5C),
-                              fontSize: 14,
+                              color: PdfColor.fromInt(0xFF000000),
+                              fontSize: 15.5,
                             ),
                           ),
                         ])
@@ -222,16 +223,17 @@ Future<File> generateAndSavePdf(
                             pw.Text(
                               parkingSlotId,
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFF3B5F75),
-                                fontSize: 16,
+                                //color: PdfColor.fromInt(0xFF3B5F75),
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                             pw.SizedBox(height: 5),
                             pw.Text(
                               "Parking Slot",
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFF2C4A5C),
-                                fontSize: 12,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                           ],
@@ -243,23 +245,22 @@ Future<File> generateAndSavePdf(
                     child: pw.Row(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-
                         pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
                             pw.Text(
                               vehicleName,
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFF2C4A5C),
-                                fontSize: 16,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                             pw.SizedBox(height: 5),
                             pw.Text(
                               "Vehicle Detail",
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFF2C4A5C),
-                                fontSize: 12,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                           ],
@@ -282,16 +283,16 @@ Future<File> generateAndSavePdf(
                             pw.Text(
                               "$duration hours",
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFF2C4A5C),
-                                fontSize: 16,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                             pw.SizedBox(height: 5),
                             pw.Text(
                               "Time Duration",
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFF2C4A5C),
-                                fontSize: 12,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                           ],
@@ -322,16 +323,16 @@ Future<File> generateAndSavePdf(
                               child: pw.Text(
                                 'Sub Total',
                                 style: pw.TextStyle(
-                                  color:  PdfColor.fromInt(0xFFABBBCB),
-                                  fontSize: 17,
+                                  color:  PdfColor.fromInt(0xFF000000),
+                                  fontSize: 15.5,
                                 ),
                               ),
                             ),
                             pw.Text(
                               subTotalAmount.toString(),
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFFABBBCB),
-                                fontSize: 18,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                           ],
@@ -346,16 +347,16 @@ Future<File> generateAndSavePdf(
                               child: pw.Text(
                                 'Coupon Applied',
                                 style: pw.TextStyle(
-                                  color: PdfColor.fromInt(0xFFABBBCB),
-                                  fontSize: 17,
+                                  color: PdfColor.fromInt(0xFF000000),
+                                  fontSize: 15.5,
                                 ),
                               ),
                             ),
                             pw.Text(
                              couponAmount.toString(),
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFFABBBCB),
-                                fontSize: 18,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                           ],
@@ -379,8 +380,8 @@ Future<File> generateAndSavePdf(
                                           amount: taxModel.tax)
                                           : "${taxModel.tax}%"})",
                                       style: pw.TextStyle(
-                                        color: PdfColor.fromInt(0xFFABBBCB),
-                                        fontSize: 17,
+                                        color: PdfColor.fromInt(0xFF000000),
+                                        fontSize: 15.5,
                                       ),
                                     ),
                                   ),
@@ -394,8 +395,8 @@ Future<File> generateAndSavePdf(
                                             .toStringAsFixed(
                                             Constant.currencyModel!.decimalDigits!).toString())} ",
                                     style: pw.TextStyle(
-                                      color: PdfColor.fromInt(0xFFABBBCB), //grey03
-                                      fontSize: 18,
+                                      color: PdfColor.fromInt(0xFF000000), //grey03
+                                      fontSize: 15.5,
                                     ),
                                   ),
                                 ],
@@ -415,16 +416,16 @@ Future<File> generateAndSavePdf(
                               child: pw.Text(
                                 'Total',
                                 style: pw.TextStyle(
-                                  color: PdfColor.fromInt(0xFFABBBCB),
-                                  fontSize: 17,
+                                  color: PdfColor.fromInt(0xFF000000),
+                                  fontSize: 15.5,
                                 ),
                               ),
                             ),
                             pw.Text(
                             calculateAmount.toString(),
                               style: pw.TextStyle(
-                                color: PdfColor.fromInt(0xFFABBBCB),
-                                fontSize: 18,
+                                color: PdfColor.fromInt(0xFF000000),
+                                fontSize: 15.5,
                               ),
                             ),
                           ],

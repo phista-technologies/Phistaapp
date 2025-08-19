@@ -187,18 +187,31 @@ class Utils {
   async {
     final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
 
+    // Current time
+    DateTime now = DateTime.now();
+
+    // Add 5 minutes
+    DateTime fiveMinutesLater = now.add(Duration(minutes: 5));
+
+    // Convert to Unix timestamp (in seconds)
+    int timestamp = fiveMinutesLater.millisecondsSinceEpoch ~/ 1000;
+
+    print("Unix Timestamp after 5 minutes: $timestamp");
+
 
     Map<String, dynamic> body = {
       "personalizations": [
         {
           "to": [
-            {"email": toEmail}
+            {"email":toEmail}
+              //projects.mindiii@gmail.com
           ],
           "dynamic_template_data": dynamicTemplateData,
         }
       ],
       "from": {"email": "support@phista.ca"},
       "template_id": templateId,
+      //"send_at": timestamp
     };
 
     // 🔗 Attach PDF if provided
@@ -209,7 +222,8 @@ class Utils {
       body["attachments"] = [
         {
           "content": base64Pdf,
-          "filename": "ParkingInfo.pdf",
+          //"filename": "ParkingInfo.pdf",
+          "filename": "Invoice.pdf",
           "type": "application/pdf",
           "disposition": "attachment",
         }

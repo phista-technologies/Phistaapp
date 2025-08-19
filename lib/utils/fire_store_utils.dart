@@ -29,6 +29,7 @@ import 'package:phista/model/withdraw_model.dart';
 import 'package:phista/utils/utils.dart';
 import 'package:phista/widgets/geoflutterfire/src/geoflutterfire.dart';
 
+import '../model/payment/AppleUserDataModel.dart';
 import '../widgets/geoflutterfire/src/models/point.dart';
 
 class FireStoreUtils {
@@ -1185,9 +1186,6 @@ class FireStoreUtils {
     }
   }
 
-
-
-
   static Future<bool> getFirstOrderOrNOt(OrderModel orderModel) async {
     bool isFirst = true;
     await fireStore
@@ -1311,6 +1309,34 @@ class FireStoreUtils {
       log("Failed to get user password: $error");
       return false;
     }
+  }
+
+  static Future<bool> appleUserData(AppleUserDataModel appleUserDataModel) async {
+    bool isDataSaved = false;
+    await fireStore.collection(CollectionName.appleUserData).doc(appleUserDataModel.userIdentifier).set(appleUserDataModel.toJson()).whenComplete(() {
+      isDataSaved = true;
+    }).catchError((error) {
+      log("Failed to update user: $error");
+      isDataSaved = false;
+    });
+    return isDataSaved;
+  }
+
+  static Future<AppleUserDataModel?> getAppleUserData(String appleSocialId) async {
+    print("appleSocialId:---$appleSocialId");
+    AppleUserDataModel? appleUserDataModel ;
+    await fireStore.collection(CollectionName.appleUserData)
+        .where('userIdentifier', isEqualTo: appleSocialId.toLowerCase())
+        .get().then((value) {
+
+      print("getAppleUserData :-- $value");
+      for (var element in value.docs) {
+        appleUserDataModel = AppleUserDataModel.fromJson(element.data());
+      }
+    }).catchError((error) {
+      log(error.toString());
+    });
+    return appleUserDataModel;
   }
 
 
