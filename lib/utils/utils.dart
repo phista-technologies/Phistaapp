@@ -187,17 +187,6 @@ class Utils {
   async {
     final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
 
-    // Current time
-    DateTime now = DateTime.now();
-
-    // Add 5 minutes
-    DateTime fiveMinutesLater = now.add(Duration(minutes: 5));
-
-    // Convert to Unix timestamp (in seconds)
-    int timestamp = fiveMinutesLater.millisecondsSinceEpoch ~/ 1000;
-
-    print("Unix Timestamp after 5 minutes: $timestamp");
-
 
     Map<String, dynamic> body = {
       "personalizations": [
@@ -211,7 +200,82 @@ class Utils {
       ],
       "from": {"email": "support@phista.ca"},
       "template_id": templateId,
-      //"send_at": timestamp
+    };
+
+    // 🔗 Attach PDF if provided
+    if (attachmentFile != null && await attachmentFile.exists()) {
+      final bytes = await attachmentFile.readAsBytes();
+      final base64Pdf = base64Encode(bytes);
+
+      body["attachments"] = [
+        {
+          "content": base64Pdf,
+          //"filename": "ParkingInfo.pdf",
+          "filename": "Invoice.pdf",
+          "type": "application/pdf",
+          "disposition": "attachment",
+        }
+      ];
+    }
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ENV.sandGridApiKey}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 202) {
+      print("Email sent with template!");
+    } else {
+      print("Failed to send email: ${response.statusCode}\n${response.body}");
+    }
+  }
+
+  static Future<void> sendRemainderEmailWithTemplate({
+    required String toEmail,
+    required String templateId,
+    required Map<String,dynamic> dynamicTemplateData,
+    File? attachmentFile, // Optional PDF file to attach
+    int? numberOfDays,
+    int? mintSend,
+  })
+  async {
+    final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
+
+    // Current time
+    DateTime now = DateTime.now();
+    int timestamp = -1;
+
+    if(numberOfDays != null){
+      DateTime numberOfDaysLater = now.add(Duration(days: 10));
+      // Convert to Unix timestamp (in seconds)
+       timestamp = numberOfDaysLater.millisecondsSinceEpoch ~/ 1000;
+    }else{
+      // Add 5 minutes
+      DateTime fiveMinutesLater = now.add(Duration(minutes:mintSend??0));
+      // Convert to Unix timestamp (in seconds)
+      timestamp = fiveMinutesLater.millisecondsSinceEpoch ~/ 1000;
+    }
+
+    print("Unix Timestamp after 5 minutes: $timestamp");
+
+
+    Map<String, dynamic> body = {
+      "personalizations": [
+        {
+          "to": [
+            {"email":toEmail}
+            //projects.mindiii@gmail.com
+          ],
+          "dynamic_template_data": dynamicTemplateData,
+        }
+      ],
+      "from": {"email": "support@phista.ca"},
+      "template_id": templateId,
+      "send_at": timestamp
     };
 
     // 🔗 Attach PDF if provided

@@ -306,6 +306,10 @@ class PaymentSelectController extends GetxController {
   completeOrder({int? index}) async {
     ShowToastDialog.showLoader("Please wait..");
 
+
+    int numberOfDays= await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate??"");
+
+
     log("Online Pay :: ${orderModel.value.parkingDetails!.userId.toString()}");
     UserModel? receiverUserModel = await FireStoreUtils.getUserProfile(
         orderModel.value.parkingDetails!.userId.toString());
@@ -424,6 +428,17 @@ class PaymentSelectController extends GetxController {
       await Utils.sendEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdSendBilling, dynamicTemplateData: {},attachmentFile: invoicePdf);
     }
+
+    if(orderModel.value.bookingType.toString() == "3"){
+      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
+      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
+     /* await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);*/
+
+    }
+
     await FireStoreUtils.setOrder(orderModel.value).then((value) async {
       if (value == true) {
         Constant.bookingTypeConst = "hourly";
@@ -440,6 +455,7 @@ class PaymentSelectController extends GetxController {
       await  Utils.sendEmailWithTemplate(toEmail: ownerUserModel.value.email??"",
             templateId: ENV.templateIdNewReservation,
             dynamicTemplateData: senMap).then((value) {
+              print("Sending Booking Template");
           ShowToastDialog.closeLoader();
             },);
       }catch(e){
@@ -1253,5 +1269,26 @@ class PaymentSelectController extends GetxController {
     } catch (e) {
       print('Error: $e');
     }
+  }
+
+
+
+  Future<int> getDifferenceBetweenStartAndEndDate(String bookingDateString) async {
+    int daysBetween = 0;
+    try{
+      List<String> parts = bookingDateString.split(",");
+      String startString = parts[0];
+      String endString = parts[1];
+
+      DateTime startDate = DateTime.parse(
+          startString.replaceAll(" at ", " ").replaceAll("UTC", "+"));
+      DateTime endDate = DateTime.parse(
+          endString.replaceAll(" at ", " ").replaceAll("UTC", "+"));
+       daysBetween = endDate.difference(startDate).inDays;
+      print("Days between: $daysBetween");
+    }catch(e){
+      log("DifferenceBetweenStart Exception :- ",error:  e.toString());
+    }
+    return daysBetween;
   }
 }

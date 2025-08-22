@@ -150,7 +150,7 @@ class LoginController extends GetxController {
         debugPrint("appleCredential.email : ${appleCredential.email}");
       }
 
-      debugPrint("appleEmail : $tempAppleEmail");
+      debugPrint("appleEmail : $appleUserEmail");
 
       final credentials = await FireStoreUtils.getUserPasswordByEmail(appleUserEmail);
 
