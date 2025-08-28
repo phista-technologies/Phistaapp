@@ -128,7 +128,7 @@ class PaymentSelectController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          STRIPE.Stripe.publishableKey =ENV.pkTestPublishableKey??""; //paymentModel.value.strip!.clientpublishableKey.toString();
+          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString(); //ENV.pkTestPublishableKey??"";
           STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";//'Phista';
           STRIPE.Stripe.instance.applySettings();
         }
@@ -561,7 +561,7 @@ class PaymentSelectController extends GetxController {
         "shipping[address][country]": "CA",
       };
 
-      var stripeSecret = ENV.skTestSecretKey; //paymentModel.value.strip!.stripeSecret;
+      var stripeSecret =  paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
       log(stripeSecret.toString());
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),

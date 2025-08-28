@@ -83,7 +83,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                           "assets/images/strip.png"),
                                 ),
                                 //Apple pay
-                                /*Visibility(
+                                Visibility(
                                   visible: controller.paymentModel.value.strip != null &&
                                       controller.paymentModel.value.strip?.enable == true && Platform.isIOS,
                                   child: cardDecoration(
@@ -91,9 +91,9 @@ class PaymentSelectScreen extends StatelessWidget {
                                       controller.APPLE_PAY,
                                       themeChange,
                                       "assets/images/apple_pay_icon.png"),
-                                ),*/
+                                ),
                                 //Google pay
-                                /*Visibility(
+                                Visibility(
                                   visible: controller.paymentModel.value.strip != null &&
                                       controller.paymentModel.value.strip?.enable == true,
                                   child: cardDecoration(
@@ -101,7 +101,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                       controller.GOOGLE_PAY,
                                       themeChange,
                                       "assets/images/google_pay_icon.png"),
-                                ),*/
+                                ),
                                 Visibility(
                                   visible:
                                       controller.paymentModel.value.paypal !=
