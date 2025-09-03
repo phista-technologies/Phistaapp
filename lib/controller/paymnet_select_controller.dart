@@ -128,7 +128,7 @@ class PaymentSelectController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString(); //ENV.pkTestPublishableKey??"";
+          STRIPE.Stripe.publishableKey =ENV.pkTestPublishableKey??"";// paymentModel.value.strip!.clientpublishableKey.toString(); //ENV.pkTestPublishableKey??"";
           STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";//'Phista';
           STRIPE.Stripe.instance.applySettings();
         }
@@ -345,7 +345,7 @@ class PaymentSelectController extends GetxController {
         amount: "-${Constant.calculateAdminCommission(
             amount: (double.parse(orderModel.value.subTotal.toString()) -
                 double.parse(couponAmount.toString())).toString(),
-            adminCommission: orderModel.value.adminCommission)}",
+            adminCommissionLocal: orderModel.value.adminCommission)}",
         createdDate: Timestamp.now(),
         paymentType: selectedPaymentMethod.value,
         transactionId: orderModel.value.id,
@@ -361,7 +361,7 @@ class PaymentSelectController extends GetxController {
             "-${Constant.calculateAdminCommission(
                 amount: (double.parse(orderModel.value.subTotal.toString()) -
                     double.parse(couponAmount.toString())).toString(),
-                adminCommission: orderModel.value.adminCommission)}",
+                adminCommissionLocal: orderModel.value.adminCommission)}",
             id: orderModel.value.parkingDetails!.userId.toString());
       }
     });
@@ -561,7 +561,7 @@ class PaymentSelectController extends GetxController {
         "shipping[address][country]": "CA",
       };
 
-      var stripeSecret =  paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
+      var stripeSecret = ENV.skTestSecretKey;// paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
       log(stripeSecret.toString());
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),

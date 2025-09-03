@@ -11,6 +11,8 @@ class ParkingDetailsController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     getArgument();
+
+
     super.onInit();
   }
 
@@ -32,6 +34,8 @@ class ParkingDetailsController extends GetxController {
     }
     isLoading.value = false;
     update();
+
+    await FireStoreUtils.getParkingBookingPercentage( parkingModel.value.id??"",  parkingModel.value.parkingSpace??"");
   }
 
   getData() async {

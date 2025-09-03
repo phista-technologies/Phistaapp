@@ -36,6 +36,10 @@ class AppThemData {
   static const Color success08 = Color(0xFF039754);
   static const Color labelColorLightPrimary = Color(0xFF000000);
   static const Color blue = Color(0xFF016AA2);
+  static const Color selectUserBorderColor = Color(0xFFEAEAEA);
+  static const Color selectUserBgColor = Color(0xFFF9F9F9);
+  static const Color getStartedgrayTextcolor = Color(0xFF626262);
+
 
   static const List<Color> gradient03 = [Color(0xFFFF8008), Color(0xFFFFC837)];
 

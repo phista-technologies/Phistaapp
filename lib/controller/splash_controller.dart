@@ -10,6 +10,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/preferences.dart';
 
 import '../constant/version_checker.dart';
+import '../ui/select_usertype/select_usertypescreen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -45,6 +46,7 @@ try{
         );
       } else {
         Get.offAll(const LoginScreen());
+       // Get.offAll(const SelectUserTypeScreen());
       }
     }
   }

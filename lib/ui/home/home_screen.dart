@@ -113,13 +113,13 @@ class HomeScreen extends StatelessWidget {
                                     myLocationButtonEnabled: true,
                                     zoomControlsEnabled: false,
                                     mapType: MapType.terrain,
-                                    markers: Set<Marker>.of(controller.markers.values),
+                                    markers:controller.markerShowMap,//Set<Marker>.of(controller.markers.values),
                                     onMapCreated: (GoogleMapController mapController) {
                                       controller.mapController = mapController;
                                     },
                                     mapToolbarEnabled: true,
                                     initialCameraPosition: CameraPosition(
-                                      zoom: 18,
+                                      zoom: 15,
                                       target: LatLng(
                                         Constant.currentLocation != null ? Constant.currentLocation!.latitude! : 45.521563,
                                         Constant.currentLocation != null ? Constant.currentLocation!.longitude! : -122.677433,
@@ -192,8 +192,9 @@ class HomeScreen extends StatelessWidget {
                                               },
                                               itemCount: controller.parkingList.length,
                                               scrollDirection: Axis.horizontal,
-                                              itemBuilder: (context, index) {
+                                              itemBuilder: (context, index)   {
                                                 ParkingModel parkingModel = controller.parkingList[index];
+
                                                 return Padding(
                                                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: index == 0 ? 0 : 10),
                                                   child: ClipRRect(
@@ -400,7 +401,123 @@ class HomeScreen extends StatelessWidget {
                                                                     ],
                                                                   )),
                                                             ),
-                                                          )
+                                                          ),
+
+                                                          FutureBuilder<dynamic>(
+                                                            future: getData(parkingModel.id ?? "", parkingModel.parkingSpace),
+                                                            builder: (context, snapshot) {
+
+                                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                return  Positioned(
+                                                                  top: 10,
+                                                                  right: 10,
+                                                                  child: Container(
+                                                                    decoration: const BoxDecoration(
+                                                                      color: AppThemData.success07,
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                    ),
+                                                                    child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "0.0%",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            Text(
+                                                                              "full",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                                  ),
+                                                                );
+                                                              } else if (snapshot.hasError) {
+                                                                return  Positioned(
+                                                                  top: 10,
+                                                                  right: 10,
+                                                                  child: Container(
+                                                                    decoration: const BoxDecoration(
+                                                                      color: AppThemData.success07,
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                    ),
+                                                                    child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "0.0%",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            Text(
+                                                                              "full",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                                  ),
+                                                                );
+                                                              } else     if(snapshot.hasData){
+                                                                return Positioned(
+                                                                  top: 10,
+                                                                  right: 10,
+                                                                  child: Container(
+                                                                    decoration: const BoxDecoration(
+                                                                      color: AppThemData.success07,
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                    ),
+                                                                    child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "${snapshot.data ?? ''}%",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            Text(
+                                                                              "full",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                                  ),
+                                                                );
+                                                              }
+                                                              else{
+                                                                return Positioned(
+                                                                  top: 10,
+                                                                  right: 10,
+                                                                  child: Container(
+                                                                    decoration: const BoxDecoration(
+                                                                      color: AppThemData.success07,
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                    ),
+                                                                    child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "0.0%",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            Text(
+                                                                              "full",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            },
+                                                          ),
+
+
+
                                                         ],
                                                       ),
                                                     ),
@@ -418,5 +535,12 @@ class HomeScreen extends StatelessWidget {
             }),
       ),
     );
+  }
+
+
+  getData(String parkingId,parkingSpace)async{
+    double value = await FireStoreUtils.getParkingBookingPercentage(parkingId??"",
+        parkingSpace??"");
+    return value.roundToDouble() ;
   }
 }

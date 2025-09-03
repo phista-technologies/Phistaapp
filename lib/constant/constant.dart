@@ -289,15 +289,20 @@ class Constant {
   }
 
   static double calculateAdminCommission(
-      {String? amount, AdminCommission? adminCommission}) {
+      {String? amount, AdminCommission? adminCommissionLocal}) {
     double taxAmount = 0.0;
-    if (adminCommission != null && adminCommission.enable == true) {
-      if (adminCommission.type == "fix") {
-        taxAmount = double.parse(adminCommission.amount.toString());
+    if (adminCommissionLocal != null && adminCommissionLocal.enable == true) {
+      if (adminCommissionLocal.type == "fix") {
+        taxAmount = double.parse(adminCommissionLocal.amount.toString());
       } else {
-        taxAmount = (double.parse(amount.toString()) *
-                double.parse(adminCommission.amount!.toString())) /
-            100;
+        if(double.parse(adminCommissionLocal.amount.toString())> 0.0){
+          taxAmount = (double.parse(amount.toString()) *
+              double.parse(adminCommissionLocal.amount!.toString())) / 100;
+        }else{
+          taxAmount = (double.parse(amount.toString()) *
+              double.parse(adminCommission!.amount!.toString())) / 100;
+        }
+
       }
     }
     return taxAmount;

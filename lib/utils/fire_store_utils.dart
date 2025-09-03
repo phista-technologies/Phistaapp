@@ -597,6 +597,75 @@ class FireStoreUtils {
     yield* getNearestOrderRequestController!.stream;
   }
 
+
+
+  static Future<double> getParkingBookingPercentage(String parkingId, String parkingSpace)async{
+    List<String> isParkingBookedOnList = [];
+
+   await fireStore.collection(CollectionName.bookedParkingOrder)
+       .where('parkingId', isEqualTo: parkingId,)
+       .where('status', whereIn: [Constant.placed, Constant.onGoing])
+   .get()
+   .then((value) {
+     print("getParkingBookingPercentage :-- ${value.docs.length}");
+     for (var element in value.docs) {
+       final data = element.data();
+
+       final bookingDateString = data['bookingDate'] ?? '';
+       final bookingType = data['bookingType'] ?? '';
+
+       if(bookingType == "1"){
+         final bookingEndTimeFireStore = data['bookingEndTime'] ?? '';
+         bool result = isBookingActive(
+           bookingDateString,
+           bookingEndTimeFireStore,
+         );
+         print(result);
+         if(result){
+           isParkingBookedOnList.add(bookingDateString.toString());
+         }
+
+       }
+       else{
+         final List<dynamic> bookingDates = bookingDateString
+             .split(',')
+             .map((e) => e.trim())
+             .toList();
+
+         if (bookingDates.length == 2) {
+
+           Timestamp startDate = Utils.stringToTimeStamp(bookingDates[0]);
+           Timestamp endDate = Utils.stringToTimeStamp(bookingDates[1]);
+
+           Timestamp nowTs = Timestamp.fromDate(DateTime.now());
+
+           bool isWithinRange =
+               nowTs.seconds >= startDate.seconds && nowTs.seconds <= endDate.seconds;
+
+           print("isWithinRange :-- $isWithinRange");
+
+           if (isWithinRange) {
+             isParkingBookedOnList.add(bookingDateString.toString());
+           }
+         }
+       }
+
+     }
+   },);
+
+    int totalSlots = int.tryParse(parkingSpace) ?? 0;
+    int bookedSlots = isParkingBookedOnList.length;
+
+    double percentage = totalSlots > 0 ? (bookedSlots / totalSlots) * 100 : 0.0;
+
+    print("parking space :-- $parkingSpace");
+    print("active booked slots :-- $bookedSlots");
+    print("Booking percentage :-- $percentage");
+
+    return percentage;
+
+  }
+
   // Stream<List<ParkingModel>> getParkingNearest(
   //     {double? latitude, double? longLatitude}) async* {
   //   getNearestOrderRequestController =
@@ -1337,6 +1406,21 @@ class FireStoreUtils {
       log(error.toString());
     });
     return appleUserDataModel;
+  }
+
+  static bool isBookingActive(String bookingDateString, Timestamp bookingEndTime) {
+    try {
+      bookingDateString = bookingDateString.replaceAll(" at", "");
+      DateFormat format = DateFormat("d MMMM yyyy HH:mm:ss 'UTC+5:30'");
+      DateTime bookingStart = format.parse(bookingDateString, true);
+      print("Original DateTime: $bookingStart");
+      DateTime bookingEnd = bookingEndTime.toDate();
+      DateTime now = DateTime.now();
+      return now.isAfter(bookingStart) && now.isBefore(bookingEnd);
+    } catch (e) {
+      print("Error parsing date: $e");
+      return false;
+    }
   }
 
 

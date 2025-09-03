@@ -84,7 +84,7 @@ class ParkingTicketController extends GetxController {
     WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
         id: Constant.getUuid(),
         amount:
-            "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommission: orderModel.value.adminCommission)}",
+            "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommissionLocal: orderModel.value.adminCommission)}",
         createdDate: Timestamp.now(),
         paymentType: "Wallet",
         transactionId: orderModel.value.id,
@@ -96,7 +96,7 @@ class ParkingTicketController extends GetxController {
       if (value == true) {
         await FireStoreUtils.updateOtherUserWallet(
             amount:
-                "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommission: orderModel.value.adminCommission)}",
+                "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommissionLocal: orderModel.value.adminCommission)}",
             id: orderModel.value.parkingDetails!.userId.toString());
       }
     });
@@ -106,7 +106,7 @@ class ParkingTicketController extends GetxController {
     WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
         id: Constant.getUuid(),
         amount:
-            "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommission: orderModel.value.adminCommission)}",
+            "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommissionLocal: orderModel.value.adminCommission)}",
         createdDate: Timestamp.now(),
         paymentType: "Wallet",
         transactionId: orderModel.value.id,
@@ -118,7 +118,7 @@ class ParkingTicketController extends GetxController {
       if (value == true) {
         await FireStoreUtils.updateOtherUserWallet(
             amount:
-                "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommission: orderModel.value.adminCommission)}",
+                "${Constant.calculateAdminCommission(amount: (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())).toString(), adminCommissionLocal: orderModel.value.adminCommission)}",
             id: orderModel.value.parkingDetails!.userId.toString());
       }
     });

@@ -304,7 +304,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-
                                     Expanded(
                                       child: Row(
                                         crossAxisAlignment:
@@ -469,8 +468,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-
-
                                 if(Constant.bookingTypeConst == "daily")
                                 GridView.builder(
                                   shrinkWrap: true,
@@ -531,7 +528,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                   },
 
                                 ),
-
                                 const SizedBox(
                                   height: 10,
                                 ),

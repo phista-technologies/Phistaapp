@@ -79,9 +79,7 @@ class ParkingViewController extends GetxController {
                       .isAfter(orderModel.value.bookingStartTime!.toDate())) {
                 log("parking ===>${orderModel1.parkingSlotId}");
                 selectedOrderModel.add(orderModel1);
-              } else if (orderModel.value.bookingStartTime!
-                  .toDate()
-                  .isAtSameMomentAs(orderModel1.bookingStartTime!.toDate())) {
+              } else if (orderModel.value.bookingStartTime!.toDate().isAtSameMomentAs(orderModel1.bookingStartTime!.toDate())) {
                 selectedOrderModel.add(orderModel1);
                 log("parking ===>4 ${orderModel1.parkingSlotId}");
               } else if (orderModel.value.bookingStartTime!
@@ -124,9 +122,7 @@ class ParkingViewController extends GetxController {
                 Timestamp targetDate = Utils.stringToTimeStamp(orderModel.value.bookingDate!);
                 Timestamp startDate = Utils.stringToTimeStamp(bookingDates[0].trim());
                 Timestamp endDate = Utils.stringToTimeStamp(bookingDates[1].trim());
-                bool isWithinRange =
-                    targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
-                        targetDate.seconds.compareTo(endDate.seconds) <= 0;
+                bool isWithinRange = targetDate.seconds.compareTo(startDate.seconds) >= 0 && targetDate.seconds.compareTo(endDate.seconds) <= 0;
                 print("isWithinRange hourly:-- $isWithinRange");
                 if (isWithinRange) {
                   selectedOrderModel.add(orderModel1);
@@ -156,16 +152,12 @@ class ParkingViewController extends GetxController {
                       .split(',')
                       .map((e) => e.trim())
                       .toList();
+
                   if (bookingDates.length == 2) {
-                    Timestamp targetDate =
-                    Utils.stringToTimeStamp(orderModel1.bookingDate!);
-                    Timestamp startDate =
-                    Utils.stringToTimeStamp(bookingDates[0].trim());
-                    Timestamp endDate =
-                    Utils.stringToTimeStamp(bookingDates[1].trim());
-                    bool isWithinRange =
-                        targetDate.seconds.compareTo(startDate.seconds) >= 0 &&
-                            targetDate.seconds.compareTo(endDate.seconds) <= 0;
+                    Timestamp targetDate = Utils.stringToTimeStamp(orderModel1.bookingDate!);
+                    Timestamp startDate = Utils.stringToTimeStamp(bookingDates[0].trim());
+                    Timestamp endDate = Utils.stringToTimeStamp(bookingDates[1].trim());
+                    bool isWithinRange = targetDate.seconds.compareTo(startDate.seconds) >= 0 && targetDate.seconds.compareTo(endDate.seconds) <= 0;
                     print("isWithinRange :-- $isWithinRange");
                     if (isWithinRange) {
                       selectedOrderModel.add(orderModel1);

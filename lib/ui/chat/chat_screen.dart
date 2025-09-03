@@ -98,7 +98,7 @@ class ChatScreen extends StatelessWidget {
                           textCapitalization: TextCapitalization.sentences,
                           controller: controller.messageTextEditorController.value,
                           textAlign: TextAlign.start,
-                          maxLines: 1,
+                          maxLines: null,
                           textInputAction: TextInputAction.done,
                           style: TextStyle(
                               fontSize: 14, color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey11, fontWeight: FontWeight.w500, fontFamily: AppThemData.medium),
@@ -182,6 +182,7 @@ class ChatScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
+                    width: Get.width/1.3,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color: AppThemData.primary06,
@@ -190,7 +191,9 @@ class ChatScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: Text(
                         chatModel.message.toString(),
-                        style: TextStyle(color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10, fontFamily: AppThemData.regular, fontSize: 14),
+                        maxLines: null,
+                        style: TextStyle(color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10,
+                            fontFamily: AppThemData.regular, fontSize: 14),
                       ),
                     ),
                   ),
@@ -213,6 +216,7 @@ class ChatScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
+                    width: Get.width/1.3,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color: AppThemData.white,

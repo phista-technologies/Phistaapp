@@ -32,17 +32,21 @@ class HomeController extends GetxController {
   Image? currentLocationMarkerOSM; //OSM
   Image? parkingMarkerOSM; //OSM
   Rx<TextEditingController> otpController = TextEditingController().obs;
+  BitmapDescriptor? parkingRedMarker;
+  Image? parkingRedMarkerOSM; //OSM
+  BitmapDescriptor? parkingYellowMarker;
+  Image? parkingYellowMarkerOSM; //OSM
+  BitmapDescriptor? parkingGreenMarker;
+  Image? parkingGreenMarkerOSM; //OSM
+   var markerShowMap = <Marker>{}.obs;
 
 
   @override
   void onInit() {
-
+    markerInit();
     getLocation();
     super.onInit();
       getCurrentUser();
-
-
-
   }
 
   void getCurrentUser()async{
@@ -84,7 +88,7 @@ class HomeController extends GetxController {
         Constant.currentLocation!.longitude!);
     Constant.country = placeMarks.first.country;
     getTax();
-    getParking();
+    //getParking();
     isLoading.value = false;
   }
 
@@ -101,22 +105,46 @@ class HomeController extends GetxController {
   RxList<ParkingModel> parkingList = <ParkingModel>[].obs;
 
   getParking() {
-    FireStoreUtils()
-        .getParkingNearest(
+    FireStoreUtils().getParkingNearest(
         latitude: Constant.currentLocation!.latitude,
         longLatitude: Constant.currentLocation!.longitude)
-        .listen((event) {
+        .listen((event) async {
       parkingList.value = [];
       parkingList.value = event;
+      markerShowMap.clear();
+      Set<Marker> newMarkers = {};
       for (var element in parkingList) {
-        addMarker(
+
+      var bookingPercentage =  await FireStoreUtils.getParkingBookingPercentage(element.id??"", element.parkingSpace??"");
+
+        print("name :-- ${element.name} , bookingPercentage :- $bookingPercentage");
+
+     var markerIcon = descriptorFun(bookingPercentage??0.0);
+
+      newMarkers.add(Marker(
+        markerId: MarkerId(element.id.toString()),
+        icon: markerIcon!,
+        position: LatLng(element.location!.latitude ?? 0.0, element.location!.longitude ?? 0.0),
+        rotation: 0 ?? 0.0,
+        onTap: () {
+          redirect(element.id.toString());
+        },
+      ));
+
+
+      /*  addMarker(
             latitude: element.location!.latitude,
             longitude: element.location!.longitude,
             id: element.id.toString(),
-            descriptor: parkingMarker!,
-            descriptorOSM: parkingMarkerOSM!,
-            rotation: 0);
+           // descriptor: parkingMarker!,
+          //  descriptorOSM: parkingMarkerOSM!,
+            rotation: 0,
+        percent: bookingPercentage);*/
       }
+      markerShowMap.value = newMarkers;
+      markerShowMap.refresh();
+      update();
+
     });
   }
 
@@ -144,13 +172,25 @@ class HomeController extends GetxController {
     Widget? descriptorOSM,
     BitmapDescriptor? descriptor,
     double? rotation,
+    double? percent
   }) {
-    if (Constant.selectedMapType == 'osm') {
+    MarkerId markerId = MarkerId(id);
+    Marker marker = Marker(
+      markerId: markerId,
+      icon: descriptorFun(percent??0.0)!,
+      position: LatLng(latitude ?? 0.0, longitude ?? 0.0),
+      rotation: rotation ?? 0.0,
+      onTap: () {
+        redirect(id);
+      },
+    );
+    markers[markerId] = marker;
+   /* if (Constant.selectedMapType == 'osm') {
       Future.delayed(const Duration(seconds: 3), () {
         mapOsmController
             .addMarker(GeoPoint(latitude: latitude!, longitude: longitude!),
             markerIcon: MarkerIcon(
-              iconWidget: descriptorOSM!,
+              iconWidget:descriptorOSMFun(percent??0.0), //descriptorOSM!,
             ),
             angle: pi / 3,
             iconAnchor: IconAnchor(
@@ -161,12 +201,13 @@ class HomeController extends GetxController {
         });
       });
 
-      update();
-    } else {
+     // update();
+    }
+    else {
       MarkerId markerId = MarkerId(id);
       Marker marker = Marker(
         markerId: markerId,
-        icon: descriptor!,
+        icon: descriptorFun(percent??0.0)!,
         position: LatLng(latitude ?? 0.0, longitude ?? 0.0),
         rotation: rotation ?? 0.0,
         onTap: () {
@@ -174,7 +215,7 @@ class HomeController extends GetxController {
         },
       );
       markers[markerId] = marker;
-    }
+    }*/
   }
 
   redirect(String id) async {
@@ -266,6 +307,56 @@ class HomeController extends GetxController {
     }
   }
 
+
+  void markerInit()async{
+    parkingGreenMarkerOSM = Image.asset("assets/icon/ic_parking_icon_green.png",
+        width: 30, height: 30);
+    final Uint8List parking = await Constant()
+        .getBytesFromAsset("assets/icon/ic_parking_icon_green.png", 100);
+    parkingGreenMarker = BitmapDescriptor.fromBytes(parking);
+
+    parkingYellowMarkerOSM = Image.asset("assets/icon/ic_parking_icon.png",
+        width: 30, height: 30);
+    final Uint8List parking1 = await Constant()
+        .getBytesFromAsset("assets/icon/ic_parking_icon.png", 100);
+    parkingYellowMarker = BitmapDescriptor.fromBytes(parking1);
+
+
+    parkingRedMarkerOSM = Image.asset("assets/icon/ic_parking_icon_red.png",
+        width: 30, height: 30);
+    final Uint8List parking2 = await Constant()
+        .getBytesFromAsset("assets/icon/ic_parking_icon_red.png", 100);
+    parkingRedMarker = BitmapDescriptor.fromBytes(parking2);
+
+    getParking();
+  }
+
+
+  Image? descriptorOSMFun(double percent){
+
+    if(percent < 75 || percent == 0.0){
+      return parkingGreenMarkerOSM;
+    }else if(percent > 75){
+     return parkingYellowMarkerOSM;
+    }else if(percent == 75){
+      return parkingRedMarkerOSM;
+    }
+    return parkingGreenMarkerOSM;
+  }
+
+  BitmapDescriptor? descriptorFun(double percent){
+
+    if(percent < 75 || percent == 0.0){
+      return parkingGreenMarker;
+    }else if(percent > 75){
+      return parkingYellowMarker;
+    }else if(percent == 75){
+      return parkingRedMarker;
+    }else{
+      return parkingGreenMarker;
+    }
+   // return parkingGreenMarker;
+  }
 
   @override
   void dispose() {
