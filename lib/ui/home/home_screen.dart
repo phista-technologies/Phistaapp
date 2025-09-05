@@ -260,7 +260,7 @@ class HomeScreen extends StatelessWidget {
                                                                         Expanded(
                                                                           flex:2,
                                                                           child: Text(
-                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())}/daily(5h+)",
+                                                                            "${Constant.amountShow(amount: parkingModel.dailyPrice.toString())}/daily(5h+).".tr,
                                                                             style: const TextStyle(
                                                                               color: AppThemData.blueLight07,
                                                                               fontSize: 11.5,
@@ -276,7 +276,7 @@ class HomeScreen extends StatelessWidget {
                                                                         Expanded(
                                                                           flex:2,
                                                                           child: Text(
-                                                                            "${Constant.amountShow(amount: parkingModel.monthlyPrice.toString())}/month",
+                                                                            "${Constant.amountShow(amount: parkingModel.monthlyPrice.toString())}/month".tr,
                                                                               style: const TextStyle(
                                                                               color: AppThemData.blueLight07,
                                                                               fontSize: 11.5,
@@ -426,7 +426,7 @@ class HomeScreen extends StatelessWidget {
                                                                             ),
                                                                             const SizedBox(width: 5),
                                                                             Text(
-                                                                              "full",
+                                                                              "full".tr,
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
                                                                             ),
                                                                           ],
@@ -452,7 +452,7 @@ class HomeScreen extends StatelessWidget {
                                                                             ),
                                                                             const SizedBox(width: 5),
                                                                             Text(
-                                                                              "full",
+                                                                              "full".tr,
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
                                                                             ),
                                                                           ],
@@ -478,7 +478,7 @@ class HomeScreen extends StatelessWidget {
                                                                             ),
                                                                             const SizedBox(width: 5),
                                                                             Text(
-                                                                              "full",
+                                                                              "full".tr,
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
                                                                             ),
                                                                           ],
@@ -505,7 +505,7 @@ class HomeScreen extends StatelessWidget {
                                                                             ),
                                                                             const SizedBox(width: 5),
                                                                             Text(
-                                                                              "full",
+                                                                              "full".tr,
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
                                                                             ),
                                                                           ],

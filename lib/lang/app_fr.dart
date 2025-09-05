@@ -103,6 +103,7 @@ const Map<String, String> trFR = {
   "Payment Incomplete": "Paiement incomplet",
   "Chat US": "Discutez avec nous",
   "Call Now": "Appeler maintenant",
+  "call_us": "Appeler maintenant",
   "Apply Coupon Code": "Appliquer le code promo",
   "Apply": "Appliquer",
   "Enter Coupon code": "Entrez le code promo",
@@ -290,6 +291,17 @@ const Map<String, String> trFR = {
   "please_wait": "Veuillez patienter...",
   "Enter valid phone number": "Entrez un numéro de téléphone valide",
   "Chat feature is currently unavailable for this owner.":
-      "La fonction de chat n’est pas disponible pour cet propriétaire."
+      "La fonction de chat n’est pas disponible pour cet propriétaire.",
+  "full": "complète",
+  "daily(5h+)": "quotidiennement (5h+)",
+  "month": "mois",
+  "List your parking": "Inscrivez votre stationnement",
+  "Download the Phista Owner App": "Téléchargez l'application Phista Owner",
 
+  "Turn your private parking space into steady extra income.Manage bookings and payouts right from your phone-quick and hassle-free": "Transformez votre place de parking privée en un revenu supplémentaire stable. Gérez les réservations et les paiements directement depuis votre téléphone, rapidement et sans tracas.",
+  "App Version": "Version de l'application",
+  "Inbox": "Boîte de réception",
+  "Navigate the Parking Slot": "Naviguer dans l'emplacement de stationnement",
+  "No Canceled Booking Found": "Aucune réservation annulée trouvée",
+  "No Completed Booking Found": "Aucune réservation terminée trouvée",
 };

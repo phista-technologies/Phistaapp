@@ -122,7 +122,7 @@ class Constant {
   static Widget showEmptyView({required String message}) {
     return Center(
       child: Text(message,
-          style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 18)),
+          style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 18),textAlign: TextAlign.center,),
     );
   }
 

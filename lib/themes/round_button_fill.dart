@@ -48,14 +48,17 @@ class RoundedButtonFill extends StatelessWidget {
             (isRight == false)
                 ? Padding(padding: const EdgeInsets.only(right: 5), child: icon)
                 : const SizedBox(),
-            Text(
-              title.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: AppThemData.medium,
-                color: textColor ?? AppThemData.grey11,
-                fontSize: fontSizes ?? 14,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(
+                title.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: AppThemData.medium,
+                  color: textColor ?? AppThemData.grey11,
+                  fontSize: fontSizes ?? 14,
+                  fontWeight: FontWeight.w500,
+                  overflow: TextOverflow.ellipsis
+                ),
               ),
             ),
             (isRight == true)

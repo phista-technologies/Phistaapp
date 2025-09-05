@@ -21,7 +21,7 @@ class ParkingViewScreen extends StatelessWidget {
         init: ParkingViewController(),
         builder: (controller) {
           return Scaffold(
-            appBar: UiInterface().customAppBar(context, themeChange, "pick_parking_spot".tr),
+            appBar: UiInterface().customAppBar(context, themeChange,"pick_parking_spot".tr),
             body: SingleChildScrollView(
               child: Column(
                 children: [

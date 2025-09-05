@@ -213,36 +213,40 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                controller.orderModel.value
-                                                    .parkingSlotId
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily:
-                                                  AppThemData.medium,
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  controller.orderModel.value
+                                                      .parkingSlotId
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey06
+                                                        : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily:
+                                                    AppThemData.medium,
+                                                      overflow: TextOverflow.ellipsis
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "Parking Slot".tr,
-                                                style: const TextStyle(
-                                                  color: AppThemData.grey07,
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                  AppThemData.regular,
+                                                const SizedBox(
+                                                  height: 5,
                                                 ),
-                                              ),
-                                            ],
+                                                Text(
+                                                  "Parking Slot".tr,
+                                                  style: const TextStyle(
+                                                    color: AppThemData.grey07,
+                                                    fontSize: 12,
+                                                    fontFamily:
+                                                    AppThemData.regular,
+                                                    overflow: TextOverflow.ellipsis
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),

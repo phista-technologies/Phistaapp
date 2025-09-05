@@ -45,7 +45,7 @@ class DownloadAppScreen extends StatelessWidget {
               SizedBox(height: 70,),
               Center(
                 child: Text(
-                  'Download the Phista Owner App '.tr,
+                  'Download the Phista Owner App'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: themeChange.getThem()
@@ -65,8 +65,7 @@ class DownloadAppScreen extends StatelessWidget {
               Padding(
                  padding: EdgeInsets.only(left:20,right:20),
                  child: Text(
-                  'Turn your private parking space into steady extra income. '
-                      'Manage bookings and payouts right from your phone-quick and hassle-free   '.tr,
+                  'Turn your private parking space into steady extra income.Manage bookings and payouts right from your phone-quick and hassle-free'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: themeChange.getThem()

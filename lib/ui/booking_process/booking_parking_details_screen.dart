@@ -144,10 +144,8 @@ initState(){
                                           }
                                         }
                                       }
-
                                       controller.selectedRangeMonth.refresh();
                                       break;
-
                                     default:
                                       break;
                                   }
@@ -832,137 +830,94 @@ initState(){
                       ShowToastDialog.showToast(
                           "Please select duration minimum one hour".tr);
                     } else {
-                      controller.showPopUp(() {
-                        Get.back();
-                        print(controller.radioValue.value);
-                        OrderModel orderModel = OrderModel();
-                        if (controller.radioValue.value == "hourly") {
-                          Constant.bookingTypeConst = "hourly";
-                          orderModel.bookingType = "1";
-                          orderModel.bookingMonth = "";
-                          orderModel.bookingDate = Utils.formatTimestampToIST(
-                              Timestamp.fromDate(DateTime(
-                                  controller.selectedDateTime.value.year,
-                                  controller.selectedDateTime.value.month,
-                                  controller.selectedDateTime.value.day)));
+                      print(controller.radioValue.value);
+                      OrderModel orderModel = OrderModel();
+                      if (controller.radioValue.value == "hourly") {
+                        Constant.bookingTypeConst = "hourly";
+                        orderModel.bookingType = "1";
+                        orderModel.bookingMonth = "";
+                        orderModel.bookingDate = Utils.formatTimestampToIST(
+                            Timestamp.fromDate(DateTime(
+                                controller.selectedDateTime.value.year,
+                                controller.selectedDateTime.value.month,
+                                controller.selectedDateTime.value.day)));
 
-                          orderModel.bookingStartTime =
-                              Timestamp.fromDate(controller.startTime.value);
-                          orderModel.bookingEndTime =
-                              Timestamp.fromDate(controller.endTime.value);
-                        }
-                        /*else if (controller.radioValue.value == "daily") {
-                          List<String> tempBookingTime = [];
-                          Constant.bookingTypeConst = "daily";
-                          orderModel.bookingType = "2";
-                          orderModel.bookingMonth ="";
-                          controller.selectedDuration.value = 24.0;
+                        orderModel.bookingStartTime =
+                            Timestamp.fromDate(controller.startTime.value);
+                        orderModel.bookingEndTime =
+                            Timestamp.fromDate(controller.endTime.value);
+                      }
 
+                      else if (controller.radioValue.value == "monthly") {
+                        print(
+                            "monthly date startDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.startDate}");
+                        print(
+                            "monthly date endDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.endDate}");
+                        DateTime? startDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.startDate;
+                        DateTime? endDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.endDate;
 
-                          if(controller.selectedDatesDaily.isNotEmpty){
-                            controller.startTime.value = DateTime(
-                                controller.selectedDatesDaily[0].year,
-                                controller.selectedDatesDaily[0].month,
-                                controller.selectedDatesDaily[0].day,
-                                controller.selectedDatesDaily[0].hour,
-                                controller.selectedDatesDaily[0].minute,
-                                controller.selectedDatesDaily[0].second);
-                          }
+                        List tempMonthDate = [];
+                        Constant.bookingTypeConst = "monthly";
+                        orderModel.bookingType = "3";
+                        orderModel.bookingMonth = controller.bookingMonths.value.toString();
 
-                          Duration duration = Duration(
-                              hours: controller.selectedDuration.value.toInt());
-                          controller.endTime.value = controller.startTime.value.add(duration);
-                          if(controller.selectedDatesDaily.isNotEmpty){
-                            for(var tempValue in controller.selectedDatesDaily){
-                             tempBookingTime.add( Utils.formatTimestampToIST(
-                                 Timestamp.fromDate(DateTime(
-                                     tempValue.year,
-                                     tempValue.month,
-                                     tempValue.day))));
-                            }
-                          }
+                        controller.selectedDuration.value = 24.0;
 
-                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
-                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-
-                          orderModel.bookingDate = tempBookingTime.join(',');
-
-                          print("orderModel.bookingDate Daily :- ${orderModel.bookingDate}");
-
-                        }*/
-                        else if (controller.radioValue.value == "monthly") {
-                          print(
-                              "monthly date startDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.startDate}");
-                          print(
-                              "monthly date endDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.endDate}");
-                          DateTime? startDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.startDate;
-                          DateTime? endDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.endDate;
-
-                          List tempMonthDate = [];
-                          Constant.bookingTypeConst = "monthly";
-                          orderModel.bookingType = "3";
-                          orderModel.bookingMonth = controller.bookingMonths.value.toString();
-
-                          controller.selectedDuration.value = 24.0;
-
-                          if (startDateMonthly != null) {
-                            controller.startTime.value = DateTime(
-                                startDateMonthly.year,
-                                startDateMonthly.month,
-                                startDateMonthly.day,
-                                startDateMonthly.hour,
-                                startDateMonthly.minute,
-                                startDateMonthly.second);
-                          }
-
-                          Duration duration = Duration(
-                              hours: controller.selectedDuration.value.toInt());
-                          controller.endTime.value =
-                              controller.startTime.value.add(duration);
-                          orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
-                          orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-
-                          if (startDateMonthly != null) {
-                            tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
-                                DateTime(
-                                    startDateMonthly.year,
-                                    startDateMonthly.month,
-                                    startDateMonthly.day))));
-                          }
-
-                          if (endDateMonthly != null) {
-                            tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
-                                DateTime(endDateMonthly.year,
-                                    endDateMonthly.month, endDateMonthly.day))));
-                          }
-
-                           orderModel.bookingDate = tempMonthDate.join(',');
-
-                          print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
+                        if (startDateMonthly != null) {
+                          controller.startTime.value = DateTime(
+                              startDateMonthly.year,
+                              startDateMonthly.month,
+                              startDateMonthly.day,
+                              startDateMonthly.hour,
+                              startDateMonthly.minute,
+                              startDateMonthly.second);
                         }
 
-                        orderModel.parkingDetails = controller.parkingModel.value;
-                        orderModel.userVehicle = controller.vehicle.value;
-                        orderModel.duration =
-                            controller.selectedDuration.value.toString();
+                        Duration duration = Duration(
+                            hours: controller.selectedDuration.value.toInt());
+                        controller.endTime.value =
+                            controller.startTime.value.add(duration);
+                        orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
+                        orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
 
-                        orderModel.status = Constant.placed;
-                        orderModel.userId = FireStoreUtils.getCurrentUid();
-                        orderModel.id = Constant.getUuid();
-                        orderModel.parkingId = controller.parkingModel.value.id;
-                        orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value,
-                            controller.bookingMonths.value.toString()).toString();
-                        orderModel.taxList = Constant.taxList;
-                        orderModel.userVehicle = controller.selectedVehicle.value;
+                        if (startDateMonthly != null) {
+                          tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
+                              DateTime(
+                                  startDateMonthly.year,
+                                  startDateMonthly.month,
+                                  startDateMonthly.day))));
+                        }
 
-                        print("orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
+                        if (endDateMonthly != null) {
+                          tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
+                              DateTime(endDateMonthly.year,
+                                  endDateMonthly.month, endDateMonthly.day))));
+                        }
 
-                        Get.to(() => const ParkingViewScreen(),
-                            arguments: {"orderModel": orderModel});
+                        orderModel.bookingDate = tempMonthDate.join(',');
 
-                        /*Get.to(() => const ParkingViewScreen(),
-                            arguments: {"orderModel": orderModel, "type": controller.radioValue.value});*/
-                      });
+                        print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
+                      }
+
+                      orderModel.parkingDetails = controller.parkingModel.value;
+                      orderModel.userVehicle = controller.vehicle.value;
+                      orderModel.duration =
+                          controller.selectedDuration.value.toString();
+
+                      orderModel.status = Constant.placed;
+                      orderModel.userId = FireStoreUtils.getCurrentUid();
+                      orderModel.id = Constant.getUuid();
+                      orderModel.parkingId = controller.parkingModel.value.id;
+                      orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value,
+                          controller.bookingMonths.value.toString()).toString();
+                      orderModel.taxList = Constant.taxList;
+                      orderModel.userVehicle = controller.selectedVehicle.value;
+
+                      print("orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
+
+                      Get.to(() => const ParkingViewScreen(),
+                          arguments: {"orderModel": orderModel});
+
                     }
                   },
                 ),

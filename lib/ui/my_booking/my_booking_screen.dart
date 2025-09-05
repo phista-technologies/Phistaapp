@@ -277,7 +277,7 @@ class MyBookingScreen extends StatelessWidget {
           return Constant.loader();
         }
         return snapshot.data!.docs.isEmpty
-            ? Constant.showEmptyView(message: "No Completed Booking Found")
+            ? Constant.showEmptyView(message: "No Completed Booking Found".tr)
             : ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 scrollDirection: Axis.vertical,
@@ -404,7 +404,7 @@ class MyBookingScreen extends StatelessWidget {
           return Constant.loader();
         }
         return snapshot.data!.docs.isEmpty
-            ? Constant.showEmptyView(message: "No Canceled Booking Found")
+            ? Constant.showEmptyView(message: "No Canceled Booking Found".tr)
             : ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 scrollDirection: Axis.vertical,

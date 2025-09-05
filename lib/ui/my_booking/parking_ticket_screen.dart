@@ -446,6 +446,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                     height: 6,
                                     color: AppThemData.primary06,
                                     fontSizes: 16,
+                                    
                                     onPress: () async {
                                       print(Constant.mapType);
                                       if (Constant.mapType == "inappmap") {
