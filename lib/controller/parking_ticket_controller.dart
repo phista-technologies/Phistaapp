@@ -1,9 +1,21 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/model/order_model.dart';
 import 'package:phista/model/wallet_transaction_model.dart';
 import 'package:phista/utils/fire_store_utils.dart';
+
+import '../constant/send_notification.dart';
+import '../constant/show_toast_dialog.dart';
+import '../model/user_model.dart';
+import '../themes/custom_dialog_box.dart';
+import '../ui/dashboard_screen.dart';
+import '../utils/utils.dart';
+import 'dashboard_controller.dart';
 
 class ParkingTicketController extends GetxController {
   @override
@@ -123,4 +135,113 @@ class ParkingTicketController extends GetxController {
       }
     });
   }
+
+  void cancelBooking()async{
+    ShowToastDialog.showLoader(
+        "Please wait".tr);
+    print(orderModel.value.parkingDetails!.userId.toString());
+    orderModel.value.status = Constant.canceled;
+
+    UserModel? receiverUserModel = await FireStoreUtils.getUserProfile(orderModel.value.parkingDetails!.userId.toString());
+
+    Map<String, dynamic> playLoad = <String, dynamic>{
+      "type": "order",
+      "orderId":
+      orderModel.value.id
+    };
+
+    await SendNotification.sendOneNotification(
+        token: receiverUserModel?.fcmToken
+            .toString()??"",
+        title: 'Booking Canceled'.tr,
+        body:
+        '${orderModel.value.parkingDetails!.name.toString()} Booking canceled on ${Constant.timestampToDate(Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.'
+            .tr,
+        payload: playLoad);
+    if (orderModel.value.paymentType
+        .toString()
+        .toLowerCase() !=
+        'cash'.toLowerCase()) {
+      await canceledOrderWallet();
+    } else if (orderModel.value
+        .paymentCompleted! &&
+       orderModel.value.paymentType
+            .toString()
+            .toLowerCase() ==
+            'cash'.toLowerCase()) {
+      await refundCashPaymentAmount();
+    }
+
+    await FireStoreUtils.setOrder(
+       orderModel.value)
+        .then((value) {
+      ShowToastDialog.closeLoader();
+      DashboardScreenController
+      dashboardController = Get.put(
+          DashboardScreenController());
+      dashboardController.selectedIndex(2);
+      Get.offAll(
+              () => const DashBoardScreen());
+    });
+  }
+
+
+  bool canDeleteBookingHourly(Timestamp? timestamp) {
+    DateTime bookingTime = timestamp!.toDate();
+    DateTime deleteAllowedTime = bookingTime.add(Duration(minutes: 10));
+    return DateTime.now().isAfter(deleteAllowedTime);
+  }
+
+  bool canDeleteBookingMonthly(String strDateTime){
+    // Split the dates
+    List<String> dateStrings = strDateTime.split(',');
+    for (String dateStr in dateStrings) {
+      DateTime startTime = parseCustomDateTime(dateStr.trim());
+      DateTime allowedDeleteTime = startTime.add(Duration(hours: 24));
+      bool canDelete = DateTime.now().isAfter(allowedDeleteTime);
+
+      print("Booking on $startTime → Can delete? $canDelete");
+      return canDelete;
+    }
+
+
+    return true;
+  }
+  /// Parse date like "5 September 2025 at 00:00:00 UTC+5:30"
+  DateTime parseCustomDateTime(String input) {
+    final parts = input.split(" UTC");
+
+    final datePart = parts[0].trim(); // "5 September 2025 at 00:00:00"
+    final offsetPart = parts.length > 1 ? parts[1].trim() : "+00:00"; // "+5:30"
+
+    final dateFormat = DateFormat("d MMMM y 'at' HH:mm:ss");
+    DateTime baseTime = dateFormat.parse(datePart, true).toUtc(); // UTC time
+
+    final sign = offsetPart.startsWith('-') ? -1 : 1;
+    final offsetClean = offsetPart.replaceAll(RegExp(r'[+-]'), '');
+    final offsetParts = offsetClean.split(":");
+
+    final offsetHours = int.parse(offsetParts[0]) * sign;
+    final offsetMinutes = int.parse(offsetParts[1]) * sign;
+
+    final totalOffset = Duration(hours: offsetHours, minutes: offsetMinutes);
+    return baseTime.add(totalOffset); // return time adjusted to the correct UTC offset
+  }
+
+  void showPopUp(String title,String msg) {
+    Get.dialog(
+      CustomDialogBoxOnlyOk(
+          title:title,
+          descriptions: msg,
+          buttonText: "Okay".tr,
+          onButtonTap: (){
+            Get.back();
+          }
+          ,
+          img: Image.asset("assets/images/parking_icon.png")
+      ),
+      barrierDismissible: false,
+    );
+  }
+
 }

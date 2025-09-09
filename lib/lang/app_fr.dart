@@ -304,4 +304,7 @@ const Map<String, String> trFR = {
   "Navigate the Parking Slot": "Naviguer dans l'emplacement de stationnement",
   "No Canceled Booking Found": "Aucune réservation annulée trouvée",
   "No Completed Booking Found": "Aucune réservation terminée trouvée",
+  "sorry, you cannot park here, this location is full, all the spots are reserved": "désolé, vous ne pouvez pas vous garer ici, cet emplacement est complet, toutes les places sont réservées",
+  "Cancellation is no longer possible as your booking has passed the 10-minute limit": "L'annulation n'est plus possible car votre réservation a dépassé la limite de 10 minutes",
+  "Please note that monthly bookings can only be cancelled up to 24 hours before the start time.": "Veuillez noter que les réservations mensuelles ne peuvent être annulées que jusqu'à 24 heures avant l'heure de début.",
 };

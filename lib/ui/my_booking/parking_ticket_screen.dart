@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/send_notification.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
@@ -446,7 +448,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                     height: 6,
                                     color: AppThemData.primary06,
                                     fontSizes: 16,
-                                    
+
                                     onPress: () async {
                                       print(Constant.mapType);
                                       if (Constant.mapType == "inappmap") {
@@ -484,59 +486,22 @@ class ParkingTicketScreen extends StatelessWidget {
                                     color: AppThemData.grey04,
                                     fontSizes: 16,
                                     onPress: () async {
-                                      ShowToastDialog.showLoader(
-                                          "Please wait".tr);
-                                      controller.orderModel.value.status =
-                                          Constant.canceled;
-                                      UserModel? receiverUserModel =
-                                          await FireStoreUtils.getUserProfile(
-                                              controller.orderModel.value
-                                                  .parkingDetails!.userId
-                                                  .toString());
 
-                                      Map<String, dynamic> playLoad =
-                                          <String, dynamic>{
-                                        "type": "order",
-                                        "orderId":
-                                            controller.orderModel.value.id
-                                      };
-
-                                      await SendNotification.sendOneNotification(
-                                          token: receiverUserModel!.fcmToken
-                                              .toString(),
-                                          title: 'Booking Canceled'.tr,
-                                          body:
-                                              '${controller.orderModel.value.parkingDetails!.name.toString()} Booking canceled on ${Constant.timestampToDate(Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!))}.'
-                                                  .tr,
-                                          payload: playLoad);
-                                      if (controller
-                                              .orderModel.value.paymentType
-                                              .toString()
-                                              .toLowerCase() !=
-                                          'cash'.toLowerCase()) {
-                                        await controller.canceledOrderWallet();
-                                      } else if (controller.orderModel.value
-                                              .paymentCompleted! &&
-                                          controller
-                                                  .orderModel.value.paymentType
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                              'cash'.toLowerCase()) {
-                                        await controller
-                                            .refundCashPaymentAmount();
+                                      if( controller.orderModel.value.bookingType == "1" ){
+                                        if(controller.canDeleteBookingHourly(controller.orderModel.value.bookingStartTime)){
+                                          controller.cancelBooking();
+                                        }else{
+                                           // you can delete it after 10 mints
+                                          controller.showPopUp("Alert".tr,"Cancellation is no longer possible as your booking has passed the 10-minute limit".tr);
+                                        }
+                                      }else if( controller.orderModel.value.bookingType == "3"){
+                                        if(controller.canDeleteBookingMonthly(controller.orderModel.value.bookingDate??"")){
+                                          controller.cancelBooking();
+                                        }else{
+                                          // you can delete it after 24 hours
+                                          controller.showPopUp("Alert".tr,"Please note that monthly bookings can only be cancelled up to 24 hours before the start time.".tr);
+                                        }
                                       }
-
-                                      await FireStoreUtils.setOrder(
-                                              controller.orderModel.value)
-                                          .then((value) {
-                                        ShowToastDialog.closeLoader();
-                                        DashboardScreenController
-                                            dashboardController = Get.put(
-                                                DashboardScreenController());
-                                        dashboardController.selectedIndex(2);
-                                        Get.offAll(
-                                            () => const DashBoardScreen());
-                                      });
                                     },
                                   ),
                                 ],
@@ -570,4 +535,7 @@ class ParkingTicketScreen extends StatelessWidget {
           );
         });
   }
+
+
+
 }

@@ -17,6 +17,7 @@ import 'package:phista/themes/round_button_fill.dart';
 import 'package:phista/themes/text_field_widget.dart';
 import 'package:phista/ui/add_select_vehicle/select_vehicle_screen.dart';
 import 'package:phista/ui/booking_process/parking_view_screen.dart';
+import 'package:phista/ui/booking_process/review_summery_screen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
@@ -821,7 +822,7 @@ initState(){
                 child: RoundedButtonFill(
                   title: "Next".tr,
                   color: AppThemData.primary06,
-                  onPress: () {
+                  onPress: () async {
                     if (controller.selectedVehicle.value.id == null) {
                       ShowToastDialog.showToast(
                           "Please select your vehicle".tr);
@@ -830,6 +831,7 @@ initState(){
                       ShowToastDialog.showToast(
                           "Please select duration minimum one hour".tr);
                     } else {
+                      ShowToastDialog.showLoader("Please wait..");
                       print(controller.radioValue.value);
                       OrderModel orderModel = OrderModel();
                       if (controller.radioValue.value == "hourly") {
@@ -899,6 +901,7 @@ initState(){
                         print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
                       }
 
+
                       orderModel.parkingDetails = controller.parkingModel.value;
                       orderModel.userVehicle = controller.vehicle.value;
                       orderModel.duration =
@@ -912,12 +915,18 @@ initState(){
                           controller.bookingMonths.value.toString()).toString();
                       orderModel.taxList = Constant.taxList;
                       orderModel.userVehicle = controller.selectedVehicle.value;
-
                       print("orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
+                     var selectedParkingSlot = await controller.selectParkingSlot(controller.radioValue.value,orderModel);
 
-                      Get.to(() => const ParkingViewScreen(),
-                          arguments: {"orderModel": orderModel});
-
+                     print("selectedParkingSlot :- ${selectedParkingSlot}");
+                      ShowToastDialog.closeLoader();
+                     if(selectedParkingSlot.isEmpty){
+                       controller.showPopUp("Alert".tr,"Sorry, you cannot park here, this location is full, all the spots are reserved".tr);
+                     }else{
+                       orderModel.parkingSlotId = selectedParkingSlot;
+                       Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": orderModel});
+                      // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
+                     }
                     }
                   },
                 ),

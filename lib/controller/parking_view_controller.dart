@@ -34,6 +34,7 @@ class ParkingViewController extends GetxController {
     if (argumentData != null) {
       bookingTypeTemp = Constant.bookingTypeConst;
       orderModel.value = argumentData['orderModel'];
+      selectedParking.value = argumentData['selectedParkingSlot'];
       getParkingDetails(orderModel.value.parkingDetails!.id.toString());
       await getBookedParking(bookingTypeTemp);
     }

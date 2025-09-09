@@ -441,7 +441,7 @@ class PaymentSelectController extends GetxController {
 
     await FireStoreUtils.setOrder(orderModel.value).then((value) async {
       if (value == true) {
-        Constant.bookingTypeConst = "hourly";
+        //Constant.bookingTypeConst = "hourly";
       try{
         Map<String,dynamic> senMap = {
           "hostFullName":ownerUserModel.value.fullName,

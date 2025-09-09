@@ -11,6 +11,7 @@ class ReviewSummaryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print("Constant.bookingTypeConst:--> ${Constant.bookingTypeConst}");
     getArgument();
   }
 

@@ -323,10 +323,20 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              Constant.bookingTypeConst != "monthly"?Text(
                                                 "${controller.orderModel.value
                                                     .duration
                                                     .toString()} hours",
+                                                style: TextStyle(
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey06
+                                                      : AppThemData.grey09,
+                                                  fontSize: 16,
+                                                  fontFamily:
+                                                  AppThemData.medium,
+                                                ),
+                                              ):Text(
+                                                "Monthly Booking",
                                                 style: TextStyle(
                                                   color: themeChange.getThem()
                                                       ? AppThemData.grey06
@@ -339,6 +349,8 @@ class ReviewSummaryScreen extends StatelessWidget {
                                               const SizedBox(
                                                 height: 5,
                                               ),
+
+                                              if(Constant.bookingTypeConst != "monthly")
                                               Text(
                                                 "Time Durations".tr,
                                                 style: const TextStyle(

@@ -421,7 +421,7 @@ class HomeScreen extends StatelessWidget {
                                                                         child: Row(
                                                                           children: [
                                                                             Text(
-                                                                              "0.0%",
+                                                                              "0%",
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
                                                                             ),
                                                                             const SizedBox(width: 5),
@@ -447,7 +447,7 @@ class HomeScreen extends StatelessWidget {
                                                                         child: Row(
                                                                           children: [
                                                                             Text(
-                                                                              "0.0%",
+                                                                              "0%",
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
                                                                             ),
                                                                             const SizedBox(width: 5),
@@ -459,7 +459,7 @@ class HomeScreen extends StatelessWidget {
                                                                         )),
                                                                   ),
                                                                 );
-                                                              } else     if(snapshot.hasData){
+                                                              } else if(snapshot.hasData){
                                                                 return Positioned(
                                                                   top: 10,
                                                                   right: 10,
@@ -500,7 +500,7 @@ class HomeScreen extends StatelessWidget {
                                                                         child: Row(
                                                                           children: [
                                                                             Text(
-                                                                              "0.0%",
+                                                                              "0%",
                                                                               style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
                                                                             ),
                                                                             const SizedBox(width: 5),
@@ -541,6 +541,6 @@ class HomeScreen extends StatelessWidget {
   getData(String parkingId,parkingSpace)async{
     double value = await FireStoreUtils.getParkingBookingPercentage(parkingId??"",
         parkingSpace??"");
-    return value.roundToDouble() ;
+    return value.round() ;
   }
 }
