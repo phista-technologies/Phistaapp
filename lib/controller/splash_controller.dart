@@ -18,13 +18,11 @@ class SplashController extends GetxController {
 try{
   WidgetsBinding.instance.addPostFrameCallback((_) async{
    var updateAvailable = await VersionChecker.checkForUpdate(Get.context!);
-
    if(updateAvailable){
      VersionChecker.showForceUpdateDialog(Get.context!);
    }else{
      Timer(const Duration(seconds: 3), () => redirectScreen());
    }
-
   });
 }catch(e){
   log("Exception splash :- ",error: e.toString());
@@ -45,8 +43,8 @@ try{
           const DashBoardScreen(),
         );
       } else {
-        Get.offAll(const LoginScreen());
-       // Get.offAll(const SelectUserTypeScreen());
+        //Get.offAll(const LoginScreen());
+        Get.offAll(const SelectUserTypeScreen());
       }
     }
   }

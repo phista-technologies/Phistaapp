@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:phista/ui/auth_screen/login_screen.dart';
 import 'package:provider/provider.dart';
 import '../../controller/get_started_controller.dart';
 import '../../themes/app_them_data.dart';
@@ -121,7 +122,7 @@ class GetStartedScreen extends StatelessWidget{
                                title: "Login/SignUp".tr,
                                onPress: () {
 
-                                 Get.to(GetStartedScreen());
+                                 Get.to(LoginScreen());
 
 
                                },
@@ -132,8 +133,8 @@ class GetStartedScreen extends StatelessWidget{
                              padding: const EdgeInsets.symmetric(horizontal: 8),
                              child: SegmentButtonGradiant(
                                title: "Pay As Guest",
-                               onPress: () {
-                                // Get.to(const LoginWithEmail());
+                               onPress: () async {
+                              await controller.createGuestUser();
                                },),
                            ),
                            SizedBox(height: 25,),

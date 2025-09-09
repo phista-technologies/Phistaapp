@@ -15,6 +15,7 @@ import 'package:phista/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
 import '../../constant/constant.dart';
+import '../select_usertype/select_usertypescreen.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -145,7 +146,8 @@ class SettingScreen extends StatelessWidget {
                                   ShowToastDialog.closeLoader();
                                   if (value == true) {
                                     ShowToastDialog.showToast("account_deleted_successfully".tr);
-                                    Get.offAll(const LoginScreen());
+                                    //Get.offAll(const LoginScreen());
+                                    Get.offAll(const SelectUserTypeScreen());
                                   } else {
                                     ShowToastDialog.showToast("contact_administrator".tr);
                                   }

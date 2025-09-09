@@ -159,11 +159,13 @@ initState(){
                             height: 20,
                           ),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
                                   flex: 1,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
+
                                     children: [
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -200,57 +202,11 @@ initState(){
                                       ),
                                     ],
                                   )),
-                              /* Expanded(
-                                  flex: 1,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'Daily'.tr,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: AppThemData.medium,
-                                              fontWeight: FontWeight.w700,
-                                              color: themeChange.getThem()
-                                                  ? AppThemData.grey07
-                                                  : AppThemData.grey07,
-                                            ),
-                                          ),
-                                          Radio<String>(
-                                            value: "daily",
-                                            groupValue: controller.radioValue.value,
-                                            activeColor: AppThemData.primary07,
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize.shrinkWrap,
-                                            onChanged: (value) {
-                                              controller.selectedDuration.value =
-                                                  24;
-                                              controller.radioValue.value =
-                                                  value ?? "";
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        "${Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString())} / daily",
-                                        style:  TextStyle(
-                                          color:themeChange.getThem()
-                                              ? AppThemData.grey07
-                                              : AppThemData.grey07,
-                                          fontSize: 14,
-                                          height: 1.57,
-                                          fontFamily: AppThemData.medium,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      )
-                                    ],
-                                  )),*/
+
                               Expanded(
                                   flex: 1,
-                                  child: Column(
+                                  child:Constant.currentUserModel.value?.role.toString() != "Guest"?
+                                  Column(
                                     children: [
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -291,44 +247,12 @@ initState(){
                                         ],
                                       ),
                                     ],
-                                  )),
+                                  ):SizedBox()),
                             ],
                           ),
                           const SizedBox(
                             height: 7,
                           ),
-                          /*if (controller.radioValue.value == "monthly")
-                            TextFieldWidget(
-                              controller:
-                                  controller.bookingMonthsController.value,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                TextInputFormatter.withFunction(
-                                    (oldValue, newValue) {
-                                  if (newValue.text.isEmpty) return newValue;
-
-                                  final value = int.tryParse(newValue.text);
-                                  if (value == null ||
-                                      value < 1 ||
-                                      value > 12) {
-                                    return oldValue; // reject input outside 1–12
-                                  }
-
-                                  return newValue; // allow input
-                                }),
-                              ],
-                              title: 'Booking Months'.tr,
-                              onPress: () {},
-                              hintText: 'Enter booking months'.tr,
-                              textInputType: TextInputType.number,
-                              onChanged: (value) {
-                                controller.setMonthValue(
-                                    controller.startTimeMonthly.value,
-                                    int.parse(controller
-                                        .bookingMonthsController.value.text
-                                        .trim()));
-                              },
-                            ),*/
                           if (controller.radioValue.value == "monthly")
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,7 +382,8 @@ initState(){
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (controller.radioValue.value == "hourly" && controller.selectedDuration.value <= 5.0)
+                              if (controller.radioValue.value == "hourly"
+                                  && controller.selectedDuration.value <= 5.0)
                               Text(
                                   Constant.amountShow(amount: ((double.tryParse(controller.parkingModel.value.perHrPrice.toString()) ?? 0.0) * controller.selectedDuration.value.toDouble()).toString()),
                                   style: TextStyle(
@@ -527,39 +452,40 @@ initState(){
                                 Expanded(
                                   child: InkWell(
                                     onTap: () async {
+                                     if(Constant.currentUserModel.value?.role.toString() != "Guest"){
+                                       TimeOfDay timeSelected = controller.parseSelectedTime(controller.startTimeController.value.text);
+                                       TimeOfDay? startTime =
+                                       await Constant.selectTime(context,timeSelected);
 
-                                      TimeOfDay timeSelected = controller.parseSelectedTime(controller.startTimeController.value.text);
-                                      TimeOfDay? startTime =
-                                          await Constant.selectTime(context,timeSelected);
+                                       if (startTime != null) {
+                                         controller.startTime.value = DateTime(
+                                             controller
+                                                 .selectedDateTime.value.year,
+                                             controller
+                                                 .selectedDateTime.value.month,
+                                             controller
+                                                 .selectedDateTime.value.day,
+                                             startTime.hour,
+                                             startTime.minute);
 
-                                      if (startTime != null) {
-                                        controller.startTime.value = DateTime(
-                                            controller
-                                                .selectedDateTime.value.year,
-                                            controller
-                                                .selectedDateTime.value.month,
-                                            controller
-                                                .selectedDateTime.value.day,
-                                            startTime.hour,
-                                            startTime.minute);
+                                         controller.startTimeController.value
+                                             .text = DateFormat('HH:mm').format(
+                                             controller.startTime.value);
 
-                                        controller.startTimeController.value
-                                                .text = DateFormat('HH:mm').format(
-                                                controller.startTime.value);
+                                         Duration duration = Duration(
+                                             hours: controller
+                                                 .selectedDuration.value
+                                                 .toInt());
 
-                                        Duration duration = Duration(
-                                            hours: controller
-                                                .selectedDuration.value
-                                                .toInt());
-
-                                        controller.endTime.value = controller
-                                            .startTime.value
-                                            .add(duration);
-                                        controller
-                                                .endTimeController.value.text =
-                                            DateFormat('HH:mm').format(
-                                                controller.endTime.value);
-                                      }
+                                         controller.endTime.value = controller
+                                             .startTime.value
+                                             .add(duration);
+                                         controller
+                                             .endTimeController.value.text =
+                                             DateFormat('HH:mm').format(
+                                                 controller.endTime.value);
+                                       }
+                                     }
                                     },
                                     child: TextFieldWidget(
                                       onPress: () {},
@@ -589,44 +515,48 @@ initState(){
                                 Expanded(
                                   child: InkWell(
                                     onTap: () async {
-                                      TimeOfDay timeSelected = controller.parseSelectedTime(controller.endTimeController.value.text);
-                                      TimeOfDay? startTime =
-                                      await Constant.selectTime(context,timeSelected);
+                                      if(Constant.currentUserModel.value?.role.toString() != "Guest") {
+                                        TimeOfDay timeSelected = controller.parseSelectedTime(
+                                            controller.endTimeController.value.text);
+                                        TimeOfDay? startTime =
+                                        await Constant.selectTime(context, timeSelected);
 
+                                        if (startTime != null) {
+                                          controller.endTime.value = DateTime(
+                                              controller
+                                                  .selectedDateTime.value.year,
+                                              controller
+                                                  .selectedDateTime.value.month,
+                                              controller
+                                                  .selectedDateTime.value.day,
+                                              startTime.hour,
+                                              startTime.minute);
 
-                                      if (startTime != null) {
-                                        controller.endTime.value = DateTime(
-                                            controller
-                                                .selectedDateTime.value.year,
-                                            controller
-                                                .selectedDateTime.value.month,
-                                            controller
-                                                .selectedDateTime.value.day,
-                                            startTime.hour,
-                                            startTime.minute);
+                                          controller
+                                              .endTimeController.value.text =
+                                              DateFormat('HH:mm').format(
+                                                  controller.endTime.value);
 
-                                        controller
-                                                .endTimeController.value.text =
-                                            DateFormat('HH:mm').format(
-                                                controller.endTime.value);
+                                          double duration = controller.timeHourDifference(
+                                              controller.startTimeController.value.text.trim(),
+                                              controller.endTimeController.value.text.trim());
+                                          print("duration:--- $duration");
+                                          controller.selectedDuration.value = duration;
+                                          controller.selectedDuration.refresh();
 
-                                        double duration = controller.timeHourDifference(controller.startTimeController.value.text.trim(), controller.endTimeController.value.text.trim());
-                                        print("duration:--- $duration");
-                                        controller.selectedDuration.value = duration;
-                                        controller.selectedDuration.refresh();
+                                          /*Duration duration = Duration(
+                                                                        hours: controller
+                                                                            .selectedDuration.value
+                                                                            .toInt());
 
-                                        /*Duration duration = Duration(
-                                            hours: controller
-                                                .selectedDuration.value
-                                                .toInt());
-
-                                        controller.startTime.value = controller
-                                            .endTime.value
-                                            .subtract(duration);
-                                        controller.startTimeController.value
-                                                .text =
-                                            DateFormat('HH:mm').format(
-                                                controller.startTime.value);*/
+                                                                    controller.startTime.value = controller
+                                                                        .endTime.value
+                                                                        .subtract(duration);
+                                                                    controller.startTimeController.value
+                                                                            .text =
+                                                                        DateFormat('HH:mm').format(
+                                                                            controller.startTime.value);*/
+                                        }
                                       }
                                     },
                                     child: TextFieldWidget(
@@ -848,6 +778,7 @@ initState(){
                             Timestamp.fromDate(controller.startTime.value);
                         orderModel.bookingEndTime =
                             Timestamp.fromDate(controller.endTime.value);
+                        print("bookingStartTime :-- ${orderModel.bookingStartTime}");
                       }
 
                       else if (controller.radioValue.value == "monthly") {

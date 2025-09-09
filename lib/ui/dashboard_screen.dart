@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:phista/constant/constant.dart';
 import 'package:phista/controller/dashboard_controller.dart';
+import 'package:phista/controller/select_user_type_controller.dart';
 import 'package:phista/themes/app_them_data.dart';
+import 'package:phista/ui/select_usertype/select_usertypescreen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../constant/show_toast_dialog.dart';
+import '../themes/custom_dialog_box.dart';
+import '../utils/fire_store_utils.dart';
+import 'auth_screen/login_screen.dart';
 
 class DashBoardScreen extends StatelessWidget {
   const DashBoardScreen({super.key});
@@ -26,7 +34,40 @@ class DashBoardScreen extends StatelessWidget {
               selectedItemColor: themeChange.getThem() ? AppThemData.primary06 : AppThemData.primary06,
               unselectedItemColor: themeChange.getThem() ? AppThemData.grey08 : AppThemData.grey08,
               onTap: (int index) {
-                controller.selectedIndex.value = index;
+                if(Constant.currentUserModel.value?.role.toString() != "Guest"){
+                  controller.selectedIndex.value = index;
+                }else{
+                  /// Show popup
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context){
+                        return CustomDialogBox(title: "Alert".tr,
+                          descriptions: "You cannot access this feature, please signup/login first".tr,
+                          img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                          positiveString: "Ok",
+                          negativeString: "Cancel",
+                          positiveClick: () async {
+                            print("login");
+                            ShowToastDialog.showLoader("please_wait".tr);
+                            await FireStoreUtils.deleteUser().then((value) {
+                              ShowToastDialog.closeLoader();
+                              if (value == true) {
+                                Get.offAll(SelectUserTypeScreen());
+                              } else {
+                                ShowToastDialog.showToast("Something went wrong".tr);
+                              }
+                            });
+
+                          },
+                          negativeClick: (){
+                            print("cancel");
+                            Get.back();
+                          },
+                        );
+                      });
+                }
+
               },
               items: [
                 navigationBarItem(

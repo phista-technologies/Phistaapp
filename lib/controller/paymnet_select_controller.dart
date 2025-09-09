@@ -471,6 +471,7 @@ class PaymentSelectController extends GetxController {
 
   // Strip
   Future<void> stripeMakePayment({required String amount}) async {
+    print("amount :-- $amount");
     log(double.parse(amount).toStringAsFixed(0));
     try {
       Map<String, dynamic>? paymentIntentData = await createStripeIntent(amount: amount);

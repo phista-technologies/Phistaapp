@@ -193,19 +193,18 @@ class ParkingTicketController extends GetxController {
   }
 
   bool canDeleteBookingMonthly(String strDateTime){
-    // Split the dates
-    List<String> dateStrings = strDateTime.split(',');
-    for (String dateStr in dateStrings) {
-      DateTime startTime = parseCustomDateTime(dateStr.trim());
-      DateTime allowedDeleteTime = startTime.add(Duration(hours: 24));
-      bool canDelete = DateTime.now().isAfter(allowedDeleteTime);
+    // Take only the first date from the string
+    String dateStr = strDateTime.split(',').first.trim();
 
-      print("Booking on $startTime → Can delete? $canDelete");
-      return canDelete;
-    }
+    DateTime startTime = parseCustomDateTime(dateStr);
 
+    // User can cancel until 24 hours before start
+    DateTime lastCancelTime = startTime.subtract(Duration(hours: 24));
 
-    return true;
+    bool canCancel = DateTime.now().isBefore(lastCancelTime);
+
+    print("Booking on $startTime → Can cancel? $canCancel");
+    return canCancel;
   }
   /// Parse date like "5 September 2025 at 00:00:00 UTC+5:30"
   DateTime parseCustomDateTime(String input) {

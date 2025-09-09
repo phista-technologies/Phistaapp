@@ -193,7 +193,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          'Scan this on the scanner machine when you are in the parking slot'
+                                          'if required at the location scan this on the scanner machine when you are in the parking slot'
                                               .tr,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
@@ -488,7 +488,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                     onPress: () async {
 
                                       if( controller.orderModel.value.bookingType == "1" ){
-                                        if(controller.canDeleteBookingHourly(controller.orderModel.value.bookingStartTime)){
+                                        if(!controller.canDeleteBookingHourly(controller.orderModel.value.bookingStartTime)){
                                           controller.cancelBooking();
                                         }else{
                                            // you can delete it after 10 mints

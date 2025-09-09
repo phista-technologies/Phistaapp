@@ -16,6 +16,7 @@ import 'package:phista/ui/booking_process/booking_parking_details_screen.dart';
 import 'package:phista/ui/chat/inbox_screen.dart';
 import 'package:phista/ui/parking_details_screen/parking_details_screen.dart';
 import 'package:phista/ui/search/search_screen.dart';
+import 'package:phista/ui/select_usertype/select_usertypescreen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 
 import '../../constant/version_checker.dart';
 import '../../themes/custom_dialog_box.dart';
+import '../auth_screen/login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -345,11 +347,75 @@ class HomeScreen extends StatelessWidget {
                                                                             color: AppThemData.primary06,
                                                                             fontSizes: 12,
                                                                             onPress: () {
-                                                                              if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                                                ShowToastDialog.showToast("You can't book your own parking.");
-                                                                              } else {
-                                                                                Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+
+                                                                              if(Constant.currentUserModel.value?.role.toString() == "Guest"){
+
+                                                                                /// Show popup
+                                                                                showDialog(
+                                                                                    context: context,
+                                                                                    barrierDismissible: true,
+                                                                                    builder: (BuildContext context){
+                                                                                      return CustomDialogBox(title: "Alert".tr,
+                                                                                        descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
+                                                                                        img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                                                                        positiveString: "Park now",
+                                                                                        negativeString: "Reserve parking",
+                                                                                        positiveClick: () async {
+                                                                                          if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                            ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                          }
+                                                                                          else {
+                                                                                            Get.back();
+                                                                                            Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+
+                                                                                          }
+
+                                                                                        },
+                                                                                        negativeClick: (){
+
+                                                                                          showDialog(
+                                                                                              context: context,
+                                                                                              barrierDismissible: false,
+                                                                                              builder: (BuildContext context){
+                                                                                                return CustomDialogBox(title: "Alert".tr,
+                                                                                                  descriptions: "You cannot access this feature, please signup/login first".tr,
+                                                                                                  img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                                                                                  positiveString: "Ok",
+                                                                                                  negativeString: "Cancel",
+                                                                                                  positiveClick: () async {
+                                                                                                    print("login");
+                                                                                                    ShowToastDialog.showLoader("please_wait".tr);
+                                                                                                    await FireStoreUtils.deleteUser().then((value) {
+                                                                                                      ShowToastDialog.closeLoader();
+                                                                                                      if (value == true) {
+                                                                                                        Get.offAll(const SelectUserTypeScreen());
+                                                                                                      } else {
+                                                                                                        ShowToastDialog.showToast("Something went wrong".tr);
+                                                                                                      }
+                                                                                                    });
+
+                                                                                                  },
+                                                                                                  negativeClick: (){
+                                                                                                    print("cancel");
+                                                                                                    Get.back();
+                                                                                                  },
+                                                                                                );
+                                                                                              });
+                                                                                        },
+                                                                                      );
+                                                                                    });
+
+                                                                              }else{
+                                                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                  ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                }
+                                                                                else {
+                                                                                  Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+                                                                                }
                                                                               }
+
+
+
                                                                             },
                                                                           ),
                                                                         ),

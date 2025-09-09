@@ -43,6 +43,16 @@ class LoginScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      SizedBox(height: Responsive.height(9, context)),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          child: Icon(Icons.arrow_back, color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey11),
+                          onTap: (){
+                            Get.back();
+                          },
+                        ),
+                      ),
                       Align(
                         alignment: Alignment.topCenter,
                         child: Image.asset(
