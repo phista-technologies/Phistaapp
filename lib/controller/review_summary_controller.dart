@@ -5,6 +5,8 @@ import 'package:phista/constant/constant.dart';
 import 'package:phista/model/coupon_model.dart';
 import 'package:phista/model/order_model.dart';
 
+import '../utils/fire_store_utils.dart';
+
 class ReviewSummaryController extends GetxController {
   Rx<TextEditingController> couponCodeTextFieldController = TextEditingController().obs;
 
@@ -20,6 +22,8 @@ class ReviewSummaryController extends GetxController {
   RxDouble couponAmount = 0.0.obs;
   Rx<CouponModel> selectedCouponModel = CouponModel().obs;
   String bookingTypeReview = "";
+  var vehicleDriverName = "".obs;
+  var vehicleDriverNumber = "".obs;
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
@@ -35,6 +39,8 @@ class ReviewSummaryController extends GetxController {
             }
           }
         }
+
+
 
 
     }
@@ -62,10 +68,20 @@ class ReviewSummaryController extends GetxController {
     return (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())) + double.parse(taxAmount.value);
   }
 
+  getUserDetail() async{
+    await FireStoreUtils.getUserProfile(orderModel.value.userVehicle!.userId.toString()).then((value) {
+      print("value:-->$value");
 
-
-
-
+      if (value != null) {
+        vehicleDriverName.value = value.fullName.toString() ?? "";
+        if ((value.phoneNumber ?? "").isNotEmpty) {
+          vehicleDriverNumber.value = value.phoneNumber.toString();
+        }
+      }
+    });
+    print(vehicleDriverName.value);
+    print(vehicleDriverNumber.value);
+  }
 
   List<String> sortDateStrings(List<String> dateStrings) {
     DateFormat format = DateFormat("d MMMM yyyy 'at' HH:mm:ss 'UTC+5:30'");
