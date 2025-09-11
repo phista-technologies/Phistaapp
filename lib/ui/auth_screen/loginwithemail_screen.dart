@@ -17,6 +17,7 @@ import '../../themes/round_button_gradiant.dart';
 import '../../themes/segment_button_gradiant.dart';
 import '../../themes/text_field_widget.dart';
 import '../../utils/dark_theme_provider.dart';
+import '../../utils/fire_store_utils.dart';
 import 'forgotPasswordScreen.dart';
 import 'information_screen.dart';
 
@@ -156,11 +157,19 @@ class LoginWithEmail extends StatelessWidget {
                   const SizedBox(height: 30),
                   RoundedButtonGradiant(
                     title: "Login".tr,
-                    onPress: () {
+                    onPress: () async{
                       if (controller.checkValidation() != null) {
                         ShowToastDialog.showToast(controller.checkValidation().toString());
                       } else {
-                        controller.signInWithEmailAndPassword();
+                        if(Constant.isGustUser){
+                          ShowToastDialog.showLoader("please_wait".tr);
+                          await FireStoreUtils.deleteUser().then((value) {
+                            Constant.isGustUser = false;
+                            controller.signInWithEmailAndPassword();
+                          },);
+                        }else{
+                          controller.signInWithEmailAndPassword();
+                        }
                         }
                     },
                   ),

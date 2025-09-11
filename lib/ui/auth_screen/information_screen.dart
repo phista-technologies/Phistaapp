@@ -352,7 +352,9 @@ class InformationScreen extends StatelessWidget {
                          else{
                            print("email password");
                            if(Constant.isGustUser){
+                             ShowToastDialog.showLoader("please_wait".tr);
                              await FireStoreUtils.deleteUser();
+                             Constant.isGustUser = false;
                            }
                            final userCred = await controller.createUserWithEmailPassword(email: controller.emailController.text,
                                password: controller.passwordController.value.text.trim());

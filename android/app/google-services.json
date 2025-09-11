@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "1058281973456-2bipoil2nk61cgujftpce0diil2dnrud.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista",
+            "certificate_hash": "50ccf885df133b27196febc27662560f5ec24f35"
+          }
+        },
+        {
+          "client_id": "1058281973456-6c693vl5r8t68pt9fifc8455ls7bsded.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista",
+            "certificate_hash": "4883f81ecde4a9bc1e8f6f81b28dcb2145c2ce11"
+          }
+        },
+        {
           "client_id": "1058281973456-71vanqgi644gt3702t149cgf6ajg844c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -104,6 +120,14 @@
           "android_info": {
             "package_name": "com.phista.owner",
             "certificate_hash": "4234bf95f9a3bf29b451eaec7e8d198575ec89b8"
+          }
+        },
+        {
+          "client_id": "1058281973456-u7c3conf3e4ehmjsk2ik9r0ls3ieqm10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phista.owner",
+            "certificate_hash": "84508bd903f5ed3642188283971c9130b2aa6596"
           }
         },
         {
