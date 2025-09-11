@@ -154,7 +154,7 @@ class InformationController extends GetxController {
                 ShowToastDialog.closeLoader();
                 log("Exception sending template :- ",error: e.toString());
               }
-
+              Constant.isGustUser = false;
               Get.offAll(const DashBoardScreen(),);
             }else{
               ShowToastDialog.closeLoader();
@@ -209,6 +209,7 @@ class InformationController extends GetxController {
             ShowToastDialog.closeLoader();
             log("Exception sending template :- ",error: e.toString());
           }
+          Constant.isGustUser = false;
           Get.offAll(const DashBoardScreen());
         }else{
           ShowToastDialog.closeLoader();
@@ -285,6 +286,7 @@ class InformationController extends GetxController {
                 ShowToastDialog.closeLoader();
                 log("Exception sending template :- ",error: e.toString());
               }
+              Constant.isGustUser = false;
               Get.offAll(
                 const DashBoardScreen(),
               );
@@ -331,6 +333,7 @@ class InformationController extends GetxController {
             ShowToastDialog.closeLoader();
             log("Exception sending template :- ",error: e.toString());
           }
+          Constant.isGustUser = false;
           Get.offAll(const DashBoardScreen());
         }else{
           ShowToastDialog.closeLoader();
@@ -414,6 +417,7 @@ class InformationController extends GetxController {
           if (value == true) {
             if (userModel != null) {
               if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
+                Constant.isGustUser = false;
                 Get.offAll(const DashBoardScreen());
               } /*else if (userModel.role != "customer") {
                   await FirebaseAuth.instance.signOut();

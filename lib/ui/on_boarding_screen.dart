@@ -5,6 +5,7 @@ import 'package:phista/controller/on_boarding_controller.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/themes/round_button_gradiant.dart';
 import 'package:phista/ui/auth_screen/login_screen.dart';
+import 'package:phista/ui/select_usertype/select_usertypescreen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/preferences.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +37,7 @@ class OnBoardingScreen extends StatelessWidget {
                                       ? "assets/images/onBoarding_bg3.png"
                                       : "assets/images/onBoarding_bg3.png"),fit: BoxFit.cover)),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +108,8 @@ class OnBoardingScreen extends StatelessWidget {
                           onPress: () {
                             if (controller.selectedPageIndex.value == 2) {
                               Preferences.setBoolean(Preferences.isFinishOnBoardingKey, true);
-                              Get.offAll(const LoginScreen());
+                              //Get.offAll(const LoginScreen());
+                              Get.offAll(const SelectUserTypeScreen());
                             } else {
                               controller.pageController.jumpToPage(controller.selectedPageIndex.value + 1);
                             }
@@ -129,7 +131,8 @@ class OnBoardingScreen extends StatelessWidget {
                               )
                             : SquareButtonOutLine(onPress: (){
                           Preferences.setBoolean(Preferences.isFinishOnBoardingKey, true);
-                          Get.offAll(const LoginScreen());
+                          //Get.offAll(const LoginScreen());
+                          Get.offAll(const SelectUserTypeScreen());
                         },title: 'Skip'.tr,),
                       ],
                     ),

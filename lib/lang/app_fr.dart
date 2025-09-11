@@ -288,6 +288,9 @@ const Map<String, String> trFR = {
   "View All": "Voir tout",
   "Yes, Sure": "Oui, bien sûr",
   "No": "Non",
+  "Under Development": "En développement",
+  "Park Now": "Garez-vous maintenant",
+  "Reserve Parking": "Réserver un stationnement",
   "please_wait": "Veuillez patienter...",
   "Enter valid phone number": "Entrez un numéro de téléphone valide",
   "Chat feature is currently unavailable for this owner.":
@@ -301,6 +304,7 @@ const Map<String, String> trFR = {
   "Turn your private parking space into steady extra income.Manage bookings and payouts right from your phone-quick and hassle-free": "Transformez votre place de parking privée en un revenu supplémentaire stable. Gérez les réservations et les paiements directement depuis votre téléphone, rapidement et sans tracas.",
   "App Version": "Version de l'application",
   "Inbox": "Boîte de réception",
+  "Browse parkings as guest": "Parcourir les parkings en tant qu'invité",
   "Navigate the Parking Slot": "Naviguer dans l'emplacement de stationnement",
   "No Canceled Booking Found": "Aucune réservation annulée trouvée",
   "No Completed Booking Found": "Aucune réservation terminée trouvée",

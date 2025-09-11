@@ -85,6 +85,10 @@ class LoginController extends GetxController {
       // Check if user exists in Firestore with password
       final credentials = await FireStoreUtils.getUserPasswordByEmail(googleUser.email);
 
+      if(Constant.isGustUser){
+        await FireStoreUtils.deleteUser();
+      }
+
       if (credentials != null && credentials['password'] != null && credentials['password']!.isNotEmpty) {
         final password = credentials['password']!;
         debugPrint("User password (Google): $password");
@@ -151,6 +155,10 @@ class LoginController extends GetxController {
       }
 
       debugPrint("appleEmail : $appleUserEmail");
+
+      if(Constant.isGustUser){
+        await FireStoreUtils.deleteUser();
+      }
 
       final credentials = await FireStoreUtils.getUserPasswordByEmail(appleUserEmail);
 
@@ -368,6 +376,9 @@ class LoginController extends GetxController {
   signInWithEmailAndPassword() async {
     ShowToastDialog.showLoader("please_wait".tr);
     try {
+      if(Constant.isGustUser){
+        await FireStoreUtils.deleteUser();
+      }
       FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.value.text.trim(),
           password: passwordController.value.text.trim()).then((value) async {
           await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {

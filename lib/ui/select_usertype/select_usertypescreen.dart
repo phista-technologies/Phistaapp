@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../controller/select_user_type_controller.dart';
 import '../../themes/app_them_data.dart';
+import '../../themes/custom_dialog_box.dart';
 import '../../themes/round_button_gradiant.dart';
 import '../../themes/segment_button_gradiant.dart';
 import '../../utils/dark_theme_provider.dart';
@@ -158,7 +160,21 @@ class SelectUserTypeScreen extends StatelessWidget{
                          SizedBox(height: 40,),
                          InkWell(
                            onTap: (){
-                             controller.isSelected.value = 1;
+                             //controller.isSelected.value = 1;
+                             showDialog(context: context,
+                                 barrierDismissible: false,
+                                 builder: (BuildContext context){
+                                   return CustomDialogBoxOnlyOk(
+                                     title: "Alert".tr,
+                                     descriptions: "Under Development".tr,
+                                     buttonText: "Okay",
+                                     onButtonTap: (){
+                                       Get.back();
+                                     },
+                                     img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                                   );
+                                 });
+
                            },
                            child: Container(
                              padding: const EdgeInsets.symmetric(vertical: 25,horizontal: 35),
@@ -199,9 +215,13 @@ class SelectUserTypeScreen extends StatelessWidget{
                              title: "Continue".tr,
                              onPress: () {
 
-                               Get.to(GetStartedScreen());
+                               if (controller.isSelected.value == 0){
+                                 controller.createGuestUser();
+                               }else{
 
+                               }
 
+                               //Get.to(GetStartedScreen());
                              },
                            ),
                          ),

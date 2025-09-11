@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 class CustomDialogBox extends StatelessWidget {
   final String title, descriptions, positiveString, negativeString;
   final Widget img;
+  final Color? positiveBgColor;
   final Function() positiveClick;
   final Function() negativeClick;
 
@@ -19,7 +20,9 @@ class CustomDialogBox extends StatelessWidget {
       required this.positiveClick,
       required this.negativeClick,
       required this.positiveString,
-      required this.negativeString});
+      required this.negativeString,
+      this.positiveBgColor
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +116,7 @@ class CustomDialogBox extends StatelessWidget {
                     width: Responsive.width(100, context),
                     height: Responsive.height(5, context),
                     decoration: ShapeDecoration(
-                      color: AppThemData.error08,
+                      color: positiveBgColor??AppThemData.error08,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(200),
                       ),
@@ -240,7 +243,6 @@ class CustomDialogBoxOnlyOk extends StatelessWidget {
     );
   }
 }
-
 
 class CustomDialogBoxOtp extends StatelessWidget {
   final String title;

@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import '../../constant/constant.dart';
 import '../../env.dart';
 import '../../themes/text_field_widget.dart';
+import '../../utils/fire_store_utils.dart';
 import '../../utils/pdf_ generater.dart';
 import '../../utils/utils.dart';
 import 'loginwithemail_screen.dart';
@@ -86,92 +87,7 @@ class LoginScreen extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      //SizedBox(height: Responsive.height(5, context)),
-                      // SizedBox(
-                      //   height: 40,
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //     children: [
-                      //       // Login with Phone
-                      //       InkWell(
-                      //         onTap: () {
-                      //           controller.fromLoginType.value = "Mobile";
-                      //         },
-                      //         child: Container(
-                      //           width: Responsive.width(42, context),
-                      //           height: Responsive.height(4.5, context),
-                      //           decoration: BoxDecoration(
-                      //             gradient: controller.fromLoginType.value == "Mobile"
-                      //                 ? const LinearGradient(
-                      //               begin: Alignment.bottomCenter,
-                      //               end: Alignment.topCenter,
-                      //               colors: AppThemData.gradient03,
-                      //             )
-                      //                 : null,
-                      //             color: controller.fromLoginType.value == "Mobile"
-                      //                 ? null
-                      //                 : AppThemData.grey03,
-                      //             borderRadius: const BorderRadius.only(
-                      //               topLeft: Radius.circular(20),
-                      //               topRight: Radius.circular(20),
-                      //             ),
-                      //           ),
-                      //           child: Center(
-                      //             child: Text(
-                      //               "Phone",
-                      //               textAlign: TextAlign.center,
-                      //               style: TextStyle(
-                      //                 fontFamily: AppThemData.medium,
-                      //                 color: controller.fromLoginType == "Phone"?AppThemData.grey11:AppThemData.grey09,
-                      //                 fontSize: 15,
-                      //                 fontWeight: FontWeight.w500,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //
-                      //       // Login with Email
-                      //       InkWell(
-                      //         onTap: () {
-                      //           controller.fromLoginType.value = "email";
-                      //         },
-                      //         child: Container(
-                      //           width: Responsive.width(42, context),
-                      //           height: Responsive.height(4.5, context),
-                      //           decoration: BoxDecoration(
-                      //             gradient: controller.fromLoginType == "email"
-                      //                 ? const LinearGradient(
-                      //               begin: Alignment.bottomCenter,
-                      //               end: Alignment.topCenter,
-                      //               colors: AppThemData.gradient03,
-                      //             )
-                      //                 : null,
-                      //             color: controller.fromLoginType == "email"
-                      //                 ? null
-                      //                 : AppThemData.grey03,
-                      //             borderRadius: const BorderRadius.only(
-                      //               topLeft: Radius.circular(20),
-                      //               topRight: Radius.circular(20),
-                      //             ),
-                      //           ),
-                      //           child: Center(
-                      //             child: Text(
-                      //               "Email",
-                      //               textAlign: TextAlign.center,
-                      //               style: TextStyle(
-                      //                 fontFamily: AppThemData.medium,
-                      //                 color: controller.fromLoginType == "email"?AppThemData.grey09:AppThemData.grey11,
-                      //                 fontSize: 15,
-                      //                 fontWeight: FontWeight.w500,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
+
                       SizedBox(height: Responsive.height(7, context)),
                       Column(
                         children: [
@@ -225,8 +141,24 @@ class LoginScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           InkWell(
-                            onTap: () {
-                              controller.loginWithGoogle();
+                            onTap: () async{
+
+                              if(Constant.isGustUser){
+                                ShowToastDialog.showLoader("please_wait".tr);
+                                await FireStoreUtils.deleteUser().then((value) {
+                                  ShowToastDialog.closeLoader();
+                                  if (value == true) {
+                                    controller.loginWithGoogle();
+                                  } else {
+                                    ShowToastDialog.showToast(
+                                        "Something went wrong".tr);
+                                  }
+                                });
+                              }else{
+                                controller.loginWithGoogle();
+                              }
+
+
                             },
                             child: Container(
                               width: Responsive.width(90, context),
@@ -353,7 +285,7 @@ class LoginScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                       RoundedButtonGradiant(
                         title: "Continue".tr,
-                        onPress: () {
+                        onPress: () async {
                           if (controller.phoneNumberController.value.text.isEmpty) {
                             ShowToastDialog.showToast(
                               "Enter valid phone number",
@@ -362,7 +294,20 @@ class LoginScreen extends StatelessWidget {
                           } else {
                             if (controller.formKey.value.currentState!
                                 .validate()) {
-                              controller.sendCode();
+
+                              if(Constant.isGustUser){
+                                ShowToastDialog.showLoader("please_wait".tr);
+                                await FireStoreUtils.deleteUser().then((value) {
+                                  ShowToastDialog.closeLoader();
+                                  if (value == true) {
+                                    controller.sendCode();
+                                  } else {
+                                    ShowToastDialog.showToast("Something went wrong".tr);
+                                  }
+                                });
+                              }else{
+                                controller.sendCode();
+                              }
                             }
                           }
                         },

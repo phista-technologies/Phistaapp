@@ -177,11 +177,10 @@ class ParkingTicketController extends GetxController {
         .then((value) {
       ShowToastDialog.closeLoader();
       DashboardScreenController
-      dashboardController = Get.put(
-          DashboardScreenController());
+      dashboardController = Get.put(DashboardScreenController());
       dashboardController.selectedIndex(2);
-      Get.offAll(
-              () => const DashBoardScreen());
+      Get.offAll(() => const DashBoardScreen());
+
     });
   }
 
@@ -206,6 +205,7 @@ class ParkingTicketController extends GetxController {
     print("Booking on $startTime → Can cancel? $canCancel");
     return canCancel;
   }
+
   /// Parse date like "5 September 2025 at 00:00:00 UTC+5:30"
   DateTime parseCustomDateTime(String input) {
     final parts = input.split(" UTC");
@@ -227,7 +227,7 @@ class ParkingTicketController extends GetxController {
     return baseTime.add(totalOffset); // return time adjusted to the correct UTC offset
   }
 
-  void showPopUp(String title,String msg) {
+  void showPopUp(String title,String msg){
     Get.dialog(
       CustomDialogBoxOnlyOk(
           title:title,
@@ -241,6 +241,7 @@ class ParkingTicketController extends GetxController {
       ),
       barrierDismissible: false,
     );
+
   }
 
 }

@@ -115,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                                     myLocationButtonEnabled: true,
                                     zoomControlsEnabled: false,
                                     mapType: MapType.terrain,
-                                    markers:controller.markerShowMap,//Set<Marker>.of(controller.markers.values),
+                                    markers:Set<Marker>.of(controller.markers.values),
                                     onMapCreated: (GoogleMapController mapController) {
                                       controller.mapController = mapController;
                                     },
@@ -357,9 +357,10 @@ class HomeScreen extends StatelessWidget {
                                                                                     builder: (BuildContext context){
                                                                                       return CustomDialogBox(title: "Alert".tr,
                                                                                         descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
-                                                                                        img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                                                                                        positiveString: "Park now",
-                                                                                        negativeString: "Reserve parking",
+                                                                                        img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                        positiveString: "Park Now".tr,
+                                                                                        negativeString: "Reserve Parking".tr,
+                                                                                        positiveBgColor: AppThemData.success07,
                                                                                         positiveClick: () async {
                                                                                           if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
                                                                                             ShowToastDialog.showToast("You can't book your own parking.");
@@ -371,36 +372,11 @@ class HomeScreen extends StatelessWidget {
                                                                                           }
 
                                                                                         },
-                                                                                        negativeClick: (){
+                                                                                        negativeClick: () async {
+                                                                                        Constant.isGustUser = true;
+                                                                                          Get.to(const LoginScreen());
 
-                                                                                          showDialog(
-                                                                                              context: context,
-                                                                                              barrierDismissible: false,
-                                                                                              builder: (BuildContext context){
-                                                                                                return CustomDialogBox(title: "Alert".tr,
-                                                                                                  descriptions: "You cannot access this feature, please signup/login first".tr,
-                                                                                                  img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                                                                                                  positiveString: "Ok",
-                                                                                                  negativeString: "Cancel",
-                                                                                                  positiveClick: () async {
-                                                                                                    print("login");
-                                                                                                    ShowToastDialog.showLoader("please_wait".tr);
-                                                                                                    await FireStoreUtils.deleteUser().then((value) {
-                                                                                                      ShowToastDialog.closeLoader();
-                                                                                                      if (value == true) {
-                                                                                                        Get.offAll(const SelectUserTypeScreen());
-                                                                                                      } else {
-                                                                                                        ShowToastDialog.showToast("Something went wrong".tr);
-                                                                                                      }
-                                                                                                    });
 
-                                                                                                  },
-                                                                                                  negativeClick: (){
-                                                                                                    print("cancel");
-                                                                                                    Get.back();
-                                                                                                  },
-                                                                                                );
-                                                                                              });
                                                                                         },
                                                                                       );
                                                                                     });

@@ -30,6 +30,7 @@ class Constant {
   static const String googleLoginType = "google";
   static const String appleLoginType = "apple";
   static const String roleType = "customer";
+  static  bool isGustUser = false;
 
   static String bookingTypeConst = "hourly";
   static bool isSubscriptionModelApplied =

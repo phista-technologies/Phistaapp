@@ -160,7 +160,7 @@ class LoginWithEmail extends StatelessWidget {
                       if (controller.checkValidation() != null) {
                         ShowToastDialog.showToast(controller.checkValidation().toString());
                       } else {
-                          controller.signInWithEmailAndPassword();
+                        controller.signInWithEmailAndPassword();
                         }
                     },
                   ),

@@ -24,6 +24,7 @@ import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../select_usertype/select_usertypescreen.dart';
 import 'downloadAppScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -287,7 +288,8 @@ class ProfileScreen extends StatelessWidget {
                                         }
 
                                         await FirebaseAuth.instance.signOut();
-                                        Get.offAll(const LoginScreen());
+                                       // Get.offAll(const LoginScreen());
+                                        Get.offAll(const SelectUserTypeScreen());
                                       },
                                       negativeClick: () {
                                         Get.back();

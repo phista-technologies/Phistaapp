@@ -34,10 +34,11 @@ class DashBoardScreen extends StatelessWidget {
               selectedItemColor: themeChange.getThem() ? AppThemData.primary06 : AppThemData.primary06,
               unselectedItemColor: themeChange.getThem() ? AppThemData.grey08 : AppThemData.grey08,
               onTap: (int index) {
-                if(Constant.currentUserModel.value?.role.toString() != "Guest"){
+                if(Constant.currentUserModel.value?.role.toString() != "Guest" || index == 0 || index == 2){
                   controller.selectedIndex.value = index;
                 }else{
                   /// Show popup
+
                   showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -45,19 +46,13 @@ class DashBoardScreen extends StatelessWidget {
                         return CustomDialogBox(title: "Alert".tr,
                           descriptions: "You cannot access this feature, please signup/login first".tr,
                           img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                          positiveString: "Ok",
+                          positiveString: "Login",
                           negativeString: "Cancel",
+                          positiveBgColor: AppThemData.success07,
                           positiveClick: () async {
                             print("login");
-                            ShowToastDialog.showLoader("please_wait".tr);
-                            await FireStoreUtils.deleteUser().then((value) {
-                              ShowToastDialog.closeLoader();
-                              if (value == true) {
-                                Get.offAll(SelectUserTypeScreen());
-                              } else {
-                                ShowToastDialog.showToast("Something went wrong".tr);
-                              }
-                            });
+                            Get.to(LoginScreen());
+
 
                           },
                           negativeClick: (){
@@ -67,7 +62,6 @@ class DashBoardScreen extends StatelessWidget {
                         );
                       });
                 }
-
               },
               items: [
                 navigationBarItem(

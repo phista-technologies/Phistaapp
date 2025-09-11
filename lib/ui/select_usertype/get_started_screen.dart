@@ -132,7 +132,7 @@ class GetStartedScreen extends StatelessWidget{
                            Padding(
                              padding: const EdgeInsets.symmetric(horizontal: 8),
                              child: SegmentButtonGradiant(
-                               title: "Pay As Guest",
+                               title: "Browse parkings as guest".tr,
                                onPress: () async {
                               await controller.createGuestUser();
                                },),
