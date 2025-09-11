@@ -306,7 +306,133 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
+
                                 Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                controller.vehicleDriverName.value,
+                                                style: TextStyle(
+                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                  fontSize: 16,
+                                                  fontFamily: AppThemData.medium,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                "vehicle Driver Name".tr,
+                                                style: const TextStyle(
+                                                  color: AppThemData.grey07,
+                                                  fontSize: 12,
+                                                  fontFamily: AppThemData.regular,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                controller.orderModel.value.userVehicle!.vehicleNumber.toString(),
+                                                style: TextStyle(
+                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                  fontSize: 16,
+                                                  fontFamily: AppThemData.medium,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                "vehicle number".tr,
+                                                style: const TextStyle(
+                                                  color: AppThemData.grey07,
+                                                  fontSize: 12,
+                                                  fontFamily: AppThemData.regular,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    if (controller.vehicleDriverNumber.value != "")
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  controller.vehicleDriverNumber.value,
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily: AppThemData.medium,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "vehicle Driver Number".tr,
+                                                  style: const TextStyle(
+                                                    color: AppThemData.grey07,
+                                                    fontSize: 12,
+                                                    fontFamily: AppThemData.regular,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                          ],
+                                        ),
+                                      ),
+
+                                  ],
+                                ),
+
+
+
+                                /*Row(
                                   children: [
                                     Expanded(
                                       child: Row(
@@ -366,7 +492,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                       ),
                                     )
                                   ],
-                                ),
+                                ),*/
                                 const SizedBox(
                                   height: 10,
                                 ),
