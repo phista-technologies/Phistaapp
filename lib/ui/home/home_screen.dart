@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import '../../constant/version_checker.dart';
 import '../../themes/custom_dialog_box.dart';
 import '../auth_screen/login_screen.dart';
+import '../select_usertype/get_started_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -347,9 +348,7 @@ class HomeScreen extends StatelessWidget {
                                                                             color: AppThemData.primary06,
                                                                             fontSizes: 12,
                                                                             onPress: () {
-
                                                                               if(Constant.currentUserModel.value?.role.toString() == "Guest"){
-
                                                                                 /// Show popup
                                                                                 showDialog(
                                                                                     context: context,
@@ -367,15 +366,36 @@ class HomeScreen extends StatelessWidget {
                                                                                           }
                                                                                           else {
                                                                                             Get.back();
-                                                                                            Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
-
+                                                                                            Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
+                                                                                            //Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
                                                                                           }
-
                                                                                         },
                                                                                         negativeClick: () async {
                                                                                         Constant.isGustUser = true;
                                                                                           Get.back();
-                                                                                          Get.to(const LoginScreen());
+                                                                                        showDialog(
+                                                                                            context: context,
+                                                                                            barrierDismissible: true,
+                                                                                            builder: (BuildContext context){
+                                                                                              return CustomDialogBox(title: "Alert".tr,
+                                                                                                descriptions: "To reserve the parking you should log in first".tr,
+                                                                                                img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                positiveString: "Continue".tr,
+                                                                                                negativeString: "Cancel".tr,
+                                                                                                positiveBgColor: AppThemData.success07,
+                                                                                                positiveClick: () async {
+                                                                                                  Get.back();
+                                                                                                  Get.to(const LoginScreen());
+
+                                                                                                },
+                                                                                                negativeClick: () async {
+                                                                                                  Constant.isGustUser = true;
+                                                                                                  Get.back();
+
+                                                                                                },
+                                                                                              );
+                                                                                            });
+
                                                                                         },
                                                                                       );
                                                                                     });
@@ -445,62 +465,44 @@ class HomeScreen extends StatelessWidget {
                                                           ),
 
                                                           FutureBuilder<dynamic>(
-                                                            future: getData(parkingModel.id ?? "", parkingModel.parkingSpace),
+                                                            future: controller.getData(parkingModel.id ?? "", parkingModel.parkingSpace),
                                                             builder: (context, snapshot) {
 
+                                                              if (controller.parkingDataCache.containsKey(parkingModel.id)) {
+
+                                                                return Positioned(
+                                                                  top: 10,
+                                                                  right: 10,
+                                                                  child: Container(
+                                                                    decoration: const BoxDecoration(
+                                                                      color: AppThemData.success07,
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                    ),
+                                                                    child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "${controller.parkingDataCache[parkingModel.id]}%",
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            Text(
+                                                                              "full".tr,
+                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                                  ),
+                                                                );
+
+                                                              }
+
                                                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                return  Positioned(
-                                                                  top: 10,
-                                                                  right: 10,
-                                                                  child: Container(
-                                                                    decoration: const BoxDecoration(
-                                                                      color: AppThemData.success07,
-                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                                    ),
-                                                                    child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "0%",
-                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
-                                                                            ),
-                                                                            const SizedBox(width: 5),
-                                                                            Text(
-                                                                              "full".tr,
-                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
-                                                                            ),
-                                                                          ],
-                                                                        )),
-                                                                  ),
-                                                                );
-                                                              } else if (snapshot.hasError) {
-                                                                return  Positioned(
-                                                                  top: 10,
-                                                                  right: 10,
-                                                                  child: Container(
-                                                                    decoration: const BoxDecoration(
-                                                                      color: AppThemData.success07,
-                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                                    ),
-                                                                    child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "0%",
-                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.bold),
-                                                                            ),
-                                                                            const SizedBox(width: 5),
-                                                                            Text(
-                                                                              "full".tr,
-                                                                              style: const TextStyle(color: AppThemData.white, fontFamily: AppThemData.semiBold),
-                                                                            ),
-                                                                          ],
-                                                                        )),
-                                                                  ),
-                                                                );
-                                                              } else if(snapshot.hasData){
+                                                                return  SizedBox();
+                                                              }
+                                                               if(snapshot.hasData ){
+                                                                 controller.parkingDataCache[parkingModel.id ?? ""] = snapshot.data;
                                                                 return Positioned(
                                                                   top: 10,
                                                                   right: 10,
@@ -527,7 +529,6 @@ class HomeScreen extends StatelessWidget {
                                                                   ),
                                                                 );
                                                               }
-                                                              else{
                                                                 return Positioned(
                                                                   top: 10,
                                                                   right: 10,
@@ -553,7 +554,7 @@ class HomeScreen extends StatelessWidget {
                                                                         )),
                                                                   ),
                                                                 );
-                                                              }
+
                                                             },
                                                           ),
 
@@ -579,9 +580,5 @@ class HomeScreen extends StatelessWidget {
   }
 
 
-  getData(String parkingId,parkingSpace)async{
-    double value = await FireStoreUtils.getParkingBookingPercentage(parkingId??"",
-        parkingSpace??"");
-    return value.round() ;
-  }
+
 }

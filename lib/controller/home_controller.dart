@@ -39,7 +39,7 @@ class HomeController extends GetxController {
   BitmapDescriptor? parkingGreenMarker;
   Image? parkingGreenMarkerOSM; //OSM
    var markerShowMap = <Marker>{}.obs;
-
+  Map<String, dynamic> parkingDataCache = {};
 
   @override
   void onInit() {
@@ -323,6 +323,19 @@ class HomeController extends GetxController {
     }else {
       return parkingRedMarker;
     }
+  }
+
+
+  getData(String parkingId,parkingSpace)async{
+
+
+    if (parkingDataCache.containsKey(parkingId)) {
+      return parkingDataCache[parkingId];
+    }
+
+    double value = await FireStoreUtils.getParkingBookingPercentage(parkingId??"",
+        parkingSpace??"");
+    return value.round() ;
   }
 
   @override

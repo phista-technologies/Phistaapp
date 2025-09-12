@@ -374,7 +374,8 @@ class ParkingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-            bottomNavigationBar: Padding(
+            bottomNavigationBar: Constant.currentUserModel.value?.role.toString() != "Guest"?
+            Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -391,7 +392,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                   },
                 ),
               ),
-            ),
+            ):SizedBox.shrink(),
           );
         });
   }

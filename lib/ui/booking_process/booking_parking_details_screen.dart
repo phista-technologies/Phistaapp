@@ -28,11 +28,6 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 class BookingParkingDetailsScreen extends StatelessWidget {
   const BookingParkingDetailsScreen({super.key});
 
-initState(){
-  print("devendra");
-}
-
-
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);

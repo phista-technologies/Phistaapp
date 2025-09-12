@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:phista/ui/auth_screen/login_screen.dart';
 import 'package:provider/provider.dart';
+import '../../constant/constant.dart';
 import '../../controller/get_started_controller.dart';
 import '../../themes/app_them_data.dart';
 import '../../themes/responsive.dart';
 import '../../themes/round_button_gradiant.dart';
 import '../../themes/segment_button_gradiant.dart';
 import '../../utils/dark_theme_provider.dart';
+import '../booking_process/booking_parking_details_screen.dart';
 
 class GetStartedScreen extends StatelessWidget{
   const GetStartedScreen({super.key});
@@ -121,7 +123,7 @@ class GetStartedScreen extends StatelessWidget{
                              child: RoundedButtonGradiant(
                                title: "Login/SignUp".tr,
                                onPress: () {
-
+                                 Constant.isGustUser = true;
                                  Get.to(LoginScreen());
 
 
@@ -134,7 +136,11 @@ class GetStartedScreen extends StatelessWidget{
                              child: SegmentButtonGradiant(
                                title: "Browse parkings as guest".tr,
                                onPress: () async {
-                              await controller.createGuestUser();
+                                 print("parkingModel.value${controller.parkingModel.value}");
+
+
+                                 Get.to(() => const BookingParkingDetailsScreen(),arguments:{"parkingModel": controller.parkingModel.value});
+
                                },),
                            ),
                            SizedBox(height: 25,),
