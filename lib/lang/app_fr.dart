@@ -303,6 +303,7 @@ const Map<String, String> trFR = {
   "month": "mois",
   "List your parking": "Inscrivez votre stationnement",
   "Download the Phista Owner App": "Téléchargez l'application Phista Owner",
+  "To reserve the parking you should log in first": "Pour réserver le parking, vous devez d'abord vous connecter",
 
   "Turn your private parking space into steady extra income.Manage bookings and payouts right from your phone-quick and hassle-free": "Transformez votre place de parking privée en un revenu supplémentaire stable. Gérez les réservations et les paiements directement depuis votre téléphone, rapidement et sans tracas.",
   "App Version": "Version de l'application",
