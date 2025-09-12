@@ -233,6 +233,8 @@ class LoginController extends GetxController {
               UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
               if (userModel != null) {
                 if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
+
+                  Constant.currentUserModel.value?.role = userModel.role;
                   Get.offAll(const DashBoardScreen());
                 } /*else if (userModel.role != "customer") {
 
@@ -333,6 +335,7 @@ class LoginController extends GetxController {
 
             if (userModel != null) {
               if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
+                Constant.currentUserModel.value?.role = userModel.role;
                 Get.offAll(const DashBoardScreen());
               }
               else {
@@ -373,6 +376,7 @@ class LoginController extends GetxController {
               UserModel? userModel = await FireStoreUtils.getUserProfile(value.user!.uid);
               if (userModel != null) {
                 if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
+                  Constant.currentUserModel.value?.role = userModel.role;
                   Get.offAll(const DashBoardScreen());
                 } /*else if (userModel.role != "customer") {
                   await FirebaseAuth.instance.signOut();

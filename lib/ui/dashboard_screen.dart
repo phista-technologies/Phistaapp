@@ -51,6 +51,8 @@ class DashBoardScreen extends StatelessWidget {
                           positiveBgColor: AppThemData.success07,
                           positiveClick: () async {
                             print("login");
+                            Get.back();
+                            Constant.isGustUser = true;
                             Get.to(LoginScreen());
 
 

@@ -155,6 +155,7 @@ class InformationController extends GetxController {
                 log("Exception sending template :- ",error: e.toString());
               }
               Constant.isGustUser = false;
+              Constant.currentUserModel.value?.role = userModelData.role;
               Get.offAll(const DashBoardScreen(),);
             }else{
               ShowToastDialog.closeLoader();
@@ -210,6 +211,7 @@ class InformationController extends GetxController {
             log("Exception sending template :- ",error: e.toString());
           }
           Constant.isGustUser = false;
+          Constant.currentUserModel.value?.role = userModelData.role;
           Get.offAll(const DashBoardScreen());
         }else{
           ShowToastDialog.closeLoader();
@@ -287,6 +289,7 @@ class InformationController extends GetxController {
                 log("Exception sending template :- ",error: e.toString());
               }
               Constant.isGustUser = false;
+              Constant.currentUserModel.value?.role = userModelData.role;
               Get.offAll(
                 const DashBoardScreen(),
               );
@@ -334,6 +337,7 @@ class InformationController extends GetxController {
             log("Exception sending template :- ",error: e.toString());
           }
           Constant.isGustUser = false;
+          Constant.currentUserModel.value?.role = userModelData.role;
           Get.offAll(const DashBoardScreen());
         }else{
           ShowToastDialog.closeLoader();
@@ -418,11 +422,9 @@ class InformationController extends GetxController {
             if (userModel != null) {
               if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
                 Constant.isGustUser = false;
+                Constant.currentUserModel.value?.role = userModel.role;
                 Get.offAll(const DashBoardScreen());
-              } /*else if (userModel.role != "customer") {
-                  await FirebaseAuth.instance.signOut();
-                  ShowToastDialog.showToast("please enter valid credentials".tr);
-                } */else {
+              } else {
                 await FirebaseAuth.instance.signOut();
                 ShowToastDialog.showToast("This user is disable please contact administrator".tr);
               }

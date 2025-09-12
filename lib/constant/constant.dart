@@ -72,6 +72,7 @@ class Constant {
 
   static var currentUserModel = Rxn<UserModel>();
 
+
   static String amountShow({required String? amount}) {
     if (amount != ""){
       if (Constant.currencyModel!.symbolAtRight == true) {
@@ -83,6 +84,8 @@ class Constant {
     return "";
 
   }
+
+
 
   double calculateTax({String? amount, TaxModel? taxModel}) {
     double taxAmount = 0.0;
