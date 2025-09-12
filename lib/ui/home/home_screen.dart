@@ -374,6 +374,7 @@ class HomeScreen extends StatelessWidget {
                                                                                         },
                                                                                         negativeClick: () async {
                                                                                         Constant.isGustUser = true;
+                                                                                          Get.back();
                                                                                           Get.to(const LoginScreen());
                                                                                         },
                                                                                       );

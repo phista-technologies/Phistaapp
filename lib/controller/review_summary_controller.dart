@@ -39,6 +39,7 @@ class ReviewSummaryController extends GetxController {
             }
           }
         }
+      getUserDetail();
 
 
 

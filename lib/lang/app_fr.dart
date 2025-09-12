@@ -296,6 +296,9 @@ const Map<String, String> trFR = {
   "Chat feature is currently unavailable for this owner.":
       "La fonction de chat n’est pas disponible pour cet propriétaire.",
   "full": "complète",
+  "Vehicle Driver Number": "Numéro de conducteur du véhicule",
+  "Vehicle Number": "Numéro de véhicule",
+  "Vehicle Driver Name": "Nom du conducteur du véhicule",
   "daily(5h+)": "quotidiennement (5h+)",
   "month": "mois",
   "List your parking": "Inscrivez votre stationnement",

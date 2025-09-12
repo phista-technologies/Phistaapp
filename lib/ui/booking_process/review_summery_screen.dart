@@ -306,7 +306,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
-
                                 Row(
                                   children: [
                                     Expanded(
@@ -321,7 +320,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                controller.vehicleDriverName.value,
+                                                Constant.currentUserModel.value?.role != "Guest"?controller.vehicleDriverName.value:"Guest",
                                                 style: TextStyle(
                                                   color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
                                                   fontSize: 16,
@@ -332,7 +331,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                 height: 5,
                                               ),
                                               Text(
-                                                "vehicle Driver Name".tr,
+                                                "Vehicle Driver Name".tr,
                                                 style: const TextStyle(
                                                   color: AppThemData.grey07,
                                                   fontSize: 12,
@@ -368,7 +367,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                 height: 5,
                                               ),
                                               Text(
-                                                "vehicle number".tr,
+                                                "Vehicle Number".tr,
                                                 style: const TextStyle(
                                                   color: AppThemData.grey07,
                                                   fontSize: 12,
@@ -413,7 +412,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "vehicle Driver Number".tr,
+                                                  "Vehicle Driver Number".tr,
                                                   style: const TextStyle(
                                                     color: AppThemData.grey07,
                                                     fontSize: 12,
