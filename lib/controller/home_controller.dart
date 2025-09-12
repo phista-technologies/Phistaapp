@@ -46,14 +46,15 @@ class HomeController extends GetxController {
     getLocation();
     super.onInit();
       getCurrentUser();
-    markerInit();
+
   }
 
   void getCurrentUser()async{
     await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) {
       Constant.currentUserModel.value = value;
     },);
-
+    markerInit();
+    //getParking();
   }
 
   getLocation() async {
@@ -88,7 +89,7 @@ class HomeController extends GetxController {
         Constant.currentLocation!.longitude!);
     Constant.country = placeMarks.first.country;
     getTax();
-    //getParking();
+    getParking();
     isLoading.value = false;
   }
 
@@ -296,7 +297,10 @@ class HomeController extends GetxController {
         .getBytesFromAsset("assets/icon/ic_parking_icon_red.png", 100);
     parkingRedMarker = BitmapDescriptor.fromBytes(parking2);
 
-    getParking();
+
+    print("latitude :-- ${Constant.currentLocation!.latitude} longitude :-- ${Constant.currentLocation!.longitude}");
+
+
   }
 
 
