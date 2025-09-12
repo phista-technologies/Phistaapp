@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phista/constant/constant.dart';
-import 'package:phista/constant/show_toast_dialog.dart';
+
 import 'package:phista/env.dart';
 import 'package:phista/model/referral_model.dart';
 import 'package:phista/model/user_model.dart';
@@ -17,6 +17,7 @@ import 'package:phista/ui/dashboard_screen.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/notification_service.dart';
 
+import '../constant/show_toast_dialog.dart';
 import '../themes/custom_dialog_box.dart';
 import '../ui/auth_screen/otp_screen.dart';
 import '../utils/debouncer.dart';
@@ -394,6 +395,7 @@ class InformationController extends GetxController {
       }
     } catch (e) {
       ShowToastDialog.closeLoader();
+
       ShowToastDialog.showToast(e.toString());
     }
     return null;
@@ -404,7 +406,7 @@ class InformationController extends GetxController {
     try{
       PhoneAuthCredential phoneCredential = PhoneAuthProvider.credential(
         verificationId: verificationIdPhone,
-        smsCode: otpPhone, // OTP entered by the user
+        smsCode: otpPhone,
       );
 
       await user?.linkWithCredential(phoneCredential).then((linkedUser) async{

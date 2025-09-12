@@ -229,61 +229,6 @@ class LoginScreen extends StatelessWidget {
                         onPress: () {},
                       ),
                           //:SizedBox.shrink(),
-                     /* controller.fromLoginType.value == "email"? TextFieldWidget(
-                        title: 'Email Address'.tr,
-                        onPress: () {},
-                        controller: controller.emailController.value,
-                        hintText: 'Enter Email Address'.tr,
-                        textInputType: TextInputType.emailAddress,
-                        enable:
-                        controller.loginType.value == Constant.googleLoginType
-                            ? false
-                            : true,
-                        prefix: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: SvgPicture.asset(
-                            "assets/icon/ic_email.svg",
-                          ),
-                        ),
-                      ):SizedBox.shrink(),
-                      controller.fromLoginType.value == "email"?TextFieldWidget(
-                        title: "Password".tr,
-                        controller: controller.passwordController.value,
-                        onPress: () {},
-                        hintText: 'Enter Password'.tr,
-                        obscureText: controller.passwordVisible.value,
-                        prefix: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.asset(
-                            "assets/icon/Password.svg",
-
-                          ),
-                        ),
-                        suffix: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: InkWell(
-                              onTap: () {
-                                controller.passwordVisible.value = !controller.passwordVisible.value;
-                              },
-                              child: controller.passwordVisible.value
-                                  ? SvgPicture.asset(
-                                "assets/icon/ic_password_show.svg",
-                                colorFilter: ColorFilter.mode(
-                                  themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
-                                  BlendMode.srcIn,
-                                ),
-                              )
-                                  : SvgPicture.asset(
-                                "assets/icon/ic_password_close.svg",
-                                colorFilter: ColorFilter.mode(
-                                  themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
-                                  BlendMode.srcIn,
-                                ),
-                              )),
-                        ),
-                      ):SizedBox.shrink(),
-                     const SizedBox(height: 30),*/
-
                       const SizedBox(height: 20),
                       RoundedButtonGradiant(
                         title: "Continue".tr,
