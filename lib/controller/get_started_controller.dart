@@ -25,7 +25,6 @@ class GetStartedController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    log("onInit",error: ">>>>>>>>>>>>>>>>>>>>>>.");
     getArgument();
   }
 
