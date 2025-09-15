@@ -17,6 +17,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/utils.dart';
 
 import '../constant/version_checker.dart';
+import '../themes/app_them_data.dart';
 import '../themes/custom_dialog_box.dart';
 import 'package:http/http.dart' as http;
 
@@ -336,6 +337,18 @@ class HomeController extends GetxController {
     double value = await FireStoreUtils.getParkingBookingPercentage(parkingId??"",
         parkingSpace??"");
     return value.round() ;
+  }
+
+
+
+  Color getPercentColor(int percent){
+    if(percent < 75){
+      return AppThemData.success07;
+    }else if(percent < 100){
+      return AppThemData.primary05;
+    }else {
+      return AppThemData.error07;
+    }
   }
 
   @override

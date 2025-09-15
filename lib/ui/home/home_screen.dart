@@ -507,8 +507,8 @@ class HomeScreen extends StatelessWidget {
                                                                   top: 10,
                                                                   right: 10,
                                                                   child: Container(
-                                                                    decoration: const BoxDecoration(
-                                                                      color: AppThemData.success07,
+                                                                    decoration:  BoxDecoration(
+                                                                      color: controller.getPercentColor(snapshot.data),
                                                                       borderRadius: BorderRadius.all(Radius.circular(20)),
                                                                     ),
                                                                     child: Padding(
