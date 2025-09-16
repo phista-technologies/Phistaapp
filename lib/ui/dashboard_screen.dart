@@ -53,6 +53,7 @@ class DashBoardScreen extends StatelessWidget {
                             print("login");
                             Get.back();
                             Constant.isGustUser = true;
+                            Constant.globalParkingModel.value = null;
                             Get.to(LoginScreen());
 
 

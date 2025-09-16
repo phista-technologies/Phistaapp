@@ -81,6 +81,7 @@ class HomeScreen extends StatelessWidget {
         ),
         body: GetX<HomeController>(
             init: HomeController(),
+
             builder: (controller) {
               return controller.isLoading.value
                   ? Constant.loader()
@@ -472,40 +473,62 @@ class HomeScreen extends StatelessWidget {
                                                                                             ShowToastDialog.showToast("You can't book your own parking.");
                                                                                           } else {
                                                                                             Get.back();
-                                                                                            Get.to(() => const GetStartedScreen(), arguments: {
-                                                                                              "parkingModel": parkingModel
-                                                                                            });
-                                                                                            //Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+
+                                                                                            Constant.isGustUser = true;
+                                                                                            showDialog(
+                                                                                                context: context,
+                                                                                                barrierDismissible: true,
+                                                                                                builder: (BuildContext context){
+                                                                                                  return CustomDialogBox(title: "Alert".tr,
+                                                                                                    descriptions: "To reserve the parking you should log in first".tr,
+                                                                                                    img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                    positiveString: "Login/Signup".tr,
+                                                                                                    negativeString: "Pay as a guest".tr,
+                                                                                                    positiveBgColor: AppThemData.success07,
+                                                                                                    positiveClick: () async {
+                                                                                                      Get.back();
+                                                                                                      Constant.globalParkingModel.value = parkingModel;
+                                                                                                      print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
+                                                                                                      Get.to(const LoginScreen());
+                                                                                                    },
+                                                                                                    negativeClick: () async {
+                                                                                                      Get.back();
+                                                                                                      Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+                                                                                                    },
+                                                                                                  );
+                                                                                                });
+                                                                                            
+                                                                                                 //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
+
                                                                                           }
                                                                                         },
                                                                                         negativeClick: () async {
-                                                                                          Constant.isGustUser = true;
+
                                                                                           Get.back();
-                                                                                          showDialog(
-                                                                                              context: context,
-                                                                                              barrierDismissible: true,
-                                                                                              builder: (BuildContext context) {
-                                                                                                return CustomDialogBox(
-                                                                                                  title: "Alert".tr,
-                                                                                                  descriptions: "To reserve the parking you should log in first".tr,
-                                                                                                  img: Image.asset(
-                                                                                                    "assets/images/parking_icon.png",
-                                                                                                    height: 85,
-                                                                                                    width: 85,
-                                                                                                  ),
-                                                                                                  positiveString: "Continue".tr,
-                                                                                                  negativeString: "Cancel".tr,
-                                                                                                  positiveBgColor: AppThemData.success07,
-                                                                                                  positiveClick: () async {
-                                                                                                    Get.back();
-                                                                                                    Get.to(const LoginScreen());
-                                                                                                  },
-                                                                                                  negativeClick: () async {
-                                                                                                    Constant.isGustUser = true;
-                                                                                                    Get.back();
-                                                                                                  },
-                                                                                                );
-                                                                                              });
+                                                                                        showDialog(
+                                                                                            context: context,
+                                                                                            barrierDismissible: true,
+                                                                                            builder: (BuildContext context){
+                                                                                              return CustomDialogBox(title: "Alert".tr,
+                                                                                                descriptions: "To reserve the parking you should log in first".tr,
+                                                                                                img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                positiveString: "Continue".tr,
+                                                                                                negativeString: "Cancel".tr,
+                                                                                                positiveBgColor: AppThemData.success07,
+                                                                                                positiveClick: () async {
+                                                                                                  Get.back();
+                                                                                                  Constant.isGustUser = true;
+                                                                                                  Constant.globalParkingModel.value = parkingModel;
+                                                                                                  print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
+                                                                                                  Get.to(const LoginScreen());
+                                                                                                },
+                                                                                                negativeClick: () async {
+                                                                                                  Get.back();
+
+                                                                                                },
+                                                                                              );
+                                                                                            });
+
                                                                                         },
                                                                                       );
                                                                                     });

@@ -11,6 +11,8 @@ import '../model/user_model.dart';
 import '../ui/dashboard_screen.dart';
 import '../utils/fire_store_utils.dart';
 import '../utils/notification_service.dart';
+import 'dashboard_controller.dart';
+import 'home_controller.dart';
 
 class SelectUserTypeController extends GetxController{
 
@@ -47,7 +49,8 @@ class SelectUserTypeController extends GetxController{
     await FireStoreUtils.updateUser(userModelData).then((value) async{
       ShowToastDialog.closeLoader();
       if (value == true) {
-
+        Get.delete<DashboardScreenController>();
+        Get.delete<HomeController>();
         Get.offAll(const DashBoardScreen());
       }else{
 

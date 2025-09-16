@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
+import 'package:phista/controller/dashboard_controller.dart';
+import 'package:phista/controller/home_controller.dart';
 import 'package:phista/model/user_model.dart';
 import 'package:phista/ui/auth_screen/information_screen.dart';
 import 'package:phista/ui/auth_screen/otp_screen.dart';
@@ -235,6 +237,8 @@ class LoginController extends GetxController {
                 if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
 
                   Constant.currentUserModel.value?.role = userModel.role;
+                  Get.delete<DashboardScreenController>();
+                  Get.delete<HomeController>();
                   Get.offAll(const DashBoardScreen());
                 } /*else if (userModel.role != "customer") {
 
@@ -336,6 +340,8 @@ class LoginController extends GetxController {
             if (userModel != null) {
               if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
                 Constant.currentUserModel.value?.role = userModel.role;
+                Get.delete<DashboardScreenController>();
+                Get.delete<HomeController>();
                 Get.offAll(const DashBoardScreen());
               }
               else {
@@ -377,6 +383,8 @@ class LoginController extends GetxController {
               if (userModel != null) {
                 if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
                   Constant.currentUserModel.value?.role = userModel.role;
+                  Get.delete<DashboardScreenController>();
+                  Get.delete<HomeController>();
                   Get.offAll(const DashBoardScreen());
                 } /*else if (userModel.role != "customer") {
                   await FirebaseAuth.instance.signOut();

@@ -19,6 +19,9 @@ import 'package:phista/utils/notification_service.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 
+import '../../controller/dashboard_controller.dart';
+import '../../controller/home_controller.dart';
+
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
 
@@ -136,6 +139,8 @@ class OtpScreen extends StatelessWidget {
                                         if (userModel != null) {
                                           if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
                                             Constant.currentUserModel.value?.role = userModel.role;
+                                            Get.delete<DashboardScreenController>();
+                                            Get.delete<HomeController>();
                                             Get.offAll(const DashBoardScreen());
                                           } /*else if (userModel.role != "customer") {
                                             await FirebaseAuth.instance.signOut();

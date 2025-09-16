@@ -179,6 +179,7 @@ class ParkingTicketController extends GetxController {
       DashboardScreenController
       dashboardController = Get.put(DashboardScreenController());
       dashboardController.selectedIndex(2);
+      Constant.globalParkingModel.value = null;
       Get.offAll(() => const DashBoardScreen());
 
     });

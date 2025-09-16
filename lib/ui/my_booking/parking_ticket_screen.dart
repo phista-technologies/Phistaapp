@@ -33,6 +33,7 @@ class ParkingTicketScreen extends StatelessWidget {
         DashboardScreenController dashboardController =
         Get.put(DashboardScreenController());
         dashboardController.selectedIndex(2);
+        Constant.globalParkingModel.value = null;
         Get.offAll(() => const DashBoardScreen());
 
         return false;
@@ -52,6 +53,7 @@ class ParkingTicketScreen extends StatelessWidget {
                   DashboardScreenController dashboardController =
                       Get.put(DashboardScreenController());
                   dashboardController.selectedIndex(2);
+                  Constant.globalParkingModel.value = null;
                   Get.offAll(() => const DashBoardScreen());
                 },
                 backgroundColor: AppThemData.warning06,
