@@ -653,9 +653,8 @@ class HomeScreen extends StatelessWidget {
                                                                   child:
                                                                       Container(
                                                                     decoration:
-                                                                        const BoxDecoration(
-                                                                      color: AppThemData
-                                                                          .success07,
+                                                                         BoxDecoration(
+                                                                      color: controller.getPercentColor(int.parse(controller.parkingDataCache[parkingModel.id].toString())),
                                                                       borderRadius:
                                                                           BorderRadius.all(
                                                                               Radius.circular(20)),
