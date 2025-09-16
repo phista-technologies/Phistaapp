@@ -1,2 +1,0 @@
-/Users/mspc-510/Desktop/Phistaapp/android/app/.cxx/Debug/613v3c6z/x86_64/CMakeFiles/edit_cache.dir
-/Users/mspc-510/Desktop/Phistaapp/android/app/.cxx/Debug/613v3c6z/x86_64/CMakeFiles/rebuild_cache.dir
