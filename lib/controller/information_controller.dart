@@ -22,6 +22,8 @@ import '../themes/custom_dialog_box.dart';
 import '../ui/auth_screen/otp_screen.dart';
 import '../utils/debouncer.dart';
 import '../utils/utils.dart';
+import 'dashboard_controller.dart';
+import 'home_controller.dart';
 
 class InformationController extends GetxController {
   Rx<TextEditingController> fullNameController = TextEditingController().obs;
@@ -157,6 +159,8 @@ class InformationController extends GetxController {
               }
               Constant.isGustUser = false;
               Constant.currentUserModel.value?.role = userModelData.role;
+              Get.delete<DashboardScreenController>();
+              Get.delete<HomeController>();
               Get.offAll(const DashBoardScreen(),);
             }else{
               ShowToastDialog.closeLoader();
@@ -213,6 +217,8 @@ class InformationController extends GetxController {
           }
           Constant.isGustUser = false;
           Constant.currentUserModel.value?.role = userModelData.role;
+          Get.delete<DashboardScreenController>();
+          Get.delete<HomeController>();
           Get.offAll(const DashBoardScreen());
         }else{
           ShowToastDialog.closeLoader();
@@ -291,6 +297,8 @@ class InformationController extends GetxController {
               }
               Constant.isGustUser = false;
               Constant.currentUserModel.value?.role = userModelData.role;
+              Get.delete<DashboardScreenController>();
+              Get.delete<HomeController>();
               Get.offAll(
                 const DashBoardScreen(),
               );
@@ -339,6 +347,8 @@ class InformationController extends GetxController {
           }
           Constant.isGustUser = false;
           Constant.currentUserModel.value?.role = userModelData.role;
+          Get.delete<DashboardScreenController>();
+          Get.delete<HomeController>();
           Get.offAll(const DashBoardScreen());
         }else{
           ShowToastDialog.closeLoader();
@@ -425,6 +435,8 @@ class InformationController extends GetxController {
               if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
                 Constant.isGustUser = false;
                 Constant.currentUserModel.value?.role = userModel.role;
+                Get.delete<DashboardScreenController>();
+                Get.delete<HomeController>();
                 Get.offAll(const DashBoardScreen());
               } else {
                 await FirebaseAuth.instance.signOut();

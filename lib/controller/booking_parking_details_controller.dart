@@ -54,6 +54,7 @@ class BookingParkingDetailsController extends GetxController {
 
   @override
   void onInit() {
+    Constant.globalParkingModel.value = null;
     getArgument();
     super.onInit();
 

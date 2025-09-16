@@ -71,6 +71,7 @@ class GetStartedController extends GetxController{
       ShowToastDialog.closeLoader();
       if (value == true) {
 
+
         Get.offAll(const DashBoardScreen());
       }else{
 
