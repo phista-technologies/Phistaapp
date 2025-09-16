@@ -25,12 +25,15 @@ import 'package:phista/utils/preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
+import '../model/parking_model.dart';
+
 class Constant {
   static const String phoneLoginType = "phone";
   static const String googleLoginType = "google";
   static const String appleLoginType = "apple";
   static const String roleType = "customer";
   static  bool isGustUser = false;
+  static  bool isFormParking = false;
 
   static String bookingTypeConst = "hourly";
   static bool isSubscriptionModelApplied =
@@ -71,6 +74,8 @@ class Constant {
   static const globalUrl = "https://admin.phista.ca/";
 
   static var currentUserModel = Rxn<UserModel>();
+
+  static var globalParkingModel = Rxn<ParkingModel?>();
 
 
   static String amountShow({required String? amount}) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as MATH;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ import 'package:phista/utils/utils.dart';
 import '../constant/version_checker.dart';
 import '../themes/custom_dialog_box.dart';
 import 'package:http/http.dart' as http;
+
+import '../ui/booking_process/booking_parking_details_screen.dart';
 
 class HomeController extends GetxController {
   RxBool isLoading = true.obs;
@@ -41,11 +44,23 @@ class HomeController extends GetxController {
    var markerShowMap = <Marker>{}.obs;
   Map<String, dynamic> parkingDataCache = {};
 
-  @override
-  void onInit() {
-    getLocation();
-    super.onInit();
-      getCurrentUser();
+
+
+
+@override
+  void onReady() {
+    super.onReady();
+
+    log("globalParkingModel.value >> :-- ${Constant.globalParkingModel.value}");
+
+    Future.delayed(Duration.zero,() {
+      if( Constant.globalParkingModel.value != null){
+        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": Constant.globalParkingModel.value});
+      }
+        getLocation();
+        getCurrentUser();
+
+    },);
 
   }
 
@@ -152,7 +167,8 @@ class HomeController extends GetxController {
     required String id,
     double? rotation,
     double? percent
-  }) {
+  })
+  {
 
     if (Constant.selectedMapType == 'osm') {
       Future.delayed(const Duration(seconds: 3), () {
@@ -161,7 +177,7 @@ class HomeController extends GetxController {
             markerIcon: MarkerIcon(
               iconWidget:descriptorOSMFun(percent??0.0), //descriptorOSM!,
             ),
-            angle: pi / 3,
+            angle: MATH.pi / 3,
             iconAnchor: IconAnchor(
               anchor: Anchor.top,
             ))
