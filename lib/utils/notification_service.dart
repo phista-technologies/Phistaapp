@@ -5,8 +5,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:phista/model/user_model.dart';
-import 'package:phista/ui/chat/chat_screen.dart';
 import 'package:phista/utils/fire_store_utils.dart';
+
+import '../ui/driver/chat/chat_screen.dart';
 
 Future<void> firebaseMessageBackgroundHandle(RemoteMessage message) async {
   log("BackGround Message :: ${message.messageId}");

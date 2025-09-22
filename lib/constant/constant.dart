@@ -17,7 +17,7 @@ import 'package:phista/model/admin_commission.dart';
 import 'package:phista/model/currency_model.dart';
 import 'package:phista/model/language_model.dart';
 import 'package:phista/model/location_lat_lng.dart';
-import 'package:phista/model/map_model.dart';
+
 import 'package:phista/model/tax_model.dart';
 import 'package:phista/model/user_model.dart';
 import 'package:phista/themes/app_them_data.dart';
@@ -25,13 +25,15 @@ import 'package:phista/utils/preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
+import '../model/map_model.dart';
 import '../model/parking_model.dart';
 
 class Constant {
   static const String phoneLoginType = "phone";
   static const String googleLoginType = "google";
   static const String appleLoginType = "apple";
-  static const String roleType = "customer";
+  static const String roleTypeForCustomer = "customer";
+  static const String roleTypeForOwner = "owner";
   static  bool isGustUser = false;
   static  bool isFormParking = false;
 
@@ -46,7 +48,7 @@ class Constant {
   static String distanceType = "";
 
   static String termsAndConditions = "";
-  static String privacyPolicy = "";
+  static String privacyPolicy = """ <h1 style="text-align: center;"><b>Privacy Policy</b></h1><p><b>Privacy Policy</b></p><p>Phista Technologies Inc. Privacy Policy</p><p>Last Updated: September 18th, 2023</p><p>Welcome to Phista Technologies Inc. (“Phista,” “we,” “our,” or “us”). At Phista Technologies Inc., we are committed to protecting your privacy...</p>""";
   static String supportURL = "";
   static String minimumAmountToDeposit = "0";
   static String minimumAmountToWithdrawal = "0";
@@ -73,6 +75,12 @@ class Constant {
 
   static const globalUrl = "https://admin.phista.ca/";
 
+  /// This is Write New For Owner
+  static const commissionSubscriptionID = "J0RwvxCWhZzQQD7Kc2Ll";
+
+
+
+  /// end
   static var currentUserModel = Rxn<UserModel>();
 
   static var globalParkingModel = Rxn<ParkingModel?>();
@@ -180,7 +188,8 @@ class Constant {
   }
 
   static Future<String> uploadUserImageToFireStorage(
-      File image, String filePath, String fileName) async {
+      File image, String filePath, String fileName)
+  async {
     Reference upload =
         FirebaseStorage.instance.ref().child('$filePath/$fileName');
     UploadTask uploadTask = upload.putFile(image);
@@ -217,7 +226,8 @@ class Constant {
   }
 
   static Future<MapModel?> getDurationDistance(
-      LatLng departureLatLong, LatLng destinationLatLong) async {
+      LatLng departureLatLong, LatLng destinationLatLong)
+  async {
     String url = 'https://maps.googleapis.com/maps/api/distancematrix/json';
     http.Response restaurantToCustomerTime = await http.get(Uri.parse(
         '$url?units=metric&origins=${departureLatLong.latitude},'
@@ -318,7 +328,8 @@ class Constant {
   }
 
   static Future<Map<String, dynamic>> getDurationOsmDistance(
-      LatLng departureLatLong, LatLng destinationLatLong) async {
+      LatLng departureLatLong, LatLng destinationLatLong)
+  async {
     String url = 'http://router.project-osrm.org/route/v1/driving';
     String coordinates =
         '${departureLatLong.longitude},${departureLatLong.latitude};${destinationLatLong.longitude},${destinationLatLong.latitude}';
@@ -337,5 +348,17 @@ class Constant {
     return uri != null &&
         uri.hasAbsolutePath &&
         (uri.isScheme("http") || uri.isScheme("https"));
+  }
+
+  /// This is Write New For Owner
+  static String timestampToDateTime(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return DateFormat('MMM dd,yyyy hh:mm aa').format(dateTime);
+  }
+}
+
+extension StringExtension on String {
+  String capitalizeString() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:phista/ui/auth_screen/login_screen.dart';
+
 import 'package:provider/provider.dart';
-import '../../constant/constant.dart';
-import '../../controller/get_started_controller.dart';
-import '../../themes/app_them_data.dart';
-import '../../themes/responsive.dart';
-import '../../themes/round_button_gradiant.dart';
-import '../../themes/segment_button_gradiant.dart';
-import '../../utils/dark_theme_provider.dart';
-import '../booking_process/booking_parking_details_screen.dart';
+
+import '../../../constant/constant.dart';
+import '../../controller/driver_controller/get_started_controller.dart';
+import '../../../themes/app_them_data.dart';
+import '../../../themes/responsive.dart';
+import '../../../themes/round_button_gradiant.dart';
+import '../../../themes/segment_button_gradiant.dart';
+import '../../../utils/dark_theme_provider.dart';
+import '../driver/auth_screen/login_screen.dart';
+import '../driver/booking_process/booking_parking_details_screen.dart';
 
 class GetStartedScreen extends StatelessWidget{
   const GetStartedScreen({super.key});

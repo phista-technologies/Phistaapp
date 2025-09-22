@@ -155,6 +155,7 @@ class CustomDialogBoxOnlyOk extends StatelessWidget {
   final String descriptions;
   final String buttonText;
   final Widget img;
+  final Color? bgColor;
   final VoidCallback onButtonTap;
 
   const CustomDialogBoxOnlyOk({
@@ -163,7 +164,9 @@ class CustomDialogBoxOnlyOk extends StatelessWidget {
     required this.descriptions,
     required this.img,
     required this.onButtonTap,
+    this.bgColor,
     required this.buttonText,
+
   });
 
   @override
@@ -220,7 +223,7 @@ class CustomDialogBoxOnlyOk extends StatelessWidget {
               width: double.infinity,
               height: Responsive.height(5, context),
               decoration: ShapeDecoration(
-                color: AppThemData.success07,
+                color: bgColor??AppThemData.success07,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(200),
                 ),

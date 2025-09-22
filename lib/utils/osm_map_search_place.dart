@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phista/controller/osm_search_place_controller.dart';
+import 'package:phista/controller/driver_controller/osm_search_place_controller.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:provider/provider.dart';

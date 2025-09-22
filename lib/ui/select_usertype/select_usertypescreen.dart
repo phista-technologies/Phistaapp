@@ -4,15 +4,17 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:phista/themes/responsive.dart';
-import 'package:phista/ui/select_usertype/get_started_screen.dart';
+import 'package:phista/ui/owner/auth_screen/login_screen_owner.dart';
+
 import 'package:provider/provider.dart';
 
-import '../../controller/select_user_type_controller.dart';
-import '../../themes/app_them_data.dart';
-import '../../themes/custom_dialog_box.dart';
-import '../../themes/round_button_gradiant.dart';
-import '../../themes/segment_button_gradiant.dart';
-import '../../utils/dark_theme_provider.dart';
+import '../../controller/driver_controller/select_user_type_controller.dart';
+import '../../../themes/app_them_data.dart';
+import '../../../themes/custom_dialog_box.dart';
+import '../../../themes/round_button_gradiant.dart';
+import '../../../utils/dark_theme_provider.dart';
+import '../driver/auth_screen/login_screen.dart';
+
 
 class SelectUserTypeScreen extends StatelessWidget{
 
@@ -160,8 +162,9 @@ class SelectUserTypeScreen extends StatelessWidget{
                          SizedBox(height: 40,),
                          InkWell(
                            onTap: (){
-                             //controller.isSelected.value = 1;
-                             showDialog(context: context,
+                             controller.isSelected.value = 1;
+
+                             /*showDialog(context: context,
                                  barrierDismissible: false,
                                  builder: (BuildContext context){
                                    return CustomDialogBoxOnlyOk(
@@ -173,7 +176,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                                      },
                                      img: SvgPicture.asset('assets/icon/alert_ico.svg'),
                                    );
-                                 });
+                                 });*/
 
                            },
                            child: Container(
@@ -214,11 +217,10 @@ class SelectUserTypeScreen extends StatelessWidget{
                            child: RoundedButtonGradiant(
                              title: "Continue".tr,
                              onPress: () {
-
                                if (controller.isSelected.value == 0){
                                  controller.createGuestUser();
                                }else{
-
+                                 Get.to(const LoginScreenOwner());
                                }
 
                                //Get.to(GetStartedScreen());

@@ -16,6 +16,7 @@ class UserModel {
   bool? isActive;
   Timestamp? createdAt;
   String? role;
+  String? lastLoginType;
   String? ownerId;
   String? parkingId;
   String? salary;
@@ -40,6 +41,7 @@ class UserModel {
       this.walletAmount,
       this.createdAt,
       this.role,
+      this.lastLoginType,
       this.ownerId,
       this.parkingId,
       this.salary,
@@ -64,6 +66,7 @@ class UserModel {
     dateOfBirth = json['dateOfBirth'] ?? '';
     isActive = json['isActive'];
     role = json['role'];
+    lastLoginType = json['lastLoginType'];
     ownerId = json['ownerId'];
     parkingId = json['parkingId'];
     salary = json['salary'] ?? "0";
@@ -94,6 +97,7 @@ class UserModel {
     data['dateOfBirth'] = dateOfBirth;
     data['isActive'] = isActive;
     data['role'] = role;
+    data['lastLoginType'] = lastLoginType;
     data['ownerId'] = ownerId;
     data['parkingId'] = parkingId;
     data['salary'] = salary;

@@ -29,7 +29,10 @@ import 'package:phista/model/withdraw_model.dart';
 import 'package:phista/utils/utils.dart';
 import 'package:phista/widgets/geoflutterfire/src/geoflutterfire.dart';
 
+import '../model/model_owner/subscription_history.dart';
+import '../model/parking_facilities_model.dart';
 import '../model/payment/AppleUserDataModel.dart';
+import '../model/subscription_plan_model.dart';
 import '../widgets/geoflutterfire/src/models/point.dart';
 
 class FireStoreUtils {
@@ -49,9 +52,22 @@ class FireStoreUtils {
     return isLogin;
   }
 
+  static Future<String>getUserLastLoginType() async{
+    String userLastLoginType = "";
+    await FireStoreUtils.getUserProfile(FirebaseAuth.instance.currentUser!.uid).then((value) {
+      print("value:-->$value");
+
+      if (value != null) {
+        userLastLoginType = value.lastLoginType.toString() ?? "";
+      }
+    });
+    print(userLastLoginType);
+    return userLastLoginType;
+
+  }
+
   static Future<bool> userExistOrNot(String uid) async {
     bool isExist = false;
-
     await fireStore.collection(CollectionName.users).doc(uid).get().then(
       (value) {
         if (value.exists) {
@@ -610,10 +626,8 @@ class FireStoreUtils {
      print("getParkingBookingPercentage :-- ${value.docs.length}");
      for (var element in value.docs) {
        final data = element.data();
-
        final bookingDateString = data['bookingDate'] ?? '';
        final bookingType = data['bookingType'] ?? '';
-
        if(bookingType == "1"){
          final bookingEndTimeFireStore = data['bookingEndTime'] ?? '';
          bool result = isBookingActive(
@@ -633,17 +647,11 @@ class FireStoreUtils {
              .toList();
 
          if (bookingDates.length == 2) {
-
            Timestamp startDate = Utils.stringToTimeStamp(bookingDates[0]);
            Timestamp endDate = Utils.stringToTimeStamp(bookingDates[1]);
-
            Timestamp nowTs = Timestamp.fromDate(DateTime.now());
-
-           bool isWithinRange =
-               nowTs.seconds >= startDate.seconds && nowTs.seconds <= endDate.seconds;
-
+           bool isWithinRange = nowTs.seconds >= startDate.seconds && nowTs.seconds <= endDate.seconds;
            print("isWithinRange :-- $isWithinRange");
-
            if (isWithinRange) {
              isParkingBookedOnList.add(bookingDateString.toString());
            }
@@ -913,7 +921,8 @@ class FireStoreUtils {
   }
 
   static Future<bool> updateUserVehicle(
-      UserVehicleModel userVehicleModel) async {
+      UserVehicleModel userVehicleModel)
+  async {
     bool isUpdate = false;
     await fireStore
         .collection(CollectionName.userVehicles)
@@ -960,7 +969,8 @@ class FireStoreUtils {
   }
 
   static Future<List<OrderModel>?> getOrder(Timestamp date, Timestamp startTime,
-      Timestamp endTime, String parkingId,String type) async {
+      Timestamp endTime, String parkingId,String type)
+  async {
     List<OrderModel> orderList = [];
    try{
 
@@ -1004,7 +1014,8 @@ class FireStoreUtils {
   }
 
   static Future<bool?> setWalletTransaction(
-      WalletTransactionModel walletTransactionModel) async {
+      WalletTransactionModel walletTransactionModel)
+  async {
     bool isAdded = false;
     await fireStore
         .collection(CollectionName.walletTransaction)
@@ -1037,7 +1048,8 @@ class FireStoreUtils {
   }
 
   static Future<bool?> updateOtherUserWallet(
-      {required String amount, required String id}) async {
+      {required String amount, required String id})
+  async {
     bool isAdded = false;
     await getUserProfile(id).then((value) async {
       if (value != null) {
@@ -1421,6 +1433,190 @@ class FireStoreUtils {
       print("Error parsing date: $e");
       return false;
     }
+  }
+
+  /// This Is Write New For Owner
+
+  static Future<bool> parkingBookedOrNot(dynamic parkingId) async {
+    try {
+      final value = await fireStore
+          .collection(CollectionName.bookedParkingOrder)
+          .where("parkingId", isEqualTo: parkingId)
+          .get();
+
+      for (var element in value.docs) {
+        print("value.element :- ${element.data()["status"].toString()}");
+        if (element.data()["status"].toString() != "completed") {
+          return true;
+        }
+      }
+      return false;
+    } catch (e, s) {
+      log('parkingBookedOrNot error: $e\n$s');
+      return false;
+    }
+  }
+
+  static Future<ParkingModel?> getUserParkingDetails(String id) async {
+    ParkingModel? parkingModel;
+    await fireStore.collection(CollectionName.parking).doc(id).get().then((value) {
+      parkingModel = ParkingModel.fromJson(value.data()!);
+    });
+    return parkingModel;
+  }
+
+  static Future<List<ParkingFacilitiesModel>> getParkingFacilities() async {
+    List<ParkingFacilitiesModel> facilitiesModelList = [];
+    await fireStore.collection(CollectionName.facilities).where('isEnable', isEqualTo: true).get().then((value) async {
+      for (var element in value.docs) {
+        ParkingFacilitiesModel facilitiesModel = ParkingFacilitiesModel.fromJson(element.data());
+        facilitiesModelList.add(facilitiesModel);
+      }
+    });
+    return facilitiesModelList;
+  }
+
+  static Future<UserModel?> getWatchMen(String uuid) async {
+    UserModel? userModel;
+    await fireStore.collection(CollectionName.users).doc(uuid).get().then((value) {
+      if (value.exists) {
+        userModel = UserModel.fromJson(value.data()!);
+      }
+    }).catchError((error) {
+      log("Failed to update user: $error");
+      userModel = null;
+    });
+    return userModel;
+  }
+
+  static Future<List<ParkingModel>?> getMyParkingListOwner() async {
+    List<ParkingModel> parkingList = [];
+    await fireStore.collection(CollectionName.parking).where("userId", isEqualTo: getCurrentUid()).get()
+        .then((value) async {
+      for (var element in value.docs) {
+        ParkingModel facilitiesModel = ParkingModel.fromJson(element.data());
+        parkingList.add(facilitiesModel);
+
+      }
+    });
+    return parkingList;
+  }
+
+  static Future<List<UserModel>?> getWatchmenList() async {
+    List<UserModel> watchmenList = [];
+    await fireStore.collection(CollectionName.users).where("ownerId", isEqualTo: getCurrentUid()).get().then((value) async {
+      for (var element in value.docs) {
+        UserModel facilitiesModel = UserModel.fromJson(element.data());
+        watchmenList.add(facilitiesModel);
+      }
+    });
+    return watchmenList;
+  }
+
+  static Future<bool> updateWatchmen(UserModel watchModel) async {
+    bool isUpdate = false;
+    await fireStore.collection(CollectionName.users).doc(watchModel.id).set(watchModel.toJson()).whenComplete(() {
+      isUpdate = true;
+    }).catchError((error) {
+      log("Failed to update user: $error");
+      isUpdate = false;
+    });
+    return isUpdate;
+  }
+
+  static Future<bool?> deleteParking(dynamic parkingId) async {
+    bool? isDelete;
+    try {
+      await fireStore.collection(CollectionName.parking).doc(parkingId).delete().then((value) {
+        isDelete = true;
+      },);
+
+    } catch (e, s) {
+      log('deleteParking exception $e $s');
+      return false;
+    }
+    return isDelete;
+  }
+
+  static Future<bool> parkingAssignCheck(String parkingID, String watchmanId) async {
+    bool isAssign = false;
+    await fireStore.collection(CollectionName.users).where("parkingId", isEqualTo: parkingID).get().then((value) async {
+      if (value.docs.isNotEmpty) {
+        if (value.docs.first.id != watchmanId) {
+          isAssign = true;
+        } else {
+          isAssign = false;
+        }
+      } else {
+        isAssign = false;
+      }
+    });
+    return isAssign;
+  }
+
+  static Future<ParkingModel?> getParking(String uuid) async {
+    ParkingModel? parkingModel;
+    await fireStore.collection(CollectionName.parking).doc(uuid).get().then((value) {
+      if (value.exists) {
+        parkingModel = ParkingModel.fromJson(value.data()!);
+      }
+    }).catchError((error) {
+      log("Failed to update user: $error");
+      parkingModel = null;
+    });
+    return parkingModel;
+  }
+
+  static Future<SubscriptionPlanModel?> getSubscriptionPlanById({required String planId}) async {
+    SubscriptionPlanModel? subscriptionPlanModel = SubscriptionPlanModel();
+    if (planId.isNotEmpty) {
+      await fireStore.collection(CollectionName.subscriptionPlans).doc(planId).get().then((value) async {
+        if (value.exists) {
+          subscriptionPlanModel = SubscriptionPlanModel.fromJson(value.data() as Map<String, dynamic>);
+        }
+      });
+    }
+    return subscriptionPlanModel;
+  }
+
+  static Future<List<SubscriptionPlanModel>> getAllSubscriptionPlans() async {
+    List<SubscriptionPlanModel> subscriptionPlanModels = [];
+    await fireStore.collection(CollectionName.subscriptionPlans).where('isEnable', isEqualTo: true).orderBy('place', descending: false).get().then((value) async {
+      if (value.docs.isNotEmpty) {
+        for (var element in value.docs) {
+          SubscriptionPlanModel subscriptionPlanModel = SubscriptionPlanModel.fromJson(element.data());
+          if (subscriptionPlanModel.id != Constant.commissionSubscriptionID) {
+            subscriptionPlanModels.add(subscriptionPlanModel);
+          }
+        }
+      }
+    });
+    return subscriptionPlanModels;
+  }
+
+  static Future<bool?> setSubscriptionTransaction(SubscriptionHistoryModel subscriptionPlan) async {
+    bool isAdded = false;
+    await fireStore.collection(CollectionName.subscriptionHistory).doc(subscriptionPlan.id).set(subscriptionPlan.toJson()).then((value) {
+      isAdded = true;
+    }).catchError((error) {
+      log("Failed to update user: $error");
+      isAdded = false;
+    });
+    return isAdded;
+  }
+
+
+  static Future<List<SubscriptionHistoryModel>> getSubscriptionHistory() async {
+    List<SubscriptionHistoryModel> subscriptionHistoryList = [];
+    await fireStore.collection(CollectionName.subscriptionHistory).where('user_id', isEqualTo: getCurrentUid()).orderBy('createdAt', descending: true).get().then((value) async {
+      if (value.docs.isNotEmpty) {
+        for (var element in value.docs) {
+          SubscriptionHistoryModel subscriptionHistoryModel = SubscriptionHistoryModel.fromJson(element.data());
+          subscriptionHistoryList.add(subscriptionHistoryModel);
+        }
+      }
+    });
+    return subscriptionHistoryList;
   }
 
 

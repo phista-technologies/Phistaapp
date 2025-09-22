@@ -20,4 +20,10 @@ class CollectionName {
   static const String chat = "chat";
   static const String coupon = "coupon";
   static const String appleUserData = "appleUserData";
+
+
+
+  /// This is Write New For Owner
+  static const String subscriptionPlans = "subscription_plans";
+  static const String subscriptionHistory = "subscription_history";
 }

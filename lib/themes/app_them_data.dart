@@ -43,6 +43,20 @@ class AppThemData {
 
   static const List<Color> gradient03 = [Color(0xFFFF8008), Color(0xFFFFC837)];
 
+  /// This Is Write New For Owner
+  static const Color grey50 = Color(0xFFFFFFFF);
+  static const Color grey100 = Color(0xFFF3F4F6);
+  static const Color grey200 = Color(0xFFE5E7EB);
+  static const Color grey300 = Color(0xFFD1D5DB);
+  static const Color grey400 = Color(0xFF9CA3AF);
+  static const Color grey500 = Color(0xFF6B7280);
+  static const Color grey600 = Color(0xFF4B5563);
+  static const Color grey700 = Color(0xFF374151);
+  static const Color grey800 = Color(0xFF1F2937);
+  static const Color grey900 = Color(0xFF111827);
+  static const Color surface = Color(0xFFF9FAFB);
+  static const Color surfaceDark = Color(0xFF030712);
+
   static const String regular = 'GolosText-Regular';
   static const String medium = 'GolosText-Medium';
   static const String bold = 'GolosText-Bold';

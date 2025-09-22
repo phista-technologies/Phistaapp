@@ -13,9 +13,10 @@ class MobileNumberTextField extends StatelessWidget {
   final Function(String number)? onChange;
   final Function(String isoCode)? isoCode;
   final bool? enabled;
+  final String? Function(String?)? validator;
   String? dailCode;
 
-   MobileNumberTextField({super.key, required this.controller, required this.countryCodeController,
+   MobileNumberTextField({super.key,this.validator, required this.controller, required this.countryCodeController,
      required this.onPress, required this.title, this.enabled,this.dailCode,this.isoCode, this.onChange});
 
   @override
@@ -32,6 +33,8 @@ class MobileNumberTextField extends StatelessWidget {
             height: 5,
           ),
           TextFormField(
+            autovalidateMode: validator != null ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+            validator: validator,
             keyboardType: TextInputType.number,
             //textCapitalization: TextCapitalization.sentences,
             controller: controller,
