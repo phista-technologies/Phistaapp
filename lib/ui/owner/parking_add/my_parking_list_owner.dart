@@ -215,7 +215,7 @@ class MyParkingListOwner extends StatelessWidget {
                                             ),
                                             Text(
                                               parkingModel.address.toString(),
-                                              maxLines: 3,
+                                              maxLines: 2,
                                               style: const TextStyle(
                                                   color: AppThemData.grey07,
                                                   fontSize: 12,

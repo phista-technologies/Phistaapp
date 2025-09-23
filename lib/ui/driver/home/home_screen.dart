@@ -477,8 +477,7 @@ class HomeScreen extends StatelessWidget {
                                                                                                 context: context,
                                                                                                 barrierDismissible: true,
                                                                                                 builder: (BuildContext context){
-                                                                                                  return CustomDialogBox(title: "Alert".tr,
-                                                                                                    descriptions: "",
+                                                                                                  return CustomDialogPayAsGuest(
                                                                                                     img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
                                                                                                     positiveString: "Login/Signup".tr,
                                                                                                     negativeString: "Pay as a guest".tr,
@@ -495,7 +494,7 @@ class HomeScreen extends StatelessWidget {
                                                                                                     },
                                                                                                   );
                                                                                                 });
-                                                                                            
+
                                                                                                  //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
 
                                                                                           }

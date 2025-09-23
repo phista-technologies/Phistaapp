@@ -646,12 +646,27 @@ class FireStoreUtils {
              .map((e) => e.trim())
              .toList();
 
+         print("bookingDates :-- $bookingDates");
+
          if (bookingDates.length == 2) {
-           Timestamp startDate = Utils.stringToTimeStamp(bookingDates[0]);
-           Timestamp endDate = Utils.stringToTimeStamp(bookingDates[1]);
-           Timestamp nowTs = Timestamp.fromDate(DateTime.now());
-           bool isWithinRange = nowTs.seconds >= startDate.seconds && nowTs.seconds <= endDate.seconds;
+
+           DateTime bookingStart = Utils.stringToTimeStamp(bookingDates[0]).toDate();
+           DateTime bookingEnd = Utils.stringToTimeStamp(bookingDates[1]).toDate();
+
+          String currentDate =  Utils.formatTimestampToIST(
+               Timestamp.fromDate(DateTime(
+                   DateTime.now().year,
+                   DateTime.now().month,
+                   DateTime.now().day)));
+
+         DateTime now =  Utils.stringToTimeStamp(currentDate.trim()).toDate();
+
+           bool isWithinRange =
+               (now.isAtSameMomentAs(bookingStart) || now.isAfter(bookingStart)) &&
+                   (now.isAtSameMomentAs(bookingEnd) || now.isBefore(bookingEnd));
+
            print("isWithinRange :-- $isWithinRange");
+
            if (isWithinRange) {
              isParkingBookedOnList.add(bookingDateString.toString());
            }
@@ -989,11 +1004,20 @@ class FireStoreUtils {
          if(type == "hourly"){ // for hourly OR daily
            if(bookingType.toString() == "1"){
              final List<dynamic> bookingDates = bookingDateString.split(',').map((e) => e.trim()).toList();
-             if (bookingDates.contains(Utils.formatTimestampToIST(date))) {
-               OrderModel orderModel = OrderModel.fromJson(data);
-               orderList.add(orderModel);
-             }
+
+             print("bookingDates :-- $bookingDates ,,, data :- ${date}");
+
+             bool contains = checkDateContains(bookingDates,date);
+             print("isContains :- $contains");
+
+            if(contains){
+              OrderModel orderModel = OrderModel.fromJson(data);
+              orderList.add(orderModel);
+            }
+
+
            }else{
+
              OrderModel orderModel = OrderModel.fromJson(data);
              orderList.add(orderModel);
            }
@@ -1619,5 +1643,16 @@ class FireStoreUtils {
     return subscriptionHistoryList;
   }
 
+
+
+ static bool checkDateContains(List<dynamic> localDates, Timestamp timestampUtc) {
+    for (String dateStr in localDates) {
+      // Compare UTC times
+      if (Utils.stringToTimeStamp(dateStr) == timestampUtc) {
+        return true; // match found
+      }
+    }
+    return false; // no match
+  }
 
 }

@@ -375,3 +375,118 @@ class CustomDialogBoxOtp extends StatelessWidget {
 
 
 }
+
+class CustomDialogPayAsGuest extends StatelessWidget {
+  final String positiveString, negativeString;
+  final Widget img;
+  final Color? positiveBgColor;
+  final Function() positiveClick;
+  final Function() negativeClick;
+
+  const CustomDialogPayAsGuest(
+      {super.key,
+        required this.img,
+        required this.positiveClick,
+        required this.negativeClick,
+        required this.positiveString,
+        required this.negativeString,
+        this.positiveBgColor
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: contentBox(context),
+    );
+  }
+
+  contentBox(context) {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+    return Container(
+      padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
+      decoration: BoxDecoration(shape: BoxShape.rectangle, color: Colors.white, borderRadius: BorderRadius.circular(20)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          img,
+          const SizedBox(
+            height: 20,
+          ),
+          InkWell(
+            onTap: () {
+              negativeClick();
+            },
+            child: Container(
+              width: Responsive.width(100, context),
+              height: Responsive.height(5, context),
+              decoration: ShapeDecoration(
+                color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey03,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(200),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    negativeString.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: AppThemData.medium,
+                      color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey11,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          InkWell(
+            onTap: () {
+              positiveClick();
+            },
+            child: Container(
+              width: Responsive.width(100, context),
+              height: Responsive.height(5, context),
+              decoration: ShapeDecoration(
+                color: positiveBgColor??AppThemData.error08,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(200),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    positiveString.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: AppThemData.medium,
+                      color: AppThemData.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
+  }
+}

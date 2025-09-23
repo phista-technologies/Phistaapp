@@ -270,27 +270,31 @@ class BookingParkingDetailsController extends GetxController {
         type,
       );
 
+      log("getOrderValue :-- ",error: value);
+
       if (value != null) {
         for (var element in value) {
           OrderModel orderModel1 = element;
 
+          log("orderModel1 :-- ${orderModel1.bookingType} : ${orderModel1.parkingDetails?.name}");
+
           if (orderModel1.bookingType.toString() == "1") {
-            if (orderModel1.bookingStartTime!.toDate().isBefore(orderModel.bookingStartTime!.toDate()) &&
-                orderModel1.bookingEndTime!.toDate().isAfter(orderModel.bookingStartTime!.toDate())) {
+            if (orderModel1.bookingStartTime!.toDate().toUtc().isBefore(orderModel.bookingStartTime!.toDate().toUtc()) &&
+                orderModel1.bookingEndTime!.toDate().toUtc().isAfter(orderModel.bookingStartTime!.toDate().toUtc())) {
               log("parking ===>${orderModel1.parkingSlotId}");
               selectedOrderModel.add(orderModel1);
-            } else if (orderModel.bookingStartTime!.toDate().isAtSameMomentAs(orderModel1.bookingStartTime!.toDate())) {
+            } else if (orderModel.bookingStartTime!.toDate().toUtc().isAtSameMomentAs(orderModel1.bookingStartTime!.toDate().toUtc())) {
               selectedOrderModel.add(orderModel1);
               log("parking ===>4 ${orderModel1.parkingSlotId}");
-            } else if (orderModel.bookingStartTime!.toDate().isBefore(orderModel1.bookingStartTime!.toDate())) {
-              if (orderModel.bookingEndTime!.toDate().isAfter(orderModel1.bookingEndTime!.toDate())) {
+            } else if (orderModel.bookingStartTime!.toDate().toUtc().isBefore(orderModel1.bookingStartTime!.toDate().toUtc())) {
+              if (orderModel.bookingEndTime!.toDate().toUtc().isAfter(orderModel1.bookingEndTime!.toDate().toUtc())) {
                 selectedOrderModel.add(orderModel1);
                 log("parking ===>2 ${orderModel1.parkingSlotId}");
-              } else if (orderModel.bookingEndTime!.toDate().isAtSameMomentAs(orderModel1.bookingEndTime!.toDate())) {
+              } else if (orderModel.bookingEndTime!.toDate().toUtc().isAtSameMomentAs(orderModel1.bookingEndTime!.toDate().toUtc())) {
                 selectedOrderModel.add(orderModel1);
                 log("parking ===>2 ${orderModel1.parkingSlotId}");
-              } else if (orderModel.bookingEndTime!.toDate().isBefore(orderModel1.bookingEndTime!.toDate()) &&
-                  orderModel.bookingEndTime!.toDate().isAfter(orderModel1.bookingStartTime!.toDate())) {
+              } else if (orderModel.bookingEndTime!.toDate().toUtc().isBefore(orderModel1.bookingEndTime!.toDate().toUtc()) &&
+                  orderModel.bookingEndTime!.toDate().toUtc().isAfter(orderModel1.bookingStartTime!.toDate().toUtc())) {
                 selectedOrderModel.add(orderModel1);
                 log("parking ===>3 ${orderModel1.parkingSlotId}");
               } else {
@@ -299,9 +303,11 @@ class BookingParkingDetailsController extends GetxController {
             } else {
               log("parking ===>1 else");
             }
-          } else if (orderModel1.bookingType.toString() == "2") {
+          }
+          else if (orderModel1.bookingType.toString() == "2") {
             selectedOrderModel.add(orderModel1);
-          } else if (orderModel1.bookingType.toString() == "3") {
+          }
+          else if (orderModel1.bookingType.toString() == "3") {
             final List<dynamic> bookingDates = orderModel1.bookingDate!.split(',').map((e) => e.trim()).toList();
             if (bookingDates.length == 2) {
               Timestamp targetDate = Utils.stringToTimeStamp(orderModel.bookingDate!);
@@ -317,7 +323,8 @@ class BookingParkingDetailsController extends GetxController {
           }
         }
       }
-    } else if (type == "monthly") {
+    }
+    else if (type == "monthly") {
       try {
         final value = await FireStoreUtils.getOrder(
           Utils.stringToTimeStamp(orderModel.bookingDate!), // not use
@@ -346,7 +353,8 @@ class BookingParkingDetailsController extends GetxController {
                   selectedOrderModel.add(orderModel1);
                 }
               }
-            } else if (orderModel1.bookingType.toString() == "3") {
+            }
+            else if (orderModel1.bookingType.toString() == "3") {
               String bookingDateFromFirebase = orderModel1.bookingDate!;
               String rangeDate = orderModel.bookingDate!;
               List<String> bookingParts = bookingDateFromFirebase.split(',');

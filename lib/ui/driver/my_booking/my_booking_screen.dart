@@ -15,6 +15,7 @@ import 'package:phista/ui/driver/my_booking/parking_ticket_screen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
+import 'package:phista/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../booking_process/review_summery_screen.dart';
@@ -114,6 +115,8 @@ class MyBookingScreen extends StatelessWidget {
                   OrderModel orderModel = OrderModel.fromJson(
                       snapshot.data!.docs[index].data()
                           as Map<String, dynamic>);
+                  print("orderModel Start time :-- ${orderModel.bookingStartTime?.toDate().toUtc()} ");
+                  print("orderModel Start time Local :-- ${Utils.utcToLocalTime(orderModel.bookingStartTime!.toDate().toUtc().toString())} ");
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(

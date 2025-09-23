@@ -133,7 +133,7 @@ class Utils {
     print("stringToTimeStamp:-  $dateTime");
     String dateString = dateTime;
     String formattedString = dateString.replaceAll(" at ", " ");
-    DateFormat dateFormat = DateFormat("d MMMM yyyy HH:mm:ss 'UTC+5:30'");
+    DateFormat dateFormat = DateFormat("d MMMM yyyy HH:mm:ss");
 
     DateTime parsedDate = dateFormat.parse(formattedString);
 
@@ -308,6 +308,17 @@ class Utils {
     } else {
       print("Failed to send email: ${response.statusCode}\n${response.body}");
     }
+  }
+
+
+  static String utcToLocalTime(String utcTimeStr){
+    DateTime utcTime = DateTime.parse(utcTimeStr);
+    DateTime localTime = utcTime.toLocal();
+
+    // Format as desired
+    String formatted = DateFormat('yyyy-MM-dd HH:mm:ss').format(localTime);
+    print("Formatted Local Time: $formatted");
+    return formatted;
   }
 
 

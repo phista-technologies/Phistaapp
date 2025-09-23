@@ -118,7 +118,6 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                       controller.selectedDatesDaily.value =
                                           args.value;
                                       break;
-
                                     case DateRangePickerSelectionMode.range:
                                       if (selectionMode ==
                                           DateRangePickerSelectionMode.range) {
@@ -767,10 +766,10 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 controller.selectedDateTime.value.day)));
 
                         orderModel.bookingStartTime =
-                            Timestamp.fromDate(controller.startTime.value);
+                            Timestamp.fromDate(controller.startTime.value.toUtc());
                         orderModel.bookingEndTime =
-                            Timestamp.fromDate(controller.endTime.value);
-                        print("bookingStartTime :-- ${orderModel.bookingStartTime}");
+                            Timestamp.fromDate(controller.endTime.value.toUtc());
+                        print("bookingStartTime (UTC): ${orderModel.bookingStartTime?.toDate().toUtc()}");
                       }
 
                       else if (controller.radioValue.value == "monthly") {
@@ -800,8 +799,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
 
                         Duration duration = Duration(
                             hours: controller.selectedDuration.value.toInt());
-                        controller.endTime.value =
-                            controller.startTime.value.add(duration);
+                        controller.endTime.value = controller.startTime.value.add(duration);
                         orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
                         orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
 
