@@ -111,36 +111,25 @@ class MyParkingBookingControllerOwner extends GetxController {
         }
       }
     }
-
     print("tempOrderList :-- ${tempOrderList.length}");
-
     for(var value in tempOrderList){
       print("booking Type :-- ${value.bookingType}");
     }
-
-
     return tempOrderList;
-
   }
 
 
   void checkAndAutoUpdateBookings(List<QueryDocumentSnapshot> docs) {
     for (var doc in docs) {
-
       final data = doc.data() as Map<String, dynamic>;
-
         final bookingEndTime = (data['bookingEndTime'] as Timestamp).toDate();
         final status = data['status'];
-
         if (bookingEndTime.isBefore(DateTime.now()) && status != Constant.completed) {
           FirebaseFirestore.instance
               .collection(CollectionName.bookedParkingOrder)
               .doc(doc.id)
               .update({'status': Constant.completed});
         }
-
-
-
     }
   }
 
@@ -148,10 +137,8 @@ class MyParkingBookingControllerOwner extends GetxController {
     selectedDateString.replaceAll("UTC", "").trim();
     DateFormat format = DateFormat("dd MMMM yyyy 'at' HH:mm:ss");
     DateTime selectedDate = format.parse(selectedDateString);
-
     startDateString.replaceAll("UTC", "").trim();
     DateTime startDate =format.parse(startDateString);
-
     endDateString.replaceAll("UTC", "").trim();
     DateTime endDate = format.parse(endDateString);
     if (selectedDate.isAfter(startDate.subtract(Duration(days: 1))) && selectedDate.isBefore(endDate.add(Duration(days: 1)))) {
@@ -162,5 +149,4 @@ class MyParkingBookingControllerOwner extends GetxController {
       return false;
     }
   }
-
 }

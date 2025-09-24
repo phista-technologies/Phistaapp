@@ -60,7 +60,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                    ),
                  ),
                  SizedBox(height: 10,),
-                 SizedBox(
+                 /*SizedBox(
                    width: double.infinity,
                    child: Text(
                      "Contrary to popular belief, Lorem Ipsum is not simply random text.".tr,
@@ -74,7 +74,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                        fontWeight: FontWeight.w400,
                      ),
                    ),
-                 ),
+                 ),*/
                  Obx(() {
                    return Container(
                      margin: EdgeInsets.symmetric(horizontal: 5,vertical: 35),

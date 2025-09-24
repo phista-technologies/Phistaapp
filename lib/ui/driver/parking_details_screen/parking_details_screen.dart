@@ -14,6 +14,8 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../themes/custom_dialog_box.dart';
+import '../auth_screen/login_screen.dart';
 import '../booking_process/booking_parking_details_screen.dart';
 import '../chat/chat_screen.dart';
 
@@ -375,7 +377,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-            bottomNavigationBar: Constant.currentUserModel.value?.role.toString() != "Guest"?
+            bottomNavigationBar:
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Container(
@@ -385,15 +387,99 @@ class ParkingDetailsScreen extends StatelessWidget {
                   color: AppThemData.primary06,
                   fontSizes: 12,
                   onPress: () {
-                    if (controller.parkingModel.value.userId == FireStoreUtils.getCurrentUid()) {
-                      ShowToastDialog.showToast("You can't book your own parking.");
-                    } else {
-                      Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value});
+                    if(Constant.currentUserModel.value?.role.toString() == "Guest"){
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                              title: "Alert".tr,
+                              descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
+                              img: Image.asset(
+                                "assets/images/parking_icon.png",
+                                height: 85,
+                                width: 85,
+                              ),
+                              positiveString: "Park Now".tr,
+                              negativeString: "Reserve Parking".tr,
+                              positiveBgColor: AppThemData.success07,
+                              positiveClick: () async {
+                                if (controller.parkingModel.value.userId == FireStoreUtils.getCurrentUid()) {
+                                  ShowToastDialog.showToast("You can't book your own parking.");
+                                } else {
+                                  Get.back();
+
+                                  Constant.isGustUser = true;
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (BuildContext context){
+                                        return CustomDialogPayAsGuest(
+                                          img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                          positiveString: "Login/Signup".tr,
+                                          negativeString: "Pay as a guest".tr,
+                                          positiveBgColor: AppThemData.success07,
+                                          positiveClick: () async {
+                                            Get.back();
+                                            Constant.globalParkingModel.value = controller.parkingModel.value;
+                                            print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
+                                            Get.to(const LoginScreen());
+                                          },
+                                          negativeClick: () async {
+                                            Get.back();
+                                            Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value});
+                                          },
+                                        );
+                                      });
+
+                                  //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
+
+                                }
+                              },
+                              negativeClick: () async {
+
+                                Get.back();
+                                showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context){
+                                      return CustomDialogBox(title: "Alert".tr,
+                                        descriptions: "To reserve the parking you should log in first".tr,
+                                        img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                        positiveString: "Continue".tr,
+                                        negativeString: "Cancel".tr,
+                                        positiveBgColor: AppThemData.success07,
+                                        positiveClick: () async {
+                                          Get.back();
+                                          Constant.isGustUser = true;
+                                          Constant.globalParkingModel.value = controller.parkingModel.value;
+                                          print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
+                                          Get.to(const LoginScreen());
+                                        },
+                                        negativeClick: () async {
+                                          Get.back();
+
+                                        },
+                                      );
+                                    });
+
+                              },
+                            );
+                          });
+                    }else{
+                      if (controller.parkingModel.value.userId == FireStoreUtils.getCurrentUid()) {
+                        ShowToastDialog.showToast("You can't book your own parking.");
+                      } else {
+                        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value});
+                      }
                     }
+
+
+
                   },
                 ),
               ),
-            ):SizedBox.shrink(),
+            )
           );
         });
   }

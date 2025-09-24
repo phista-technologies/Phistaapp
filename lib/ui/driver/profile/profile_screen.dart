@@ -15,6 +15,7 @@ import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../owner/dashboard_screen_owner.dart';
 import '../../select_usertype/select_usertypescreen.dart';
 import '../chat/inbox_screen.dart';
 import '../contact_us/contact_us_screen.dart';
@@ -168,6 +169,43 @@ class ProfileScreen extends StatelessWidget {
                           // ),
                           const Divider(
                               color: AppThemData.grey04, thickness: 1),
+                          menuItemWidgetForSwitchProfile(
+                            title: "Switch To Owner".tr,
+                            pngImage: "assets/icon/switch_profile_ico.png",
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return CustomDialogBox(
+                                        title: "Alert".tr,
+                                        descriptions: "Are you sure want to switch your profile?".tr,
+                                        img: Image.asset(
+                                          "assets/icon/switch_profile_ico.png",
+                                          height: 85,
+                                          width: 85,
+                                        ),
+                                        positiveString: "Ok".tr,
+                                        negativeString: "Cancel".tr,
+                                        positiveBgColor: AppThemData.success07,
+                                        positiveClick: () async{
+
+                                          Get.offAll(const DashBoardScreenOwner());
+
+                                        },
+                                        negativeClick: () async {
+
+                                          Get.back();
+
+
+                                        }
+                                    );
+                                  });
+
+                              //Get.to(() => const SettingScreen());
+                            },
+                            themeChange: themeChange,
+                          ),
                           menuItemWidget(
                             title: "Settings".tr,
                             svgImage: "assets/icon/ic_setting.svg",
@@ -176,8 +214,9 @@ class ProfileScreen extends StatelessWidget {
                             },
                             themeChange: themeChange,
                           ),
+
                           menuItemWidget(
-                            title: "Refer and Earn".tr,
+                            title: "Refer And Earn".tr,
                             svgImage: "assets/icon/ic_refer_and_eran.svg",
                             onTap: () {
                               Get.to(() => const ReferAndEarnScreen());
@@ -219,7 +258,7 @@ class ProfileScreen extends StatelessWidget {
                             themeChange: themeChange,
                           ),
                           menuItemWidget(
-                            title: "Contact us".tr,
+                            title: "Contact Us".tr,
                             svgImage: "assets/icon/ic_call_support.svg",
                             onTap: () {
                               Get.to(
@@ -342,6 +381,42 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget menuItemWidgetForSwitchProfile({
+    required String pngImage,
+    required String title,
+    required VoidCallback onTap,
+    required themeChange,
+  })
+  {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+      horizontalTitleGap: 6,
+      onTap: onTap,
+      trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+      leading:Image.asset(
+        pngImage,
+        height: 26,
+        color: title == "Log Out"
+            ? AppThemData.error08
+            : themeChange.getThem()
+            ? AppThemData.grey01
+            : AppThemData.grey09,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16,
+            fontFamily: AppThemData.medium,
+            color: title == "Log Out"
+                ? AppThemData.error08
+                : themeChange.getThem()
+                ? AppThemData.grey01
+                : AppThemData.grey09),
+      ),
+    );
+  }
+
 
   Widget menuItemWidgetForListParking({
     required String svgImage,

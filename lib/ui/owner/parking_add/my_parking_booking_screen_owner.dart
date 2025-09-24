@@ -252,13 +252,10 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                     stream: FirebaseFirestore.instance
                                         .collection(
                                             CollectionName.bookedParkingOrder)
-                                        .where('status', whereIn: [
-                                          Constant.placed,
-                                          Constant.onGoing
+                                        .where('status', whereIn: [Constant.placed, Constant.onGoing
                                         ])
                                         //.where('bookingDate', isEqualTo: Utils.formatTimestampToIST(Timestamp.fromDate(controller.selectedDateTime.value)))
-                                        .where('parkingId',
-                                            isEqualTo: controller.selectedParkingModel.value.id)
+                                        .where('parkingId', isEqualTo: controller.selectedParkingModel.value.id)
                                         .orderBy('createdAt', descending: true)
                                         .snapshots(),
                                     builder: (BuildContext context,

@@ -16,6 +16,7 @@ import '../../../themes/responsive.dart';
 import '../../../themes/round_button_fill.dart';
 import '../../../utils/dark_theme_provider.dart';
 import '../../../utils/network_image_widget.dart';
+import '../../driver/dashboard_screen.dart';
 import '../../select_usertype/select_usertypescreen.dart';
 import '../auth_screen/login_screen_owner.dart';
 import '../bank_details/bank_details_screen_owner.dart';
@@ -176,6 +177,41 @@ class ProfileScreenOwner extends StatelessWidget {
                                 ),
                               ),
                             ),
+                          menuItemWidgetForSwitchProfile(
+                            title: "Switch To Driver".tr,
+                            pngImage: "assets/icon/switch_profile_ico.png",
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return CustomDialogBox(
+                                        title: "Alert".tr,
+                                        descriptions: "Are you sure want to switch your profile?".tr,
+                                        img: Image.asset(
+                                          "assets/icon/switch_profile_ico.png",
+                                          height: 85,
+                                          width: 85,
+                                        ),
+                                        positiveString: "Ok".tr,
+                                        negativeString: "Cancel".tr,
+                                        positiveBgColor: AppThemData.success07,
+                                        positiveClick: () async{
+                                          Get.offAll(const DashBoardScreen());
+                                        },
+                                        negativeClick: () async {
+
+                                          Get.back();
+
+
+                                        }
+                                    );
+                                  });
+
+                              //Get.to(() => const SettingScreen());
+                            },
+                            themeChange: themeChange,
+                          ),
                           menuItemWidget(
                             title: "Watchmen List".tr,
                             svgImage: "assets/icon/ic_account.svg",
@@ -356,6 +392,41 @@ class ProfileScreenOwner extends StatelessWidget {
                 : themeChange.getThem()
                     ? AppThemData.grey01
                     : AppThemData.grey09),
+      ),
+    );
+  }
+
+  Widget menuItemWidgetForSwitchProfile({
+    required String pngImage,
+    required String title,
+    required VoidCallback onTap,
+    required themeChange,
+  })
+  {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+      horizontalTitleGap: 6,
+      onTap: onTap,
+      trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+      leading:Image.asset(
+        pngImage,
+        height: 26,
+        color: title == "Log Out"
+            ? AppThemData.error08
+            : themeChange.getThem()
+            ? AppThemData.grey01
+            : AppThemData.grey09,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16,
+            fontFamily: AppThemData.medium,
+            color: title == "Log Out"
+                ? AppThemData.error08
+                : themeChange.getThem()
+                ? AppThemData.grey01
+                : AppThemData.grey09),
       ),
     );
   }

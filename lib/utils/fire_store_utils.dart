@@ -628,19 +628,30 @@ class FireStoreUtils {
        final data = element.data();
        final bookingDateString = data['bookingDate'] ?? '';
        final bookingType = data['bookingType'] ?? '';
+       final parkingName = data['parkingDetails']['name'] ?? '';
+
+       print("parkingName :- $parkingName");
        if(bookingType == "1"){
+
+         final bookingStartTimeFireStore = data['bookingStartTime'] ?? '';
          final bookingEndTimeFireStore = data['bookingEndTime'] ?? '';
-         bool result = isBookingActive(
-           bookingDateString,
-           bookingEndTimeFireStore,
-         );
-         print(result);
-         if(result){
-           isParkingBookedOnList.add(bookingDateString.toString());
+
+         var isCurrentDate = isBookingToday(bookingDateString);
+
+         print("isCurrentDate :- $isCurrentDate");
+
+         if(isCurrentDate){
+           bool result = isCurrentTimeBetween(bookingStartTimeFireStore, bookingEndTimeFireStore);
+
+           print("isCurrentTimeBetween :- $result");
+
+           if(result){
+             isParkingBookedOnList.add(bookingDateString.toString());
+           }
          }
 
        }
-       else{
+       else if(bookingType == "3"){
          final List<dynamic> bookingDates = bookingDateString
              .split(',')
              .map((e) => e.trim())
@@ -687,6 +698,24 @@ class FireStoreUtils {
 
     return percentage;
 
+  }
+
+ static bool isBookingToday(String bookingDateStr) {
+    DateTime bookingDate = DateFormat("d MMMM yyyy 'at' HH:mm:ss 'UTC+5:30'")
+        .parse(bookingDateStr, true)
+        .toLocal();
+
+    DateTime now = DateTime.now();
+    return bookingDate.year == now.year &&
+        bookingDate.month == now.month &&
+        bookingDate.day == now.day;
+  }
+
+ static bool isCurrentTimeBetween(Timestamp startTimeStamp, Timestamp endTimeStamp) {
+   DateTime startTime = startTimeStamp.toDate().toLocal();
+   DateTime endTime = endTimeStamp.toDate().toLocal();
+   DateTime currentTime = DateTime.now();
+   return currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
   }
 
   // Stream<List<ParkingModel>> getParkingNearest(
@@ -1447,11 +1476,11 @@ class FireStoreUtils {
   static bool isBookingActive(String bookingDateString, Timestamp bookingEndTime) {
     try {
       bookingDateString = bookingDateString.replaceAll(" at", "");
-      DateFormat format = DateFormat("d MMMM yyyy HH:mm:ss 'UTC+5:30'");
+      DateFormat format = DateFormat("d MMMM yyyy HH:mm:ss");
       DateTime bookingStart = format.parse(bookingDateString, true);
       print("Original DateTime: $bookingStart");
-      DateTime bookingEnd = bookingEndTime.toDate();
-      DateTime now = DateTime.now();
+      DateTime bookingEnd = bookingEndTime.toDate().toUtc();
+      DateTime now = DateTime.now().toUtc();
       return now.isAfter(bookingStart) && now.isBefore(bookingEnd);
     } catch (e) {
       print("Error parsing date: $e");
