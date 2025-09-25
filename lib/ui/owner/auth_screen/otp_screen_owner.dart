@@ -191,7 +191,7 @@ class OtpScreenOwner extends StatelessWidget {
                                                     const DashBoardScreenOwner());
                                               } else {
                                                 Get.offAll(
-                                                    const SubscriptionPlanScreenOwner());
+                                                    const SubscriptionPlanScreenOwner(isBack: false));
                                               }
                                             } else if (userModel
                                                     .subscriptionPlan

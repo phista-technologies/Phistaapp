@@ -58,7 +58,7 @@ class AppNotAccessScreenOwner extends StatelessWidget {
               color: AppThemData.primary07,
               textColor: AppThemData.grey50,
               onPress: () async {
-                Get.to(const SubscriptionPlanScreenOwner());
+                Get.to(const SubscriptionPlanScreenOwner(isBack: false));
               },
             ),
           ],

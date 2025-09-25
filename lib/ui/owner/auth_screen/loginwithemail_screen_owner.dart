@@ -54,7 +54,7 @@ class LoginWithEmailOwner extends StatelessWidget {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Text(
-                      "Sign in with Email",
+                      "Sign in with Email".tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: themeChange.getThem()
@@ -154,7 +154,7 @@ class LoginWithEmailOwner extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   SegmentButtonGradiant(
-                    title: "Create account",
+                    title: "Create account".tr,
                     onPress: () {
                       Get.to(const InformationScreenOwner(), arguments: {
                         "TypeFrom": "EmailSignup",

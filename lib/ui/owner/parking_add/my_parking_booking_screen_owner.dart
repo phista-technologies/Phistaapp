@@ -726,7 +726,7 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                       return snapshot.data!.docs.isEmpty
                                           ? Constant.showEmptyView(
                                               message:
-                                                  "No Completed Booking Found")
+                                                  "No Completed Booking Found".tr)
                                           : ListView.builder(
                                               itemCount:completedList.length, //snapshot.data!.docs.length,
                                               scrollDirection: Axis.vertical,
@@ -1071,7 +1071,7 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                       return snapshot.data!.docs.isEmpty
                                           ? Constant.showEmptyView(
                                               message:
-                                                  "No Canceled Booking Found")
+                                                  "No Canceled Booking Found".tr)
                                           : ListView.builder(
                                               itemCount:cancelList.length, //snapshot.data!.docs.length,
                                               scrollDirection: Axis.vertical,

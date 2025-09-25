@@ -45,8 +45,8 @@ class DashBoardScreen extends StatelessWidget {
                         return CustomDialogBox(title: "Alert".tr,
                           descriptions: "You cannot access this feature, please signup/login first".tr,
                           img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                          positiveString: "Login",
-                          negativeString: "Cancel",
+                          positiveString: "Login".tr,
+                          negativeString: "Cancel".tr,
                           positiveBgColor: AppThemData.success07,
                           positiveClick: () async {
                             print("login");

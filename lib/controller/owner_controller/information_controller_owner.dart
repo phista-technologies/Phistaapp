@@ -139,7 +139,8 @@ class InformationControllerOwner extends GetxController {
             DateTime expiryDate = userModelData.subscriptionExpiryDate!.toDate();
             isPlanExpire = expiryDate.isBefore(DateTime.now());
           }
-        } else {
+        }
+        else {
           isPlanExpire = true;
         }
         if (userModelData.subscriptionPlanId == null || isPlanExpire == true) {
@@ -147,7 +148,7 @@ class InformationControllerOwner extends GetxController {
 
             Get.offAll(const DashBoardScreenOwner());
           } else {
-            Get.offAll(const SubscriptionPlanScreenOwner());
+            Get.offAll(const SubscriptionPlanScreenOwner(isBack: false));
           }
         }
         else if (userModelData.subscriptionPlan?.features?.ownerMobileApp == true) {
@@ -251,7 +252,7 @@ class InformationControllerOwner extends GetxController {
             }
             Get.offAll(const DashBoardScreenOwner());
           } else {
-            Get.offAll(const SubscriptionPlanScreenOwner());
+            Get.offAll(const SubscriptionPlanScreenOwner(isBack: false));
           }
         }
         else if (userModelData.subscriptionPlan?.features?.ownerMobileApp == true) {

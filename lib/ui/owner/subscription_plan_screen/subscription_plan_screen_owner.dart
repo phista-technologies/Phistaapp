@@ -15,7 +15,8 @@ import '../../../utils/dark_theme_provider.dart';
 import '../../../utils/network_image_widget.dart';
 
 class SubscriptionPlanScreenOwner extends StatelessWidget {
-  const SubscriptionPlanScreenOwner({super.key});
+  final bool isBack;
+  const SubscriptionPlanScreenOwner({required this.isBack,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,18 @@ class SubscriptionPlanScreenOwner extends StatelessWidget {
               centerTitle: false,
               titleSpacing: 0,
               iconTheme: const IconThemeData(color: AppThemData.grey50, size: 20),
+              automaticallyImplyLeading: !isBack,
+              leading: isBack
+                  ? InkWell(
+                onTap: () {
+                      Get.back();
+                    },
+                child: Icon(Icons.arrow_back, color: themeChange.getThem() ? AppThemData.grey900 : AppThemData.grey900),
+              )
+                  : null,
+
             ),
+
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(

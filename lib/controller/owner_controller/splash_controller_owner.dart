@@ -68,7 +68,7 @@ class SplashControllerOwner extends GetxController {
                 if (Constant.adminCommission?.enable == false && Constant.isSubscriptionModelApplied == false) {
                   Get.offAll(const DashBoardScreenOwner());
                 } else {
-                  Get.offAll(const SubscriptionPlanScreenOwner());
+                  Get.offAll(const SubscriptionPlanScreenOwner(isBack: false));
                 }
               } else if (userModel.subscriptionPlan?.features?.ownerMobileApp == true) {
                 Get.offAll(const DashBoardScreenOwner());

@@ -99,37 +99,22 @@ class SettingScreenOwner extends StatelessWidget {
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      showThem(context, controller);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          Image.asset("assets/images/App_version_Icon.png",color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08 ,height: 25,width: 20,),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                              child: Text("App Version".tr,
-                                  style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
-                          Row(children: [
-                            Text(
-                              controller.lightDarkMode.value,
-                              style: TextStyle(color: themeChange.getThem() ? AppThemData.primary07 : AppThemData.primary07, fontFamily: AppThemData.medium, fontSize: 14),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(Constant.currentAppVersion,
-                                style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))
-                          ]),
-                        ],
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 2,
+                        ),
+                        Image.asset("assets/images/App_version_Icon.png",color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08 ,height: 25,width: 20,),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Text("App Version".tr,
+                                style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
+                        Text(Constant.currentAppVersion,style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08)),
+                      ],
                     ),
                   ),
                   InkWell(
@@ -213,7 +198,7 @@ class SettingScreenOwner extends StatelessWidget {
                     child: Center(
                       child: Container(
                         width: 134,
-                        height: 5,
+                       // height: 5,
                         margin: const EdgeInsets.only(top: 12, bottom: 6),
                         decoration: ShapeDecoration(
                           color: AppThemData.labelColorLightPrimary,

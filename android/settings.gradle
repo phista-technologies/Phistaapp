@@ -17,11 +17,20 @@ pluginManagement {
     }
 }
 
-plugins {
+/*plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
     id("com.android.application") version "8.4.1" apply false
     id("com.android.library") version "8.4.1" apply false
 
+    // START: FlutterFire Configuration
+    id "com.google.gms.google-services" version "4.4.2" apply false
+    // END: FlutterFire Configuration
+    id "org.jetbrains.kotlin.android" version "2.0.0" apply false
+}*/
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    id "com.android.application" version "8.9.2" apply false
+    id 'com.android.library' version '8.9.2' apply false
     // START: FlutterFire Configuration
     id "com.google.gms.google-services" version "4.4.2" apply false
     // END: FlutterFire Configuration

@@ -165,7 +165,7 @@ class ProfileScreenOwner extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: SubscriptionPlanWidget(
                                   onClick: () {
-                                    Get.to(const SubscriptionPlanScreenOwner(),
+                                    Get.to(const SubscriptionPlanScreenOwner(isBack: false),
                                             arguments: {'isProfile': true})
                                         ?.then((value) {
                                       if (value == true) {
@@ -236,7 +236,7 @@ class ProfileScreenOwner extends StatelessWidget {
                                   title: "Subscription Packages".tr,
                                   svgImage: "assets/icon/ic_subscription.svg",
                                   onTap: () {
-                                    Get.to(const SubscriptionPlanScreenOwner(),
+                                    Get.to(const SubscriptionPlanScreenOwner(isBack: false),
                                             arguments: {'isProfile': true})
                                         ?.then((value) {
                                       if (value == true) {
@@ -300,7 +300,7 @@ class ProfileScreenOwner extends StatelessWidget {
                             themeChange: themeChange,
                           ),
                           menuItemWidget(
-                            title: "Contact us".tr,
+                            title: "Contact Us".tr,
                             svgImage: "assets/icon/ic_call_support.svg",
                             onTap: () {
                               Get.to(

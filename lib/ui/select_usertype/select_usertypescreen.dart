@@ -13,6 +13,8 @@ import '../../../themes/app_them_data.dart';
 import '../../../themes/custom_dialog_box.dart';
 import '../../../themes/round_button_gradiant.dart';
 import '../../../utils/dark_theme_provider.dart';
+import '../../themes/round_button_fill.dart';
+import '../../utils/preferences.dart';
 import '../driver/auth_screen/login_screen.dart';
 
 
@@ -245,7 +247,11 @@ class SelectUserTypeScreen extends StatelessWidget{
         );
       },
     );
+
+
   }
+
+
 
 
 

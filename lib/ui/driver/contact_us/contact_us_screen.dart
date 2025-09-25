@@ -17,7 +17,7 @@ class ContactUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return GetX<ContactUsController>(
-      init: ContactUsController(),
+      init:ContactUsController(),
       builder: (controller) {
         return Scaffold(
           appBar: UiInterface().customAppBar(
@@ -55,7 +55,7 @@ class ContactUsScreen extends StatelessWidget {
                               tabs: [
                                 Tab(
                                   child: Text(
-                                    "call_us".tr,
+                                    "call Us".tr,
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontFamily: AppThemData.medium,
@@ -162,7 +162,7 @@ class ContactUsScreen extends StatelessWidget {
                     ),
                   ),
           ),
-          bottomNavigationBar: Container(
+             bottomNavigationBar: Container(
             color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey11,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Padding(

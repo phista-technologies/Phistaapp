@@ -73,9 +73,7 @@ class CustomDialogBox extends StatelessWidget {
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () {
-                    negativeClick();
-                  },
+                  onTap: negativeClick,
                   child: Container(
                     width: Responsive.width(100, context),
                     height: Responsive.height(5, context),
@@ -85,21 +83,18 @@ class CustomDialogBox extends StatelessWidget {
                         borderRadius: BorderRadius.circular(200),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          negativeString.toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: AppThemData.medium,
-                            color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey11,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                    alignment: Alignment.center, // 👈 center text without extra Row
+                    child: Text(
+                      negativeString,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis, // 👈 will work now
+                      maxLines: 1, // 👈 required for ellipsis
+                      style: TextStyle(
+                        fontFamily: AppThemData.medium,
+                        color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey11,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
@@ -109,37 +104,33 @@ class CustomDialogBox extends StatelessWidget {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: () {
-                    positiveClick();
-                  },
+                  onTap: positiveClick,
                   child: Container(
                     width: Responsive.width(100, context),
                     height: Responsive.height(5, context),
                     decoration: ShapeDecoration(
-                      color: positiveBgColor??AppThemData.error08,
+                      color: positiveBgColor ?? AppThemData.error08,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(200),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          positiveString.toString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: AppThemData.medium,
-                            color: AppThemData.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                    alignment: Alignment.center,
+                    child: Text(
+                      positiveString,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontFamily: AppThemData.medium,
+                        color: AppThemData.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
               ),
+
             ],
           )
         ],

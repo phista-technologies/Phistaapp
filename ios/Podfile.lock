@@ -1205,6 +1205,8 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.37):
     - BoringSSL-GRPC/Interface (= 0.0.37)
   - BoringSSL-GRPC/Interface (0.0.37)
+  - camera_avfoundation (0.0.1):
+    - Flutter
   - cloud_firestore (5.6.11):
     - Firebase/Firestore (= 11.15.0)
     - firebase_core
@@ -1610,6 +1612,7 @@ PODS:
   - Yams (5.0.6)
 
 DEPENDENCIES:
+  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_app_check (from `.symlinks/plugins/firebase_app_check/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -1695,6 +1698,8 @@ SPEC REPOS:
     - Yams
 
 EXTERNAL SOURCES:
+  camera_avfoundation:
+    :path: ".symlinks/plugins/camera_avfoundation/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_app_check:
@@ -1766,6 +1771,7 @@ SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
+  camera_avfoundation: be3be85408cd4126f250386828e9b1dfa40ab436
   cloud_firestore: 8b8ad857da9a98527dab9c7ae520d0eba975bef9
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
   firebase_app_check: 100edcd23a22677ab58a133b72a690f20101997c

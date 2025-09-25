@@ -48,7 +48,7 @@ class DashBoardScreenOwner extends StatelessWidget {
                   themeChange,
                   index: 2,
                   assetIcon: "assets/icon/ic_wallet.svg",
-                  label: 'wallet'.tr,
+                  label: 'Wallet'.tr,
                   controller: controller,
                 ),
                 navigationBarItem(

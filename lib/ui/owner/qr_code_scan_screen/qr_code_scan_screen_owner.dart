@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 
 import '../../../constant/collection_name.dart';
 import '../../../constant/constant.dart';
@@ -24,7 +25,7 @@ class QrCodeScanScreenOwner extends StatelessWidget {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return Scaffold(
       appBar: UiInterface().customAppBar(context, themeChange, 'Scan QR code'.tr),
-     /* body: QRCodeDartScanView(
+      body: QRCodeDartScanView(
         scanInvertedQRCode: true, // enable scan invert qr code ( default = false)
         typeScan: TypeScan.live, // if TypeScan.takePicture will try decode when click to take a picture(default TypeScan.live)
         onCapture: (Result result) async {
@@ -70,7 +71,7 @@ class QrCodeScanScreenOwner extends StatelessWidget {
             }
           }
         },
-      ),*/
+      ),
       // body: MobileScanner(
       //   // fit: BoxFit.contain,
       //   onDetect: (capture) async {

@@ -15,7 +15,9 @@ import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../owner/app_not_access_screen_owner.dart';
 import '../../owner/dashboard_screen_owner.dart';
+import '../../owner/subscription_plan_screen/subscription_plan_screen_owner.dart';
 import '../../select_usertype/select_usertypescreen.dart';
 import '../chat/inbox_screen.dart';
 import '../contact_us/contact_us_screen.dart';
@@ -189,9 +191,38 @@ class ProfileScreen extends StatelessWidget {
                                         negativeString: "Cancel".tr,
                                         positiveBgColor: AppThemData.success07,
                                         positiveClick: () async{
+                                          bool isPlanExpire = false;
+                                          if (Constant.currentUserModel.value?.subscriptionPlan?.id != null) {
+                                            if (Constant.currentUserModel.value?.subscriptionExpiryDate == null) {
+                                              if (Constant.currentUserModel.value?.subscriptionPlan?.expiryDay == '-1') {
+                                                isPlanExpire = false;
+                                              } else {
+                                                isPlanExpire = true;
+                                              }
+                                            } else {
+                                              if (Constant.currentUserModel.value!.subscriptionExpiryDate != null){
+                                                DateTime expiryDate = Constant.currentUserModel.value!.subscriptionExpiryDate!.toDate();
+                                                isPlanExpire = expiryDate.isBefore(DateTime.now());
+                                              }
+                                            }
+                                          }
+                                          else {
+                                            isPlanExpire = true;
+                                          }
+                                          if ( Constant.currentUserModel.value?.subscriptionPlanId == null || isPlanExpire == true) {
+                                            if (Constant.adminCommission?.enable == false && Constant.isSubscriptionModelApplied == false) {
+                                              Get.offAll(const DashBoardScreenOwner());
+                                            } else {
+                                              Get.back();
+                                              Get.to(const SubscriptionPlanScreenOwner(isBack: true),);
+                                            }
+                                          }
+                                          else if (Constant.currentUserModel.value?.subscriptionPlan?.features?.ownerMobileApp == true) {
 
-                                          Get.offAll(const DashBoardScreenOwner());
-
+                                            Get.offAll(const DashBoardScreenOwner());
+                                          } else {
+                                            Get.offAll(const AppNotAccessScreenOwner());
+                                          }
                                         },
                                         negativeClick: () async {
 

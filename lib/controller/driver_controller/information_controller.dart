@@ -37,6 +37,7 @@ class InformationController extends GetxController {
   RxString loginType = "".obs;
   final ImagePicker imagePicker = ImagePicker();
   RxString profileImage = "".obs;
+  RxString profileImageTemp = "".obs;
   RxBool passwordVisible = true.obs;
   RxString gmailLogType = "".obs;
   RxString verificationIdAL = "".obs;
@@ -86,14 +87,12 @@ class InformationController extends GetxController {
   createAccount() async {
     String fcmToken = "";
     if(Platform.isIOS){
-     // fcmToken ="sdsadsdsd54545645sdas4dsa4dsd564sdas";
       fcmToken = await NotificationService.getToken();
     }else{
       fcmToken = await NotificationService.getToken();
     }
-
     if (profileImage.value.isNotEmpty) {
-      profileImage.value = await Constant.uploadUserImageToFireStorage(
+      profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
@@ -110,16 +109,13 @@ class InformationController extends GetxController {
           userModelData.email = emailController.text.trim();
           userModelData.countryCode = countryCode.value.text;
           userModelData.phoneNumber = phoneNumberController.value.text;
-          userModelData.profilePic = profileImage.value;
+          userModelData.profilePic = profileImageTemp.value;
           userModelData.fcmToken = fcmToken;
           userModelData.createdAt = Timestamp.now();
           userModelData.isActive = true;
           userModelData.role = Constant.roleTypeForCustomer;
           userModelData.lastLoginType = Constant.roleTypeForCustomer;
           userModelData.password = passwordController.value.text;
-
-
-
           FireStoreUtils.getReferralUserByCode(
                   referralCodeController.value.text.trim())
               .then((value) async {
@@ -137,11 +133,9 @@ class InformationController extends GetxController {
               await FireStoreUtils.referralAdd(referralModel);
             }
           });
-
           await linkUserWithEmail(emailController.text.trim(),passwordController.value.text.trim());
           await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationIdAL.value,
               otpTextAL.value);
-
           await FireStoreUtils.updateUser(userModelData).then((value) async{
            // ShowToastDialog.closeLoader();
             if (value == true) {
@@ -168,13 +162,14 @@ class InformationController extends GetxController {
               ShowToastDialog.closeLoader();
             }
           });
-        } else {
+        }
+        else {
           ShowToastDialog.showToast("referral_code_invalid".tr);
         }
       });
-    } else {
+    }
+    else {
       ShowToastDialog.showLoader("please_wait".tr);
-
       UserModel userModelData = userModel.value;
       userModelData.fullName = fullNameController.value.text;
       userModelData.email = emailController.text.trim();
@@ -187,7 +182,6 @@ class InformationController extends GetxController {
       userModelData.role = Constant.roleTypeForCustomer;
       userModelData.lastLoginType = Constant.roleTypeForCustomer;
       userModelData.password = passwordController.value.text;
-
       ReferralModel referralModel = ReferralModel(
           id: FireStoreUtils.getCurrentUid(),
           referralBy: "",
@@ -198,12 +192,9 @@ class InformationController extends GetxController {
         await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationIdAL.value,
             otpTextAL.value);
       }
-
       await FireStoreUtils.updateUser(userModelData).then((value) async{
        // ShowToastDialog.closeLoader();
-        if (value == true) {
-
-
+        if (value == true){
           try{
             await Utils.sendEmailWithTemplate(
               toEmail: emailController.text.trim().toString(),
@@ -229,9 +220,8 @@ class InformationController extends GetxController {
       });
     }
   }
-
   createAccountWithEmailNew(String uid) async {
-
+    log("profileImage:--${profileImage.value}");
     String fcmToken = "";
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
@@ -239,12 +229,14 @@ class InformationController extends GetxController {
       fcmToken = await NotificationService.getToken();
     }
     if (profileImage.value.isNotEmpty) {
-      profileImage.value = await Constant.uploadUserImageToFireStorage(
+      log("profileImage1:--${profileImage.value}");
+      profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
       );
     }
+    log("profileImage2:--${profileImage.value}");
     if (referralCodeController.value.text.isNotEmpty) {
       await FireStoreUtils.checkReferralCodeValidOrNot(
           referralCodeController.value.text)
@@ -322,7 +314,7 @@ class InformationController extends GetxController {
       userModelData.email = emailController.text.trim();
       userModelData.countryCode = "CA";
       userModelData.phoneNumber = "";
-      userModelData.profilePic = profileImage.value;
+      userModelData.profilePic = profileImageTemp.value;
       userModelData.fcmToken = fcmToken;
       userModelData.createdAt = Timestamp.now();
       userModelData.isActive = true;

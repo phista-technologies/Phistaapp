@@ -23,7 +23,6 @@ class SettingControllerOwner extends GetxController {
 
   getThem() {
     lightDarkMode.value = Preferences.getString(Preferences.themKey);
-
     selectedLanguage.value = Constant.getLanguage();
   }
 }

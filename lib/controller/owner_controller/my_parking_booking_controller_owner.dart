@@ -57,12 +57,10 @@ class MyParkingBookingControllerOwner extends GetxController {
       }
     }
     orderModel.paymentCompleted = true;
-
     if (Constant.adminCommission?.enable == true) {
       UserModel? userModel = await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid());
       orderModel.adminCommission = Constant.adminCommission;
     }
-
     WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
         id: Constant.getUuid(),
         amount:

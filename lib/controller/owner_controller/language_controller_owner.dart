@@ -24,7 +24,6 @@ class LanguageControllerOwner extends GetxController {
         languageList.value = value;
         if (Preferences.getString(Preferences.languageCodeKey).toString().isNotEmpty) {
           LanguageModel pref = Constant.getLanguage();
-
           for (var element in languageList) {
             if (element.id == pref.id) {
               selectedLanguage.value = element;
