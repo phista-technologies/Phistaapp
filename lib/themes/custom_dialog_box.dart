@@ -76,7 +76,7 @@ class CustomDialogBox extends StatelessWidget {
                   onTap: negativeClick,
                   child: Container(
                     width: Responsive.width(100, context),
-                    height: Responsive.height(5, context),
+                   // height: Responsive.height(5, context),
                     decoration: ShapeDecoration(
                       color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey03,
                       shape: RoundedRectangleBorder(
@@ -84,16 +84,19 @@ class CustomDialogBox extends StatelessWidget {
                       ),
                     ),
                     alignment: Alignment.center, // 👈 center text without extra Row
-                    child: Text(
-                      negativeString,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis, // 👈 will work now
-                      maxLines: 1, // 👈 required for ellipsis
-                      style: TextStyle(
-                        fontFamily: AppThemData.medium,
-                        color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey11,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        negativeString,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis, // 👈 will work now
+                        maxLines: 2, // 👈 required for ellipsis
+                        style: TextStyle(
+                          fontFamily: AppThemData.medium,
+                          color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey11,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
@@ -107,7 +110,7 @@ class CustomDialogBox extends StatelessWidget {
                   onTap: positiveClick,
                   child: Container(
                     width: Responsive.width(100, context),
-                    height: Responsive.height(5, context),
+                   // height: Responsive.height(5, context),
                     decoration: ShapeDecoration(
                       color: positiveBgColor ?? AppThemData.error08,
                       shape: RoundedRectangleBorder(
@@ -115,16 +118,19 @@ class CustomDialogBox extends StatelessWidget {
                       ),
                     ),
                     alignment: Alignment.center,
-                    child: Text(
-                      positiveString,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: const TextStyle(
-                        fontFamily: AppThemData.medium,
-                        color: AppThemData.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        positiveString,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: const TextStyle(
+                          fontFamily: AppThemData.medium,
+                          color: AppThemData.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),

@@ -25,7 +25,6 @@ dependencies:
   firebase_storage: ^12.4.1
   qr_code_dart_scan: ^0.9.8
   flutter_easyloading: ^3.0.5
-  flutter_html: any
   flutter_local_notifications: ^18.0.1
   flutter_paypal: ^0.2.1
   flutter_polyline_points: ^2.1.0
@@ -62,6 +61,7 @@ dependencies:
   path_provider: ^2.1.5
   flutter_osm_plugin: ^1.4.2
   flutter_email_sender: ^6.0.2
+  flutter_html: ^3.0.0
 
 
 dependency_overrides:

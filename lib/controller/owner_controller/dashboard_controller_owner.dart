@@ -10,7 +10,7 @@ import '../../utils/fire_store_utils.dart';
 
 
 class DashboardScreenControllerOwner extends GetxController {
-  RxInt selectedIndex = 0.obs;
+  RxInt selectedIndex = 1.obs;
 
   Rx<UserModel> userModel = UserModel().obs;
 

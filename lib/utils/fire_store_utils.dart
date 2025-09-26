@@ -428,8 +428,8 @@ class FireStoreUtils {
         .get()
         .then((value) {
       if (value.exists) {
-        //Constant.termsAndConditions = value.data()!["termsAndConditions"];
-       // Constant.privacyPolicy = value.data()!["privacyPolicy"];
+        Constant.termsAndConditions = value.data()!["termsAndConditions"];
+        Constant.privacyPolicy = value.data()!["privacyPolicy"];
         Constant.minimumAmountToDeposit =
             value.data()!["minimumAmountToDeposit"];
         Constant.minimumAmountToWithdrawal =

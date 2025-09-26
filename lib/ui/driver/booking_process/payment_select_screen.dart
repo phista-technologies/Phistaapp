@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phista/constant/constant.dart';
@@ -16,6 +17,8 @@ import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../owner/terms_and_condition/terms_and_condition_screen_owner.dart';
 
 class PaymentSelectScreen extends StatelessWidget {
   const PaymentSelectScreen({super.key});
@@ -241,6 +244,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                       themeChange,
                                       "assets/images/midtrans.png"),
                                 ),
+
                               ],
                             ),
                           ),
@@ -249,122 +253,194 @@ class PaymentSelectScreen extends StatelessWidget {
               ),
             ),
             bottomNavigationBar: Container(
+              height: Constant.currentUserModel.value?.role != "Guest"?95:165,
               color: themeChange.getThem()
                   ? AppThemData.grey10
                   : AppThemData.grey11,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: RoundedButtonFill(
-                  title: "Pay".tr,
-                  color: AppThemData.primary06,
-                  onPress: () async {
-
-                    if ((controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name)
-                        || (controller.selectedPaymentMethod.value == controller.APPLE_PAY)  || (controller.selectedPaymentMethod.value == controller.GOOGLE_PAY)) {
-                      controller.stripeMakePayment(
-                          amount: controller.calculateAmount().toStringAsFixed(
-                              Constant.currencyModel!.decimalDigits!));
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paypal?.name) {
-                      controller.paypalPaymentSheet(
-                          controller.calculateAmount().toStringAsFixed(
-                              Constant.currencyModel!.decimalDigits!),
-                          context);
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payStack?.name) {
-                      controller.payStackPayment(controller
-                          .calculateAmount()
-                          .toStringAsFixed(
-                              Constant.currencyModel!.decimalDigits!));
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.mercadoPago?.name) {
-                      controller.mercadoPagoMakePayment(
-                          context: context,
-                          amount: controller.calculateAmount().toStringAsFixed(
-                              Constant.currencyModel!.decimalDigits!));
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.flutterWave?.name) {
-                      controller.flutterWaveInitiatePayment(
-                          context: context,
-                          amount: controller.calculateAmount().toStringAsFixed(
-                              Constant.currencyModel!.decimalDigits!));
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payfast?.name) {
-                      controller.payFastPayment(
-                          context: context,
-                          amount: controller.calculateAmount().toStringAsFixed(
-                              Constant.currencyModel!.decimalDigits!));
-                    }
-                    // else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paytm?.name) {
-                    //   controller.getPaytmCheckSum(context, amount: controller.calculateAmount());
-                    // }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.xendit?.name) {
-                      controller.xenditPayment(
-                          context, controller.calculateAmount());
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.orangePay?.name) {
-                      controller.orangeMakePayment(
-                          amount: controller.calculateAmount().toString(),
-                          context: context);
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.midtrans?.name) {
-                      controller.midtransMakePayment(
-                          amount: controller.calculateAmount().toString(),
-                          context: context);
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.razorpay?.name) {
-                      RazorPayController()
-                          .createOrderRazorPay(
-                              amount: controller.calculateAmount().toInt(),
-                              razorpayModel:
-                                  controller.paymentModel.value.razorpay)
-                          .then((value) {
-                        if (value == null) {
-                          Get.back();
-                          ShowToastDialog.showToast(
-                              "Something went wrong, please contact admin.".tr);
-                        } else {
-                          CreateRazorPayOrderModel result = value;
-                          controller.openCheckout(
-                              amount: controller.calculateAmount().toInt(),
-                              orderId: result.id);
+                child: Column(
+                  children: [
+                    RoundedButtonFill(
+                      title: "Pay".tr,
+                      color: AppThemData.primary06,
+                      onPress: () async {
+                        if ((controller.selectedPaymentMethod.value == controller.paymentModel.value.strip?.name)
+                            || (controller.selectedPaymentMethod.value == controller.APPLE_PAY)  || (controller.selectedPaymentMethod.value == controller.GOOGLE_PAY)) {
+                          controller.stripeMakePayment(
+                              amount: controller.calculateAmount().toStringAsFixed(
+                                  Constant.currencyModel!.decimalDigits!));
                         }
-                      });
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.wallet?.name) {
-                      if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
-                        ShowToastDialog.showLoader("Please wait..");
-                          WalletTransactionModel transactionModel = WalletTransactionModel(
-                              id: Constant.getUuid(),
-                              amount: "-${controller.calculateAmount().toString()}",
-                              createdDate: Timestamp.now(),
-                              paymentType: controller.selectedPaymentMethod.value,
-                              transactionId: controller.orderModel.value.id,
-                              note: "Parking amount debit".tr,
-                              userId: FireStoreUtils.getCurrentUid(),
-                              isCredit: false);
-                          await FireStoreUtils.setWalletTransaction(transactionModel).then((value) async {
-                            if (value == true) {
-                              await FireStoreUtils.updateUserWallet(
-                                  amount: "-${controller.calculateAmount().toString()}")
-                                  .then((value) {
-                                controller.completeOrder();
-                              });
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paypal?.name) {
+                          controller.paypalPaymentSheet(
+                              controller.calculateAmount().toStringAsFixed(
+                                  Constant.currencyModel!.decimalDigits!),
+                              context);
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payStack?.name) {
+                          controller.payStackPayment(controller
+                              .calculateAmount()
+                              .toStringAsFixed(
+                                  Constant.currencyModel!.decimalDigits!));
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.mercadoPago?.name) {
+                          controller.mercadoPagoMakePayment(
+                              context: context,
+                              amount: controller.calculateAmount().toStringAsFixed(
+                                  Constant.currencyModel!.decimalDigits!));
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.flutterWave?.name) {
+                          controller.flutterWaveInitiatePayment(
+                              context: context,
+                              amount: controller.calculateAmount().toStringAsFixed(
+                                  Constant.currencyModel!.decimalDigits!));
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.payfast?.name) {
+                          controller.payFastPayment(
+                              context: context,
+                              amount: controller.calculateAmount().toStringAsFixed(
+                                  Constant.currencyModel!.decimalDigits!));
+                        }
+                        // else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.paytm?.name) {
+                        //   controller.getPaytmCheckSum(context, amount: controller.calculateAmount());
+                        // }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.xendit?.name) {
+                          controller.xenditPayment(
+                              context, controller.calculateAmount());
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.orangePay?.name) {
+                          controller.orangeMakePayment(
+                              amount: controller.calculateAmount().toString(),
+                              context: context);
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.midtrans?.name) {
+                          controller.midtransMakePayment(
+                              amount: controller.calculateAmount().toString(),
+                              context: context);
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.razorpay?.name) {
+                          RazorPayController()
+                              .createOrderRazorPay(
+                                  amount: controller.calculateAmount().toInt(),
+                                  razorpayModel:
+                                      controller.paymentModel.value.razorpay)
+                              .then((value) {
+                            if (value == null) {
+                              Get.back();
+                              ShowToastDialog.showToast(
+                                  "Something went wrong, please contact admin.".tr);
+                            } else {
+                              CreateRazorPayOrderModel result = value;
+                              controller.openCheckout(
+                                  amount: controller.calculateAmount().toInt(),
+                                  orderId: result.id);
                             }
                           });
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.wallet?.name) {
+                          if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
+                            ShowToastDialog.showLoader("Please wait..");
+                              WalletTransactionModel transactionModel = WalletTransactionModel(
+                                  id: Constant.getUuid(),
+                                  amount: "-${controller.calculateAmount().toString()}",
+                                  createdDate: Timestamp.now(),
+                                  paymentType: controller.selectedPaymentMethod.value,
+                                  transactionId: controller.orderModel.value.id,
+                                  note: "Parking amount debit".tr,
+                                  userId: FireStoreUtils.getCurrentUid(),
+                                  isCredit: false);
+                              await FireStoreUtils.setWalletTransaction(transactionModel).then((value) async {
+                                if (value == true) {
+                                  await FireStoreUtils.updateUserWallet(
+                                      amount: "-${controller.calculateAmount().toString()}")
+                                      .then((value) {
+                                    controller.completeOrder();
+                                  });
+                                }
+                              });
 
-                        ShowToastDialog.closeLoader();
-                      } else {
-                        ShowToastDialog.closeLoader();
-                        ShowToastDialog.showToast(
-                            "Wallet Amount Insufficient".tr);
-                      }
-                    }
-                    else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.cash?.name) {
-                      controller.completeCashOrder();
-                    }
-                  },
+                            ShowToastDialog.closeLoader();
+                          } else {
+                            ShowToastDialog.closeLoader();
+                            ShowToastDialog.showToast(
+                                "Wallet Amount Insufficient".tr);
+                          }
+                        }
+                        else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.cash?.name) {
+                          controller.completeCashOrder();
+                        }
+                      },
+                    ),
+                     if(Constant.currentUserModel.value?.role == "Guest")
+                     Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        child: Text.rich(
+                          textAlign: TextAlign.center,
+                          TextSpan(
+                            text: "${'tapping_next_agree'.tr} ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                              fontFamily: AppThemData.regular,
+                              color: themeChange.getThem()
+                                  ? AppThemData.grey01
+                                  : AppThemData.grey01,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Get.to(
+                                      const TermsAndConditionScreenOwner(
+                                        type: "terms",
+                                      ),
+                                    );
+                                  },
+                                text: 'terms_and_conditions'.tr,
+                                style: TextStyle(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.blueLight
+                                      : AppThemData.blueLight,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  fontFamily: AppThemData.regular,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " ${"and".tr} ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey01
+                                        : AppThemData.grey01),
+                              ),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Get.to(
+                                      const TermsAndConditionScreenOwner(
+                                        type: "privacy",
+                                      ),
+                                    );
+                                  },
+                                text: 'privacy_policy'.tr,
+                                style: TextStyle(
+                                  color: themeChange.getThem()
+                                      ? AppThemData.blueLight
+                                      : AppThemData.blueLight,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  fontFamily: AppThemData.regular,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ))
+                  ],
                 ),
               ),
             ),
@@ -373,7 +449,8 @@ class PaymentSelectScreen extends StatelessWidget {
   }
 
   cardDecoration(PaymentSelectController controller, String value, themeChange,
-      String image) {
+      String image)
+  {
     return Obx(
       () => Column(
         children: [

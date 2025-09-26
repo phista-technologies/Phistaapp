@@ -306,14 +306,14 @@ class ProfileScreen extends StatelessWidget {
                             },
                             themeChange: themeChange,
                           ),
-                          menuItemWidgetForListParking(
+                         /* menuItemWidgetForListParking(
                             title: "List your parking".tr,
                             svgImage: "assets/icon/ic_parking_icon.png",
                             onTap: () {
                               Get.to(() => const DownloadAppScreen());
                             },
                             themeChange: themeChange,
-                          ),
+                          ),*/
                          /* Center(
                             child: Container(
                               width: Responsive.width(45, context),
@@ -428,26 +428,18 @@ class ProfileScreen extends StatelessWidget {
       leading:Image.asset(
         pngImage,
         height: 26,
-        color: title == "Log Out"
-            ? AppThemData.error08
-            : themeChange.getThem()
-            ? AppThemData.grey01
-            : AppThemData.grey09,
+        color: AppThemData.primary07,
       ),
       title: Text(
         title,
         style: TextStyle(
             fontSize: 16,
             fontFamily: AppThemData.medium,
-            color: title == "Log Out"
-                ? AppThemData.error08
-                : themeChange.getThem()
-                ? AppThemData.grey01
-                : AppThemData.grey09),
+            color: AppThemData.primary07
+        ),
       ),
     );
   }
-
 
   Widget menuItemWidgetForListParking({
     required String svgImage,

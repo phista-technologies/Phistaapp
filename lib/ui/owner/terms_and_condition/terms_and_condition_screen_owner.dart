@@ -27,11 +27,19 @@ class TermsAndConditionScreenOwner extends StatelessWidget {
           child: Html(
             shrinkWrap: true,
             data: type == "privacy"
-                ? Constant.privacyPolicy
-                : Constant.termsAndConditions,
+                ?sanitizeHtml(Constant.privacyPolicy)
+                :sanitizeHtml(Constant.termsAndConditions) ,
           ),
         ),
       ),
     );
+  }
+
+
+  String sanitizeHtml(String html) {
+
+    return html
+        .replaceAll(RegExp(r'font-feature-settings:[^;"]*;?'), '')
+        .replaceAll(RegExp(r'font-variation-settings:[^;"]*;?'), '');
   }
 }

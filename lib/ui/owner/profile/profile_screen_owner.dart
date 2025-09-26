@@ -411,25 +411,19 @@ class ProfileScreenOwner extends StatelessWidget {
       leading:Image.asset(
         pngImage,
         height: 26,
-        color: title == "Log Out"
-            ? AppThemData.error08
-            : themeChange.getThem()
-            ? AppThemData.grey01
-            : AppThemData.grey09,
+        color: AppThemData.primary07,
       ),
       title: Text(
         title,
         style: TextStyle(
             fontSize: 16,
             fontFamily: AppThemData.medium,
-            color: title == "Log Out"
-                ? AppThemData.error08
-                : themeChange.getThem()
-                ? AppThemData.grey01
-                : AppThemData.grey09),
+            color: AppThemData.primary07
+        ),
       ),
     );
   }
+
 }
 
 class SubscriptionPlanWidget extends StatelessWidget {

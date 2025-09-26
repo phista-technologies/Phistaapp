@@ -12,6 +12,7 @@ import 'package:phista/model/parking_model.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/themes/responsive.dart';
 import 'package:phista/themes/round_button_fill.dart';
+import 'package:phista/ui/owner/auth_screen/login_screen_owner.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
@@ -63,6 +64,7 @@ class HomeScreen extends StatelessWidget {
                     hintText: "Search Here".tr)),
           ),
           actions: [
+
             InkWell(
               onTap: () {
                 Get.to(const InboxScreen());
@@ -74,12 +76,12 @@ class HomeScreen extends StatelessWidget {
                         ? AppThemData.grey01
                         : AppThemData.grey08),
               ),
-            )
+            ),
+
           ],
         ),
         body: GetX<HomeController>(
             init: HomeController(),
-
             builder: (controller) {
               return controller.isLoading.value
                   ? Constant.loader()
@@ -99,6 +101,8 @@ class HomeScreen extends StatelessWidget {
                         ))
                       : Stack(
                           children: [
+
+
                             Constant.selectedMapType == 'osm'
                                 ? OSMFlutter(
                                     controller: controller.mapOsmController,
@@ -146,6 +150,39 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+
+
+                            if(Constant.currentUserModel.value?.role == "Guest")
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              left: 10,
+                              child: InkWell(
+                                onTap: (){
+                                  Get.to(LoginScreenOwner());
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 0),
+                                  width: Get.width,
+                                  height: kBottomNavigationBarHeight-10,
+                                  decoration: BoxDecoration(
+                                      color: AppThemData.primary06,
+                                      borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: Center(
+                                    child: Text("Continue as owner".tr,style: TextStyle(
+                                        fontSize: 14,
+                                        color: themeChange.getThem()
+                                            ? AppThemData.grey11
+                                            : AppThemData.grey11,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: AppThemData.medium),
+                                      textAlign: TextAlign.center,),
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             controller.parkingList.isEmpty
                                 ? Container()
                                 : Align(
@@ -500,7 +537,6 @@ class HomeScreen extends StatelessWidget {
                                                                                           }
                                                                                         },
                                                                                         negativeClick: () async {
-
                                                                                           Get.back();
                                                                                         showDialog(
                                                                                             context: context,

@@ -57,7 +57,6 @@ class SelectUserTypeController extends GetxController{
           }
         }
         if (selectedLanguage.value.id == null || selectedLanguage.value.id!.isEmpty) {
-
           final defaultFrench = languageList.firstWhere(
                 (lang) => lang.code?.toLowerCase() == "fr",
             orElse: () => languageList.first, // fallback if French not found

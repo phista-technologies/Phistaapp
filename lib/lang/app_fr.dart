@@ -304,7 +304,7 @@ const Map<String, String> trFR = {
       "La fonction de chat n’est pas disponible pour cet propriétaire.",
   "full": "complète",
   "Select a user type": "Sélectionnez un type d'utilisateur",
-  "DRIVER": "CONDUCTRICE",
+  "DRIVER": "CONDUCTEUR",
   "OWNER": "PROPRIÉTAIRE",
   "Password": "Mot de passe",
   "Enter Password": "Entrez le mot de passe",
