@@ -561,9 +561,10 @@ class SubscriptionPlanWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
-                      userModel.adminCommission != null
+                      "${Constant.adminCommission?.type == 'percentage' ? "${Constant.adminCommission?.amount} %" : "${Constant.amountShow(amount: Constant.adminCommission?.amount)} Flat"} ${"admin commission will be charged from your account".tr}",
+                     /* userModel.adminCommission != null
                           ? "${userModel.adminCommission?.type == 'percentage' ? "${userModel.adminCommission?.amount} %" : "${Constant.amountShow(amount: userModel.adminCommission?.amount)} Flat"} ${"admin commission will be charged from your account".tr}"
-                          : "${Constant.adminCommission?.type == 'percentage' ? "${Constant.adminCommission?.amount} %" : "${Constant.amountShow(amount: Constant.adminCommission?.amount)} Flat"} ${"admin commission will be charged from your account".tr}",
+                          : "${Constant.adminCommission?.type == 'percentage' ? "${Constant.adminCommission?.amount} %" : "${Constant.amountShow(amount: Constant.adminCommission?.amount)} Flat"} ${"admin commission will be charged from your account".tr}",*/
                       style: const TextStyle(
                         fontFamily: AppThemData.medium,
                         fontSize: 9,

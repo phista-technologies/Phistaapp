@@ -37,6 +37,8 @@ class Constant {
   static  bool isGustUser = false;
   static  bool isFormParking = false;
   static  bool isLanguagePopupShow = false;
+  static  bool isFromParkNow = false;
+
 
   static String bookingTypeConst = "hourly";
   static bool isSubscriptionModelApplied =

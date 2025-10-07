@@ -61,7 +61,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           const SizedBox(
                             height: 5,
                           ),
-                          Constant.currentUserModel.value?.role.toString() != "Guest"?Obx(() {
+                          Constant.currentUserModel.value?.role.toString() == "Guest" || Constant.isFromParkNow ?SizedBox.shrink():Obx(() {
                             final selectionMode = controller.selectionModeUser(controller.radioValue.value);
                             return Container(
                               decoration: BoxDecoration(
@@ -119,8 +119,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                           args.value;
                                       break;
                                     case DateRangePickerSelectionMode.range:
-                                      if (selectionMode ==
-                                          DateRangePickerSelectionMode.range) {
+                                      if (selectionMode == DateRangePickerSelectionMode.range) {
                                         if (args.value is PickerDateRange) {
                                           final PickerDateRange range =
                                               args.value;
@@ -147,7 +146,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 minDate: DateTime.now(),
                               ),
                             );
-                          }):SizedBox.shrink(),
+                          }),
                           const SizedBox(
                             height: 20,
                           ),
@@ -196,7 +195,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                   )),
                               Expanded(
                                   flex: 1,
-                                  child:Constant.currentUserModel.value?.role.toString() != "Guest"?
+                                  child:Constant.currentUserModel.value?.role.toString() == "Guest" || Constant.isFromParkNow ?SizedBox():
                                   Column(
                                     children: [
                                       Row(
@@ -238,7 +237,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ],
-                                  ):SizedBox()),
+                                  )),
                             ],
                           ),
                           const SizedBox(

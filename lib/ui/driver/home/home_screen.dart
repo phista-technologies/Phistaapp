@@ -157,27 +157,27 @@ class HomeScreen extends StatelessWidget {
                               top: 10,
                               right: 10,
                               left: 10,
-                              child: InkWell(
-                                onTap: (){
-                                  Get.to(LoginScreenOwner());
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 0),
-                                  width: Get.width,
-                                  height: kBottomNavigationBarHeight-10,
-                                  decoration: BoxDecoration(
-                                      color: AppThemData.primary06,
-                                      borderRadius: BorderRadius.circular(20)
+                              child: Container(
+                                color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                                  horizontalTitleGap: 6,
+                                  onTap: (){
+                                    Get.to(LoginScreenOwner());
+                                  },
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 18,color: AppThemData.primary06,),
+                                  leading: Image.asset(
+                                    "assets/icon/switch_profile_ico.png",
+                                    height: 26,
+                                    color: AppThemData.primary06,
                                   ),
-                                  child: Center(
-                                    child: Text("Continue as owner".tr,style: TextStyle(
-                                        fontSize: 14,
-                                        color: themeChange.getThem()
-                                            ? AppThemData.grey11
-                                            : AppThemData.grey11,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: AppThemData.medium),
-                                      textAlign: TextAlign.center,),
+                                  title: Text(
+                                    "Continue as owner".tr,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: AppThemData.bold,
+                                        color: AppThemData.primary06),
                                   ),
                                 ),
                               ),
@@ -486,7 +486,109 @@ class HomeScreen extends StatelessWidget {
                                                                                 12,
                                                                             onPress:
                                                                                 () {
-                                                                              if (Constant.currentUserModel.value?.role.toString() == "Guest") {
+                                                                                  showDialog(
+                                                                                      context: context,
+                                                                                      barrierDismissible: true,
+                                                                                      builder: (BuildContext context) {
+                                                                                        return CustomDialogBox(
+                                                                                          title: "Alert".tr,
+                                                                                          descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
+                                                                                          img: Image.asset(
+                                                                                            "assets/images/parking_icon.png",
+                                                                                            height: 85,
+                                                                                            width: 85,
+                                                                                          ),
+                                                                                          positiveString: "Park Now".tr,
+                                                                                          negativeString: "Reserve Parking".tr,
+                                                                                          positiveBgColor: AppThemData.success07,
+                                                                                          positiveClick: () async {
+
+                                                                                            Constant.isFromParkNow = true;
+
+                                                                                            if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                              ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                            }
+                                                                                            else {
+                                                                                              Get.back();
+
+                                                                                              if (Constant.currentUserModel.value?.role.toString() == "Guest"){
+                                                                                                Constant.isGustUser = true;
+                                                                                                showDialog(
+                                                                                                    context: context,
+                                                                                                    barrierDismissible: true,
+                                                                                                    builder: (BuildContext context){
+                                                                                                      return CustomDialogPayAsGuest(
+                                                                                                        img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                        positiveString: "Login/Signup".tr,
+                                                                                                        negativeString: "Pay as a guest".tr,
+                                                                                                        positiveBgColor: AppThemData.success07,
+                                                                                                        positiveClick: () async {
+                                                                                                          Get.back();
+                                                                                                          Constant.globalParkingModel.value = parkingModel;
+                                                                                                          print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
+                                                                                                          Get.to(const LoginScreen());
+                                                                                                        },
+                                                                                                        negativeClick: () async {
+                                                                                                          Get.back();
+                                                                                                          Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+                                                                                                        },
+                                                                                                      );
+                                                                                                    });
+                                                                                              }else{
+                                                                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                                  ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                                } else {
+                                                                                                  Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                                    "parkingModel": parkingModel
+                                                                                                  });
+                                                                                                }
+                                                                                              }
+
+
+                                                                                              //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
+
+                                                                                            }
+                                                                                          },
+                                                                                          negativeClick: () async {
+                                                                                            Constant.isFromParkNow = false;
+                                                                                            Get.back();
+                                                                                            if (Constant.currentUserModel.value?.role.toString() == "Guest"){
+                                                                                              showDialog(
+                                                                                                  context: context,
+                                                                                                  barrierDismissible: true,
+                                                                                                  builder: (BuildContext context){
+                                                                                                    return CustomDialogBox(title: "Alert".tr,
+                                                                                                      descriptions: "To reserve the parking you should log in first".tr,
+                                                                                                      img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                      positiveString: "Continue".tr,
+                                                                                                      negativeString: "Cancel".tr,
+                                                                                                      positiveBgColor: AppThemData.success07,
+                                                                                                      positiveClick: () async {
+                                                                                                        Get.back();
+                                                                                                        Constant.isGustUser = true;
+                                                                                                        Constant.globalParkingModel.value = parkingModel;
+                                                                                                        print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
+                                                                                                        Get.to(const LoginScreen());
+                                                                                                      },
+                                                                                                      negativeClick: () async {
+                                                                                                        Get.back();
+
+                                                                                                      },
+                                                                                                    );
+                                                                                                  });
+                                                                                            }else{
+                                                                                              if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                                ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                              } else {
+                                                                                                Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                                  "parkingModel": parkingModel
+                                                                                                });
+                                                                                              }
+                                                                                            }
+                                                                                          },
+                                                                                        );
+                                                                                      });
+                                                                            /*  if (Constant.currentUserModel.value?.role.toString() == "Guest") {
                                                                                 /// Show popup
                                                                                 showDialog(
                                                                                     context: context,
@@ -565,7 +667,8 @@ class HomeScreen extends StatelessWidget {
                                                                                         },
                                                                                       );
                                                                                     });
-                                                                              } else {
+                                                                              }
+                                                                              else {
                                                                                 if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
                                                                                   ShowToastDialog.showToast("You can't book your own parking.");
                                                                                 } else {
@@ -573,7 +676,7 @@ class HomeScreen extends StatelessWidget {
                                                                                     "parkingModel": parkingModel
                                                                                   });
                                                                                 }
-                                                                              }
+                                                                              }*/
                                                                             },
                                                                           ),
                                                                         ),

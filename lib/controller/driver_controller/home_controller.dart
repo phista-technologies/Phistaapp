@@ -52,6 +52,7 @@ class HomeController extends GetxController {
   void onReady() {
     super.onReady();
 
+    Constant.isFromParkNow = false;
     log("globalParkingModel.value >> :-- ${Constant.globalParkingModel.value}");
 
     Future.delayed(Duration.zero,() {

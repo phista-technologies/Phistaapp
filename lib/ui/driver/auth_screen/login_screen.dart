@@ -137,7 +137,6 @@ class LoginScreen extends StatelessWidget {
                           const SizedBox(height: 20),
                           InkWell(
                             onTap: () async{
-
                               if(Constant.isGustUser){
                                 ShowToastDialog.showLoader("please_wait".tr);
                                 await FireStoreUtils.deleteUser().then((value) {
@@ -153,8 +152,6 @@ class LoginScreen extends StatelessWidget {
                               }else{
                                 controller.loginWithGoogle();
                               }
-
-
                             },
                             child: Container(
                               width: Responsive.width(90, context),

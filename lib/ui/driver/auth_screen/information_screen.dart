@@ -168,6 +168,7 @@ class InformationScreen extends StatelessWidget {
                         },);
                       },
                     ),
+                    if (controller.userModel.value.loginType != "apple")
                     TextFieldWidget(
                       title: "Password".tr,
                       controller: controller.passwordController.value,
@@ -239,7 +240,7 @@ class InformationScreen extends StatelessWidget {
                           ShowToastDialog.showToast(
                               "Please enter email address");
                         }
-                        else if (controller.passwordController.value.text.isEmpty)
+                        else if ((controller.userModel.value.loginType != "apple") && controller.passwordController.value.text.isEmpty)
                         {
                           ShowToastDialog.showToast(
                               "Please enter password");

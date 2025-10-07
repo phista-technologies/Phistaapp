@@ -47,8 +47,8 @@ try{
       if (isLogin == true) {
         String lastLoginType = await FireStoreUtils.getUserLastLoginType();
         print("lastLoginType:-->  $lastLoginType");
-
         if (lastLoginType == "owner"){
+
           Get.offAll(const DashBoardScreenOwner());
         }else{
           Get.offAll(const DashBoardScreen());
