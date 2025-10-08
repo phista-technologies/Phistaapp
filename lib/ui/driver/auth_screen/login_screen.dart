@@ -82,7 +82,6 @@ class LoginScreen extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-
                       SizedBox(height: Responsive.height(7, context)),
                       Column(
                         children: [

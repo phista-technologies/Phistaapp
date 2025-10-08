@@ -168,7 +168,7 @@ class InformationScreen extends StatelessWidget {
                         },);
                       },
                     ),
-                    if (controller.userModel.value.loginType != "apple")
+                    if (controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google" )
                     TextFieldWidget(
                       title: "Password".tr,
                       controller: controller.passwordController.value,
@@ -240,13 +240,34 @@ class InformationScreen extends StatelessWidget {
                           ShowToastDialog.showToast(
                               "Please enter email address");
                         }
-                        else if ((controller.userModel.value.loginType != "apple") && controller.passwordController.value.text.isEmpty)
+                        else if ((controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google") && controller.passwordController.value.text.isEmpty)
                         {
                           ShowToastDialog.showToast(
                               "Please enter password");
                         }
                         else {
-                          if (controller.fromPhoneNumberExist.toString() == "1"){
+                          if (controller.gmailLogType != "EmailSignup"){
+                            controller.createAccount();
+                          }
+                          else{
+                            print("email password");
+                            if(Constant.isGustUser){
+                              ShowToastDialog.showLoader("please_wait".tr);
+                              await FireStoreUtils.deleteUser();
+                              Constant.isGustUser = false;
+                            }
+                            final userCred = await controller.createUserWithEmailPassword(email: controller.emailController.text,
+                                password: controller.passwordController.value.text.trim());
+
+                            if (userCred != null) {
+                              print("userCred:--${userCred.additionalUserInfo!.isNewUser}");
+                              print("userCredmmmm:--${userCred}");
+
+                              controller.createAccountWithEmailNew(userCred.user!.uid);
+                            }
+                          }
+
+                          /*if (controller.fromPhoneNumberExist.toString() == "1"){
                             showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -366,7 +387,7 @@ class InformationScreen extends StatelessWidget {
                              controller.createAccountWithEmailNew(userCred.user!.uid);
                            }
                          }
-                          }
+                          }*/
 
                         }
                       },

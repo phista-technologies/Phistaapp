@@ -41,6 +41,7 @@ class SelectUserTypeController extends GetxController{
         getLanguage();
       },);
     }
+    FireStoreUtils.deleteGuestUsersIfAllBookingsCompleted();
 
   }
 

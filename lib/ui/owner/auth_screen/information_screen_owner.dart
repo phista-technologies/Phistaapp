@@ -170,7 +170,7 @@ class InformationScreenOwner extends StatelessWidget {
                         },);
                       },
                     ),
-                    if (controller.userModel.value.loginType != "apple")
+                    if (controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google")
                     TextFieldWidget(
                       title: 'Password'.tr,
                       onPress: () {},
@@ -204,13 +204,29 @@ class InformationScreenOwner extends StatelessWidget {
                           ShowToastDialog.showToast(
                               "Please enter email address");
                         }
-                        else if ( (controller.userModel.value.loginType != "apple") && controller.passwordController.value.text.isEmpty)
+                        else if ( (controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google") && controller.passwordController.value.text.isEmpty)
                         {
                           ShowToastDialog.showToast(
                               "Please enter password");
                         }
                         else {
-                          print("controller.fromPhoneNumberExist${controller.fromPhoneNumberExist}");
+
+        if (controller.gmailLogType != "EmailSignup"){
+        controller.createAccount();
+        }
+        else{
+        final userCred = await controller.createUserWithEmailPassword(email: controller.emailController.value.text,
+        password: controller.passwordController.value.text.trim());
+
+        if (userCred != null) {
+        print("userCred:--${userCred.additionalUserInfo!.isNewUser}");
+        print("userCredmmmm:--$userCred");
+        controller.createAccountWithEmailNew(userCred.user!.uid);
+        }
+        }
+
+
+                         /* print("controller.fromPhoneNumberExist${controller.fromPhoneNumberExist}");
                           print("controller.fromEmailCheckExist${controller.fromEmailCheckExist}");
                           if (controller.fromPhoneNumberExist.toString() == "1"){
                             showDialog(
@@ -327,7 +343,7 @@ class InformationScreenOwner extends StatelessWidget {
                                 controller.createAccountWithEmailNew(userCred.user!.uid);
                               }
                             }
-                          }
+                          }*/
                         }})
                   ],
                 ),

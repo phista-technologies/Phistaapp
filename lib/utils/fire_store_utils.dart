@@ -1488,6 +1488,90 @@ class FireStoreUtils {
     }
   }
 
+
+  /*static Future<void> deleteGuestUsersIfAllBookingsCompleted() async {
+    try {
+      final userSnapshot = await fireStore
+          .collection('users')
+          .where('role', isEqualTo: 'Guest')
+          .get();
+      if (userSnapshot.docs.isEmpty) {
+        print("No guest users found.");
+        return;
+      }
+      for (var userDoc in userSnapshot.docs) {
+        final userId = userDoc.id;
+        final bookingSnapshot = await fireStore
+            .collection(CollectionName.bookedParkingOrder)
+            .where('userId', isEqualTo: userId)
+            .get();
+        bool allCompleted = bookingSnapshot.docs.every(
+              (doc) => doc.data()['status']?.toString() == Constant.completed,
+        );
+        if (allCompleted) {
+          await fireStore.collection('users').doc(userId).delete();
+          print("Deleted guest user with ID: $userId");
+        } else {
+          print("User $userId has incomplete bookings,skipping delete.");
+        }
+      }
+      print("Finished checking all guest users.");
+    } catch (e, s) {
+      print("Error deleting guest users: $e");
+      log("StackTrace: $s");
+    }
+  }*/
+
+
+  static Future<void> deleteGuestUsersIfAllBookingsCompleted() async {
+    try {
+      // 1️⃣ Get all users with role 'Guest'
+      final userSnapshot = await fireStore
+          .collection('users')
+          .where('role', isEqualTo: 'Guest')
+          .get();
+      if (userSnapshot.docs.isEmpty) {
+        print("No guest users found.");
+        return;
+      }
+      // Initialize Firebase Admin if not done
+      final admin = FirebaseAuth.instance;
+      for (var userDoc in userSnapshot.docs) {
+        final userId = userDoc.id;
+
+        final bookingSnapshot = await fireStore
+            .collection(CollectionName.bookedParkingOrder)
+            .where('userId', isEqualTo: userId)
+            .get();
+
+        bool allCompleted = bookingSnapshot.docs.every(
+              (doc) => doc.data()['status']?.toString() == Constant.completed,
+        );
+        if (allCompleted) {
+          await fireStore.collection('users').doc(userId).delete();
+          print("Deleted guest user document with ID: $userId");
+          try {
+            await admin.currentUser!.delete();
+            print("Deleted guest user from Auth with ID: $userId");
+          } catch (authError) {
+            print("Failed to delete user from Auth: $authError");
+          }
+        } else {
+          print("User $userId has incomplete bookings, skipping delete.");
+        }
+      }
+      print("Finished checking all guest users.");
+    } catch (e, s) {
+      print("Error deleting guest users: $e");
+      log("StackTrace: $s");
+    }
+  }
+
+
+
+
+
+
   /// This Is Write New For Owner
 
   static Future<bool> parkingBookedOrNot(dynamic parkingId) async {
