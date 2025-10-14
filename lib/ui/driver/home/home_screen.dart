@@ -165,6 +165,7 @@ class HomeScreen extends StatelessWidget {
                                   horizontalTitleGap: 6,
                                   onTap: (){
                                     Get.to(LoginScreenOwner());
+                                    Constant.isGustUser = true;
                                   },
                                   trailing: const Icon(Icons.arrow_forward_ios, size: 18,color: AppThemData.primary06,),
                                   leading: Image.asset(

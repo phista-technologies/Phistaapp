@@ -168,7 +168,8 @@ class InformationScreen extends StatelessWidget {
                         },);
                       },
                     ),
-                    if (controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google" )
+                   // if (controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google" )
+                   if (controller.gmailLogType == "EmailSignup")
                     TextFieldWidget(
                       title: "Password".tr,
                       controller: controller.passwordController.value,
@@ -240,13 +241,18 @@ class InformationScreen extends StatelessWidget {
                           ShowToastDialog.showToast(
                               "Please enter email address");
                         }
-                        else if ((controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google") && controller.passwordController.value.text.isEmpty)
+                        else if ((controller.gmailLogType == "EmailSignup") && controller.passwordController.value.text.isEmpty)
                         {
                           ShowToastDialog.showToast(
                               "Please enter password");
                         }
+                       /* else if ((controller.userModel.value.loginType != "apple" && controller.userModel.value.loginType != "google") && controller.passwordController.value.text.isEmpty)
+                        {
+                          ShowToastDialog.showToast(
+                              "Please enter password");
+                        }*/
                         else {
-                          if (controller.gmailLogType != "EmailSignup"){
+                          /*if (controller.gmailLogType != "EmailSignup"){
                             controller.createAccount();
                           }
                           else{
@@ -265,9 +271,9 @@ class InformationScreen extends StatelessWidget {
 
                               controller.createAccountWithEmailNew(userCred.user!.uid);
                             }
-                          }
+                          }*/
 
-                          /*if (controller.fromPhoneNumberExist.toString() == "1"){
+                          if (controller.fromPhoneNumberExist.toString() == "1"){
                             showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -387,7 +393,7 @@ class InformationScreen extends StatelessWidget {
                              controller.createAccountWithEmailNew(userCred.user!.uid);
                            }
                          }
-                          }*/
+                          }
 
                         }
                       },

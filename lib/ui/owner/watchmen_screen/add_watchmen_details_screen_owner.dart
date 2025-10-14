@@ -135,7 +135,7 @@ class AddWatchmenDetailsScreenOwner extends StatelessWidget {
                                 enable: true,
                                 prefix: Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: SvgPicture.asset("assets/icon/ic_lock.svg", color: const Color(0xff697586), fit: BoxFit.cover, width: 7, height: 7),
+                                  child: SvgPicture.asset("assets/icon/Password.svg", color: const Color(0xff697586), fit: BoxFit.cover, width: 7, height: 7),
                                 ),
                               ),
                               InkWell(
@@ -160,12 +160,12 @@ class AddWatchmenDetailsScreenOwner extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              MobileNumberTextField(
+                             /* MobileNumberTextField(
                                 title: "Phone Number".tr,
                                 controller: controller.phoneNumberController.value,
                                 countryCodeController: controller.countryCodeController.value,
                                 onPress: () {},
-                              ),
+                              ),*/
                               Text("Gender".tr, style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 14, color: AppThemData.grey07)),
                               const SizedBox(
                                 height: 5,

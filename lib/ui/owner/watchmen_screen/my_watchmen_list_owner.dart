@@ -118,11 +118,11 @@ class MyWatchmenListOwner extends StatelessWidget {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                            Text(
+                                            /*Text(
                                               "${watchmenData.countryCode} ${watchmenData.phoneNumber}",
                                               maxLines: 2,
                                               style: const TextStyle(color: AppThemData.grey07, fontSize: 12, fontFamily: AppThemData.regular, overflow: TextOverflow.ellipsis),
-                                            ),
+                                            ),*/
                                             const SizedBox(
                                               height: 8,
                                             ),

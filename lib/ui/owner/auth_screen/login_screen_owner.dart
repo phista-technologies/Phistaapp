@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import '../../../constant/constant.dart';
+import '../../../constant/show_toast_dialog.dart';
 import '../../../controller/owner_controller/login_controller_owner.dart';
 import '../../../themes/app_them_data.dart';
 import '../../../themes/mobile_number_textfield.dart';
@@ -13,6 +15,7 @@ import '../../../themes/responsive.dart';
 import '../../../themes/round_button_gradiant.dart';
 import '../../../themes/segment_button_gradiant.dart';
 import '../../../utils/dark_theme_provider.dart';
+import '../../../utils/fire_store_utils.dart';
 import '../terms_and_condition/terms_and_condition_screen_owner.dart';
 import 'forgotPasswordScreen_owner.dart';
 import 'loginwithemail_screen_owner.dart';
@@ -79,8 +82,26 @@ class LoginScreenOwner extends StatelessWidget {
                                       Visibility(
                                         visible: Platform.isIOS,
                                         child: InkWell(
-                                          onTap: () {
-                                            controller.loginWithApple();
+                                          onTap: () async {
+                                            if(Constant.isGustUser){
+                                              ShowToastDialog.showLoader("please_wait".tr);
+                                              await FireStoreUtils.deleteUser().then((value) {
+                                                Constant.isGustUser = false;
+                                                ShowToastDialog.closeLoader();
+                                                if (value == true) {
+                                                  controller.loginWithApple();
+                                                } else {
+                                                  ShowToastDialog.showToast(
+                                                      "Something went wrong".tr);
+                                                }
+                                              });
+                                            }
+                                            else{
+                                              controller.loginWithApple();
+                                            }
+
+
+
                                           },
                                           child: Container(
                                             width: Responsive.width(90, context),
@@ -126,8 +147,24 @@ class LoginScreenOwner extends StatelessWidget {
                                     if (Platform.isIOS)
                                       const SizedBox(height: 12),
                                     InkWell(
-                                      onTap: () {
-                                        controller.loginWithGoogle();
+                                      onTap: () async {
+                                        if(Constant.isGustUser){
+                                          ShowToastDialog.showLoader("please_wait".tr);
+                                          await FireStoreUtils.deleteUser().then((value) {
+                                            Constant.isGustUser = false;
+                                            ShowToastDialog.closeLoader();
+                                            if (value == true) {
+                                              controller.loginWithGoogle();
+                                            } else {
+                                              ShowToastDialog.showToast(
+                                                  "Something went wrong".tr);
+                                            }
+                                          });
+                                        }
+                                        else{
+                                          controller.loginWithGoogle();
+                                        }
+
                                       },
                                       child: Container(
                                         width: Responsive.width(90, context),
@@ -323,10 +360,26 @@ class LoginScreenOwner extends StatelessWidget {
                                 RoundedButtonGradiant(
                                   title:"Continue".tr,
 
-                                  onPress: () {
+                                  onPress: () async {
                                     if (controller.formKey.value.currentState!
                                         .validate()) {
-                                      controller.sendCode();
+
+                                      if(Constant.isGustUser){
+                                        ShowToastDialog.showLoader("please_wait".tr);
+                                        await FireStoreUtils.deleteUser().then((value) {
+                                          Constant.isGustUser = false;
+                                          ShowToastDialog.closeLoader();
+                                          if (value == true) {
+                                            controller.sendCode();
+                                          } else {
+                                            ShowToastDialog.showToast("Something went wrong".tr);
+                                          }
+                                        });
+                                      }
+                                      else{
+                                        controller.sendCode();
+                                      }
+
                                     }
 
                                   },

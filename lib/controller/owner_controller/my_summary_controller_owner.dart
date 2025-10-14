@@ -73,6 +73,7 @@ class MySummaryControllerOwner extends GetxController {
     });
     print(vehicleDriverName.value);
     print(vehicleDriverNumber.value);
+    print("vehicleDriverRole.value:-- > ${vehicleDriverRole.value}");
 
     isLoading.value = false;
   }

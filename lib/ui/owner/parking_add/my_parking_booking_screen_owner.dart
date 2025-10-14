@@ -576,7 +576,7 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                         CrossAxisAlignment
                                                                             .start,
                                                                     children: [
-                                                                      Text(
+                                                                      onGoingList[index].bookingType == "1"? Text(
                                                                         "${onGoingList[index].duration.toString()} hours"
                                                                             .tr,
                                                                         style:
@@ -589,7 +589,14 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                           fontFamily:
                                                                               AppThemData.medium,
                                                                         ),
-                                                                      ),
+                                                                      ):Text(
+                                                "Monthly booking".tr,
+                                                style: TextStyle(
+                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                fontSize: 16,
+                                                fontFamily: AppThemData.medium,
+                                                ),
+                                                ),
                                                                       const SizedBox(
                                                                         height:
                                                                             5,
@@ -984,7 +991,8 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                         CrossAxisAlignment
                                                                             .start,
                                                                     children: [
-                                                                      Text(
+
+                                                                      completedList[index].bookingType == "1"?Text(
                                                                         "${completedList[index].duration.toString()} hours"
                                                                             .tr,
                                                                         style:
@@ -997,7 +1005,14 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                           fontFamily:
                                                                               AppThemData.medium,
                                                                         ),
-                                                                      ),
+                                                                      ):Text(
+                                                "Monthly booking".tr,
+                                                style: TextStyle(
+                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                fontSize: 16,
+                                                fontFamily: AppThemData.medium,
+                                                ),
+                                                ),
                                                                       const SizedBox(
                                                                         height:
                                                                             5,
@@ -1328,7 +1343,7 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                         CrossAxisAlignment
                                                                             .start,
                                                                     children: [
-                                                                      Text(
+                                                                      cancelList[index].bookingType == "1" ?Text(
                                                                         "${cancelList[index].duration.toString()} hours"
                                                                             .tr,
                                                                         style:
@@ -1341,7 +1356,14 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                           fontFamily:
                                                                               AppThemData.medium,
                                                                         ),
-                                                                      ),
+                                                                      ):Text(
+                                                "Monthly booking".tr,
+                                                style: TextStyle(
+                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                fontSize: 16,
+                                                fontFamily: AppThemData.medium,
+                                                ),
+                                                ),
                                                                       const SizedBox(
                                                                         height:
                                                                             5,

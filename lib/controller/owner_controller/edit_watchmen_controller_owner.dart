@@ -183,9 +183,11 @@ class EditWatchmenControllerOwner extends GetxController {
       return "Please Enter Valid email";
     } else if (passwordController.value.text.length < 6) {
       return 'Please Enter 6 length password';
-    } else if (phoneNumberController.value.text.isEmpty) {
+    }
+    /*else if (phoneNumberController.value.text.isEmpty) {
       return 'Please Enter phone number';
-    } else if (salaryController.value.text.isEmpty || salaryController.value.text == '0') {
+    } */
+    else if (salaryController.value.text.isEmpty || salaryController.value.text == '0') {
       return 'Please Enter valid Salary';
     } else {
       return null;

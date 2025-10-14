@@ -88,8 +88,23 @@ class LoginScreen extends StatelessWidget {
                           Visibility(
                             visible: Platform.isIOS,
                             child: InkWell(
-                              onTap: () {
-                                controller.loginWithApple();
+                              onTap: () async {
+                                if(Constant.isGustUser){
+                                  ShowToastDialog.showLoader("please_wait".tr);
+                                  await FireStoreUtils.deleteUser().then((value) {
+                                    Constant.isGustUser = false;
+                                    ShowToastDialog.closeLoader();
+                                    if (value == true) {
+                                      controller.loginWithApple();
+                                    } else {
+                                      ShowToastDialog.showToast(
+                                          "Something went wrong".tr);
+                                    }
+                                  });
+                                }
+                                else{
+                                  controller.loginWithApple();
+                                }
                               },
                               child: Container(
                                 width: Responsive.width(90, context),
@@ -148,7 +163,8 @@ class LoginScreen extends StatelessWidget {
                                         "Something went wrong".tr);
                                   }
                                 });
-                              }else{
+                              }
+                              else{
                                 controller.loginWithGoogle();
                               }
                             },
@@ -244,7 +260,8 @@ class LoginScreen extends StatelessWidget {
                                     ShowToastDialog.showToast("Something went wrong".tr);
                                   }
                                 });
-                              }else{
+                              }
+                              else{
                                 controller.sendCode();
                               }
                             }

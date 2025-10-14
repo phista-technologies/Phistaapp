@@ -279,7 +279,6 @@ class MySummaryScreenOwner extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-
                                               ],
                                             ),
                                           ),
@@ -301,7 +300,8 @@ class MySummaryScreenOwner extends StatelessWidget {
                                                         fontSize: 16,
                                                         fontFamily: AppThemData.medium,
                                                       ),
-                                                    ):Text(
+                                                    ):
+                                                    Text(
                                                       "Monthly booking".tr,
                                                       style: TextStyle(
                                                         color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
@@ -331,10 +331,6 @@ class MySummaryScreenOwner extends StatelessWidget {
                                       const SizedBox(
                                         height: 10,
                                       ),
-
-
-
-
                                       Row(
                                         children: [
                                           Expanded(
@@ -348,8 +344,15 @@ class MySummaryScreenOwner extends StatelessWidget {
                                                 Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      controller.vehicleDriverRole.value != "Guest"?controller.vehicleDriverName.value:"Guest",
+                                                    controller.vehicleDriverRole.value != ""?Text(
+                                                      controller.vehicleDriverRole.value != "Guest"?controller.vehicleDriverName.value:"Guest User",
+                                                      style: TextStyle(
+                                                        color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                        fontSize: 16,
+                                                        fontFamily: AppThemData.medium,
+                                                      ),
+                                                    ):Text(
+                                                     "Guest User",
                                                       style: TextStyle(
                                                         color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
                                                         fontSize: 16,
@@ -457,9 +460,6 @@ class MySummaryScreenOwner extends StatelessWidget {
 
                                     ],
                                   ),
-
-
-
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -529,7 +529,6 @@ class MySummaryScreenOwner extends StatelessWidget {
                                                         fontSize: 16,
                                                         fontFamily: AppThemData
                                                             .medium,),),
-
                                                   ],),
                                               ],),
                                           ),
@@ -613,7 +612,6 @@ class MySummaryScreenOwner extends StatelessWidget {
                               //     ],
                               //   ),
                               // ),
-
                               Container(
                                 decoration: BoxDecoration(
                                   color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.white,
