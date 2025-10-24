@@ -98,7 +98,6 @@ class ForgotPasswordScreenOwner extends StatelessWidget {
                                   Constant.forgotPassOTP = Utils.generateSixDigitCode();
                                   print("Constant.forgotPassOTP :-- ${Constant.forgotPassOTP}");
                                   ShowToastDialog.showLoader("");
-
                                   await controller.sendEmailWithSendGrid(
                                     toEmail: controller.emailController.text.trim(),
                                     subject: 'OTP for reset password',

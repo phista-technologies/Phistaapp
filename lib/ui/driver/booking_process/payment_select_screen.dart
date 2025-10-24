@@ -361,12 +361,15 @@ class PaymentSelectScreen extends StatelessWidget {
                               });
 
                             ShowToastDialog.closeLoader();
-                          } else {
+                          }
+                          else {
                             ShowToastDialog.closeLoader();
                             ShowToastDialog.showToast(
                                 "Wallet Amount Insufficient".tr);
                           }
                         }
+
+
                         else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.cash?.name) {
                           controller.completeCashOrder();
                         }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -88,7 +89,10 @@ class InformationController extends GetxController {
     String fcmToken = "";
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
-    }else{
+    }else if (kIsWeb){
+      fcmToken = "await NotificationService.getToken()dsfdfdf";
+    }
+    else{
       fcmToken = await NotificationService.getToken();
     }
     if (profileImage.value.isNotEmpty) {
@@ -225,7 +229,10 @@ class InformationController extends GetxController {
     String fcmToken = "";
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
-    }else{
+    }else if (kIsWeb){
+      fcmToken = "await NotificationService.getToken()dsfdfdf";
+    }
+    else{
       fcmToken = await NotificationService.getToken();
     }
     if (profileImage.value.isNotEmpty) {

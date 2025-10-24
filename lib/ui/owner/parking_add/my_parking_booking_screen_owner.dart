@@ -13,6 +13,7 @@ import '../../../model/parking_model.dart';
 import '../../../themes/app_them_data.dart';
 import '../../../themes/common_ui.dart';
 import '../../../themes/round_button_fill.dart';
+import '../../../themes/text_field_widget.dart';
 import '../../../utils/dark_theme_provider.dart';
 import '../../../utils/fire_store_utils.dart';
 import '../../../utils/utils.dart';
@@ -279,432 +280,473 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                               Utils.formatTimestampToIST(Timestamp.fromDate(controller
                                                       .selectedDateTime
                                                       .value)));
+                                      if (controller.filteredOnGoingList.isEmpty) {
+                                        controller.filteredOnGoingList.value = onGoingList;
+                                      }
 
                                       return snapshot.data!.docs.isEmpty
                                           ? Constant.showEmptyView(
                                               message: "No active booking found".tr)
-                                          : ListView.builder(
-                                              itemCount: onGoingList.length,
-                                              scrollDirection: Axis.vertical,
-                                              shrinkWrap: true,
-                                              itemBuilder: (context, index) {
-                                                // OrderModel orderModel = OrderModel.fromJson(snapshot.data!.docs[index].data() as Map<String, dynamic>);
-                                                return Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 10),
-                                                  child: Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        vertical: 20,
-                                                        horizontal: 10),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      color: themeChange
-                                                              .getThem()
-                                                          ? AppThemData.grey10
-                                                          : AppThemData.white,
+                                          : Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 10),
+                                                child: SearchTextFieldWidget(
+                                                  onPress: () {},
+                                                  controller: controller.searchControllerOnGoing.value,
+                                                  hintText: 'Search Vehicle Number'.tr,
+                                                  textInputType: TextInputType.emailAddress,
+                                                  prefix: Padding(
+                                                    padding: const EdgeInsets.all(12.0),
+                                                    child: Image.asset(
+                                                      "assets/icon/SearchIcon.png",height: 20,width: 20,
                                                     ),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                "ID: ${onGoingList[index].id}"
-                                                                    .tr,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontFamily:
-                                                                        AppThemData
-                                                                            .semiBold,
-                                                                    color: themeChange.getThem()
-                                                                        ? AppThemData
-                                                                            .grey01
-                                                                        : AppThemData
-                                                                            .grey08),
-                                                              ),
+                                                  ),
+
+                                                  onChanged: (text){
+                                                    controller.debouncer.run(() async{
+                                                      print("Text :-- $text");
+                                                      controller.filterOnGoingList(text, onGoingList);
+
+                                                    },);
+                                                  },
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Obx(() {
+                                                  if (controller.filteredOnGoingList.isEmpty) {
+                                                    return Constant.showEmptyView(
+                                                        message: "No active booking found".tr);
+                                                  }
+                                                  return ListView.builder(
+                                                      itemCount: controller.filteredOnGoingList.length,
+                                                      scrollDirection: Axis.vertical,
+                                                      shrinkWrap: true,
+                                                      itemBuilder: (context, index) {
+                                                        var order = controller.filteredOnGoingList[index];
+                                                        // OrderModel orderModel = OrderModel.fromJson(snapshot.data!.docs[index].data() as Map<String, dynamic>);
+                                                        return Padding(
+                                                          padding: const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 16,
+                                                              vertical: 10),
+                                                          child: Container(
+                                                            padding: const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 20,
+                                                                horizontal: 10),
+                                                            decoration: BoxDecoration(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  12),
+                                                              color: themeChange
+                                                                  .getThem()
+                                                                  ? AppThemData.grey10
+                                                                  : AppThemData.white,
                                                             ),
-                                                            Visibility(
-                                                              visible: onGoingList[
-                                                                          index]
-                                                                      .status ==
-                                                                  Constant
-                                                                      .placed,
-                                                              child: InkWell(
-                                                                onTap: () {
-                                                                  Get.to(
-                                                                      QrCodeScanScreenOwner(
-                                                                    orderId:
-                                                                        onGoingList[index]
-                                                                            .id,
-                                                                  ));
-                                                                },
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          right:
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        "ID: ${order.id}"
+                                                                            .tr,
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                            14,
+                                                                            fontFamily:
+                                                                            AppThemData
+                                                                                .semiBold,
+                                                                            color: themeChange.getThem()
+                                                                                ? AppThemData
+                                                                                .grey01
+                                                                                : AppThemData
+                                                                                .grey08),
+                                                                      ),
+                                                                    ),
+                                                                    Visibility(
+                                                                      visible: onGoingList[
+                                                                      index]
+                                                                          .status ==
+                                                                          Constant
+                                                                              .placed,
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          Get.to(
+                                                                              QrCodeScanScreenOwner(
+                                                                                orderId:
+                                                                                order
+                                                                                    .id,
+                                                                              ));
+                                                                        },
+                                                                        child: Padding(
+                                                                          padding:
+                                                                          const EdgeInsets
+                                                                              .only(
+                                                                              right:
                                                                               10),
-                                                                  child: Icon(
-                                                                      Icons
-                                                                          .qr_code_scanner,
-                                                                      color: themeChange.getThem()
-                                                                          ? AppThemData
-                                                                              .blueLight
-                                                                          : AppThemData
-                                                                              .blueLight),
+                                                                          child: Icon(
+                                                                              Icons
+                                                                                  .qr_code_scanner,
+                                                                              color: themeChange.getThem()
+                                                                                  ? AppThemData
+                                                                                  .blueLight
+                                                                                  : AppThemData
+                                                                                  .blueLight),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  ],
                                                                 ),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        const Divider(
-                                                            thickness: 1,
-                                                            color: AppThemData
-                                                                .grey04),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .calendar_today,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                const Divider(
+                                                                    thickness: 1,
+                                                                    color: AppThemData
+                                                                        .grey04),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
                                                                         CrossAxisAlignment
                                                                             .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        Constant.timestampToDate(
-                                                                            Utils.stringToTimeStamp(onGoingList[index].bookingDate!)),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .calendar_today,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                Constant.timestampToDate(
+                                                                                    Utils.stringToTimeStamp(order.bookingDate!)),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "${Constant.timestampToTime(order.bookingStartTime!)} - ${Constant.timestampToTime(order.bookingEndTime!)}",
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "${Constant.timestampToTime(onGoingList[index].bookingStartTime!)} - ${Constant.timestampToTime(onGoingList[index].bookingEndTime!)}",
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .local_parking,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
                                                                         CrossAxisAlignment
                                                                             .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        onGoingList[index]
-                                                                            .parkingSlotId
-                                                                            .toString(),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .local_parking,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                order
+                                                                                    .parkingSlotId
+                                                                                    .toString(),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Parking Slot"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Parking Slot"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  SvgPicture.asset(
-                                                                      "assets/icon/ic_car_image.svg",
-                                                                      height:
-                                                                          24,
-                                                                      width:
-                                                                          24),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
                                                                         CrossAxisAlignment
                                                                             .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        onGoingList[index]
-                                                                            .userVehicle!
-                                                                            .vehicleModel!
-                                                                            .name
-                                                                            .toString(),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
+                                                                        children: [
+                                                                          SvgPicture.asset(
+                                                                              "assets/icon/ic_car_image.svg",
+                                                                              height:
+                                                                              24,
+                                                                              width:
+                                                                              24),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                order
+                                                                                    .userVehicle!
+                                                                                    .vehicleModel!
+                                                                                    .name
+                                                                                    .toString(),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "vehicle Detail"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "vehicle Detail"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .access_time_rounded,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
                                                                         CrossAxisAlignment
                                                                             .start,
-                                                                    children: [
-                                                                      onGoingList[index].bookingType == "1"? Text(
-                                                                        "${onGoingList[index].duration.toString()} hours"
-                                                                            .tr,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ):Text(
-                                                "Monthly booking".tr,
-                                                style: TextStyle(
-                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
-                                                fontSize: 16,
-                                                fontFamily: AppThemData.medium,
-                                                ),
-                                                ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .access_time_rounded,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              order.bookingType == "1"? Text(
+                                                                                "${order.duration.toString()} hours"
+                                                                                    .tr,
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ):Text(
+                                                                                "Monthly booking".tr,
+                                                                                style: TextStyle(
+                                                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                                                  fontSize: 16,
+                                                                                  fontFamily: AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Time Durations"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                      Text(
-                                                                        "Time Durations"
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 12,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child:
+                                                                      RoundedButtonFill(
+                                                                        title: "Summary"
                                                                             .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
+                                                                        color: AppThemData
+                                                                            .primary06,
+                                                                        height: 5.5,
+                                                                        onPress: () {
+                                                                          Get.to(
+                                                                                  () =>
+                                                                              const MySummaryScreenOwner(),
+                                                                              arguments: {
+                                                                                "orderModel":
+                                                                                order
+                                                                              });
+                                                                        },
                                                                       ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 12,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child:
-                                                                  RoundedButtonFill(
-                                                                title: "Summary"
-                                                                    .tr,
-                                                                color: AppThemData
-                                                                    .primary06,
-                                                                height: 5.5,
-                                                                onPress: () {
-                                                                  Get.to(
-                                                                      () =>
-                                                                          const MySummaryScreenOwner(),
-                                                                      arguments: {
-                                                                        "orderModel":
-                                                                            onGoingList[index]
-                                                                      });
-                                                                },
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            onGoingList[index]
-                                                                            .paymentCompleted! ==
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    order
+                                                                        .paymentCompleted! ==
                                                                         false &&
-                                                                    onGoingList[index]
+                                                                        order
                                                                             .paymentType
                                                                             .toString()
                                                                             .toLowerCase() ==
-                                                                        'cash'
-                                                                            .toLowerCase()
-                                                                ? Expanded(
-                                                                    child:
-                                                                        RoundedButtonFill(
-                                                                      title:
-                                                                          "Confirm cash payment"
-                                                                              .tr,
-                                                                      color: AppThemData
-                                                                          .primary06,
-                                                                      height:
-                                                                          5.5,
-                                                                      onPress:
-                                                                          () {
-                                                                        controller
-                                                                            .confirmPayment(onGoingList[index]);
-                                                                      },
-                                                                    ),
-                                                                  )
-                                                                : onGoingList[index].status == Constant.onGoing
-                                                                    ? Expanded(
-                                                                        child:
-                                                                            RoundedButtonFill(
-                                                                        title: "Mark as Completed"
+                                                                            'cash'
+                                                                                .toLowerCase()
+                                                                        ? Expanded(
+                                                                      child:
+                                                                      RoundedButtonFill(
+                                                                        title:
+                                                                        "Confirm cash payment"
                                                                             .tr,
-                                                                        color: themeChange.getThem()
-                                                                            ? AppThemData.grey09
-                                                                            : AppThemData.grey03,
+                                                                        color: AppThemData
+                                                                            .primary06,
                                                                         height:
-                                                                            5.5,
+                                                                        5.5,
                                                                         onPress:
-                                                                            () async {
-                                                                          ShowToastDialog.showLoader(
-                                                                              "Please wait".tr);
-                                                                          onGoingList[index].status =
-                                                                              Constant.completed;
-                                                                          await FireStoreUtils.setOrder(onGoingList[index])
-                                                                              .then((value) {
-                                                                            ShowToastDialog.closeLoader();
-                                                                          });
+                                                                            () {
+                                                                          controller
+                                                                              .confirmPayment(order);
                                                                         },
-                                                                      ))
-                                                                    : Container()
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              });
+                                                                      ),
+                                                                    )
+                                                                        : order.status == Constant.onGoing
+                                                                        ? Expanded(
+                                                                        child:
+                                                                        RoundedButtonFill(
+                                                                          title: "Mark as Completed"
+                                                                              .tr,
+                                                                          color: themeChange.getThem()
+                                                                              ? AppThemData.grey09
+                                                                              : AppThemData.grey03,
+                                                                          height:
+                                                                          5.5,
+                                                                          onPress:
+                                                                              () async {
+                                                                            ShowToastDialog.showLoader(
+                                                                                "Please wait".tr);
+                                                                            order.status =
+                                                                                Constant.completed;
+                                                                            await FireStoreUtils.setOrder(order)
+                                                                                .then((value) {
+                                                                              ShowToastDialog.closeLoader();
+                                                                            });
+                                                                          },
+                                                                        ))
+                                                                        : Container()
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      });
+                                                },),
+                                              ),
+                                            ],
+                                          );
                                     },
                                   ),
                                   StreamBuilder<QuerySnapshot>(
@@ -727,339 +769,380 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                         return Constant.loader();
                                       }
 
-
-                                      var completedList = controller.getOnGoingModelList(snapshot.data!.docs, Utils.formatTimestampToIST(
-                                          Timestamp.fromDate(controller.selectedDateTime.value)));
+                                      var completedList = controller.getOnGoingModelList(
+                                        snapshot.data!.docs,
+                                        Utils.formatTimestampToIST(Timestamp.fromDate(controller.selectedDateTime.value)),
+                                      );
+                                      if (controller.filteredOnCompleteList.isEmpty) {
+                                        controller.filteredOnCompleteList.value = completedList;
+                                      }
                                       return snapshot.data!.docs.isEmpty
                                           ? Constant.showEmptyView(
                                               message:
                                                   "No Completed Booking Found".tr)
-                                          : ListView.builder(
-                                              itemCount:completedList.length, //snapshot.data!.docs.length,
-                                              scrollDirection: Axis.vertical,
-                                              shrinkWrap: true,
-                                              padding: EdgeInsets.zero,
-                                              itemBuilder: (context, index) {
-                                              //  OrderModel orderModel = OrderModel.fromJson(snapshot.data!.docs[index].data() as Map<String, dynamic>);
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        vertical: 20,
-                                                        horizontal: 10),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      color: themeChange
-                                                              .getThem()
-                                                          ? AppThemData.grey10
-                                                          : AppThemData.white,
-                                                    ),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                "ID: ${completedList[index].id}"
-                                                                    .tr,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontFamily:
-                                                                        AppThemData
-                                                                            .semiBold,
-                                                                    color: themeChange.getThem()
-                                                                        ? AppThemData
-                                                                            .grey01
-                                                                        : AppThemData
-                                                                            .grey08),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        const Divider(
-                                                            thickness: 1,
-                                                            color: AppThemData
-                                                                .grey04),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .calendar_today,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        Constant.timestampToDate(
-                                                                            Utils.stringToTimeStamp(completedList[index].bookingDate!)),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "${Constant.timestampToTime(completedList[index].bookingStartTime!)} - ${Constant.timestampToTime(completedList[index].bookingEndTime!)}",
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .local_parking,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        completedList[index]
-                                                                            .parkingSlotId
-                                                                            .toString(),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Parking Slot"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  SvgPicture.asset(
-                                                                      "assets/icon/ic_car_image.svg",
-                                                                      height:
-                                                                          24,
-                                                                      width:
-                                                                          24),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        completedList[index]
-                                                                            .userVehicle!
-                                                                            .vehicleModel!
-                                                                            .name
-                                                                            .toString(),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "vehicle Detail"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .access_time_rounded,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-
-                                                                      completedList[index].bookingType == "1"?Text(
-                                                                        "${completedList[index].duration.toString()} hours"
-                                                                            .tr,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ):Text(
-                                                "Monthly booking".tr,
-                                                style: TextStyle(
-                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
-                                                fontSize: 16,
-                                                fontFamily: AppThemData.medium,
-                                                ),
-                                                ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Time Durations"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 20,
-                                                        ),
-                                                        RoundedButtonFill(
-                                                          title: "Summary".tr,
-                                                          color: AppThemData
-                                                              .primary06,
-                                                          height: 5.5,
-                                                          onPress: () {
-                                                            Get.to(
-                                                                () =>
-                                                                    const MySummaryScreenOwner(),
-                                                                arguments: {
-                                                                  "orderModel":
-                                                                  completedList[index]
-                                                                });
-                                                          },
-                                                        ),
-                                                      ],
+                                          : Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 10),
+                                                child: SearchTextFieldWidget(
+                                                  onPress: () {},
+                                                  controller: controller.searchControllerComplete.value,
+                                                  hintText: 'Search Vehicle Number'.tr,
+                                                  textInputType: TextInputType.emailAddress,
+                                                  prefix: Padding(
+                                                    padding: const EdgeInsets.all(12.0),
+                                                    child: Image.asset(
+                                                      "assets/icon/SearchIcon.png",height: 20,width: 20,
                                                     ),
                                                   ),
-                                                );
-                                              });
+                                                  onChanged: (text){
+                                                    controller.debouncer.run(() async{
+                                                      print("Text :-- $text");
+                                                      controller.filterOnCompleteList(text, completedList);
+
+                                                    },);
+                                                  },
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child:Obx(() {
+                                                  if (controller.filteredOnCompleteList.isEmpty) {
+                                                    return Constant.showEmptyView(
+                                                        message: "No active booking found".tr);
+                                                  }
+                                                  return ListView.builder(
+                                                      itemCount:controller.filteredOnCompleteList.length, //snapshot.data!.docs.length,
+                                                      scrollDirection: Axis.vertical,
+                                                      shrinkWrap: true,
+                                                      padding: EdgeInsets.zero,
+                                                      itemBuilder: (context, index) {
+                                                        var orderComplete = controller.filteredOnCompleteList[index];
+                                                        //  OrderModel orderModel = OrderModel.fromJson(snapshot.data!.docs[index].data() as Map<String, dynamic>);
+                                                        return Padding(
+                                                          padding:
+                                                          const EdgeInsets.all(8.0),
+                                                          child: Container(
+                                                            padding: const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 20,
+                                                                horizontal: 10),
+                                                            decoration: BoxDecoration(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  12),
+                                                              color: themeChange
+                                                                  .getThem()
+                                                                  ? AppThemData.grey10
+                                                                  : AppThemData.white,
+                                                            ),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        "ID: ${orderComplete.id}"
+                                                                            .tr,
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                            14,
+                                                                            fontFamily:
+                                                                            AppThemData
+                                                                                .semiBold,
+                                                                            color: themeChange.getThem()
+                                                                                ? AppThemData
+                                                                                .grey01
+                                                                                : AppThemData
+                                                                                .grey08),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                const Divider(
+                                                                    thickness: 1,
+                                                                    color: AppThemData
+                                                                        .grey04),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .calendar_today,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            children: [
+                                                                              Text(
+                                                                                Constant.timestampToDate(
+                                                                                    Utils.stringToTimeStamp(orderComplete.bookingDate!)),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "${Constant.timestampToTime(orderComplete.bookingStartTime!)} - ${Constant.timestampToTime(orderComplete.bookingEndTime!)}",
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .local_parking,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                orderComplete
+                                                                                    .parkingSlotId
+                                                                                    .toString(),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Parking Slot"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          SvgPicture.asset(
+                                                                              "assets/icon/ic_car_image.svg",
+                                                                              height:
+                                                                              24,
+                                                                              width:
+                                                                              24),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                orderComplete
+                                                                                    .userVehicle!
+                                                                                    .vehicleModel!
+                                                                                    .name
+                                                                                    .toString(),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "vehicle Detail"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .access_time_rounded,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+
+                                                                              orderComplete.bookingType == "1"?Text(
+                                                                                "${orderComplete.duration.toString()} hours"
+                                                                                    .tr,
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ):Text(
+                                                                                "Monthly booking".tr,
+                                                                                style: TextStyle(
+                                                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                                                  fontSize: 16,
+                                                                                  fontFamily: AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Time Durations"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 20,
+                                                                ),
+                                                                RoundedButtonFill(
+                                                                  title: "Summary".tr,
+                                                                  color: AppThemData
+                                                                      .primary06,
+                                                                  height: 5.5,
+                                                                  onPress: () {
+                                                                    Get.to(
+                                                                            () =>
+                                                                        const MySummaryScreenOwner(),
+                                                                        arguments: {
+                                                                          "orderModel":
+                                                                          orderComplete
+                                                                        });
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      });
+                                                },),
+                                              ),
+                                            ],
+                                          );
                                     },
                                   ),
                                   StreamBuilder<QuerySnapshot>(
@@ -1083,316 +1166,357 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
 
                                       var cancelList = controller.getOnGoingModelList(snapshot.data!.docs, Utils.formatTimestampToIST(
                                           Timestamp.fromDate(controller.selectedDateTime.value)));
+
+                                      if (controller.filteredOnCancelList.isEmpty) {
+                                        controller.filteredOnCancelList.value = cancelList;
+                                      }
                                       return snapshot.data!.docs.isEmpty
                                           ? Constant.showEmptyView(
                                               message:
                                                   "No Canceled Booking Found".tr)
-                                          : ListView.builder(
-                                              itemCount:cancelList.length, //snapshot.data!.docs.length,
-                                              scrollDirection: Axis.vertical,
-                                              shrinkWrap: true,
-                                              itemBuilder: (context, index) {
-                                                //OrderModel orderModel = OrderModel.fromJson(snapshot.data!.docs[index].data() as Map<String, dynamic>);
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        vertical: 20,
-                                                        horizontal: 10),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      color: themeChange
-                                                              .getThem()
-                                                          ? AppThemData.grey10
-                                                          : AppThemData.white,
-                                                    ),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                "ID: ${cancelList[index].id}"
-                                                                    .tr,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontFamily:
-                                                                        AppThemData
-                                                                            .semiBold,
-                                                                    color: themeChange.getThem()
-                                                                        ? AppThemData
-                                                                            .grey01
-                                                                        : AppThemData
-                                                                            .grey08),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        const Divider(
-                                                            thickness: 1,
-                                                            color: AppThemData
-                                                                .grey04),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .calendar_today,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        Constant.timestampToDate(
-                                                                            Utils.stringToTimeStamp(cancelList[index].bookingDate!)),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "${Constant.timestampToTime(cancelList[index].bookingStartTime!)} - ${Constant.timestampToTime(cancelList[index].bookingEndTime!)}",
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .local_parking,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        cancelList[index]
-                                                                            .parkingSlotId
-                                                                            .toString(),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Parking Slot"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  SvgPicture.asset(
-                                                                      "assets/icon/ic_car_image.svg",
-                                                                      height:
-                                                                          24,
-                                                                      width:
-                                                                          24),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        cancelList[index]
-                                                                            .userVehicle!
-                                                                            .vehicleModel!
-                                                                            .name
-                                                                            .toString(),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "vehicle Detail"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                      Icons
-                                                                          .access_time_rounded,
-                                                                      color: AppThemData
-                                                                          .grey07,
-                                                                      size: 20),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      cancelList[index].bookingType == "1" ?Text(
-                                                                        "${cancelList[index].duration.toString()} hours"
-                                                                            .tr,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color: themeChange.getThem()
-                                                                              ? AppThemData.grey06
-                                                                              : AppThemData.grey09,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontFamily:
-                                                                              AppThemData.medium,
-                                                                        ),
-                                                                      ):Text(
-                                                "Monthly booking".tr,
-                                                style: TextStyle(
-                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
-                                                fontSize: 16,
-                                                fontFamily: AppThemData.medium,
-                                                ),
-                                                ),
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Time Durations"
-                                                                            .tr,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppThemData.grey07,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              AppThemData.regular,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        )
-                                                      ],
+                                          : Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 10),
+                                                child: SearchTextFieldWidget(
+                                                  onPress: () {},
+                                                  controller: controller.searchControllerCancel.value,
+                                                  hintText: 'Search Vehicle Number'.tr,
+                                                  textInputType: TextInputType.emailAddress,
+                                                  prefix: Padding(
+                                                    padding: const EdgeInsets.all(12.0),
+                                                    child: Image.asset(
+                                                      "assets/icon/SearchIcon.png",height: 20,width: 20,
                                                     ),
                                                   ),
-                                                );
-                                              });
+                                                  onChanged: (text){
+                                                    controller.debouncer.run(() async{
+                                                      print("Text :-- $text");
+                                                      controller.filterOnCancelList(text, cancelList);
+
+                                                    },);
+                                                  },
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Obx(() {
+                                                  if (controller.filteredOnCancelList.isEmpty) {
+                                                    return Constant.showEmptyView(
+                                                        message: "No active booking found".tr);
+                                                  }
+                                                  return ListView.builder(
+                                                      itemCount:controller.filteredOnCancelList.length, //snapshot.data!.docs.length,
+                                                      scrollDirection: Axis.vertical,
+                                                      shrinkWrap: true,
+                                                      itemBuilder: (context, index) {
+                                                        var cancelOrder = controller.filteredOnCancelList[index];
+                                                        //OrderModel orderModel = OrderModel.fromJson(snapshot.data!.docs[index].data() as Map<String, dynamic>);
+                                                        return Padding(
+                                                          padding:
+                                                          const EdgeInsets.all(8.0),
+                                                          child: Container(
+                                                            padding: const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 20,
+                                                                horizontal: 10),
+                                                            decoration: BoxDecoration(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  12),
+                                                              color: themeChange
+                                                                  .getThem()
+                                                                  ? AppThemData.grey10
+                                                                  : AppThemData.white,
+                                                            ),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        "ID: ${cancelOrder.id}"
+                                                                            .tr,
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                            14,
+                                                                            fontFamily:
+                                                                            AppThemData
+                                                                                .semiBold,
+                                                                            color: themeChange.getThem()
+                                                                                ? AppThemData
+                                                                                .grey01
+                                                                                : AppThemData
+                                                                                .grey08),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                const Divider(
+                                                                    thickness: 1,
+                                                                    color: AppThemData
+                                                                        .grey04),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .calendar_today,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            children: [
+                                                                              Text(
+                                                                                Constant.timestampToDate(
+                                                                                    Utils.stringToTimeStamp(cancelOrder.bookingDate!)),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "${Constant.timestampToTime(cancelOrder.bookingStartTime!)} - ${Constant.timestampToTime(cancelOrder.bookingEndTime!)}",
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .local_parking,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                cancelOrder
+                                                                                    .parkingSlotId
+                                                                                    .toString(),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Parking Slot"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          SvgPicture.asset(
+                                                                              "assets/icon/ic_car_image.svg",
+                                                                              height:
+                                                                              24,
+                                                                              width:
+                                                                              24),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              Text(
+                                                                                cancelOrder
+                                                                                    .userVehicle!
+                                                                                    .vehicleModel!
+                                                                                    .name
+                                                                                    .toString(),
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "vehicle Detail"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons
+                                                                                  .access_time_rounded,
+                                                                              color: AppThemData
+                                                                                  .grey07,
+                                                                              size: 20),
+                                                                          const SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                            children: [
+                                                                              cancelOrder.bookingType == "1" ?Text(
+                                                                                "${cancelOrder.duration.toString()} hours"
+                                                                                    .tr,
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  color: themeChange.getThem()
+                                                                                      ? AppThemData.grey06
+                                                                                      : AppThemData.grey09,
+                                                                                  fontSize:
+                                                                                  16,
+                                                                                  fontFamily:
+                                                                                  AppThemData.medium,
+                                                                                ),
+                                                                              ):Text(
+                                                                                "Monthly booking".tr,
+                                                                                style: TextStyle(
+                                                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                                                  fontSize: 16,
+                                                                                  fontFamily: AppThemData.medium,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height:
+                                                                                5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Time Durations"
+                                                                                    .tr,
+                                                                                style:
+                                                                                const TextStyle(
+                                                                                  color:
+                                                                                  AppThemData.grey07,
+                                                                                  fontSize:
+                                                                                  12,
+                                                                                  fontFamily:
+                                                                                  AppThemData.regular,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      });
+                                                },),
+                                              ),
+                                            ],
+                                          );
                                     },
                                   ),
                                 ],

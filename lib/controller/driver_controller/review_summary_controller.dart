@@ -49,6 +49,7 @@ class ReviewSummaryController extends GetxController {
   }
 
   double calculateAmount() {
+
     if (orderModel.value.coupon != null) {
       if (orderModel.value.coupon!.id != null) {
         if (orderModel.value.coupon!.type == "fix") {
@@ -66,7 +67,13 @@ class ReviewSummaryController extends GetxController {
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       }
     }
-    return (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())) + double.parse(taxAmount.value);
+    print("couponAmount:--$couponAmount");
+    if (couponAmount.value >= double.parse(orderModel.value.subTotal.toString())){
+      return 0.0;
+    }else{
+      return (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())) + double.parse(taxAmount.value);
+    }
+
   }
 
   getUserDetail() async{

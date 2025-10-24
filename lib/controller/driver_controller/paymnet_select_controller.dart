@@ -116,6 +116,7 @@ class PaymentSelectController extends GetxController {
       orderModel.value = argumentData['orderModel'];
       couponAmountReview = argumentData['couponAmount'];
       totalAmountReview = argumentData['totalAmount'];
+      print("totalAmountReview:--$totalAmountReview");
       taxList = argumentData['taxList'];
 
     }
@@ -180,9 +181,14 @@ class PaymentSelectController extends GetxController {
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       }
     }
-    return (double.parse(orderModel.value.subTotal.toString()) -
-            double.parse(couponAmount.toString())) +
-        double.parse(taxAmount.value);
+    if (couponAmount.value >= double.parse(orderModel.value.subTotal.toString())){
+      return double.parse(totalAmountReview);
+    }else{
+      return (double.parse(orderModel.value.subTotal.toString()) -
+          double.parse(couponAmount.toString())) +
+          double.parse(taxAmount.value);
+    }
+
   }
 
   completeCashOrder() async {
@@ -303,7 +309,7 @@ class PaymentSelectController extends GetxController {
     );
   }
 
-  completeOrder({int? index}) async {
+  /*completeOrder({int? index}) async {
     ShowToastDialog.showLoader("Please wait..");
     int numberOfDays= await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate??"");
     log("Online Pay :: ${orderModel.value.parkingDetails!.userId.toString()}");
@@ -430,8 +436,8 @@ class PaymentSelectController extends GetxController {
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
       await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
-     /* await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
-          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);*/
+     *//* await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);*//*
 
     }
 
@@ -463,7 +469,188 @@ class PaymentSelectController extends GetxController {
             arguments: {"orderModel": orderModel.value});
       }
     });
+  }*/
+
+  completeOrder({int? index}) async {
+    ShowToastDialog.showLoader("Please wait..");
+    int numberOfDays = await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate ?? "");
+    log("Online Pay :: ${orderModel.value.parkingDetails!.userId.toString()}");
+    UserModel? receiverUserModel = await FireStoreUtils.getUserProfile(
+      orderModel.value.parkingDetails!.userId.toString(),
+    );
+    orderModel.value.paymentCompleted = true;
+    orderModel.value.paymentType = selectedPaymentMethod.value;
+    orderModel.value.adminCommission = Constant.adminCommission;
+    orderModel.value.createdAt = Timestamp.now();
+    orderModel.value.updateAt = Timestamp.now();
+
+    // ✅ Credit parking amount to host wallet
+    WalletTransactionModel transactionModel = WalletTransactionModel(
+      id: Constant.getUuid(),
+      amount: calculateAmount().toString(),
+      createdDate: Timestamp.now(),
+      paymentType: selectedPaymentMethod.value,
+      transactionId: orderModel.value.id,
+      isCredit: true,
+      userId: orderModel.value.parkingDetails!.userId.toString(),
+      note: "Parking amount credited",
+    );
+
+    await FireStoreUtils.setWalletTransaction(transactionModel).then((value) async {
+      if (value == true) {
+        await FireStoreUtils.updateOtherUserWallet(
+          amount: calculateAmount().toString(),
+          id: orderModel.value.parkingDetails!.userId.toString(),
+        );
+      }
+    });
+
+    // ✅ Calculate admin commission (ensure it’s negative for debit)
+    double adminCommissionValue = Constant.calculateAdminCommission(
+      amount: (double.parse(orderModel.value.subTotal.toString()) -
+          double.parse(couponAmount.toString()))
+          .toString(),
+      adminCommissionLocal: orderModel.value.adminCommission,
+    );
+
+    // Force admin commission to be negative (debit)
+    if (adminCommissionValue > 0) {
+      adminCommissionValue = -adminCommissionValue;
+    }
+
+    // ✅ Create admin commission transaction
+    WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
+      id: Constant.getUuid(),
+      amount: adminCommissionValue.toString(),
+      createdDate: Timestamp.now(),
+      paymentType: selectedPaymentMethod.value,
+      transactionId: orderModel.value.id,
+      isCredit: false,
+      userId: orderModel.value.parkingDetails!.userId.toString(),
+      note: "Admin commission debited",
+    );
+
+    await FireStoreUtils.setWalletTransaction(adminCommissionWallet).then((value) async {
+      if (value == true) {
+        await FireStoreUtils.updateOtherUserWallet(
+          amount: adminCommissionValue.toString(),
+          id: orderModel.value.parkingDetails!.userId.toString(),
+        );
+      }
+    });
+
+    // ✅ Update referral and parking list data
+    await FireStoreUtils.updateReferralAmount(orderModel.value);
+
+    await FireStoreUtils.getMyParkingList(orderModel.value.parkingDetails!.userId.toString())
+        .then((value) async {
+      if (value != null) {
+        for (var element in value) {
+          if (element.subscriptionTotalOrders != null &&
+              element.subscriptionTotalOrders != "0.0" &&
+              element.subscriptionTotalOrders != "0") {
+            element.subscriptionTotalOrders =
+                (int.parse(element.subscriptionTotalOrders.toString()) - 1).toString();
+            await FireStoreUtils.saveParkingDetails(element);
+          }
+        }
+      }
+    });
+
+    // ✅ Send notifications
+    Map<String, dynamic> playLoad = <String, dynamic>{
+      "type": "order",
+      "orderId": orderModel.value.id,
+    };
+
+    if (receiverUserModel != null) {
+      await SendNotification.sendOneNotification(
+        token: receiverUserModel.fcmToken.toString(),
+        title: 'Booking Placed',
+        body:
+        '${orderModel.value.parkingDetails!.name} Booking placed on ${Constant.timestampToDate(Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
+        payload: playLoad,
+      );
+    }
+
+    await FireStoreUtils.getWatchman(
+      orderModel.value.parkingDetails!.id.toString(),
+      orderModel.value.parkingDetails!.userId.toString(),
+    ).then((value) async {
+      if (value != null) {
+        await SendNotification.sendOneNotification(
+          token: value.fcmToken.toString(),
+          title: 'Booking Placed',
+          body:
+          '${orderModel.value.parkingDetails!.name} Booking placed on ${Constant.timestampToDate(Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
+          payload: playLoad,
+        );
+      }
+    });
+
+    // ✅ Send invoice email
+    log("invoicePdf :-- ", error: invoicePdf?.path);
+    if (invoicePdf != null) {
+      print("currentUserModel-Email ${Constant.currentUserModel.value?.email}");
+      await Utils.sendEmailWithTemplate(
+        toEmail: Constant.currentUserModel.value?.email ?? "",
+        templateId: ENV.templateIdSendBilling,
+        dynamicTemplateData: {},
+        attachmentFile: invoicePdf,
+      );
+    }
+
+    // ✅ Send reminder emails (if bookingType = 3)
+    if (orderModel.value.bookingType.toString() == "3") {
+      await Utils.sendRemainderEmailWithTemplate(
+        toEmail: Constant.currentUserModel.value?.email ?? "",
+        templateId: ENV.templateIdRemainder,
+        dynamicTemplateData: {},
+        numberOfDays: numberOfDays,
+      );
+
+      await Utils.sendRemainderEmailWithTemplate(
+        toEmail: Constant.currentUserModel.value?.email ?? "",
+        templateId: ENV.templateIdRemainder,
+        dynamicTemplateData: {},
+        numberOfDays: numberOfDays - 3,
+      );
+    }
+
+    // ✅ Save order and send confirmation email
+    await FireStoreUtils.setOrder(orderModel.value).then((value) async {
+      if (value == true) {
+        try {
+          Map<String, dynamic> senMap = {
+            "hostFullName": ownerUserModel.value.fullName,
+            "address": orderModel.value.parkingDetails?.address ?? "",
+            "clientFullName": Constant.currentUserModel.value?.fullName,
+            "vehicleLicensePlate": orderModel.value.userVehicle?.vehicleNumber ?? "",
+          };
+
+          print("senMap :- $senMap");
+
+          await Utils.sendEmailWithTemplate(
+            toEmail: ownerUserModel.value.email ?? "",
+            templateId: ENV.templateIdNewReservation,
+            dynamicTemplateData: senMap,
+          ).then((value) {
+            print("Sending Booking Template");
+            ShowToastDialog.closeLoader();
+          });
+        } catch (e) {
+          ShowToastDialog.closeLoader();
+          log("Exception :-- ", error: e.toString());
+        }
+
+        Get.to(
+              () => const ParkingTicketScreen(),
+          arguments: {"orderModel": orderModel.value},
+        );
+      }
+    });
   }
+
 
   // Strip
   Future<void> stripeMakePayment({required String amount}) async {
@@ -721,6 +908,8 @@ class PaymentSelectController extends GetxController {
       _ref = "AndroidRef$year$refNumber";
     } else if (Platform.isIOS) {
       _ref = "IOSRef$year$refNumber";
+    }else{
+
     }
   }
 

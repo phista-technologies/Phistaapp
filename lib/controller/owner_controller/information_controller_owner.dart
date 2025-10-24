@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -77,6 +78,8 @@ class InformationControllerOwner extends GetxController {
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
        //fcmToken = "fdsklfdkfjaks;fjas;jfals68904567589789yuy";
+    }else if (kIsWeb){
+      fcmToken = "await NotificationService.getToken()dsfdfdf";
     }else{
        fcmToken = await NotificationService.getToken();
     }
@@ -169,6 +172,8 @@ class InformationControllerOwner extends GetxController {
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
       //fcmToken = "fdsklfdkfjaks;fjas;jfals68904567589789yuy";
+    }else if (kIsWeb){
+      fcmToken = "await NotificationService.getToken()dsfdfdf";
     }else{
       fcmToken = await NotificationService.getToken();
     }

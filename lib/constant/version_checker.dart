@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:phista/constant/constant.dart';
@@ -19,9 +20,13 @@ class VersionChecker {
 
     await remoteConfig.fetchAndActivate();
     var latestVersion = "";
+
     if(Platform.isIOS){
       latestVersion = remoteConfig.getString('force_update_version_driver');
-    }else{
+    }else if (kIsWeb){
+      latestVersion = remoteConfig.getString('force_update_version_driver');
+    }
+    else{
       latestVersion = remoteConfig.getString('force_update_version_driver_android');
     }
     final packageInfo = await PackageInfo.fromPlatform();
@@ -62,7 +67,8 @@ class VersionChecker {
               if(Platform.isIOS){
                 const appUrl = 'https://apps.apple.com/us/app/phista-drivers/id6746747690';
                 launchUrl(Uri.parse(appUrl), mode: LaunchMode.externalApplication);
-              }else{
+              }
+              else{
                 const appUrl = 'https://play.google.com/store/apps/details?id=com.phista';
                 launchUrl(Uri.parse(appUrl), mode: LaunchMode.externalApplication);
               }

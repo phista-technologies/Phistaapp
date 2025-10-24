@@ -174,7 +174,6 @@ class ChangePasswordScreenOwner extends StatelessWidget {
                                   "confirm password does not match".tr);
                             } else {
                               ShowToastDialog.showLoader("");
-
                               FireStoreUtils.getUserPasswordByEmail(
                                       controller.emailController.text.trim())
                                   .then(

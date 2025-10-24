@@ -27,7 +27,6 @@ class InformationScreenOwner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
-
     return GetX<InformationControllerOwner>(
       init: InformationControllerOwner(),
       builder: (controller) {

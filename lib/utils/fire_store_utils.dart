@@ -1108,9 +1108,7 @@ class FireStoreUtils {
       if (value != null) {
         UserModel userModel = value;
         userModel.walletAmount =
-            (double.parse(userModel.walletAmount.toString()) +
-                    double.parse(amount))
-                .toString();
+            (double.parse(userModel.walletAmount.toString()) + double.parse(amount)).toString();
         await FireStoreUtils.updateUser(userModel).then((value) {
           isAdded = value;
         });
