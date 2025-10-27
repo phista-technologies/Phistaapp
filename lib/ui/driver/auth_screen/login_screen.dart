@@ -75,8 +75,8 @@ class LoginScreen extends StatelessWidget {
                         "Instant parking at your fingertips. No more circling - find, reserve, and pay instantly!"
                             .tr,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: AppThemData.grey07,
+                        style: TextStyle(
+                          color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                           fontSize: 14,
                           fontFamily: AppThemData.regular,
                           fontWeight: FontWeight.w400,

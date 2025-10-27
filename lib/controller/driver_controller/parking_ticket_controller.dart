@@ -57,7 +57,13 @@ class ParkingTicketController extends GetxController {
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       }
     }
-    return (double.parse(orderModel.value.subTotal.toString()) - couponAmount.value) + double.parse(taxAmount.value);
+    print("couponAmount:--$couponAmount");
+    if (couponAmount.value >= double.parse(orderModel.value.subTotal.toString())){
+      return 0.0;
+    }else {
+      return (double.parse(orderModel.value.subTotal.toString()) -
+          couponAmount.value) + double.parse(taxAmount.value);
+    }
   }
 
   canceledOrderWallet() async {

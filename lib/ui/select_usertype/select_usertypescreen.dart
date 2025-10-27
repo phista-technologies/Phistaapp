@@ -53,7 +53,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                      textAlign: TextAlign.start,
                      style: TextStyle(
                        color: themeChange.getThem()
-                           ? AppThemData.grey01
+                           ? AppThemData.grey10
                            : AppThemData.grey10,
                        fontSize: 30,
                        fontFamily: AppThemData.semiBold,
@@ -114,7 +114,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                                    textAlign: TextAlign.start,
                                    style: TextStyle(
                                      color: themeChange.getThem()
-                                         ? AppThemData.grey01
+                                         ? AppThemData.grey10
                                          : AppThemData.grey10,
                                      fontSize: 18,
                                      fontFamily: AppThemData.semiBold,
@@ -144,7 +144,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                                  textAlign: TextAlign.center,
                                  style: TextStyle(
                                    color: themeChange.getThem()
-                                       ? AppThemData.grey01
+                                       ? AppThemData.grey10
                                        : AppThemData.grey10,
                                    fontSize: 16,
                                    fontFamily: AppThemData.semiBold,
@@ -202,7 +202,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                                    textAlign: TextAlign.start,
                                    style: TextStyle(
                                      color: themeChange.getThem()
-                                         ? AppThemData.grey01
+                                         ? AppThemData.grey10
                                          : AppThemData.grey10,
                                      fontSize: 18,
                                      fontFamily: AppThemData.semiBold,

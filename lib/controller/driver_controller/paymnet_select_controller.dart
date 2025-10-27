@@ -309,7 +309,7 @@ class PaymentSelectController extends GetxController {
     );
   }
 
-  /*completeOrder({int? index}) async {
+  completeOrder({int? index}) async {
     ShowToastDialog.showLoader("Please wait..");
     int numberOfDays= await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate??"");
     log("Online Pay :: ${orderModel.value.parkingDetails!.userId.toString()}");
@@ -322,8 +322,7 @@ class PaymentSelectController extends GetxController {
    orderModel.value.adminCommission =  Constant.adminCommission;
    orderModel.value.createdAt = Timestamp.now();
    orderModel.value.updateAt = Timestamp.now();
-
-    WalletTransactionModel transactionModel = WalletTransactionModel(
+   WalletTransactionModel transactionModel = WalletTransactionModel(
         id: Constant.getUuid(),
         amount: calculateAmount().toString(),
         createdDate: Timestamp.now(),
@@ -383,9 +382,7 @@ class PaymentSelectController extends GetxController {
           if (element.subscriptionTotalOrders != null &&
               element.subscriptionTotalOrders != "0.0" &&
               element.subscriptionTotalOrders != "0") {
-            element.subscriptionTotalOrders =
-                (int.parse(element.subscriptionTotalOrders.toString()) - 1)
-                    .toString();
+            element.subscriptionTotalOrders = (int.parse(element.subscriptionTotalOrders.toString()) - 1).toString();
             await FireStoreUtils.saveParkingDetails(element);
           }
         }
@@ -436,8 +433,9 @@ class PaymentSelectController extends GetxController {
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
       await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
-     *//* await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
-          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);*//*
+
+     await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);
 
     }
 
@@ -469,9 +467,9 @@ class PaymentSelectController extends GetxController {
             arguments: {"orderModel": orderModel.value});
       }
     });
-  }*/
+  }
 
-  completeOrder({int? index}) async {
+  /*completeOrder({int? index}) async {
     ShowToastDialog.showLoader("Please wait..");
     int numberOfDays = await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate ?? "");
     log("Online Pay :: ${orderModel.value.parkingDetails!.userId.toString()}");
@@ -649,7 +647,7 @@ class PaymentSelectController extends GetxController {
         );
       }
     });
-  }
+  }*/
 
 
   // Strip

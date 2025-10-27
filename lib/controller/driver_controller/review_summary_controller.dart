@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -5,7 +8,13 @@ import 'package:phista/constant/constant.dart';
 import 'package:phista/model/coupon_model.dart';
 import 'package:phista/model/order_model.dart';
 
+import '../../constant/send_notification.dart';
+import '../../constant/show_toast_dialog.dart';
+import '../../env.dart';
+import '../../model/user_model.dart';
+import '../../ui/driver/my_booking/parking_ticket_screen.dart';
 import '../../utils/fire_store_utils.dart';
+import '../../utils/utils.dart';
 
 class ReviewSummaryController extends GetxController {
   Rx<TextEditingController> couponCodeTextFieldController = TextEditingController().obs;
@@ -18,6 +27,7 @@ class ReviewSummaryController extends GetxController {
   }
 
   Rx<OrderModel> orderModel = OrderModel().obs;
+  Rx<UserModel> ownerUserModel = UserModel().obs;
   var orderModelDailyList = <OrderModel>[].obs;
   RxDouble couponAmount = 0.0.obs;
   Rx<CouponModel> selectedCouponModel = CouponModel().obs;
@@ -40,6 +50,7 @@ class ReviewSummaryController extends GetxController {
           }
         }
       getUserDetail();
+      getParkingDetail(orderModel.value.parkingId??"");
 
 
 
@@ -90,6 +101,23 @@ class ReviewSummaryController extends GetxController {
     print(vehicleDriverNumber.value);
   }
 
+  void getParkingDetail(String parkingId)async{
+    try{
+      ShowToastDialog.showLoader("");
+      await FireStoreUtils.getParkingDetails(parkingId).then((parkingDetail) async{
+        await FireStoreUtils.getUserProfile(parkingDetail?.userId??"").then((userDetail) {
+          ShowToastDialog.closeLoader();
+          if(userDetail != null) {
+            ownerUserModel.value = userDetail;
+          }
+        },);
+      },);
+    }catch(e){
+      ShowToastDialog.closeLoader();
+    }
+
+  }
+
   List<String> sortDateStrings(List<String> dateStrings) {
     DateFormat format = DateFormat("d MMMM yyyy 'at' HH:mm:ss 'UTC+5:30'");
 
@@ -103,6 +131,124 @@ class ReviewSummaryController extends GetxController {
     });
 
     return dateStrings;
+  }
+
+  completeOrder() async {
+    ShowToastDialog.showLoader("Please wait..");
+    int numberOfDays= await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate??"");
+    UserModel? receiverUserModel = await FireStoreUtils.getUserProfile(
+        orderModel.value.parkingDetails!.userId.toString());
+    orderModel.value.paymentCompleted = true;
+    orderModel.value.adminCommission =  Constant.adminCommission;
+    orderModel.value.createdAt = Timestamp.now();
+    orderModel.value.updateAt = Timestamp.now();
+
+    await FireStoreUtils.getMyParkingList(
+        orderModel.value.parkingDetails!.userId.toString())
+        .then((value) async {
+      if (value != null) {
+        for (var element in value) {
+          if (element.subscriptionTotalOrders != null &&
+              element.subscriptionTotalOrders != "0.0" &&
+              element.subscriptionTotalOrders != "0") {
+            element.subscriptionTotalOrders = (int.parse(element.subscriptionTotalOrders.toString()) - 1).toString();
+            await FireStoreUtils.saveParkingDetails(element);
+          }
+        }
+      }
+    });
+
+    Map<String, dynamic> playLoad = <String, dynamic>{
+      "type": "order",
+      "orderId": orderModel.value.id
+    };
+    if (receiverUserModel != null) {
+      await SendNotification.sendOneNotification(
+          token: receiverUserModel.fcmToken.toString(),
+          title: 'Booking Placed',
+          body:
+          '${orderModel.value.parkingDetails!.name
+              .toString()} Booking placed on ${Constant.timestampToDate(
+              Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
+          payload: playLoad);
+    }
+
+    await FireStoreUtils.getWatchman(
+        orderModel.value.parkingDetails!.id.toString(),
+        orderModel.value.parkingDetails!.userId.toString())
+        .then((value) async {
+      if (value != null) {
+        await SendNotification.sendOneNotification(
+            token: value.fcmToken.toString(),
+            title: 'Booking Placed',
+            body:
+            '${orderModel.value.parkingDetails!.name
+                .toString()} Booking placed on ${Constant.timestampToDate(
+                Utils.stringToTimeStamp(orderModel.value.bookingDate!))}.',
+            payload: playLoad);
+      }
+    });
+
+    if(orderModel.value.bookingType.toString() == "3"){
+      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
+      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
+
+      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);
+
+    }
+
+    await FireStoreUtils.setOrder(orderModel.value).then((value) async {
+      if (value == true) {
+        //Constant.bookingTypeConst = "hourly";
+        try{
+          Map<String,dynamic> senMap = {
+            "hostFullName":ownerUserModel.value.fullName,
+            "address":orderModel.value.parkingDetails?.address??"",
+            "clientFullName" :Constant.currentUserModel.value?.fullName,
+            "vehicleLicensePlate" :orderModel.value.userVehicle?.vehicleNumber??""
+          };
+
+          print("senMap :- $senMap");
+
+          await  Utils.sendEmailWithTemplate(toEmail: ownerUserModel.value.email??"",
+              templateId: ENV.templateIdNewReservation,
+              dynamicTemplateData: senMap).then((value) {
+            print("Sending Booking Template");
+            ShowToastDialog.closeLoader();
+          },);
+        }catch(e){
+          ShowToastDialog.closeLoader();
+          log("Exception :-- ",error: e.toString());
+        }
+
+        Get.to(() => const ParkingTicketScreen(),
+            arguments: {"orderModel": orderModel.value});
+      }
+    });
+
+  }
+
+
+  Future<int> getDifferenceBetweenStartAndEndDate(String bookingDateString) async {
+    int daysBetween = 0;
+    try{
+      List<String> parts = bookingDateString.split(",");
+      String startString = parts[0];
+      String endString = parts[1];
+
+      DateTime startDate = DateTime.parse(
+          startString.replaceAll(" at ", " ").replaceAll("UTC", "+"));
+      DateTime endDate = DateTime.parse(
+          endString.replaceAll(" at ", " ").replaceAll("UTC", "+"));
+      daysBetween = endDate.difference(startDate).inDays;
+      print("Days between: $daysBetween");
+    }catch(e){
+      log("DifferenceBetweenStart Exception :- ",error:  e.toString());
+    }
+    return daysBetween;
   }
 
 

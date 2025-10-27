@@ -357,6 +357,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                                             ),
                                                           ),
                                                         ),
+                                                        if(controller.couponAmount <= double.parse(controller.orderModel.value.subTotal.toString()))
                                                         Text(
                                                           "${Constant.amountShow(amount: Constant().calculateTax(amount: (double.parse(controller.orderModel.value.subTotal.toString()) - double.parse(controller.couponAmount.value.toString())).toString(), taxModel: taxModel).toStringAsFixed(Constant.currencyModel!.decimalDigits!).toString())} ",
                                                           style: const TextStyle(
@@ -368,6 +369,18 @@ class ParkingTicketScreen extends StatelessWidget {
                                                                     .semiBold,
                                                           ),
                                                         ),
+                                                        if(controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString()))
+                                                          Text(
+                                                            "0.00\$",
+                                                            style: const TextStyle(
+                                                              color: AppThemData
+                                                                  .grey08,
+                                                              fontSize: 14,
+                                                              fontFamily:
+                                                              AppThemData
+                                                                  .semiBold,
+                                                            ),
+                                                          ),
                                                       ],
                                                     ),
                                                   );

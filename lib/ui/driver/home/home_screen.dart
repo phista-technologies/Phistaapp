@@ -200,9 +200,8 @@ class HomeScreen extends StatelessWidget {
                                               children: [
                                                 Expanded(
                                                     child: Text("Near You".tr,
-                                                        style: const TextStyle(
-                                                          color: AppThemData
-                                                              .grey10,
+                                                        style: TextStyle(
+                                                          color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                                           fontSize: 16,
                                                           fontFamily:
                                                               AppThemData
@@ -435,8 +434,8 @@ class HomeScreen extends StatelessWidget {
                                                                             maxLines:
                                                                                 1,
                                                                             style:
-                                                                                const TextStyle(
-                                                                              color: AppThemData.grey07,
+                                                                            TextStyle(
+                                                                              color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                                                               fontSize: 12,
                                                                               height: 1.57,
                                                                               overflow: TextOverflow.ellipsis,
@@ -452,12 +451,12 @@ class HomeScreen extends StatelessWidget {
                                                                         Row(
                                                                           children: [
                                                                             SvgPicture.asset(parkingModel.parkingType == "2" ? "assets/icon/ic_bike.svg" : "assets/icon/ic_car_fill.svg",
-                                                                                color: AppThemData.grey09),
+                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,),
                                                                             Text(
                                                                               " ${parkingModel.parkingType.toString()} wheel".tr,
                                                                               maxLines: 1,
                                                                               style: TextStyle(
-                                                                                color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                                                                 fontSize: 12,
                                                                                 height: 1.57,
                                                                                 overflow: TextOverflow.ellipsis,

@@ -1101,6 +1101,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
+                                            if (controller.couponAmount <= double.parse(controller.orderModel.value.subTotal.toString()))
                                             Text(
                                               "${Constant.amountShow(
                                                   amount: Constant()
@@ -1129,6 +1130,18 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                 AppThemData.semiBold,
                                               ),
                                             ),
+                                            if (controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString()))
+                                              Text(
+                                                "0.00\$ ",
+                                                style: TextStyle(
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey03
+                                                      : AppThemData.grey07,
+                                                  fontSize: 18,
+                                                  fontFamily:
+                                                  AppThemData.semiBold,
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       );
@@ -1261,15 +1274,22 @@ class ReviewSummaryScreen extends StatelessWidget {
                   title: "Go to payment".tr,
                   color: AppThemData.primary06,
                   onPress: () {
-                    controller.orderModel.value.coupon =
-                        controller.selectedCouponModel.value;
-                    Get.to(() => const PaymentSelectScreen(),
-                        arguments: {
-                          "orderModel": controller.orderModel.value,
-                          "couponAmount" : controller.couponAmount.toString(),
-                          "totalAmount" : controller.calculateAmount().toString(),
-                          "taxList" : controller.orderModel.value.taxList
-                        });
+                    if (controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString())){
+                      controller.orderModel.value.coupon =
+                          controller.selectedCouponModel.value;
+                     controller.completeOrder();
+                    }else{
+                      controller.orderModel.value.coupon =
+                          controller.selectedCouponModel.value;
+                      Get.to(() => const PaymentSelectScreen(),
+                          arguments: {
+                            "orderModel": controller.orderModel.value,
+                            "couponAmount" : controller.couponAmount.toString(),
+                            "totalAmount" : controller.calculateAmount().toString(),
+                            "taxList" : controller.orderModel.value.taxList
+                          });
+                    }
+
                   },
                 ),
               ),
