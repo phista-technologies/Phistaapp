@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -78,9 +79,9 @@ class LoginScreenOwner extends StatelessWidget {
                                 SizedBox(height: Responsive.height(5, context)),
                                 Column(
                                   children: [
-                                    if (Platform.isIOS)
+                                    if (!kIsWeb && Platform.isIOS)
                                       Visibility(
-                                        visible: Platform.isIOS,
+                                        visible:!kIsWeb && Platform.isIOS,
                                         child: InkWell(
                                           onTap: () async {
                                             if(Constant.isGustUser){
@@ -144,7 +145,7 @@ class LoginScreenOwner extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                    if (Platform.isIOS)
+                                    if (!kIsWeb && Platform.isIOS)
                                       const SizedBox(height: 12),
                                     InkWell(
                                       onTap: () async {

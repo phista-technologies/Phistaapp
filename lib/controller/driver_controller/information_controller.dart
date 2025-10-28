@@ -86,14 +86,16 @@ class InformationController extends GetxController {
   }
 
   createAccount() async {
-    String fcmToken = "";
+    String? fcmToken = "";
+    if (!kIsWeb){
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
-    }else if (kIsWeb){
-      fcmToken = "await NotificationService.getToken()dsfdfdf";
     }
     else{
       fcmToken = await NotificationService.getToken();
+    }
+    }else{
+      fcmToken = await NotificationService.getWebToken();
     }
     if (profileImage.value.isNotEmpty) {
       profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
@@ -226,14 +228,16 @@ class InformationController extends GetxController {
   }
   createAccountWithEmailNew(String uid) async {
     log("profileImage:--${profileImage.value}");
-    String fcmToken = "";
+    String? fcmToken = "";
+    if (!kIsWeb){
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
-    }else if (kIsWeb){
-      fcmToken = "await NotificationService.getToken()dsfdfdf";
     }
     else{
       fcmToken = await NotificationService.getToken();
+    }
+    }else{
+      fcmToken = await NotificationService.getWebToken();
     }
     if (profileImage.value.isNotEmpty) {
       log("profileImage1:--${profileImage.value}");

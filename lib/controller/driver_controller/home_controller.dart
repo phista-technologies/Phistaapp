@@ -74,7 +74,7 @@ class HomeController extends GetxController {
     //getParking();
   }
 
-  getLocation() async {
+  /*getLocation() async {
     await addMarkerSetup();
     await Utils.getCurrentLocation().then((value) {
       print(value);
@@ -105,6 +105,65 @@ class HomeController extends GetxController {
         Constant.currentLocation!.latitude!,
         Constant.currentLocation!.longitude!);
     Constant.country = placeMarks.first.country;
+    getTax();
+    getParking();
+    isLoading.value = false;
+  }*/
+  getLocation() async {
+    await addMarkerSetup();
+
+    final value = await Utils.getCurrentLocation();
+    if (value != null) {
+      permissionDenied.value = false;
+      mapOsmController = MapController(
+        initPosition: GeoPoint(latitude: value.latitude, longitude: value.longitude),
+        useExternalTracking: false,
+      );
+
+      Constant.currentLocation = LocationLatLng(
+          latitude: value.latitude, longitude: value.longitude);
+    } else {
+      isLoading.value = false;
+      permissionDenied.value = true;
+      mapOsmController = MapController(
+        initPosition: GeoPoint(
+          latitude: Constant.currentLocation?.latitude ?? 45.521563,
+          longitude: Constant.currentLocation?.longitude ?? -122.677433,
+        ),
+        useExternalTracking: false,
+      );
+    }
+
+    // --- Get country/address safely ---
+    try {
+      String? country;
+
+      if (kIsWeb) {
+        // Use Google Maps API for web
+        final apiKey = "AIzaSyBWpknhgETEcPdExDw13FsmKIbazhH-BpI"; // replace with your key
+        final url = Uri.parse(
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng=${Constant.currentLocation!.latitude},${Constant.currentLocation!.longitude}&key=$apiKey");
+        final response = await http.get(url);
+        final data = json.decode(response.body);
+
+        if (data['results'] != null && data['results'].isNotEmpty) {
+          country = data['results'][0]['formatted_address'];
+        }
+      } else {
+        // Mobile: use geocoding package
+        List<Placemark> placeMarks = await placemarkFromCoordinates(
+            Constant.currentLocation!.latitude!, Constant.currentLocation!.longitude!);
+        if (placeMarks.isNotEmpty) {
+          country = placeMarks.first.country;
+        }
+      }
+
+      Constant.country = country ?? "Unknown";
+    } catch (e) {
+      print("Error getting country: $e");
+      Constant.country = "Unknown";
+    }
+
     getTax();
     getParking();
     isLoading.value = false;

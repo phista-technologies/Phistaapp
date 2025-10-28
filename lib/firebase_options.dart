@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -30,17 +27,17 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -68,5 +65,16 @@ class DefaultFirebaseOptions {
     androidClientId: '1058281973456-0of5ifq5t999mjsvqea7i6b4alukha62.apps.googleusercontent.com',
     iosClientId: '1058281973456-jvne9uioi99odbomprnaobetaa8vju3h.apps.googleusercontent.com',
     iosBundleId: 'com.phista.ios',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+      apiKey: "AIzaSyAvMQy6a2ZwU60Yg43NfIhTfz7rZE6bTSY",
+      authDomain: "phista-81bf8.firebaseapp.com",
+      databaseURL: "https://phista-81bf8-default-rtdb.firebaseio.com",
+      projectId: "phista-81bf8",
+      storageBucket: "phista-81bf8.firebasestorage.app",
+      messagingSenderId: "1058281973456",
+      appId: "1:1058281973456:web:fcbb6159d107e5ab06e0d5",
+      measurementId: "G-KTPZQQSE7R"
   );
 }

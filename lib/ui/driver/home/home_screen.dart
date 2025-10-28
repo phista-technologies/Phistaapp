@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -101,8 +103,6 @@ class HomeScreen extends StatelessWidget {
                         ))
                       : Stack(
                           children: [
-
-
                             Constant.selectedMapType == 'osm'
                                 ? OSMFlutter(
                                     controller: controller.mapOsmController,
@@ -150,8 +150,6 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-
-
                             if(Constant.currentUserModel.value?.role == "Guest")
                             Positioned(
                               top: 10,
@@ -238,6 +236,14 @@ class HomeScreen extends StatelessWidget {
                                           Expanded(
                                             child: PageView.builder(
                                               pageSnapping: true,
+                                              scrollBehavior: ScrollConfiguration.of(context).copyWith(
+                                                dragDevices: {
+                                                  PointerDeviceKind.touch,
+                                                  PointerDeviceKind.mouse,
+                                                  PointerDeviceKind.trackpad,
+                                                },
+                                              ),
+                                              physics: const AlwaysScrollableScrollPhysics(), // Always enable scrolling
                                               controller: PageController(
                                                   viewportFraction: 0.88),
                                               onPageChanged: (value) {

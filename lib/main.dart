@@ -21,11 +21,14 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+
   await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    webProvider: ReCaptchaV3Provider('6Ldale0rAAAAACk2vxq67h1Is798truPDDvv2N7i'),
     androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.appAttest,
   );
+
   await Preferences.initPref();
   runApp(const MyApp());
 }

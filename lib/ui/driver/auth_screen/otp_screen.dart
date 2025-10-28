@@ -109,15 +109,16 @@ class OtpScreen extends StatelessWidget {
 
                                 PhoneAuthCredential credential =
                                     PhoneAuthProvider.credential(verificationId: controller.verificationId.value, smsCode: controller.otpController.value.text);
-                                String fcmToken = "";
+                                String? fcmToken = "";
+                                if (!kIsWeb){
                                 if(Platform.isIOS){
                                   //fcmToken ="sdsadsdsd54545645sdas4dsa4dsd564sdas";
                                   fcmToken = await NotificationService.getToken();
-                                }else if (kIsWeb){
-                                  fcmToken = "await NotificationService.getToken()dsfdfdf";
                                 }else{
                                   fcmToken = await NotificationService.getToken();
-                                }
+                                } }else{
+          fcmToken = await NotificationService.getWebToken();
+          }
 
                                 await FirebaseAuth.instance.signInWithCredential(credential).then((value) async {
                                   if (value.additionalUserInfo!.isNewUser) {

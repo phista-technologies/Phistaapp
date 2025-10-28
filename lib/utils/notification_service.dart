@@ -81,6 +81,20 @@ class NotificationService {
     return token!;
   }
 
+  static Future<String?> getWebToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken(
+        vapidKey: "BBC9FI1sq94ogRTTOgudY5qBoEvETPE8EMz8FM6Ji277S17yHWEy_qe8G5P7AFMAc5C-B0cDIqt6b2WC5q8kfkg",
+      );
+      print("Web FCM Token: $token");
+      return token;
+    } catch (e) {
+      print("Error getting web token: $e");
+      return null;
+    }
+  }
+
+
   void display(RemoteMessage message) async {
     log('Got a message whilst in the foreground!');
     log('Message data: ${message.notification!.body.toString()}');

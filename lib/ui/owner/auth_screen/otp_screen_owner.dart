@@ -127,15 +127,16 @@ class OtpScreenOwner extends StatelessWidget {
                                             controller.verificationId.value,
                                         smsCode: controller
                                             .otpController.value.text);
-                                String fcmToken = "";
-                                if (Platform.isIOS) {
-                                 // fcmToken = "fdsklfdkfjaks;fjas;jfals68904567589789yuy";
-                                  fcmToken = await NotificationService.getToken();
-                                }else if (kIsWeb){
-                                  fcmToken = "await NotificationService.getToken()dsfdfdf";
-                                } else {
-                                  fcmToken =
-                                      await NotificationService.getToken();
+                                String? fcmToken = "";
+                                if (!kIsWeb) {
+                                  if (Platform.isIOS) {
+                                    fcmToken = await NotificationService.getToken();
+                                  }
+                                  else {
+                                    fcmToken = await NotificationService.getToken();
+                                  }
+                                }else{
+                                  fcmToken = await NotificationService.getWebToken();
                                 }
                                 await FirebaseAuth.instance
                                     .signInWithCredential(credential)

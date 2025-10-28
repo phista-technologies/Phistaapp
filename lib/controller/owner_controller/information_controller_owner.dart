@@ -74,14 +74,16 @@ class InformationControllerOwner extends GetxController {
 
   createAccount() async {
     ShowToastDialog.showLoader("Please wait".tr);
-    String fcmToken = "";
-    if(Platform.isIOS){
-      fcmToken = await NotificationService.getToken();
-       //fcmToken = "fdsklfdkfjaks;fjas;jfals68904567589789yuy";
-    }else if (kIsWeb){
-      fcmToken = "await NotificationService.getToken()dsfdfdf";
+    String? fcmToken = "";
+    if(!kIsWeb) {
+      if (Platform.isIOS) {
+        fcmToken = await NotificationService.getToken();
+        //fcmToken = "fdsklfdkfjaks;fjas;jfals68904567589789yuy";
+      } else {
+        fcmToken = await NotificationService.getToken();
+      }
     }else{
-       fcmToken = await NotificationService.getToken();
+      fcmToken = await NotificationService.getWebToken();
     }
 
     if (profileImage.value.isNotEmpty) {
@@ -168,14 +170,16 @@ class InformationControllerOwner extends GetxController {
 
   createAccountWithEmailNew(String uid) async {
     ShowToastDialog.showLoader("Please wait".tr);
-    String fcmToken = "";
+    String? fcmToken = "";
+    if (!kIsWeb){
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
       //fcmToken = "fdsklfdkfjaks;fjas;jfals68904567589789yuy";
-    }else if (kIsWeb){
-      fcmToken = "await NotificationService.getToken()dsfdfdf";
     }else{
       fcmToken = await NotificationService.getToken();
+    }
+    }else{
+     fcmToken = await NotificationService.getWebToken();
     }
 
     if (profileImage.value.isNotEmpty) {

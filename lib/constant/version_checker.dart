@@ -25,8 +25,7 @@ class VersionChecker {
       latestVersion = remoteConfig.getString('force_update_version_driver');
     }else if (kIsWeb){
       latestVersion = remoteConfig.getString('force_update_version_driver');
-    }
-    else{
+    } else{
       latestVersion = remoteConfig.getString('force_update_version_driver_android');
     }
     final packageInfo = await PackageInfo.fromPlatform();
