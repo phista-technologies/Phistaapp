@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +32,7 @@ class PaymentSelectScreen extends StatelessWidget {
         builder: (controller) {
           return Scaffold(
             appBar: UiInterface()
-                .customAppBar(context, themeChange, "Select Payment Method".tr),
+                .customAppBar(context, themeChange,"Select Payment Method".tr),
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
@@ -86,8 +87,9 @@ class PaymentSelectScreen extends StatelessWidget {
                                           "assets/images/strip.png"),
                                 ),
                                 //Apple pay
+
                                 Visibility(
-                                  visible: controller.paymentModel.value.strip != null &&
+                                  visible: !kIsWeb && controller.paymentModel.value.strip != null &&
                                       controller.paymentModel.value.strip?.enable == true && Platform.isIOS,
                                   child: cardDecoration(
                                       controller,
@@ -512,7 +514,7 @@ class PaymentSelectScreen extends StatelessWidget {
                   if (value.toLowerCase() == 'wallet'.toLowerCase())
                     Text(
                         Constant.amountShow(
-                            amount: controller.userModel.value.walletAmount),
+                            amount: controller.userModel.value.walletAmount ?? "0"),
                         style: TextStyle(
                             fontSize: 16,
                             fontFamily: AppThemData.semiBold,

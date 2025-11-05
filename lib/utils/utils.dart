@@ -311,6 +311,123 @@ class Utils {
   }
 
 
+
+
+
+  /// new setup for send email with template with all platforms (android,ios,web)  Devendra 30 Oct 2025
+  static Future<void> sendEmailWithTemplateWithAllPlatForms({
+    required String toEmail,
+    required String templateId,
+    required Map<String, dynamic> dynamicTemplateData,
+    File? attachmentFile, // Optional PDF file to attach
+  })
+  async {
+    final url = Uri.parse("https://us-central1-phista-81bf8.cloudfunctions.net/sendEmail");
+
+    final Map<String, dynamic> body = {
+      "to": toEmail,
+      "templateId": templateId,
+      "dynamicTemplateData": dynamicTemplateData,
+    };
+
+    // 🔗 Attach PDF if provided
+    if (attachmentFile != null && await attachmentFile.exists()) {
+      final bytes = await attachmentFile.readAsBytes();
+      final base64Pdf = base64Encode(bytes);
+      body["attachments"] = [
+        {
+          "content": base64Pdf,
+          "filename": "Invoice.pdf",
+          "type": "application/pdf",
+          "disposition": "attachment",
+        }
+      ];
+    }
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print("Email sent with template!");
+    } else {
+      print("Failed to send email: ${response.statusCode}\n${response.body}");
+    }
+  }
+
+
+  /// new setup for send email with template with all platforms (android,ios,web)  Devendra 30 Oct 2025
+  static Future<void> sendRemainderEmailWithTemplateWithAllPlateForm({
+    required String toEmail,
+    required String templateId,
+    required Map<String, dynamic> dynamicTemplateData,
+    File? attachmentFile, // Optional PDF file to attach
+    int? numberOfDays,
+    int? mintSend,
+  })
+  async {
+    final url = Uri.parse(
+        "https://us-central1-phista-81bf8.cloudfunctions.net/sendEmail");
+
+    // Current time
+    DateTime now = DateTime.now();
+    int timestamp = -1;
+
+    if (numberOfDays != null) {
+      DateTime numberOfDaysLater = now.add(Duration(days: 10));
+      // Convert to Unix timestamp (in seconds)
+      timestamp = numberOfDaysLater.millisecondsSinceEpoch ~/ 1000;
+    } else {
+      // Add 5 minutes
+      DateTime fiveMinutesLater = now.add(Duration(minutes: mintSend ?? 0));
+      // Convert to Unix timestamp (in seconds)
+      timestamp = fiveMinutesLater.millisecondsSinceEpoch ~/ 1000;
+    }
+
+    print("Unix Timestamp after 5 minutes: $timestamp");
+
+    Map<String, dynamic> body = {
+      "to": toEmail,
+      "templateId": templateId,
+      "dynamicTemplateData": dynamicTemplateData,
+      "send_at": timestamp
+    };
+
+    // 🔗 Attach PDF if provided
+    if (attachmentFile != null && await attachmentFile.exists()) {
+      final bytes = await attachmentFile.readAsBytes();
+      final base64Pdf = base64Encode(bytes);
+
+      body["attachments"] = [
+        {
+          "content": base64Pdf,
+          "filename": "Invoice.pdf",
+          "type": "application/pdf",
+          "disposition": "attachment",
+        }
+      ];
+    }
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print("Email sent with template!");
+    } else {
+      print("Failed to send email: ${response.statusCode}\n${response.body}");
+    }
+  }
+
+
   static String utcToLocalTime(String utcTimeStr){
     DateTime utcTime = DateTime.parse(utcTimeStr);
     DateTime localTime = utcTime.toLocal();

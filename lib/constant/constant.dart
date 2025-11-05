@@ -150,12 +150,38 @@ class Constant {
     return (rng.nextInt(900000) + 100000).toString();
   }
 
-  static LanguageModel getLanguage() {
+  /*static LanguageModel getLanguage() {
     final String user = Preferences.getString(Preferences.languageCodeKey);
     Map<String, dynamic> userMap = jsonDecode(user);
     log(userMap.toString());
     return LanguageModel.fromJson(userMap);
+  }*/
+
+  static LanguageModel getLanguage() {
+    final String langCode = Preferences.getString(Preferences.languageCodeKey);
+
+    // If value not found or empty, fallback to English
+    if (langCode.isEmpty) {
+      return LanguageModel(code: "en", name: "English");
+    }
+
+    // Handle plain language code
+    if (langCode == "en") {
+      return LanguageModel(code: "en", name: "English");
+    } else if (langCode == "fr") {
+      return LanguageModel(code: "fr", name: "Français");
+    }
+
+    // In case future versions store JSON
+    try {
+      final Map<String, dynamic> langMap = jsonDecode(langCode);
+      return LanguageModel.fromJson(langMap);
+    } catch (e) {
+      // If it's not JSON, just use plain code
+      return LanguageModel(code: langCode, name: langCode.toUpperCase());
+    }
   }
+
 
   String? validateRequired(String? value, String type) {
     if (value!.isEmpty) {

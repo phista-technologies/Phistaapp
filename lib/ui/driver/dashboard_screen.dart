@@ -90,10 +90,18 @@ class DashBoardScreen extends StatelessWidget {
                 navigationBarItem(
                   themeChange,
                   index: 3,
+                  assetIcon: "assets/icon/ic_chat_icon.svg",
+                  label: 'inbox'.tr,
+                  controller: controller,
+                ),
+                navigationBarItem(
+                  themeChange,
+                  index: 4,
                   assetIcon: "assets/icon/ic_account.svg",
                   label: 'profile'.tr,
                   controller: controller,
                 ),
+
               ],
             ),
           );

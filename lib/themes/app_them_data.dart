@@ -34,6 +34,7 @@ class AppThemData {
   static const Color success02 = Color(0xFFECFDF3);
   static const Color success07 = Color(0xFF12B669);
   static const Color success08 = Color(0xFF039754);
+  static const Color bookNowTextColor = Color(0xFF644B4B);
   static const Color labelColorLightPrimary = Color(0xFF000000);
   static const Color blue = Color(0xFF016AA2);
   static const Color selectUserBorderColor = Color(0xFFEAEAEA);
@@ -62,4 +63,13 @@ class AppThemData {
   static const String bold = 'GolosText-Bold';
   static const String extraBold = 'GolosText-ExtraBold';
   static const String semiBold = 'GolosText-SemiBold';
+
+
+  static const String robotoRegular = 'Roboto_Text-Regular';
+  static const String robotoMedium = 'Roboto_Text-Medium';
+  static const String robotoBold = 'Roboto_Text-Bold';
+  static const String robotoExtraBold = 'Roboto_Text-ExtraBold';
+  static const String robotoSemiBold = 'Roboto_Text-SemiBold';
+
+
 }

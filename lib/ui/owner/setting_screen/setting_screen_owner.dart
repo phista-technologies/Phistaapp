@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,7 @@ class SettingScreenOwner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
+    double font = kIsWeb?20:16;
     return GetX(
         init: SettingControllerOwner(),
         builder: (controller) {
@@ -55,16 +57,16 @@ class SettingScreenOwner extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text("Language".tr,
-                                  style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
+                                  style: TextStyle(fontSize: font, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
                           Row(children: [
                             Text(
                               controller.selectedLanguage.value.name.toString(),
-                              style: TextStyle(color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10, fontFamily: AppThemData.medium, fontSize: 14),
+                              style: TextStyle(color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10, fontFamily: AppThemData.medium, fontSize: font),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
-                            Icon(Icons.arrow_forward_ios, size: 16, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
+                            Icon(Icons.arrow_forward_ios, size: font, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
                           ]),
                         ],
                       ),
@@ -84,7 +86,7 @@ class SettingScreenOwner extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text("Theme".tr,
-                                  style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
+                                  style: TextStyle(fontSize: font, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
                           Row(children: [
                             Text(
                               controller.lightDarkMode.value,
@@ -93,7 +95,7 @@ class SettingScreenOwner extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
-                            Icon(Icons.arrow_forward_ios, size: 16, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
+                            Icon(Icons.arrow_forward_ios, size: font, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
                           ]),
                         ],
                       ),
@@ -112,8 +114,8 @@ class SettingScreenOwner extends StatelessWidget {
                         ),
                         Expanded(
                             child: Text("App Version".tr,
-                                style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
-                        Text(Constant.currentAppVersion,style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08)),
+                                style: TextStyle(fontSize: font, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08))),
+                        Text(Constant.currentAppVersion,style: TextStyle(fontSize: font, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey08)),
                       ],
                     ),
                   ),
@@ -156,8 +158,8 @@ class SettingScreenOwner extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text("Delete Account".tr,
-                                  style: TextStyle(fontSize: 16, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.error08 : AppThemData.error08))),
-                          Icon(Icons.arrow_forward_ios, size: 16, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
+                                  style: TextStyle(fontSize: font, fontFamily: AppThemData.regular, color: themeChange.getThem() ? AppThemData.error08 : AppThemData.error08))),
+                          Icon(Icons.arrow_forward_ios, size: font, color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10)
                         ],
                       ),
                     ),

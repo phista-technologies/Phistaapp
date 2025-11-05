@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' as maths;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
@@ -125,28 +126,35 @@ class PaymentSelectController extends GetxController {
   }
 
   getPaymentData() async {
+    log("walletAmount1:-->  ${userModel.value.walletAmount}");
+    log("Current UID: ${FireStoreUtils.getCurrentUid()}");
     await FireStoreUtils().getPayment().then((value) {
+      log("get payment value :-- $value");
       if (value != null) {
         paymentModel.value = value;
-        if (paymentModel.value.strip?.enable == true) {
-          STRIPE.Stripe.publishableKey =ENV.pkTestPublishableKey??"";// paymentModel.value.strip!.clientpublishableKey.toString(); //ENV.pkTestPublishableKey??"";
-          STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";//'Phista';
+        if (!kIsWeb && paymentModel.value.strip?.enable == true) {
+          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();
+          STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";
           STRIPE.Stripe.instance.applySettings();
         }
         setRef();
         selectedPaymentMethod.value = orderModel.value.paymentType.toString();
+        if (!kIsWeb) {
+          razorPay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+          razorPay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWaller);
+          razorPay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+        }
 
-        razorPay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
-        razorPay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWaller);
-        razorPay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
       }
       isLoading.value = true;
     });
+    log("Current UID1: ${FireStoreUtils.getCurrentUid()}");
 
     await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid())
         .then((value) {
       if (value != null) {
         userModel.value = value;
+        log("walletAmount2:-->${userModel.value.walletAmount}");
       }
     });
 
@@ -424,17 +432,17 @@ class PaymentSelectController extends GetxController {
     log("invoicePdf :-- ",error: invoicePdf?.path);
     if(invoicePdf !=null){
       print("currentUserModel-Email ${Constant.currentUserModel.value?.email}");
-      await Utils.sendEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+      await Utils.sendEmailWithTemplateWithAllPlatForms(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdSendBilling, dynamicTemplateData: {},attachmentFile: invoicePdf);
     }
 
     if(orderModel.value.bookingType.toString() == "3"){
-      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
-      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
 
-     await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+     await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);
 
     }
@@ -452,7 +460,7 @@ class PaymentSelectController extends GetxController {
 
         print("senMap :- $senMap");
 
-      await  Utils.sendEmailWithTemplate(toEmail: ownerUserModel.value.email??"",
+      await  Utils.sendEmailWithTemplateWithAllPlatForms(toEmail: ownerUserModel.value.email??"",
             templateId: ENV.templateIdNewReservation,
             dynamicTemplateData: senMap).then((value) {
               print("Sending Booking Template");
@@ -743,7 +751,7 @@ class PaymentSelectController extends GetxController {
         "shipping[address][country]": "CA",
       };
 
-      var stripeSecret = ENV.skTestSecretKey;// paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
+      var stripeSecret = paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
       log(stripeSecret.toString());
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
@@ -898,7 +906,7 @@ class PaymentSelectController extends GetxController {
 
   String? _ref;
 
-  setRef() {
+/*  setRef() {
     maths.Random numRef = maths.Random();
     int year = DateTime.now().year;
     int refNumber = numRef.nextInt(20000);
@@ -909,6 +917,26 @@ class PaymentSelectController extends GetxController {
     }else{
 
     }
+  }*/
+
+  void setRef() {
+    maths.Random numRef = maths.Random();
+    int year = DateTime.now().year;
+    int refNumber = numRef.nextInt(20000);
+
+    if (kIsWeb) {
+      // ✅ Web-safe version
+      _ref = "WebRef$year$refNumber";
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      _ref = "AndroidRef$year$refNumber";
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _ref = "IOSRef$year$refNumber";
+    } else {
+      // ✅ fallback (for desktop or other platforms)
+      _ref = "OtherRef$year$refNumber";
+    }
+
+    debugPrint("Generated Ref: $_ref");
   }
 
   // payFast

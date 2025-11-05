@@ -45,25 +45,21 @@ class HomeController extends GetxController {
    var markerShowMap = <Marker>{}.obs;
   Map<String, dynamic> parkingDataCache = {};
 
-
-
-
 @override
   void onReady() {
     super.onReady();
-
     Constant.isFromParkNow = false;
     log("globalParkingModel.value >> :-- ${Constant.globalParkingModel.value}");
-
     Future.delayed(Duration.zero,() {
-      if( Constant.globalParkingModel.value != null){
+      if(Constant.globalParkingModel.value != null){
+        log("Constant.globalParkingModel.value is not null");
         Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": Constant.globalParkingModel.value});
       }
-        getLocation();
         getCurrentUser();
+        getLocation();
+
 
     },);
-
   }
 
   void getCurrentUser()async{
@@ -142,7 +138,8 @@ class HomeController extends GetxController {
         // Use Google Maps API for web
         final apiKey = "AIzaSyBWpknhgETEcPdExDw13FsmKIbazhH-BpI"; // replace with your key
         final url = Uri.parse(
-            "https://maps.googleapis.com/maps/api/geocode/json?latlng=${Constant.currentLocation!.latitude},${Constant.currentLocation!.longitude}&key=$apiKey");
+           "https://maps.googleapis.com/maps/api/geocode/json?latlng=${Constant.currentLocation!.latitude},${Constant.currentLocation!.longitude}&key=$apiKey");
+
         final response = await http.get(url);
         final data = json.decode(response.body);
 
@@ -274,86 +271,6 @@ class HomeController extends GetxController {
   }
 
 
-
-  Future<void> sendEmailWithTemplate({
-    required String toEmail,
-    required String templateId,
-    required Map<String, dynamic> dynamicTemplateData,
-  })
-  async {
-    final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
-
-
-
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer ${ENV.sandGridApiKey}',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "personalizations": [
-          {
-            "to": [
-              {"email": toEmail}
-            ],
-            "dynamic_template_data": dynamicTemplateData,
-          }
-        ],
-        "from": {"email": "support@phista.ca"},
-        "template_id": templateId,
-      }),
-    );
-
-    if (response.statusCode == 202) {
-      print("✅ Email sent with template!");
-    } else {
-      print("❌ Failed to send email: ${response.statusCode}\n${response.body}");
-    }
-  }
-
-
-  Future<void> sendEmailWithSendGrid({
-    required String toEmail,
-    required String subject,
-    required String content,
-  })
-  async {
-    final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
-
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer ${ENV.sandGridApiKey}',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "personalizations": [
-          {
-            "to": [
-              {"email": toEmail}
-            ],
-            "subject": subject,
-          }
-        ],
-        "from": {"email": "support@phista.ca"}, // must be verified
-        "content": [
-          {
-            "type": "text/plain",
-            "value": content,
-          }
-        ],
-      }),
-    );
-
-    if (response.statusCode == 202) {
-      print("Email sent!");
-    } else {
-      print("Failed to send email: ${response.body}");
-    }
-  }
-
-
   void markerInit()async{
     parkingGreenMarkerOSM = Image.asset("assets/icon/ic_parking_icon_green.png",
         width: 30, height: 30);
@@ -402,15 +319,29 @@ class HomeController extends GetxController {
     }
   }
 
-
-  getData(String parkingId,parkingSpace)async{
+// comment for percentage work
+ /* getData(String parkingId,parkingSpace)async{
     if (parkingDataCache.containsKey(parkingId)) {
       return parkingDataCache[parkingId];
     }
     double value = await FireStoreUtils.getParkingBookingPercentage(parkingId??"",
         parkingSpace??"");
     return value.round() ;
+  }*/
+
+  getData(String parkingId, parkingSpace) async {
+    if (parkingDataCache.containsKey(parkingId)) {
+      return parkingDataCache[parkingId];
+    }
+
+    Map<String, dynamic> data = await FireStoreUtils.getParkingBookingData(
+      parkingId ?? "",
+      parkingSpace ?? "",
+    );
+
+    return data;
   }
+
 
 
 

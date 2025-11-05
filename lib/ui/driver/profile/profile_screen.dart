@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -81,8 +82,8 @@ class ProfileScreen extends StatelessWidget {
                                     imageUrl: controller
                                         .userModel.value.profilePic
                                         .toString(),
-                                    height: Responsive.width(26, context),
-                                    width: Responsive.width(26, context),
+                                    height: kIsWeb?100:Responsive.width(26, context),
+                                    width: kIsWeb?100:Responsive.width(26, context),
                                   ),
                                 ),
                                 const SizedBox(
@@ -106,20 +107,37 @@ class ProfileScreen extends StatelessWidget {
                                       const SizedBox(
                                         height: 5,
                                       ),
-                                      Text(
-                                        controller.userModel.value.email
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontFamily: AppThemData.medium,
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey06
-                                                : AppThemData.grey06),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            controller.userModel.value.email
+                                                .toString(),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: AppThemData.medium,
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.grey06
+                                                    : AppThemData.grey06),
+                                          ),
+                                          kIsWeb? InkWell(
+                                            onTap: (){
+                                              Get.to(const EditProfileScreen());
+                                            },
+                                            child: Container(
+                                                padding: EdgeInsets.all(5),
+                                                margin: EdgeInsets.only(left: 5),
+                                                decoration: BoxDecoration(
+                                                  color: AppThemData.primary06,
+                                                  borderRadius: BorderRadius.circular(15),
+                                                ),
+                                                child: Icon(Icons.edit, color: AppThemData.grey11,size: 15,)),
+                                          ):SizedBox()
+                                        ],
                                       ),
                                       const SizedBox(
                                         height: 16,
                                       ),
-                                      RoundedButtonFexiable(
+                                    !kIsWeb? RoundedButtonFexiable(
                                         title: "Edit Details".tr,
                                         textColor: AppThemData.grey11,
                                         height: 05.55,
@@ -130,7 +148,7 @@ class ProfileScreen extends StatelessWidget {
                                         onPress: () {
                                           Get.to(const EditProfileScreen());
                                         },
-                                      )
+                                      ):SizedBox()
                                     ],
                                   ),
                                 ),
@@ -181,7 +199,7 @@ class ProfileScreen extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return CustomDialogBox(
                                         title: "Alert".tr,
-                                        descriptions: "Are you sure want to switch your profile?".tr,
+                                        descriptions: "do you want to switch as owner?".tr,
                                         img: Image.asset(
                                           "assets/icon/switch_profile_ico.png",
                                           height: 85,

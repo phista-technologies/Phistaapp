@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' as maths;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
@@ -65,15 +66,18 @@ class WalletControllerOwner extends GetxController {
     await FireStoreUtils().getPayment().then((value) {
       if (value != null) {
         paymentModel.value = value;
-
-        Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();
-        Stripe.merchantIdentifier = 'Phista';
-        Stripe.instance.applySettings();
+       if (!kIsWeb) {
+         Stripe.publishableKey =
+             paymentModel.value.strip!.clientpublishableKey.toString();
+         Stripe.merchantIdentifier = 'Phista';
+         Stripe.instance.applySettings();
+       }
         setRef();
-
-        razorPay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
-        razorPay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWaller);
-        razorPay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+        if (!kIsWeb) {
+          razorPay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+          razorPay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWaller);
+          razorPay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+        }
       }
     });
     isLoading.value = false;
@@ -396,7 +400,7 @@ class WalletControllerOwner extends GetxController {
 
   String? _ref;
 
-  setRef() {
+ /* setRef() {
     maths.Random numRef = maths.Random();
     int year = DateTime.now().year;
     int refNumber = numRef.nextInt(20000);
@@ -405,6 +409,26 @@ class WalletControllerOwner extends GetxController {
     } else if (Platform.isIOS) {
       _ref = "IOSRef$year$refNumber";
     }
+  }*/
+
+  void setRef() {
+    maths.Random numRef = maths.Random();
+    int year = DateTime.now().year;
+    int refNumber = numRef.nextInt(20000);
+
+    if (kIsWeb) {
+      // ✅ Web-safe version
+      _ref = "WebRef$year$refNumber";
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      _ref = "AndroidRef$year$refNumber";
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _ref = "IOSRef$year$refNumber";
+    } else {
+      // ✅ fallback (for desktop or other platforms)
+      _ref = "OtherRef$year$refNumber";
+    }
+
+    debugPrint("Generated Ref: $_ref");
   }
 
   // payFast

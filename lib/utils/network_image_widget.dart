@@ -25,21 +25,41 @@ class NetworkImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
+    // return CachedNetworkImage(
+    //   imageUrl: imageUrl,
+    //   fit: fit ?? BoxFit.fitWidth,
+    //   height: height ?? Responsive.height(8, context),
+    //   width: width ?? Responsive.width(15, context),
+    //   color: color,
+    //   progressIndicatorBuilder: (context, url, downloadProgress) => Constant.loader(),
+    //   errorWidget: (context, url, error) =>
+    //       errorWidget ??
+    //       Image.asset(
+    //         Constant.userPlaceHolder,
+    //         fit: fit ?? BoxFit.fitWidth,
+    //         height: height ?? Responsive.height(8, context),
+    //         width: width ?? Responsive.width(15, context),
+    //       ),
+    // );
+    return Image.network(
+      imageUrl,
       fit: fit ?? BoxFit.fitWidth,
       height: height ?? Responsive.height(8, context),
       width: width ?? Responsive.width(15, context),
       color: color,
-      progressIndicatorBuilder: (context, url, downloadProgress) => Constant.loader(),
-      errorWidget: (context, url, error) =>
-          errorWidget ??
-          Image.asset(
-            Constant.userPlaceHolder,
-            fit: fit ?? BoxFit.fitWidth,
-            height: height ?? Responsive.height(8, context),
-            width: width ?? Responsive.width(15, context),
-          ),
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Constant.loader();
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return errorWidget ??
+            Image.asset(
+              Constant.userPlaceHolder,
+              fit: fit ?? BoxFit.fitWidth,
+              height: height ?? Responsive.height(8, context),
+              width: width ?? Responsive.width(15, context),
+            );
+      },
     );
   }
 }

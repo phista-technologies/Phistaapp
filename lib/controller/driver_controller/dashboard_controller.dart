@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
+import 'package:phista/ui/driver/chat/inbox_screen.dart';
 
 
 import '../../constant/constant.dart';
@@ -20,6 +21,7 @@ class DashboardScreenController extends GetxController {
     const HomeScreen(),
     const SavedScreen(),
     const MyBookingScreen(isBack: false),
+    const InboxScreen(),
     const ProfileScreen(),
   ].obs;
 

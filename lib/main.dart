@@ -22,7 +22,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('6Ldale0rAAAAACk2vxq67h1Is798truPDDvv2N7i'),
     androidProvider: AndroidProvider.playIntegrity,

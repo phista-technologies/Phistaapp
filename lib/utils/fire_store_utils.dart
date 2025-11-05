@@ -502,7 +502,7 @@ class FireStoreUtils {
   //   return null;
   // }
 
-  Future<PaymentModel?> getPayment() async {
+  Future<PaymentModel?> getPayment1() async {
     PaymentModel? paymentModel;
     await fireStore
         .collection(CollectionName.settings)
@@ -513,6 +513,30 @@ class FireStoreUtils {
     });
     return paymentModel;
   }
+
+  Future<PaymentModel?> getPayment() async {
+    try {
+      log("Fetching payment settings...");
+      final doc = await FirebaseFirestore.instance
+          .collection(CollectionName.settings)
+          .doc("payment")
+          .get();
+
+      if (!doc.exists || doc.data() == null) {
+        log("⚠️ Payment document not found in Firestore.");
+        return null;
+      }
+
+      final data = doc.data()!;
+      log("✅ Payment data: $data");
+      return PaymentModel.fromJson(data);
+    } catch (e, st) {
+      log("❌ Error in getPayment(): $e");
+      log(st.toString());
+      return null;
+    }
+  }
+
 
   // static Future<List<ParkingFacilitiesModel>> getParkingFacilities() async {
   //   List<ParkingFacilitiesModel> facilitiesModelList = [];
@@ -612,8 +636,70 @@ class FireStoreUtils {
     yield* getNearestOrderRequestController!.stream;
   }
 
+  static Future<Map<String, dynamic>> getParkingBookingData(
+      String parkingId, String parkingSpace) async {
+    List<String> isParkingBookedOnList = [];
+
+    await fireStore
+        .collection(CollectionName.bookedParkingOrder)
+        .where('parkingId', isEqualTo: parkingId)
+        .where('status', whereIn: [Constant.placed, Constant.onGoing])
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        final data = element.data();
+        final bookingDateString = data['bookingDate'] ?? '';
+        final bookingType = data['bookingType'] ?? '';
+
+        if (bookingType == "1") {
+          final bookingStartTime = data['bookingStartTime'] ?? '';
+          final bookingEndTime = data['bookingEndTime'] ?? '';
+          var isCurrentDate = isBookingToday(bookingDateString);
+
+          if (isCurrentDate) {
+            bool result = isCurrentTimeBetween(bookingStartTime, bookingEndTime);
+            if (result) {
+              isParkingBookedOnList.add(bookingDateString.toString());
+            }
+          }
+        } else if (bookingType == "3") {
+          final List<dynamic> bookingDates =
+          bookingDateString.split(',').map((e) => e.trim()).toList();
+
+          if (bookingDates.length == 2) {
+            DateTime bookingStart = Utils.stringToTimeStamp(bookingDates[0]).toDate();
+            DateTime bookingEnd = Utils.stringToTimeStamp(bookingDates[1]).toDate();
+
+            String currentDate = Utils.formatTimestampToIST(Timestamp.fromDate(
+              DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            ));
+
+            DateTime now = Utils.stringToTimeStamp(currentDate.trim()).toDate();
+
+            bool isWithinRange = (now.isAtSameMomentAs(bookingStart) || now.isAfter(bookingStart)) &&
+                (now.isAtSameMomentAs(bookingEnd) || now.isBefore(bookingEnd));
+
+            if (isWithinRange) {
+              isParkingBookedOnList.add(bookingDateString.toString());
+            }
+          }
+        }
+      }
+    });
+
+    int totalSlots = int.tryParse(parkingSpace) ?? 0;
+    int bookedSlots = isParkingBookedOnList.length;
+
+    print("Total: $totalSlots | Booked: $bookedSlots");
+
+    return {
+      'bookedSlots': bookedSlots,
+      'totalSlots': totalSlots,
+    };
+  }
 
 
+// comment for percent work
   static Future<double> getParkingBookingPercentage(String parkingId, String parkingSpace)async{
     List<String> isParkingBookedOnList = [];
 

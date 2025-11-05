@@ -11,12 +11,10 @@ import 'package:provider/provider.dart';
 
 import '../../controller/driver_controller/select_user_type_controller.dart';
 import '../../../themes/app_them_data.dart';
-import '../../../themes/custom_dialog_box.dart';
+
 import '../../../themes/round_button_gradiant.dart';
 import '../../../utils/dark_theme_provider.dart';
-import '../../themes/round_button_fill.dart';
-import '../../utils/preferences.dart';
-import '../driver/auth_screen/login_screen.dart';
+
 
 
 class SelectUserTypeScreen extends StatelessWidget{
@@ -60,7 +58,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                               ? AppThemData.grey01
                               : AppThemData.grey01,
                           fontSize: 40,
-                          fontFamily: AppThemData.semiBold,
+                          fontFamily: AppThemData.bold,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -76,7 +74,7 @@ class SelectUserTypeScreen extends StatelessWidget{
                             ? AppThemData.grey01
                             : AppThemData.grey01,
                         fontSize: 18,
-                        fontFamily: AppThemData.semiBold,
+                        fontFamily: AppThemData.robotoSemiBold,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -103,8 +101,9 @@ class SelectUserTypeScreen extends StatelessWidget{
                     ),
                   ),
                   SizedBox(height: 40,),
-                  Center(child: Image.asset("assets/images/phistaIcon.png",height: 50,width: 250,fit: BoxFit.cover,)),
-
+                  Center(
+                      child: Image.asset("assets/images/phistaIcon.png",height: 50,width: 250,fit: BoxFit.cover,)
+                  ),
                   /*SizedBox(
                    width: double.infinity,
                    child: Text(
@@ -281,9 +280,6 @@ class SelectUserTypeScreen extends StatelessWidget{
 
                    );
                  },)*/
-
-
-
                 ],
               ),
             ),
@@ -551,7 +547,6 @@ class SelectUserTypeScreen extends StatelessWidget{
             
             ),
           )
-
         );
       },
     );

@@ -176,7 +176,7 @@ class AddParkingDetailsControllerOwner extends GetxController {
 
       if(!isParkingEdit){
         try{
-          await Utils.sendEmailWithTemplate(
+          await Utils.sendEmailWithTemplateWithAllPlatForms(
             toEmail: ENV.adminEmail,
             templateId: ENV.templateIdAddParking,
             dynamicTemplateData: {

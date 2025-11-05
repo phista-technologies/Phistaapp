@@ -7,6 +7,7 @@ class RoundedButtonFill extends StatelessWidget {
   final double? width;
   final double? height;
   final double? fontSizes;
+  final double? radius;
   final Color? color;
   final Color? textColor;
   final Widget? icon;
@@ -17,6 +18,7 @@ class RoundedButtonFill extends StatelessWidget {
       {super.key,
       required this.title,
       this.height,
+      this.radius,
       required this.onPress,
       this.width,
       this.color,
@@ -38,7 +40,7 @@ class RoundedButtonFill extends StatelessWidget {
         decoration: ShapeDecoration(
           color: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(200),
+            borderRadius: BorderRadius.circular(radius??200),
           ),
         ),
         child: Row(
@@ -54,7 +56,7 @@ class RoundedButtonFill extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: AppThemData.medium,
-                  color: textColor ?? AppThemData.grey11,
+                  color: textColor ?? AppThemData.bookNowTextColor,
                   fontSize: fontSizes ?? 14,
                   fontWeight: FontWeight.w500,
                   overflow: TextOverflow.ellipsis

@@ -37,9 +37,15 @@ class SelectUserTypeController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    getLanguage();
-
+    if (!Constant.isLanguagePopupShow){
+      Constant.isLanguagePopupShow = true;
+      ShowToastDialog.showLoader("please_wait".tr);
+      Future.delayed(Duration.zero,() {
+        getLanguage();
+      },);
+    }
     FireStoreUtils.deleteGuestUsersIfAllBookingsCompleted();
+
 
   }
 
@@ -102,8 +108,6 @@ class SelectUserTypeController extends GetxController{
     });
   }
 
-
-
   Future<void>createGuestUser()async {
     String? fcmToken = "";
     if (!kIsWeb) {
@@ -146,13 +150,8 @@ class SelectUserTypeController extends GetxController{
     });
   }
 
-
   /*showLanguage() {
-
-
-
-    */
-  /*return showModalBottomSheet(
+  return showModalBottomSheet(
       context: Get.context!,
       isScrollControlled: true,
       isDismissible: false,
@@ -265,9 +264,10 @@ class SelectUserTypeController extends GetxController{
           );
         },
       ),
-    );*//*
+    );
   }*/
-  void showLanguageDialog(BuildContext context) {
+
+  void showLanguageDialog1(BuildContext context) {
     showGeneralDialog(
       context: context,
       barrierLabel: "LanguageDialog",
@@ -309,7 +309,7 @@ class SelectUserTypeController extends GetxController{
                       style: TextStyle(
                         color: AppThemData.grey10,
                         fontSize: 18,
-                        fontFamily: AppThemData.bold,
+                        fontFamily: AppThemData.robotoBold,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -322,7 +322,7 @@ class SelectUserTypeController extends GetxController{
                       style: TextStyle(
                         color: AppThemData.grey10,
                         fontSize: 14,
-                        fontFamily: AppThemData.medium,
+                        fontFamily: AppThemData.robotoMedium,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -351,7 +351,7 @@ class SelectUserTypeController extends GetxController{
                             style: TextStyle(
                               color: AppThemData.grey10,
                               fontSize: 20,
-                              fontFamily: AppThemData.semiBold,
+                              fontFamily: AppThemData.robotoSemiBold,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -376,7 +376,7 @@ class SelectUserTypeController extends GetxController{
                             style: TextStyle(
                               color: AppThemData.grey10,
                               fontSize: 20,
-                              fontFamily: AppThemData.semiBold,
+                              fontFamily: AppThemData.robotoSemiBold,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -392,6 +392,169 @@ class SelectUserTypeController extends GetxController{
 
               Center(child: Image.asset("assets/images/phistaIcon.png",height: 50,width: 250,fit: BoxFit.cover,color: AppThemData.white,))
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showLanguageDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "LanguageDialog",
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.7),
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (context, anim1, anim2) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+          child: Center(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double maxWidth;
+
+                if (!kIsWeb) {
+                  // 🔹 Mobile layout
+                  maxWidth = constraints.maxWidth * 0.9;
+                } else if (constraints.maxWidth > 1200) {
+                  // 🔹 Large desktop screens
+                  maxWidth = 600;
+                } else if (constraints.maxWidth > 800) {
+                  // 🔹 Medium web screens
+                  maxWidth = 500;
+                } else {
+                  // 🔹 Small browser windows or tablets
+                  maxWidth = 400;
+                }
+
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      width: maxWidth,
+                      margin: !kIsWeb
+                          ? const EdgeInsets.symmetric(horizontal: 24, vertical: 24)
+                          : const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppThemData.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 🔹 App logo
+                          SizedBox(
+                            height: 60,
+                            width: 60,
+                            child: Image.asset("assets/images/ic_parking_iconnew.png"),
+                          ),
+                          const SizedBox(height: 16),
+
+                          const Text(
+                            'Bonjour / Hello',
+                            style: TextStyle(
+                              color: AppThemData.grey10,
+                              fontSize: 18,
+                              fontFamily: AppThemData.robotoBold,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          const Text(
+                            'Choisissez la langue que vous préférez utiliser.\nSelect your preferred language.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppThemData.grey10,
+                              fontSize: 14,
+                              fontFamily: AppThemData.robotoMedium,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // 🔹 Language Buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await Preferences.setString(
+                                      Preferences.languageCodeKey, "fr");
+                                  LocalizationService().changeLocale("fr");
+                                  Get.back();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFFFA726),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 12),
+                                ),
+                                child: const Text(
+                                  'Français',
+                                  style: TextStyle(
+                                    color: AppThemData.grey10,
+                                    fontSize: 20,
+                                    fontFamily: AppThemData.robotoSemiBold,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await Preferences.setString(
+                                      Preferences.languageCodeKey, "en");
+                                  LocalizationService().changeLocale("en");
+                                  Get.back();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFFFA726),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 12),
+                                ),
+                                child: const Text(
+                                  'English',
+                                  style: TextStyle(
+                                    color: AppThemData.grey10,
+                                    fontSize: 20,
+                                    fontFamily: AppThemData.robotoSemiBold,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // 🔹 Bottom brand logo
+                    Image.asset(
+                      "assets/images/phistaIcon.png",
+                      height: 50,
+                      width: 250,
+                      fit: BoxFit.cover,
+                      color: AppThemData.white,
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         );
       },

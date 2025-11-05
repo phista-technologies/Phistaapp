@@ -171,7 +171,7 @@ class SquareButtonWithOutGradiant extends StatelessWidget {
             title.toString(),
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontFamily: AppThemData.medium,
+              fontFamily: AppThemData.robotoMedium,
               color: AppThemData.grey11,
               fontSize: 16,
               fontWeight: FontWeight.w500,

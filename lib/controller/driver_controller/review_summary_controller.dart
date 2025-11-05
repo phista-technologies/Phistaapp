@@ -190,12 +190,12 @@ class ReviewSummaryController extends GetxController {
     });
 
     if(orderModel.value.bookingType.toString() == "3"){
-      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
-      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
 
-      await Utils.sendRemainderEmailWithTemplate(toEmail: Constant.currentUserModel.value?.email??"",
+      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);
 
     }
@@ -213,7 +213,7 @@ class ReviewSummaryController extends GetxController {
 
           print("senMap :- $senMap");
 
-          await  Utils.sendEmailWithTemplate(toEmail: ownerUserModel.value.email??"",
+          await  Utils.sendEmailWithTemplateWithAllPlatForms(toEmail: ownerUserModel.value.email??"",
               templateId: ENV.templateIdNewReservation,
               dynamicTemplateData: senMap).then((value) {
             print("Sending Booking Template");

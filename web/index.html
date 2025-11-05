@@ -20,6 +20,7 @@
 </head>
 <body>
 
+<div id="recaptcha-container"></div>
 <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js"></script>
@@ -29,8 +30,19 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWpknhgETEcPdExDw13FsmKIbazhH-BpI&libraries=places"></script>
 
+<script>
+  // Force all network images to load with crossOrigin support
+  window.addEventListener('DOMContentLoaded', () => {
+    const orig = Image.prototype.setAttribute;
+    Image.prototype.setAttribute = function(name, value) {
+      if (name === 'src') {
+        this.crossOrigin = 'anonymous';  // <-- IMPORTANT
+      }
+      orig.apply(this, arguments);
+    };
+  });
+</script>
 
-<div id="recaptcha-container"></div>
 
 <script>
   const firebaseConfig = {

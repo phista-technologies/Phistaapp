@@ -1271,16 +1271,14 @@ class ReviewSummaryScreen extends StatelessWidget {
                   },
                 )
                     : RoundedButtonFill(
-                  title: "Go to payment".tr,
+                  title:controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString())?"Confirm".tr:"Go to payment".tr,
                   color: AppThemData.primary06,
                   onPress: () {
                     if (controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString())){
-                      controller.orderModel.value.coupon =
-                          controller.selectedCouponModel.value;
+                      controller.orderModel.value.coupon = controller.selectedCouponModel.value;
                      controller.completeOrder();
                     }else{
-                      controller.orderModel.value.coupon =
-                          controller.selectedCouponModel.value;
+                      controller.orderModel.value.coupon = controller.selectedCouponModel.value;
                       Get.to(() => const PaymentSelectScreen(),
                           arguments: {
                             "orderModel": controller.orderModel.value,

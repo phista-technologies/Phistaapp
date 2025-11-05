@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,6 @@ import '../../../themes/text_field_widget.dart';
 import '../../../utils/dark_theme_provider.dart';
 import '../../../utils/network_image_widget.dart';
 
-
 class EditProfileScreenOwner extends StatelessWidget {
   const EditProfileScreenOwner({super.key});
 
@@ -34,126 +34,162 @@ class EditProfileScreenOwner extends StatelessWidget {
             themeChange,
             'edit_profile'.tr,
           ),
-          body: Column(
-            children: [
-              Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Center(
-                      child: controller.profileImage.isEmpty
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.asset(
-                                Constant.userPlaceHolder,
-                                height: Responsive.width(30, context),
-                                width: Responsive.width(30, context),
-                                fit: BoxFit.fill,
-                              ),
-                            )
-                          : Constant().hasValidUrl(controller.profileImage.value) == false
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(60),
-                                  child: Image.file(
-                                    File(controller.profileImage.value),
-                                    height: Responsive.width(30, context),
-                                    width: Responsive.width(30, context),
-                                    fit: BoxFit.fill,
-                                  ),
-                                )
-                              : NetworkImageWidget(
-                                  imageUrl: controller.profileImage.value.toString(),
-                                  height: Responsive.width(30, context),
-                                  width: Responsive.width(30, context),
-                                )),
-                  Positioned(
-                    right: Responsive.width(34, context),
-                    child: InkWell(
-                      onTap: () {
-                        buildBottomSheet(context, controller);
-                      },
-                      child: SvgPicture.asset(
-                        "assets/images/ic_profile_edit.svg",
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
+          body: kIsWeb
+              ? Center(
+                  child: Container(
+                    alignment: Alignment.center,
+                    constraints: const BoxConstraints(maxWidth: 900),
+                    margin: const EdgeInsets.all(20),
+                    child: Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: editView(context, controller)),
                   ),
-                ],
+                )
+              : editView(context, controller),
+        );
+      },
+    );
+  }
+
+  Widget editView(context, EditProfileControllerOwner controller) {
+    return Column(
+      children: [
+        kIsWeb?SizedBox(height: Responsive.height(10, context)):const SizedBox(),
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Center(
+                child: controller.profileImage.isEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: Image.asset(
+                          Constant.userPlaceHolder,
+                          height: kIsWeb?200:Responsive.width(30, context),
+                          width: kIsWeb?200:Responsive.width(30, context),
+                          fit: BoxFit.fill,
+                        ),
+                      )
+                    : Constant().hasValidUrl(controller.profileImage.value) ==
+                            false
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: Image.file(
+                              File(controller.profileImage.value),
+                              height: kIsWeb?200:Responsive.width(30, context),
+                              width: kIsWeb?200:Responsive.width(30, context),
+                              fit: BoxFit.fill,
+                            ),
+                          )
+                        : ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: NetworkImageWidget(
+                              imageUrl: controller.profileImage.value.toString(),
+                              height: kIsWeb?200:Responsive.width(30, context),
+                              width: kIsWeb?200:Responsive.width(30, context),
+                            ),
+                        )),
+            Positioned(
+              right: Responsive.width(34, context),
+              child: InkWell(
+                onTap: () {
+                  buildBottomSheet(context, controller);
+                },
+                child: SvgPicture.asset(
+                  "assets/images/ic_profile_edit.svg",
+                  width: 40,
+                  height: 40,
+                ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              Expanded(
-                child: controller.isLoading.value
-                    ? Constant.loader()
-                    : Form(
-                        key: controller.formKey.value,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFieldWidget(
-                                  title: 'Full Name'.tr,
-                                  onPress: () {},
-                                  controller: controller.fullNameController.value,
-                                  hintText: 'Enter Full Name'.tr,
-                                  textInputType: TextInputType.emailAddress,
-                                  prefix: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: SvgPicture.asset(
-                                      "assets/icon/ic_email.svg",
-                                    ),
-                                  ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Expanded(
+          child: controller.isLoading.value
+              ? Constant.loader()
+              : Form(
+                  key: controller.formKey.value,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFieldWidget(
+                            title: 'Full Name'.tr,
+                            onPress: () {},
+                            controller: controller.fullNameController.value,
+                            hintText: 'Enter Full Name'.tr,
+                            textInputType: TextInputType.emailAddress,
+                            prefix: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: SvgPicture.asset(
+                                "assets/icon/ic_email.svg",
+                              ),
+                            ),
+                          ),
+                          TextFieldWidget(
+                            title: 'Email Address'.tr,
+                            onPress: () {},
+                            controller: controller.emailController.value,
+                            hintText: 'Enter Email Address'.tr,
+                            textInputType: TextInputType.emailAddress,
+                            enable: controller.userModel.value.loginType ==
+                                        Constant.googleLoginType ||
+                                    controller.userModel.value.loginType ==
+                                        Constant.appleLoginType
+                                ? false
+                                : true,
+                            prefix: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: SvgPicture.asset(
+                                "assets/icon/ic_email.svg",
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await Constant.selectDate(context).then((value) {
+                                if (value != null) {
+                                  controller.dateOfBirthController.value.text =
+                                      DateFormat('MMMM dd,yyyy').format(value);
+                                }
+                              });
+                            },
+                            child: TextFieldWidget(
+                              title: 'Date of Birth'.tr,
+                              onPress: () async {},
+                              controller:
+                                  controller.dateOfBirthController.value,
+                              hintText: 'Select Date of Birth'.tr,
+                              enable: false,
+                              prefix: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: SvgPicture.asset(
+                                  "assets/icon/ic_cake.svg",
                                 ),
-                                TextFieldWidget(
-                                  title: 'Email Address'.tr,
-                                  onPress: () {},
-                                  controller: controller.emailController.value,
-                                  hintText: 'Enter Email Address'.tr,
-                                  textInputType: TextInputType.emailAddress,
-                                  enable: controller.userModel.value.loginType == Constant.googleLoginType || controller.userModel.value.loginType == Constant.appleLoginType
-                                      ? false
-                                      : true,
-                                  prefix: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: SvgPicture.asset(
-                                      "assets/icon/ic_email.svg",
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    await Constant.selectDate(context).then((value) {
-                                      if (value != null) {
-                                        controller.dateOfBirthController.value.text = DateFormat('MMMM dd,yyyy').format(value);
-                                      }
-                                    });
-                                  },
-                                  child: TextFieldWidget(
-                                    title: 'Date of Birth'.tr,
-                                    onPress: () async {},
-                                    controller: controller.dateOfBirthController.value,
-                                    hintText: 'Select Date of Birth'.tr,
-                                    enable: false,
-                                    prefix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(
-                                        "assets/icon/ic_cake.svg",
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                MobileNumberTextField(
-                                  title: "Phone Number".tr,
-                                  controller: controller.phoneNumberController.value,
-                                  countryCodeController: controller.countryCodeController.value,
-                                  enabled: controller.userModel.value.loginType == Constant.phoneLoginType ? false : true,
-                                  dailCode: controller.countryCodeController.value.text,
-                                  onPress: () {},
-                                ),
-                                /*Text("Gender".tr, style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 14, color: AppThemData.grey07)),
+                              ),
+                            ),
+                          ),
+                          MobileNumberTextField(
+                            title: "Phone Number".tr,
+                            controller: controller.phoneNumberController.value,
+                            countryCodeController:
+                                controller.countryCodeController.value,
+                            enabled: controller.userModel.value.loginType ==
+                                    Constant.phoneLoginType
+                                ? false
+                                : true,
+                            dailCode:
+                                controller.countryCodeController.value.text,
+                            onPress: () {},
+                          ),
+                          /*Text("Gender".tr, style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 14, color: AppThemData.grey07)),
                                 const SizedBox(
                                   height: 5,
                                 ),
@@ -200,32 +236,31 @@ class EditProfileScreenOwner extends StatelessWidget {
                                     ),
                                   ],
                                 ),*/
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                RoundedButtonFill(
-                                  title: "Save".tr,
-                                  color: AppThemData.primary06,
-                                  onPress: () {
-                                    if (controller.formKey.value.currentState!.validate()) {
-                                      controller.updateProfile();
-                                    }
-                                  },
-                                )
-                              ],
-                            ),
+                          const SizedBox(
+                            height: 40,
                           ),
-                        ),
+                          RoundedButtonFill(
+                            title: "Save".tr,
+                            color: AppThemData.primary06,
+                            onPress: () {
+                              if (controller.formKey.value.currentState!
+                                  .validate()) {
+                                controller.updateProfile();
+                              }
+                            },
+                          )
+                        ],
                       ),
-              ),
-            ],
-          ),
-        );
-      },
+                    ),
+                  ),
+                ),
+        ),
+      ],
     );
   }
 
-  buildBottomSheet(BuildContext context, EditProfileControllerOwner controller) {
+  buildBottomSheet(
+      BuildContext context, EditProfileControllerOwner controller) {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -254,7 +289,8 @@ class EditProfileScreenOwner extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(source: ImageSource.camera),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.camera),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -276,7 +312,8 @@ class EditProfileScreenOwner extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(source: ImageSource.gallery),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.gallery),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,

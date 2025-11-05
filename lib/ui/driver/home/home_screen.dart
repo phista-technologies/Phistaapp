@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:ui';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,16 +18,16 @@ import 'package:phista/ui/owner/auth_screen/login_screen_owner.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/network_image_widget.dart';
-import 'package:phista/utils/utils.dart';
 import 'package:provider/provider.dart';
-
 import '../../../themes/custom_dialog_box.dart';
+import '../../owner/app_not_access_screen_owner.dart';
+import '../../owner/dashboard_screen_owner.dart';
+import '../../owner/subscription_plan_screen/subscription_plan_screen_owner.dart';
 import '../auth_screen/login_screen.dart';
 import '../booking_process/booking_parking_details_screen.dart';
 import '../chat/inbox_screen.dart';
 import '../parking_details_screen/parking_details_screen.dart';
 import '../search/search_screen.dart';
-
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -37,50 +37,123 @@ class HomeScreen extends StatelessWidget {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor:
-              themeChange.getThem() ? AppThemData.grey10 : AppThemData.white,
-          leading: Icon(Icons.search,
-              color: themeChange.getThem()
-                  ? AppThemData.grey01
-                  : AppThemData.grey08),
-          titleSpacing: 0,
-          title: InkWell(
-            onTap: () {
-              Get.to(const SearchScreen());
-            },
-            child: TextFormField(
-                textAlign: TextAlign.start,
-                decoration: InputDecoration(
-                    hintStyle: TextStyle(
-                        fontSize: 14,
-                        color: themeChange.getThem()
-                            ? AppThemData.grey06
-                            : AppThemData.grey06,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppThemData.medium),
-                    filled: false,
-                    enabled: false,
-                    border: InputBorder.none,
-                    hintText: "Search Here".tr)),
-          ),
-          actions: [
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 25),
+            child: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              automaticallyImplyLeading: false,
+              titleSpacing: 10,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Expanded Search Field
+                  kIsWeb
+                      ? InkWell(
+                          onTap: () {
+                            Get.to(const SearchScreen());
+                          },
+                          child: searchField())
+                      : Expanded(
+                          flex: 2,
+                          child: InkWell(
+                            onTap: () {
+                              print(
+                                  "Constant.currentUserModel.value?.role :: - ${Constant.currentUserModel.value?.role}");
+                              Get.to(const SearchScreen());
+                            },
+                            child: searchField(),
+                          ),
+                        ),
+                  const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                                title: "Alert".tr,
+                                descriptions: "do you want to switch as owner?".tr,
+                                img: Image.asset(
+                                  "assets/icon/switch_profile_ico.png",
+                                  height: 85,
+                                  width: 85,
+                                ),
+                                positiveString: "Ok".tr,
+                                negativeString: "Cancel".tr,
+                                positiveBgColor: AppThemData.success07,
+                                positiveClick: () async{
+                                  print("currentUserModel:-  ${Constant.currentUserModel.value?.role}");
 
-            InkWell(
-              onTap: () {
-                Get.to(const InboxScreen());
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Icon(Icons.chat_bubble_outline,
-                    color: themeChange.getThem()
-                        ? AppThemData.grey01
-                        : AppThemData.grey08),
+                                  if (Constant.currentUserModel.value?.role == "Guest"){
+                                    print("object1");
+                                    Get.back();
+                                    Get.to(LoginScreenOwner());
+                                    //Constant.isGustUser = true;
+                                  }else{
+                                    bool isPlanExpire = false;
+                                    if (Constant.currentUserModel.value?.subscriptionPlan?.id != null) {
+                                      if (Constant.currentUserModel.value?.subscriptionExpiryDate == null) {
+                                        if (Constant.currentUserModel.value?.subscriptionPlan?.expiryDay == '-1') {
+                                          isPlanExpire = false;
+                                        } else {
+                                          isPlanExpire = true;
+                                        }
+                                      } else {
+                                        if (Constant.currentUserModel.value!.subscriptionExpiryDate != null){
+                                          DateTime expiryDate = Constant.currentUserModel.value!.subscriptionExpiryDate!.toDate();
+                                          isPlanExpire = expiryDate.isBefore(DateTime.now());
+                                        }
+                                      }
+                                    }
+                                    else {
+                                      isPlanExpire = true;
+                                    }
+                                    if ( Constant.currentUserModel.value?.subscriptionPlanId == null || isPlanExpire == true) {
+                                      if (Constant.adminCommission?.enable == false && Constant.isSubscriptionModelApplied == false) {
+                                        Get.offAll(const DashBoardScreenOwner());
+                                      } else {
+                                        Get.back();
+                                        Get.to(const SubscriptionPlanScreenOwner(isBack: true),);
+                                      }
+                                    }
+                                    else if (Constant.currentUserModel.value?.subscriptionPlan?.features?.ownerMobileApp == true) {
+
+                                      Get.offAll(const DashBoardScreenOwner());
+                                    } else {
+                                      Get.offAll(const AppNotAccessScreenOwner());
+                                    }
+                                  }
+                                },
+                                negativeClick: () async {
+                                  Get.back();
+                                }
+                            );
+                          });
+
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10, bottom: 10),
+                      child: Image.asset(
+                        'assets/icon/switch_profile_ico.png',
+                        height: kIsWeb ? 70 : 35, // adjust size as needed
+                        width: kIsWeb ? 70 : 35,
+                        color: themeChange.getThem()
+                            ? AppThemData.primary06
+                            : AppThemData.primary06,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-
-          ],
+          ),
         ),
         body: GetX<HomeController>(
             init: HomeController(),
@@ -150,7 +223,7 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                            if(Constant.currentUserModel.value?.role == "Guest")
+                            /*if(Constant.currentUserModel.value?.role == "Guest")
                             Positioned(
                               top: 10,
                               right: 10,
@@ -180,18 +253,17 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ),
-
+                            ),*/
                             controller.parkingList.isEmpty
                                 ? Container()
                                 : Align(
                                     alignment: Alignment.bottomCenter,
                                     child: SizedBox(
-                                      height: Responsive.height(35, context),
+                                      height: Responsive.height(40, context),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Padding(
+                                          /*Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 22),
                                             child: Row(
@@ -203,7 +275,7 @@ class HomeScreen extends StatelessWidget {
                                                           fontSize: 16,
                                                           fontFamily:
                                                               AppThemData
-                                                                  .semiBold,
+                                                                  .robotoSemiBold,
                                                         ))),
                                                 InkWell(
                                                   onTap: () async {
@@ -220,7 +292,7 @@ class HomeScreen extends StatelessWidget {
                                                             fontSize: 14,
                                                             fontFamily:
                                                                 AppThemData
-                                                                    .semiBold,
+                                                                    .robotoSemiBold,
                                                           )),
                                                       const Icon(
                                                         Icons.chevron_right,
@@ -232,20 +304,26 @@ class HomeScreen extends StatelessWidget {
                                                 )
                                               ],
                                             ),
-                                          ),
+                                          ),*/
                                           Expanded(
                                             child: PageView.builder(
+                                              padEnds: false,
                                               pageSnapping: true,
-                                              scrollBehavior: ScrollConfiguration.of(context).copyWith(
+                                              scrollBehavior:
+                                                  ScrollConfiguration.of(
+                                                          context)
+                                                      .copyWith(
                                                 dragDevices: {
                                                   PointerDeviceKind.touch,
                                                   PointerDeviceKind.mouse,
                                                   PointerDeviceKind.trackpad,
                                                 },
                                               ),
-                                              physics: const AlwaysScrollableScrollPhysics(), // Always enable scrolling
+                                              physics:
+                                                  const AlwaysScrollableScrollPhysics(), // Always enable scrolling
                                               controller: PageController(
-                                                  viewportFraction: 0.88),
+                                                  viewportFraction:
+                                                      kIsWeb ? 0.5 : 0.95),
                                               onPageChanged: (value) {
                                                 if (Constant.selectedMapType ==
                                                     'osm') {
@@ -291,16 +369,15 @@ class HomeScreen extends StatelessWidget {
                                                 ParkingModel parkingModel =
                                                     controller
                                                         .parkingList[index];
-
                                                 return Padding(
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 10,
                                                       horizontal:
-                                                          index == 0 ? 0 : 10),
+                                                          index == 0 ? 10 : 10),
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            15),
+                                                            14),
                                                     child: Container(
                                                       color: themeChange
                                                               .getThem()
@@ -310,16 +387,54 @@ class HomeScreen extends StatelessWidget {
                                                         children: [
                                                           Column(
                                                             children: [
-                                                              Expanded(
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets.only(
+                                                                    left: index ==
+                                                                            0
+                                                                        ? 17
+                                                                        : 8),
+                                                                child: Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .topLeft,
+                                                                  child: Text(
+                                                                      "Parking near you"
+                                                                          .tr,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: themeChange.getThem()
+                                                                            ? AppThemData.grey01
+                                                                            : AppThemData.grey10,
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontFamily:
+                                                                            AppThemData.bold,
+                                                                      )),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              ClipRRect(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                        Radius.circular(
+                                                                            14)), // You can adjust radius
                                                                 child: SizedBox(
                                                                   width: Responsive
-                                                                      .width(
-                                                                          100,
+                                                                      .width(85,
                                                                           context),
-                                                                  child: NetworkImageWidget(
-                                                                      imageUrl: parkingModel
-                                                                          .image
-                                                                          .toString()),
+                                                                  height: 140,
+                                                                  child:
+                                                                      NetworkImageWidget(
+                                                                    imageUrl: parkingModel
+                                                                        .image
+                                                                        .toString(),
+                                                                  ),
                                                                 ),
                                                               ),
                                                               Padding(
@@ -337,25 +452,31 @@ class HomeScreen extends StatelessWidget {
                                                                       CrossAxisAlignment
                                                                           .start,
                                                                   children: [
-                                                                    Row(
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child:
-                                                                              Text(
-                                                                            parkingModel.name.toString(),
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
-                                                                              fontSize: 16,
-                                                                              height: 1.57,
-                                                                              fontFamily: AppThemData.bold,
-                                                                              fontWeight: FontWeight.w500,
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          left: index == 0
+                                                                              ? 10
+                                                                              : 5),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                Text(
+                                                                              parkingModel.name.toString(),
+                                                                              style: TextStyle(
+                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                                fontSize: 16,
+                                                                                height: 1.57,
+                                                                                fontFamily: AppThemData.robotoBold,
+                                                                                fontWeight: FontWeight.w500,
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
+                                                                        ],
+                                                                      ),
                                                                     ),
-                                                                    const SizedBox(
+                                                                    /*const SizedBox(
                                                                       height: 7,
                                                                     ),
                                                                     Row(
@@ -427,306 +548,315 @@ class HomeScreen extends StatelessWidget {
                                                                           ),
                                                                         ),
                                                                       ],
-                                                                    ),
+                                                                    ),*/
                                                                     const SizedBox(
                                                                       height: 7,
                                                                     ),
-                                                                    Row(
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child:
-                                                                              Text(
-                                                                            parkingModel.address.toString(),
-                                                                            maxLines:
-                                                                                1,
-                                                                            style:
-                                                                            TextStyle(
-                                                                              color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
-                                                                              fontSize: 12,
-                                                                              height: 1.57,
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              fontFamily: AppThemData.regular,
-                                                                              fontWeight: FontWeight.w500,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              10,
-                                                                        ),
-                                                                        Row(
-                                                                          children: [
-                                                                            SvgPicture.asset(parkingModel.parkingType == "2" ? "assets/icon/ic_bike.svg" : "assets/icon/ic_car_fill.svg",
-                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,),
-                                                                            Text(
-                                                                              " ${parkingModel.parkingType.toString()} wheel".tr,
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          left: index == 0
+                                                                              ? 10
+                                                                              : 5),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                Text(
+                                                                              parkingModel.address.toString(),
                                                                               maxLines: 1,
                                                                               style: TextStyle(
                                                                                 color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                                                                 fontSize: 12,
                                                                                 height: 1.57,
                                                                                 overflow: TextOverflow.ellipsis,
-                                                                                fontFamily: AppThemData.semiBold,
+                                                                                fontFamily: AppThemData.robotoRegular,
+                                                                                fontWeight: FontWeight.w500,
                                                                               ),
                                                                             ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                10,
+                                                                          ),
+                                                                          Row(
+                                                                            children: [
+                                                                              SvgPicture.asset(
+                                                                                parkingModel.parkingType == "2" ? "assets/icon/ic_bike.svg" : "assets/icon/ic_car_fill.svg",
+                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                              ),
+                                                                              Text(
+                                                                                " ${parkingModel.parkingType.toString()} wheel".tr,
+                                                                                maxLines: 1,
+                                                                                style: TextStyle(
+                                                                                  color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                                  fontSize: 12,
+                                                                                  height: 1.57,
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  fontFamily: AppThemData.robotoSemiBold,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                     const SizedBox(
                                                                       height:
                                                                           10,
                                                                     ),
-                                                                    Row(
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child:
-                                                                              RoundedButtonFill(
-                                                                            title:
-                                                                                "Book Now".tr,
-                                                                            height:
-                                                                                4.5,
-                                                                            color:
-                                                                                AppThemData.primary06,
-                                                                            fontSizes:
-                                                                                12,
-                                                                            onPress:
-                                                                                () {
-                                                if (Constant.currentUserModel.value?.role.toString() == "Guest") {
-                                                showDialog(
-                                                context: context,
-                                                barrierDismissible: true,
-                                                builder: (BuildContext context) {
-                                                return CustomDialogBox(
-                                                title: "Alert".tr,
-                                                descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
-                                                img: Image.asset(
-                                                "assets/images/parking_icon.png",
-                                                height: 85,
-                                                width: 85,
-                                                ),
-                                                positiveString: "Park Now".tr,
-                                                negativeString: "Reserve Parking".tr,
-                                                positiveBgColor: AppThemData.success07,
-                                                positiveClick: () async {
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          left: index == 0
+                                                                              ? 10
+                                                                              : 0),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                RoundedButtonFill(
+                                                                              title: "Book Now".tr,
+                                                                              height: 4.5,
+                                                                              color: AppThemData.primary06,
+                                                                              fontSizes: 12,
+                                                                              radius: 10,
+                                                                              onPress: () {
+                                                                                if (Constant.currentUserModel.value?.role.toString() == "Guest") {
+                                                                                  showDialog(
+                                                                                      context: context,
+                                                                                      barrierDismissible: true,
+                                                                                      builder: (BuildContext context) {
+                                                                                        return CustomDialogBox(
+                                                                                          title: "Alert".tr,
+                                                                                          descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
+                                                                                          img: Image.asset(
+                                                                                            "assets/images/parking_icon.png",
+                                                                                            height: 85,
+                                                                                            width: 85,
+                                                                                          ),
+                                                                                          positiveString: "Park Now".tr,
+                                                                                          negativeString: "Reserve Parking".tr,
+                                                                                          positiveBgColor: AppThemData.success07,
+                                                                                          positiveClick: () async {
+                                                                                            Constant.isFromParkNow = true;
 
-                                                Constant.isFromParkNow = true;
-
-                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                ShowToastDialog.showToast("You can't book your own parking.");
-                                                }
-                                                else {
-                                                Get.back();
-                                                if (Constant.currentUserModel.value?.role.toString() == "Guest"){
-                                                Constant.isGustUser = true;
-                                                showDialog(
-                                                context: context,
-                                                barrierDismissible: true,
-                                                builder: (BuildContext context){
-                                                return CustomDialogPayAsGuest(
-                                                img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
-                                                positiveString: "Login/Signup".tr,
-                                                negativeString: "Pay as a guest".tr,
-                                                positiveBgColor: AppThemData.success07,
-                                                positiveClick: () async {
-                                                Get.back();
-                                                Constant.globalParkingModel.value = parkingModel;
-                                                print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
-                                                Get.to(const LoginScreen());
-                                                },
-                                                negativeClick: () async {
-                                                Get.back();
-                                                Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
-                                                },
-                                                );
-                                                });
-                                                }else{
-                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                ShowToastDialog.showToast("You can't book your own parking.");
-                                                } else {
-                                                Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                "parkingModel": parkingModel
-                                                });
-                                                }
-                                                }
-
-
-                                                //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
-
-                                                }
-                                                },
-                                                negativeClick: () async {
-                                                Constant.isFromParkNow = false;
-                                                Get.back();
-                                                if (Constant.currentUserModel.value?.role.toString() == "Guest"){
-                                                showDialog(
-                                                context: context,
-                                                barrierDismissible: true,
-                                                builder: (BuildContext context){
-                                                return CustomDialogBox(title: "Alert".tr,
-                                                descriptions: "To reserve the parking you should log in first".tr,
-                                                img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
-                                                positiveString: "Continue".tr,
-                                                negativeString: "Cancel".tr,
-                                                positiveBgColor: AppThemData.success07,
-                                                positiveClick: () async {
-                                                Get.back();
-                                                Constant.isGustUser = true;
-                                                Constant.globalParkingModel.value = parkingModel;
-                                                print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
-                                                Get.to(const LoginScreen());
-                                                },
-                                                negativeClick: () async {
-                                                Get.back();
-
-                                                },
-                                                );
-                                                });
-                                                }else{
-                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                ShowToastDialog.showToast("You can't book your own parking.");
-                                                } else {
-                                                Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                "parkingModel": parkingModel
-                                                });
-                                                }
-                                                }
-                                                },
-                                                );
-                                                });
-                                                }else{
-                                                  if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                    ShowToastDialog.showToast("You can't book your own parking.");
-                                                  } else {
-                                                    Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                      "parkingModel": parkingModel
-                                                    });
-                                                  }
-                                                }
-                        /*  if (Constant.currentUserModel.value?.role.toString() == "Guest") {
-                                                                                /// Show popup
-                                                                                showDialog(
-                                                                                    context: context,
-                                                                                    barrierDismissible: true,
-                                                                                    builder: (BuildContext context) {
-                                                                                      return CustomDialogBox(
-                                                                                        title: "Alert".tr,
-                                                                                        descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
-                                                                                        img: Image.asset(
-                                                                                          "assets/images/parking_icon.png",
-                                                                                          height: 85,
-                                                                                          width: 85,
-                                                                                        ),
-                                                                                        positiveString: "Park Now".tr,
-                                                                                        negativeString: "Reserve Parking".tr,
-                                                                                        positiveBgColor: AppThemData.success07,
-                                                                                        positiveClick: () async {
-                                                                                          if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                                                            ShowToastDialog.showToast("You can't book your own parking.");
-                                                                                          } else {
+                                                                                            if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                              ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                            } else {
+                                                                                              Get.back();
+                                                                                              if (Constant.currentUserModel.value?.role.toString() == "Guest") {
+                                                                                                print("if LoginScreen");
+                                                                                                Constant.isGustUser = true;
+                                                                                                showDialog(
+                                                                                                    context: context,
+                                                                                                    barrierDismissible: true,
+                                                                                                    builder: (BuildContext context) {
+                                                                                                      return CustomDialogPayAsGuest(
+                                                                                                        img: Image.asset(
+                                                                                                          "assets/images/parking_icon.png",
+                                                                                                          height: 85,
+                                                                                                          width: 85,
+                                                                                                        ),
+                                                                                                        positiveString: "Login/Signup".tr,
+                                                                                                        negativeString: "Pay as a guest".tr,
+                                                                                                        positiveBgColor: AppThemData.success07,
+                                                                                                        positiveClick: () async {
+                                                                                                          Get.back();
+                                                                                                          Constant.globalParkingModel.value = parkingModel;
+                                                                                                          print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
+                                                                                                          Get.to(const LoginScreen());
+                                                                                                        },
+                                                                                                        negativeClick: () async {
+                                                                                                          Get.back();
+                                                                                                          Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                                            "parkingModel": parkingModel
+                                                                                                          });
+                                                                                                        },
+                                                                                                      );
+                                                                                                    });
+                                                                                              } else {
+                                                                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                                  ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                                } else {
+                                                                                                  print("else BookingParkingDetailsScreen");
+                                                                                                  Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                                    "parkingModel": parkingModel
+                                                                                                  });
+                                                                                                }
+                                                                                              }
+                                                                                              //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
+                                                                                            }
+                                                                                          },
+                                                                                          negativeClick: () async {
+                                                                                            Constant.isFromParkNow = false;
                                                                                             Get.back();
-
-                                                                                            Constant.isGustUser = true;
-                                                                                            showDialog(
-                                                                                                context: context,
-                                                                                                barrierDismissible: true,
-                                                                                                builder: (BuildContext context){
-                                                                                                  return CustomDialogPayAsGuest(
-                                                                                                    img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
-                                                                                                    positiveString: "Login/Signup".tr,
-                                                                                                    negativeString: "Pay as a guest".tr,
-                                                                                                    positiveBgColor: AppThemData.success07,
-                                                                                                    positiveClick: () async {
-                                                                                                      Get.back();
-                                                                                                      Constant.globalParkingModel.value = parkingModel;
-                                                                                                      print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
-                                                                                                      Get.to(const LoginScreen());
-                                                                                                    },
-                                                                                                    negativeClick: () async {
-                                                                                                      Get.back();
-                                                                                                      Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
-                                                                                                    },
-                                                                                                  );
+                                                                                            if (Constant.currentUserModel.value?.role.toString() == "Guest") {
+                                                                                              showDialog(
+                                                                                                  context: context,
+                                                                                                  barrierDismissible: true,
+                                                                                                  builder: (BuildContext context) {
+                                                                                                    return CustomDialogBox(
+                                                                                                      title: "Alert".tr,
+                                                                                                      descriptions: "To reserve the parking you should log in first".tr,
+                                                                                                      img: Image.asset(
+                                                                                                        "assets/images/parking_icon.png",
+                                                                                                        height: 85,
+                                                                                                        width: 85,
+                                                                                                      ),
+                                                                                                      positiveString: "Continue".tr,
+                                                                                                      negativeString: "Cancel".tr,
+                                                                                                      positiveBgColor: AppThemData.success07,
+                                                                                                      positiveClick: () async {
+                                                                                                        Get.back();
+                                                                                                        Constant.isGustUser = true;
+                                                                                                        Constant.globalParkingModel.value = parkingModel;
+                                                                                                        print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
+                                                                                                        Get.to(const LoginScreen());
+                                                                                                      },
+                                                                                                      negativeClick: () async {
+                                                                                                        Get.back();
+                                                                                                      },
+                                                                                                    );
+                                                                                                  });
+                                                                                            } else {
+                                                                                              if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                                ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                              } else {
+                                                                                                Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                                  "parkingModel": parkingModel
                                                                                                 });
-
-                                                                                                 //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
-
-                                                                                          }
-                                                                                        },
-                                                                                        negativeClick: () async {
-                                                                                          Get.back();
-                                                                                        showDialog(
-                                                                                            context: context,
-                                                                                            barrierDismissible: true,
-                                                                                            builder: (BuildContext context){
-                                                                                              return CustomDialogBox(title: "Alert".tr,
-                                                                                                descriptions: "To reserve the parking you should log in first".tr,
-                                                                                                img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
-                                                                                                positiveString: "Continue".tr,
-                                                                                                negativeString: "Cancel".tr,
-                                                                                                positiveBgColor: AppThemData.success07,
-                                                                                                positiveClick: () async {
-                                                                                                  Get.back();
-                                                                                                  Constant.isGustUser = true;
-                                                                                                  Constant.globalParkingModel.value = parkingModel;
-                                                                                                  print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
-                                                                                                  Get.to(const LoginScreen());
-                                                                                                },
-                                                                                                negativeClick: () async {
-                                                                                                  Get.back();
-
-                                                                                                },
-                                                                                              );
-                                                                                            });
-
-                                                                                        },
-                                                                                      );
-                                                                                    });
-                                                                              }
-                                                                              else {
-                                                                                if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
-                                                                                  ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                              }
+                                                                                            }
+                                                                                          },
+                                                                                        );
+                                                                                      });
                                                                                 } else {
-                                                                                  Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                                                    "parkingModel": parkingModel
-                                                                                  });
+                                                                                  if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                    ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                  } else {
+                                                                                    Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                      "parkingModel": parkingModel
+                                                                                    });
+                                                                                  }
                                                                                 }
-                                                                              }*/
-                                                                            },
+                                                                                /*  if (Constant.currentUserModel.value?.role.toString() == "Guest") {
+                                                                                  /// Show popup
+                                                                                  showDialog(
+                                                                                      context: context,
+                                                                                      barrierDismissible: true,
+                                                                                      builder: (BuildContext context) {
+                                                                                        return CustomDialogBox(
+                                                                                          title: "Alert".tr,
+                                                                                          descriptions: "Would you like to park immediately or reserve this spot for later?".tr,
+                                                                                          img: Image.asset(
+                                                                                            "assets/images/parking_icon.png",
+                                                                                            height: 85,
+                                                                                            width: 85,
+                                                                                          ),
+                                                                                          positiveString: "Park Now".tr,
+                                                                                          negativeString: "Reserve Parking".tr,
+                                                                                          positiveBgColor: AppThemData.success07,
+                                                                                          positiveClick: () async {
+                                                                                            if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                              ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                            } else {
+                                                                                              Get.back();
+
+                                                                                              Constant.isGustUser = true;
+                                                                                              showDialog(
+                                                                                                  context: context,
+                                                                                                  barrierDismissible: true,
+                                                                                                  builder: (BuildContext context){
+                                                                                                    return CustomDialogPayAsGuest(
+                                                                                                      img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                      positiveString: "Login/Signup".tr,
+                                                                                                      negativeString: "Pay as a guest".tr,
+                                                                                                      positiveBgColor: AppThemData.success07,
+                                                                                                      positiveClick: () async {
+                                                                                                        Get.back();
+                                                                                                        Constant.globalParkingModel.value = parkingModel;
+                                                                                                        print("globalParkingModel.value Home :-- ${Constant.globalParkingModel.value}");
+                                                                                                        Get.to(const LoginScreen());
+                                                                                                      },
+                                                                                                      negativeClick: () async {
+                                                                                                        Get.back();
+                                                                                                        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": parkingModel});
+                                                                                                      },
+                                                                                                    );
+                                                                                                  });
+
+                                                                                                   //Get.to(() => const GetStartedScreen(),arguments: {"parkingModel":parkingModel} );
+
+                                                                                            }
+                                                                                          },
+                                                                                          negativeClick: () async {
+                                                                                            Get.back();
+                                                                                          showDialog(
+                                                                                              context: context,
+                                                                                              barrierDismissible: true,
+                                                                                              builder: (BuildContext context){
+                                                                                                return CustomDialogBox(title: "Alert".tr,
+                                                                                                  descriptions: "To reserve the parking you should log in first".tr,
+                                                                                                  img: Image.asset("assets/images/parking_icon.png",height: 85,width: 85,),
+                                                                                                  positiveString: "Continue".tr,
+                                                                                                  negativeString: "Cancel".tr,
+                                                                                                  positiveBgColor: AppThemData.success07,
+                                                                                                  positiveClick: () async {
+                                                                                                    Get.back();
+                                                                                                    Constant.isGustUser = true;
+                                                                                                    Constant.globalParkingModel.value = parkingModel;
+                                                                                                    print("globalParkingModel.value Home2 :-- ${Constant.globalParkingModel.value}");
+                                                                                                    Get.to(const LoginScreen());
+                                                                                                  },
+                                                                                                  negativeClick: () async {
+                                                                                                    Get.back();
+
+                                                                                                  },
+                                                                                                );
+                                                                                              });
+
+                                                                                          },
+                                                                                        );
+                                                                                      });
+                                                                                }
+                                                                                else {
+                                                                                  if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
+                                                                                    ShowToastDialog.showToast("You can't book your own parking.");
+                                                                                  } else {
+                                                                                    Get.to(() => const BookingParkingDetailsScreen(), arguments: {
+                                                                                      "parkingModel": parkingModel
+                                                                                    });
+                                                                                  }
+                                                                                }*/
+                                                                              },
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              10,
-                                                                        ),
-                                                                        Expanded(
-                                                                          child:
-                                                                              RoundedButtonFill(
-                                                                            title:
-                                                                                "View Details".tr,
-                                                                            height:
-                                                                                4.5,
-                                                                            icon:
-                                                                                Icon(Icons.chevron_right, color: themeChange.getThem() ? AppThemData.white : AppThemData.grey11),
-                                                                            color: themeChange.getThem()
-                                                                                ? AppThemData.grey10
-                                                                                : AppThemData.grey03,
-                                                                            textColor: themeChange.getThem()
-                                                                                ? AppThemData.white
-                                                                                : AppThemData.grey11,
-                                                                            fontSizes:
-                                                                                12,
-                                                                            isRight:
-                                                                                true,
-                                                                            onPress:
-                                                                                () {
-                                                                              Get.to(() => const ParkingDetailsScreen(), arguments: {
-                                                                                "parkingModel": parkingModel
-                                                                              });
-                                                                            },
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                10,
                                                                           ),
-                                                                        )
-                                                                      ],
+                                                                          Expanded(
+                                                                            child:
+                                                                                RoundedButtonFill(
+                                                                              title: "View Details".tr,
+                                                                              radius: 10,
+                                                                              height: 4.5,
+                                                                              /* icon:
+                                                                                  Icon(Icons.chevron_right, color: themeChange.getThem() ? AppThemData.white : AppThemData.grey11),*/
+                                                                              color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10,
+                                                                              textColor: themeChange.getThem() ? AppThemData.white : AppThemData.white,
+                                                                              fontSizes: 12,
+                                                                              isRight: true,
+                                                                              onPress: () {
+                                                                                Get.to(() => const ParkingDetailsScreen(), arguments: {
+                                                                                  "parkingModel": parkingModel
+                                                                                });
+                                                                              },
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                     const SizedBox(
                                                                       height: 5,
@@ -736,7 +866,7 @@ class HomeScreen extends StatelessWidget {
                                                               )
                                                             ],
                                                           ),
-                                                          Positioned(
+                                                          /* Positioned(
                                                             top: 10,
                                                             left: 10,
                                                             child: Container(
@@ -781,8 +911,8 @@ class HomeScreen extends StatelessWidget {
                                                                     ],
                                                                   )),
                                                             ),
-                                                          ),
-                                                          FutureBuilder<
+                                                          ),*/
+                                                          /* FutureBuilder<
                                                               dynamic>(
                                                             future: controller
                                                                 .getData(
@@ -901,7 +1031,161 @@ class HomeScreen extends StatelessWidget {
                                                                 ),
                                                               );
                                                             },
-                                                          ),
+                                                          ),*/
+                                                          FutureBuilder<
+                                                              dynamic>(
+                                                            future: controller
+                                                                .getData(
+                                                              parkingModel.id ??
+                                                                  "",
+                                                              parkingModel
+                                                                  .parkingSpace,
+                                                            ),
+                                                            builder: (context,
+                                                                snapshot) {
+                                                              if (controller
+                                                                  .parkingDataCache
+                                                                  .containsKey(
+                                                                      parkingModel
+                                                                          .id)) {
+                                                                var data = controller
+                                                                        .parkingDataCache[
+                                                                    parkingModel
+                                                                        .id];
+                                                                int booked =
+                                                                    data['bookedSlots'] ??
+                                                                        0;
+                                                                int total =
+                                                                    data['totalSlots'] ??
+                                                                        0;
+                                                                int available =
+                                                                    total -
+                                                                        booked;
+
+                                                                return Positioned(
+                                                                  top: 42,
+                                                                  left: index == 0 ? 9 : 9,
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                      color: AppThemData.primary06,
+                                                                      borderRadius: const BorderRadius.only(
+                                                                          topRight: Radius.circular(15),
+                                                                          bottomRight: Radius.circular(15)),
+                                                                    ),
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Text("$available of $total",style:
+                                                                                const TextStyle(
+                                                                              color: AppThemData.bookNowTextColor,
+                                                                              fontFamily: AppThemData.robotoBold,
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              width: 5),
+                                                                          Text(
+                                                                            "available",
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              color: AppThemData.grey10,
+                                                                              fontFamily: AppThemData.robotoSemiBold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+
+                                                              if (snapshot
+                                                                      .connectionState ==
+                                                                  ConnectionState
+                                                                      .waiting) {
+                                                                return const SizedBox();
+                                                              }
+
+                                                              if (snapshot
+                                                                  .hasData) {
+                                                                controller
+                                                                        .parkingDataCache[
+                                                                    parkingModel
+                                                                            .id ??
+                                                                        ""] = snapshot
+                                                                    .data;
+                                                                var data =
+                                                                    snapshot
+                                                                        .data;
+                                                                int booked =
+                                                                    data['bookedSlots'] ??
+                                                                        0;
+                                                                int total =
+                                                                    data['totalSlots'] ??
+                                                                        0;
+                                                                int available =
+                                                                    total -
+                                                                        booked;
+
+                                                                return Positioned(
+                                                                  top: 42,
+                                                                  left:
+                                                                      index == 0
+                                                                          ? 18
+                                                                          : 9,
+                                                                  child:
+                                                                      Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: AppThemData
+                                                                          .primary06,
+                                                                      borderRadius: const BorderRadius
+                                                                          .only(
+                                                                          topRight: Radius.circular(
+                                                                              15),
+                                                                          bottomRight:
+                                                                              Radius.circular(15)),
+                                                                    ),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              10,
+                                                                          vertical:
+                                                                              4),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            "$available of $total",
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              color: AppThemData.bookNowTextColor,
+                                                                              fontFamily: AppThemData.robotoBold,
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              width: 5),
+                                                                          Text(
+                                                                            "available",
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              color: AppThemData.grey10,
+                                                                              fontFamily: AppThemData.robotoSemiBold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+
+                                                              return const SizedBox();
+                                                            },
+                                                          )
                                                         ],
                                                       ),
                                                     ),
@@ -917,6 +1201,42 @@ class HomeScreen extends StatelessWidget {
                           ],
                         );
             }),
+      ),
+    );
+  }
+
+  Widget searchField() {
+    return Container(
+      margin: const EdgeInsets.only(left: 15, bottom: 10, top: 10),
+      height: 50,
+      width: kIsWeb ? 300 : 0,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppThemData.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppThemData.grey07, width: 1),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 15,
+            height: 15,
+            decoration: const BoxDecoration(
+              color: AppThemData.grey10,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 15),
+          Text(
+            "Search".tr,
+            style: TextStyle(
+              fontSize: 14,
+              color: AppThemData.grey10,
+              fontWeight: FontWeight.w500,
+              fontFamily: AppThemData.robotoMedium,
+            ),
+          ),
+        ],
       ),
     );
   }

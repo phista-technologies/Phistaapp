@@ -18,12 +18,10 @@ import 'package:phista/utils/network_image_widget.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:phista/utils/place_picker_osm.dart';
 import 'package:provider/provider.dart';
-
 import '../parking_details_screen/parking_details_screen.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -34,7 +32,7 @@ class SearchScreen extends StatelessWidget {
           appBar: AppBar(
             elevation: 0,
             backgroundColor:
-                themeChange.getThem() ? AppThemData.grey10 : AppThemData.white,
+            themeChange.getThem() ? AppThemData.grey10 : AppThemData.white,
             leading: InkWell(
                 onTap: () => Get.back(),
                 child: Icon(Icons.arrow_back_sharp,
@@ -54,7 +52,8 @@ class SearchScreen extends StatelessWidget {
                       controller.getParking();
                     }
                   });
-                } else {
+                }
+                else {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -76,8 +75,9 @@ class SearchScreen extends StatelessWidget {
                         usePlaceDetailSearch: true,
                         zoomGesturesEnabled: true,
                         zoomControlsEnabled: true,
-                        resizeToAvoidBottomInset:
-                            false, // only works in page mode, less flickery, remove if wrong offsets
+                        resizeToAvoidBottomInset: false, // only works in page mode, less flickery, remove if wrong offsets
+
+
                       ),
                     ),
                   );
@@ -957,3 +957,5 @@ class SearchScreen extends StatelessWidget {
             ));
   }
 }
+
+

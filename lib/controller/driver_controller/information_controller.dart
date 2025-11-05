@@ -146,7 +146,7 @@ class InformationController extends GetxController {
            // ShowToastDialog.closeLoader();
             if (value == true) {
               try{
-                await Utils.sendEmailWithTemplate(
+                await Utils.sendEmailWithTemplateWithAllPlatForms(
                   toEmail: emailController.text.trim().toString(),
                   templateId: ENV.templateIdCreateAccount,
                   dynamicTemplateData: {
@@ -202,7 +202,7 @@ class InformationController extends GetxController {
        // ShowToastDialog.closeLoader();
         if (value == true){
           try{
-            await Utils.sendEmailWithTemplate(
+            await Utils.sendEmailWithTemplateWithAllPlatForms(
               toEmail: emailController.text.trim().toString(),
               templateId: ENV.templateIdCreateAccount,
               dynamicTemplateData: {
@@ -289,7 +289,7 @@ class InformationController extends GetxController {
           await FireStoreUtils.updateUser(userModelData).then((value) async{
             if (value == true) {
               try{
-                await Utils.sendEmailWithTemplate(
+                await Utils.sendEmailWithTemplateWithAllPlatForms(
                   toEmail: emailController.text.trim().toString(),
                   templateId: ENV.templateIdCreateAccount,
                   dynamicTemplateData: {
@@ -340,7 +340,7 @@ class InformationController extends GetxController {
       await FireStoreUtils.updateUser(userModelData).then((value) async{
         if (value == true) {
           try{
-            await Utils.sendEmailWithTemplate(
+            await Utils.sendEmailWithTemplateWithAllPlatForms(
               toEmail: emailController.text.trim().toString(),
               templateId: ENV.templateIdCreateAccount,
               dynamicTemplateData: {

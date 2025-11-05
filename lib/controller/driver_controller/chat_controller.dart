@@ -163,7 +163,7 @@ class ChatController extends GetxController {
     print("receiverUserModel.value.email!${receiverUserModel.value.email!}");
     print("receiverUserModel.value.msg!${messageTextEditorController.value.text.trim().toString()}");
     bool sendMail = false;
-    await Utils.sendEmailWithTemplate(
+    await Utils.sendEmailWithTemplateWithAllPlatForms(
       toEmail:receiverUserModel.value.email!,
       templateId: ENV.templateIdSendMsg,
       dynamicTemplateData: {

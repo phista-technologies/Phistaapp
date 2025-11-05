@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/themes/responsive.dart';
@@ -39,6 +40,7 @@ class CustomDialogBox extends StatelessWidget {
   contentBox(context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return Container(
+      width: kIsWeb ? 400 : MediaQuery.of(context).size.width * 0.8,
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
       decoration: BoxDecoration(shape: BoxShape.rectangle, color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: Column(

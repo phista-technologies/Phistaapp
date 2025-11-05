@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phista/themes/app_them_data.dart';
@@ -15,17 +16,18 @@ class UiInterface {
     Color textColor = AppThemData.grey09,
     List<Widget>? actions,
     Function()? onBackTap,
+    bool centerTile = false
   }) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return AppBar(
       title: Text(
         title,
-        style: TextStyle(color: themeChange.getThem() ? AppThemData.grey02 : textColor, fontFamily: AppThemData.semiBold, fontSize: 18),
+        style: TextStyle(color: themeChange.getThem() ? AppThemData.grey02 : textColor, fontFamily: AppThemData.semiBold, fontSize:kIsWeb?22: 18),
       ),
       backgroundColor: themeChange.getThem() ? backgroundColor ?? AppThemData.grey10 : backgroundColor ?? AppThemData.white,
       automaticallyImplyLeading: isBack,
       elevation: 0,
-      centerTitle: false,
+      centerTitle: centerTile,
       titleSpacing: isBack == true ? 0 : 16,
       leading: isBack
           ? InkWell(

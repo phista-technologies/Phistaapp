@@ -118,7 +118,7 @@ class InformationControllerOwner extends GetxController {
       //ShowToastDialog.closeLoader();
       if (value == true) {
         try{
-          await Utils.sendEmailWithTemplate(
+          await Utils.sendEmailWithTemplateWithAllPlatForms(
             toEmail: emailController.value.text.trim().toString(),
             templateId: ENV.templateIdCreateAccount,
             dynamicTemplateData: {
@@ -212,7 +212,7 @@ class InformationControllerOwner extends GetxController {
       //ShowToastDialog.closeLoader();
       if (value == true) {
         try{
-          await Utils.sendEmailWithTemplate(
+          await Utils.sendEmailWithTemplateWithAllPlatForms(
             toEmail: emailController.value.text.trim().toString(),
             templateId: ENV.templateIdCreateAccount,
             dynamicTemplateData: {
@@ -246,7 +246,7 @@ class InformationControllerOwner extends GetxController {
         if (userModelData.subscriptionPlanId == null || isPlanExpire == true) {
           if (Constant.adminCommission?.enable == false && Constant.isSubscriptionModelApplied == false) {
             try{
-              await Utils.sendEmailWithTemplate(
+              await Utils.sendEmailWithTemplateWithAllPlatForms(
                 toEmail: emailController.value.text.trim().toString(),
                 templateId: ENV.templateIdCreateAccount,
                 dynamicTemplateData: {

@@ -119,6 +119,34 @@ class ForgotPasswordControllerOwner extends GetxController {
     }
   }
 
+  /// new setup for send email with all platforms (android,ios,web)  Devendra 30 Oct 2025
+  Future<void> sendEmailWithSendGridWithAllPlateForm({
+    required String toEmail,
+    required String subject,
+    required String content,
+  })
+  async {
+    print("Email:-- $toEmail");
+    final url = Uri.parse("https://us-central1-phista-81bf8.cloudfunctions.net/sendEmail");
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "to": toEmail ,
+        "subject": subject,
+        "content": content.trim(),
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print("Email sent!");
+    } else {
+      print("Failed to send email: ${response.body}");
+    }
+  }
+
 
   signInWithEmailAndPassword(BuildContext context,String email, String password) async {
 
