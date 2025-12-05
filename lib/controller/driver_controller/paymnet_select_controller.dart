@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as maths;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,21 +32,23 @@ import 'package:phista/payment/xenditScreen.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/pdf_%20generater.dart';
-import 'package:printing/printing.dart';
-
-// import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../env.dart';
 import '../../model/tax_model.dart';
 import '../../ui/driver/my_booking/parking_ticket_screen.dart';
 import '../../utils/utils.dart';
+import '../../utils/web_stripe_checkout_screen.dart';
+import '../../utils/web_stripe_checkout_screen_stub.dart'
+if (dart.library.html) '../../utils/web_stripe_checkout_screen.dart';
+
 
 class PaymentSelectController extends GetxController {
   Rx<PaymentModel> paymentModel = PaymentModel().obs;
   RxString selectedPaymentMethod = "".obs;
   RxBool isLoading = false.obs;
+  RxBool isFromApple = false.obs;
+  RxBool isFromGoogle = false.obs;
 
   Rx<OrderModel> orderModel = OrderModel().obs;
 
@@ -64,6 +65,9 @@ class PaymentSelectController extends GetxController {
 
   @override
   void onInit() {
+    //_checkStripeStatus();
+    log("payment select controller");
+    _checkStripeStatus();
     getArgument();
     super.onInit();
     getParkingDetail(orderModel.value.parkingId??"");
@@ -108,8 +112,6 @@ class PaymentSelectController extends GetxController {
 
   }
 
-
-
   getArgument() async {
     dynamic argumentData = Get.arguments;
     if (argumentData != null) {
@@ -132,8 +134,8 @@ class PaymentSelectController extends GetxController {
       log("get payment value :-- $value");
       if (value != null) {
         paymentModel.value = value;
-        if (!kIsWeb && paymentModel.value.strip?.enable == true) {
-          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();
+        if (paymentModel.value.strip?.enable == true) {
+          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
           STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";
           STRIPE.Stripe.instance.applySettings();
         }
@@ -275,6 +277,7 @@ class PaymentSelectController extends GetxController {
     await FireStoreUtils.setOrder(orderModel.value).then((value) {
       if (value == true) {
         ShowToastDialog.closeLoader();
+        log("orderModel.value1 :-- ${orderModel.value}");
         Get.to(() => const ParkingTicketScreen(),
             arguments: {"orderModel": orderModel.value});
       }
@@ -470,7 +473,7 @@ class PaymentSelectController extends GetxController {
         ShowToastDialog.closeLoader();
         log("Exception :-- ",error: e.toString());
       }
-
+      log("orderModel.value2 :-- ${orderModel.value}");
         Get.to(() => const ParkingTicketScreen(),
             arguments: {"orderModel": orderModel.value});
       }
@@ -659,7 +662,7 @@ class PaymentSelectController extends GetxController {
 
 
   // Strip
-  Future<void> stripeMakePayment({required String amount}) async {
+  Future<void> stripeMakePayment1({required String amount}) async {
     print("amount :-- $amount");
     log(double.parse(amount).toStringAsFixed(0));
     try {
@@ -720,6 +723,164 @@ class PaymentSelectController extends GetxController {
     }
   }
 
+  Future<void> stripeMakePayment({required String amount}) async {
+    log("amount :-- $amount");
+
+    try {
+      // 🌐 --- WEB FLOW ---
+      if (kIsWeb) {
+        // On web, open the Stripe checkout screen you created
+        final result = await Get.to(() => WebStripeCheckoutScreen(amount: amount, secretKey: paymentModel.value.strip!.stripeSecret!));
+
+        print("stripe result when payment done");
+
+        if (result?['status'] == 'success') {
+          completeOrder();
+        } else {
+          ShowToastDialog.showToast("Payment cancelled");
+        }
+
+   /*     // Optionally handle the result (if success or cancel)
+        if (result != null && result['status'] == 'success') {
+          ShowToastDialog.showToast("Payment successful");
+          completeOrder();
+        } else if (result != null && result['status'] == 'cancel') {
+          ShowToastDialog.showToast("Payment cancelled");
+        } else {
+          ShowToastDialog.showToast("Payment failed or cancelled");
+        }*/
+
+        return;
+      }
+
+      // 📱 --- MOBILE FLOW ---
+      Map<String, dynamic>? paymentIntentData = await createStripeIntent(amount: amount);
+      log("paymentIntentData['client_secret']:-- ${paymentIntentData?['client_secret']}");
+
+      if (paymentIntentData == null || paymentIntentData.containsKey("error")) {
+        Get.back();
+        ShowToastDialog.showToast("Something went wrong, please contact admin.");
+        return;
+      }
+
+      // Apple Pay
+      if (isFromApple.value == true) {
+        bool? status = await payWithApplePay(paymentIntentData['client_secret'], amount);
+        log("payWithApplePay :-- $status");
+        if (status ?? false) {
+          ShowToastDialog.showToast("Payment successfully");
+          completeOrder();
+        } else {
+          ShowToastDialog.showToast("Payment failed");
+        }
+      }
+      // Google Pay
+      else if (isFromGoogle.value == true) {
+        await initGooglePayPaymentSheet(paymentIntentData['client_secret']);
+        await presentPaymentSheet();
+      }
+      // Normal Card Payment (Stripe PaymentSheet)
+      else {
+        await STRIPE.Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: STRIPE.SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntentData['client_secret'],
+            allowsDelayedPaymentMethods: false,
+            googlePay: STRIPE.PaymentSheetGooglePay(
+              merchantCountryCode: 'CA',
+              testEnv: paymentModel.value.strip?.isSandbox == true,
+              currencyCode: "CAD",
+            ),
+            style: ThemeMode.system,
+            appearance: const STRIPE.PaymentSheetAppearance(
+              colors: STRIPE.PaymentSheetAppearanceColors(
+                primary: AppThemData.primary06,
+              ),
+            ),
+            merchantDisplayName: 'Phista',
+          ),
+        );
+
+        await displayStripePaymentSheet(amount: amount);
+      }
+    } catch (e, s) {
+      log("$e \n$s");
+      ShowToastDialog.showToast("exception: $e \n$s");
+    }
+  }
+
+
+  void _checkStripeStatus() {
+    final uri = Uri.base; // full current URL
+    final status = uri.queryParameters['status'];
+    log("check stripe status :-- $status");
+    if (status == 'success') {
+      ShowToastDialog.showToast("Payment Successful");
+      log("check stripe status ");
+      // ✅ Call your order complete function
+      completeOrder();
+    } else if (status == 'cancel') {
+      ShowToastDialog.showToast("Payment Cancelled");
+    }
+  }
+
+/*  Future<void> stripeMakePayment({required String amount}) async {
+    log("amount :-- $amount");
+
+    try {
+      Map<String, dynamic>? paymentIntentData = await createStripeIntent(amount: amount);
+      log("paymentIntentData['client_secret']:-- ${paymentIntentData?['client_secret']}");
+
+      if (paymentIntentData == null || paymentIntentData.containsKey("error")) {
+        Get.back();
+        ShowToastDialog.showToast("Something went wrong, please contact admin.");
+        return;
+      }
+
+      if (kIsWeb) {
+        // 🌐 --- WEB PAYMENT FLOW ---
+        await _openStripeCheckoutWeb(amount: amount);
+      } else {
+        // 📱 --- MOBILE FLOW ---
+        if (selectedPaymentMethod.value.toString() == APPLE_PAY) {
+          bool? status = await payWithApplePay(paymentIntentData['client_secret'], amount);
+          if (status ?? false) {
+            ShowToastDialog.showToast("Payment successful");
+            completeOrder();
+          } else {
+            ShowToastDialog.showToast("Payment failed");
+          }
+        } else if (selectedPaymentMethod.value.toString() == GOOGLE_PAY) {
+          await initGooglePayPaymentSheet(paymentIntentData['client_secret']);
+          await presentPaymentSheet();
+        } else {
+          await STRIPE.Stripe.instance.initPaymentSheet(
+            paymentSheetParameters: STRIPE.SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntentData['client_secret'],
+              allowsDelayedPaymentMethods: false,
+              googlePay: STRIPE.PaymentSheetGooglePay(
+                merchantCountryCode: 'CA',
+                testEnv: paymentModel.value.strip?.isSandbox == true,
+                currencyCode: "CAD",
+              ),
+              style: ThemeMode.system,
+              appearance: const STRIPE.PaymentSheetAppearance(
+                colors: STRIPE.PaymentSheetAppearanceColors(
+                  primary: AppThemData.primary06,
+                ),
+              ),
+              merchantDisplayName: 'Phista',
+            ),
+          );
+
+          await displayStripePaymentSheet(amount: amount);
+        }
+      }
+    } catch (e, s) {
+      log("Stripe Payment Error: $e \n$s");
+      ShowToastDialog.showToast("exception: $e");
+    }
+  }*/
+
   displayStripePaymentSheet({required String amount}) async {
     try {
       await STRIPE.Stripe.instance.presentPaymentSheet().then((value) {
@@ -735,6 +896,58 @@ class PaymentSelectController extends GetxController {
       ShowToastDialog.showToast(e.toString());
     }
   }
+
+/*  Future<void> _openStripeCheckoutWeb({required String amount}) async {
+    try {
+      String stripeSecretKey = ENV.skTestSecretKey; // ⚠️ Test key only
+      String stripePublishableKey = ENV.pkTestPublishableKey;
+
+      final response = await http.post(
+        Uri.parse("https://api.stripe.com/v1/checkout/sessions"),
+        headers: {
+          "Authorization": "Bearer $stripeSecretKey",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: {
+          "mode": "payment",
+          "payment_method_types[]": "card",
+          "line_items[0][price_data][currency]": "cad",
+          "line_items[0][price_data][product_data][name]": "Phista Payment",
+          "line_items[0][price_data][unit_amount]":
+          (double.parse(amount) * 100).toInt().toString(),
+          "line_items[0][quantity]": "1",
+          "success_url": "http://localhost:8080/#/PaymentSelectScreen/PaymentSuccess",
+          "cancel_url": "http://localhost:8080/#/PaymentSelectScreen/PaymentFailed",
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data["url"] != null) {
+        // 👇 open in same tab instead of new window
+        html.window.location.href = data["url"];
+      } else {
+        log("Error creating Checkout Session: $data");
+        ShowToastDialog.showToast("Stripe checkout failed.");
+      }
+    } catch (e, s) {
+      log("Stripe Web Checkout Error: $e\n$s");
+      ShowToastDialog.showToast("Stripe web payment error: $e");
+    }
+  }*/
+
+/*  void _checkStripeStatus() {
+    final status = html.window.localStorage['stripe_status'];
+
+    if (status == 'success') {
+      ShowToastDialog.showToast("Payment successful");
+      completeOrder();
+      html.window.localStorage.remove('stripe_status'); // clear it
+    } else if (status == 'failed') {
+      ShowToastDialog.showToast("Payment cancelled");
+      html.window.localStorage.remove('stripe_status');
+    }
+  }*/
 
   createStripeIntent({required String amount}) async {
     try {
@@ -760,7 +973,6 @@ class PaymentSelectController extends GetxController {
             'Authorization': 'Bearer $stripeSecret',
             'Content-Type': 'application/x-www-form-urlencoded'
           });
-
       return jsonDecode(response.body);
     } catch (e) {
       log(e.toString());

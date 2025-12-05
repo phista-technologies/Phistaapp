@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,18 +37,18 @@ class BookingParkingDetailsScreen extends StatelessWidget {
         builder: (controller) {
           controller.startTimeMonthly.value = DateTime.now();
           return Scaffold(
+            backgroundColor:AppThemData.grey02,
             appBar: UiInterface()
-                .customAppBar(context, themeChange, "Select Date and Time".tr),
+                .customAppBar1(context, themeChange, "Select Date and Time".tr,backgroundColor:AppThemData.white,textColor: AppThemData.black ),
             body: controller.isLoading.value
                 ? Constant.loader()
                 : SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
+                      padding: EdgeInsets.symmetric( horizontal: !kIsWeb?16:100, vertical: !kIsWeb?10:50),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Constant.currentUserModel.value?.role.toString() != "Guest"?Text(
+                          /*Constant.currentUserModel.value?.role.toString() != "Guest"?Text(
                             'select_date'.tr,
                             style: TextStyle(
                               fontSize: 14,
@@ -57,93 +58,129 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                   ? AppThemData.grey07
                                   : AppThemData.grey07,
                             ),
-                          ):SizedBox.shrink(),
+                          ):SizedBox.shrink(),*/
                           const SizedBox(
                             height: 5,
                           ),
                           Constant.currentUserModel.value?.role.toString() == "Guest" || Constant.isFromParkNow ?SizedBox.shrink():Obx(() {
                             final selectionMode = controller.selectionModeUser(controller.radioValue.value);
                             return Container(
+                              margin: EdgeInsets.all(5),
+                              height: 250,
                               decoration: BoxDecoration(
                                   color: themeChange.getThem()
-                                      ? AppThemData.grey10
-                                      : AppThemData.grey03,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: SfDateRangePicker(
-                                controller: controller.sfDateRangePickerCtrl,
-                                selectionMode: selectionMode,
-                                view: DateRangePickerView.month,
-                                selectionColor: AppThemData.primary06,
-                                startRangeSelectionColor: AppThemData.primary06,
-                                rangeSelectionColor: AppThemData.primary06,
-                                endRangeSelectionColor: AppThemData.primary06,
-                                initialSelectedDate: selectionMode ==
-                                        DateRangePickerSelectionMode.single
-                                    ? controller.selectedDateTime.value
-                                    : null,
-                                initialSelectedDates: selectionMode ==
-                                        DateRangePickerSelectionMode.multiple
-                                    ? controller.selectedDatesDaily.value
-                                    : null,
-                                selectionTextStyle:
-                                    const TextStyle(color: Colors.black),
-                                onSelectionChanged: (args) {
-                                  switch (selectionMode) {
-                                    case DateRangePickerSelectionMode.single:
-                                      controller.selectedDateTime.value =
-                                          args.value;
-                                      DateTime now = DateTime.now();
+                                      ? AppThemData.white
+                                      : AppThemData.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(color: AppThemData.grey10,width: 1.5),
 
-                                      controller.startTime.value = DateTime(
-                                          controller
-                                              .selectedDateTime.value.year,
-                                          controller
-                                              .selectedDateTime.value.month,
-                                          controller.selectedDateTime.value.day,
-                                          now.hour,
-                                          now.minute,
-                                          now.second);
-
-                                      Duration duration = Duration(
-                                          hours: controller
-                                              .selectedDuration.value
-                                              .toInt());
-
-                                      controller.endTime.value = controller
-                                          .startTime.value
-                                          .add(duration);
-
-                                      break;
-                                    case DateRangePickerSelectionMode.multiple:
-                                      controller.selectedDatesDaily.value =
-                                          args.value;
-                                      break;
-                                    case DateRangePickerSelectionMode.range:
-                                      if (selectionMode == DateRangePickerSelectionMode.range) {
-                                        if (args.value is PickerDateRange) {
-                                          final PickerDateRange range =
-                                              args.value;
-                                          final DateTime? startDate =
-                                              range.startDate;
-                                          controller.startTimeMonthly.value =
-                                              range.startDate!;
-                                          if (startDate != null) {
-                                            controller.setMonthValue(
-                                                controller
-                                                    .startTimeMonthly.value,
-                                                int.parse(controller
-                                                    .bookingMonths
-                                                    .value.toString()));
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: SfDateRangePicker(
+                                  backgroundColor: AppThemData.white,
+                                  // 1️⃣ Header styling (Month-Year)
+                                  headerStyle: const DateRangePickerHeaderStyle(
+                                    backgroundColor: Colors.white,
+                                    textStyle: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                
+                                  // 2️⃣ Weekdays styling (S M T W T F S)
+                                  monthViewSettings: const DateRangePickerMonthViewSettings(
+                                    viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                                      textStyle: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  monthCellStyle: const DateRangePickerMonthCellStyle(
+                                    textStyle: TextStyle(color: Colors.black),
+                                    todayTextStyle: TextStyle(color: Colors.black),
+                                    rangeTextStyle: TextStyle(color: Colors.black),
+                                    leadingDatesTextStyle: TextStyle(color: Colors.black),
+                                    disabledDatesTextStyle: TextStyle(color: Colors.black),
+                                
+                                  ),
+                                  yearCellStyle: const DateRangePickerYearCellStyle(
+                                    textStyle: TextStyle(color: Colors.black),
+                                    todayTextStyle: TextStyle(color: Colors.black),
+                                  ),
+                                  controller: controller.sfDateRangePickerCtrl,
+                                  selectionMode: selectionMode,
+                                  view: DateRangePickerView.month,
+                                  selectionColor: AppThemData.primary06,
+                                  startRangeSelectionColor: AppThemData.primary06,
+                                  rangeSelectionColor: AppThemData.primary06,
+                                  endRangeSelectionColor: AppThemData.primary06,
+                                  initialSelectedDate: selectionMode ==
+                                          DateRangePickerSelectionMode.single
+                                      ? controller.selectedDateTime.value
+                                      : null,
+                                  initialSelectedDates: selectionMode ==
+                                          DateRangePickerSelectionMode.multiple
+                                      ? controller.selectedDatesDaily.value
+                                      : null,
+                                  selectionTextStyle:
+                                      const TextStyle(color: Colors.black),
+                                  onSelectionChanged: (args) {
+                                    switch (selectionMode) {
+                                      case DateRangePickerSelectionMode.single:
+                                        controller.selectedDateTime.value =
+                                            args.value;
+                                        DateTime now = DateTime.now();
+                                        controller.startTime.value = DateTime(
+                                            controller
+                                                .selectedDateTime.value.year,
+                                            controller
+                                                .selectedDateTime.value.month,
+                                            controller.selectedDateTime.value.day,
+                                            now.hour,
+                                            now.minute,
+                                            now.second);
+                                        Duration duration = Duration(
+                                            hours: controller
+                                                .selectedDuration.value
+                                                .toInt());
+                                        controller.endTime.value = controller
+                                            .startTime.value
+                                            .add(duration);
+                                        break;
+                                      case DateRangePickerSelectionMode.multiple:
+                                        controller.selectedDatesDaily.value =
+                                            args.value;
+                                        break;
+                                      case DateRangePickerSelectionMode.range:
+                                        if (selectionMode == DateRangePickerSelectionMode.range) {
+                                          if (args.value is PickerDateRange) {
+                                            final PickerDateRange range =
+                                                args.value;
+                                            final DateTime? startDate =
+                                                range.startDate;
+                                            controller.startTimeMonthly.value =
+                                                range.startDate!;
+                                            if (startDate != null) {
+                                              controller.setMonthValue(
+                                                  controller
+                                                      .startTimeMonthly.value,
+                                                  int.parse(controller
+                                                      .bookingMonths
+                                                      .value.toString()));
+                                            }
                                           }
                                         }
-                                      }
-                                      controller.selectedRangeMonth.refresh();
-                                      break;
-                                    default:
-                                      break;
-                                  }
-                                },
-                                minDate: DateTime.now(),
+                                        controller.selectedRangeMonth.refresh();
+                                        break;
+                                      default:
+                                        break;
+                                    }
+                                  },
+                                  minDate: DateTime.now(),
+                                ),
                               ),
                             );
                           }),
@@ -263,7 +300,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.remove_circle_outline),
+                                        icon: Icon(Icons.remove_circle_outline,color: AppThemData.grey07,),
                                         onPressed: () {
                                           if (controller.bookingMonths.value > 1) {
                                             controller.bookingMonths.value--;
@@ -276,10 +313,17 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                       ),
                                       Obx(() => Text(
                                         controller.bookingMonths.value.toString(),
-                                        style: TextStyle(fontSize: 18),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: AppThemData.medium,
+                                          fontWeight: FontWeight.w700,
+                                          color: themeChange.getThem()
+                                              ? AppThemData.grey07
+                                              : AppThemData.grey07,
+                                        ),
                                       )),
                                       IconButton(
-                                        icon: Icon(Icons.add_circle_outline),
+                                        icon: Icon(Icons.add_circle_outline,color: AppThemData.grey07,),
                                         onPressed: () {
                                           if (controller.bookingMonths.value < 12) {
                                             controller.bookingMonths.value++;
@@ -649,12 +693,8 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                       InkWell(
                                           onTap: () {
                                             VehicleListController
-                                                vehicleListController = Get.put(
-                                                    VehicleListController());
-                                            vehicleListController
-                                                    .selectedVehicle.value =
-                                                controller
-                                                    .selectedVehicle.value;
+                                                vehicleListController = Get.put(VehicleListController());
+                                            vehicleListController.selectedVehicle.value = controller.selectedVehicle.value;
                                             showBottomSheet(context);
                                           },
                                           child: Text(
@@ -673,12 +713,8 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 )
                               : InkWell(
                                   onTap: () {
-                                    VehicleListController
-                                        vehicleListController =
-                                        Get.put(VehicleListController());
-                                    vehicleListController
-                                            .selectedVehicle.value =
-                                        controller.selectedVehicle.value;
+                                    VehicleListController vehicleListController = Get.put(VehicleListController());
+                                    vehicleListController.selectedVehicle.value = controller.selectedVehicle.value;
                                     showBottomSheet(context);
                                   },
                                   child: SizedBox(
@@ -734,12 +770,15 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                   ),
             bottomNavigationBar: Container(
               color: themeChange.getThem()
-                  ? AppThemData.grey10
-                  : AppThemData.grey11,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                 /* ? AppThemData.grey10
+                  : AppThemData.grey11,*/
+                  ? AppThemData.white
+                  : AppThemData.white,
+              padding: const EdgeInsets.symmetric(horizontal: !kIsWeb?16:100, vertical: 16),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: RoundedButtonFill(
+                  radius: 10,
                   title: "Next".tr,
                   color: AppThemData.primary06,
                   onPress: () async {

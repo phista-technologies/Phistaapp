@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -27,7 +28,7 @@ class ReferAndEarnScreen extends StatelessWidget {
             appBar: UiInterface().customAppBar(
               context,
               themeChange,
-              'Refer and Earn'.tr,
+              'Refer And Earn'.tr,
             ),
             body: controller.isLoading.value
                 ? Constant.loader()
@@ -39,7 +40,7 @@ class ReferAndEarnScreen extends StatelessWidget {
                       children: [
                         Center(
                             child: SvgPicture.asset("assets/icon/ic_reward.svg",
-                                width: 50, height: 52)),
+                                width:kIsWeb?100:50, height:kIsWeb?100: 52)),
                         const SizedBox(
                           height: 10,
                         ),
@@ -58,16 +59,18 @@ class ReferAndEarnScreen extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          "Share the love of hassle-free parking! Refer friends to our app and earn rewards for both you and your friends. Start saving while parking today."
-                              .tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: AppThemData.regular,
-                              fontSize: 14,
-                              color: themeChange.getThem()
-                                  ? AppThemData.grey07
-                                  : AppThemData.grey07),
+                        Center(
+                          child: Text(
+                            "Share the love of hassle-free parking! Refer friends to our app and earn rewards for both you and your friends. Start saving while parking today."
+                                .tr,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: AppThemData.regular,
+                                fontSize: 14,
+                                color: themeChange.getThem()
+                                    ? AppThemData.grey07
+                                    : AppThemData.grey07),
+                          ),
                         ),
                         const SizedBox(
                           height: 50,
@@ -87,27 +90,30 @@ class ReferAndEarnScreen extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        DottedBorder(
-                          borderType: BorderType.RRect,
-                          radius: const Radius.circular(10),
-                          dashPattern: const [6, 6, 6, 6],
-                          color: AppThemData.primary08,
-                          child: Container(
-                              height: Responsive.height(6, context),
-                              decoration: const BoxDecoration(
-                                  color: AppThemData.primary01,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Center(
-                                  child: Text(
-                                controller.referralModel.value.referralCode
-                                    .toString(),
-                                style: TextStyle(
-                                    color: themeChange.getThem()
-                                        ? AppThemData.primary07
-                                        : AppThemData.primary07,
-                                    fontFamily: AppThemData.semiBold),
-                              ))),
+                        Center(
+                          child: DottedBorder(
+                            borderType: BorderType.RRect,
+                            radius: const Radius.circular(10),
+                            dashPattern: const [6, 6, 6, 6],
+                            color: AppThemData.primary08,
+                            child: Container(
+                                width: kIsWeb?200:null,
+                                height: Responsive.height(6, context),
+                                decoration: const BoxDecoration(
+                                    color: AppThemData.primary01,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: Center(
+                                    child: Text(
+                                  controller.referralModel.value.referralCode
+                                      .toString(),
+                                  style: TextStyle(
+                                      color: themeChange.getThem()
+                                          ? AppThemData.primary07
+                                          : AppThemData.primary07,
+                                      fontFamily: AppThemData.semiBold),
+                                ))),
+                          ),
                         ),
                         const SizedBox(
                           height: 20,

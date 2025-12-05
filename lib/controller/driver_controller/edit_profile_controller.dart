@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -53,7 +54,7 @@ class EditProfileController extends GetxController {
   final ImagePicker _imagePicker = ImagePicker();
   RxString profileImage = "".obs;
 
-  Future pickFile({required ImageSource source}) async {
+  /*Future pickFile({required ImageSource source}) async {
     try {
       XFile? image = await _imagePicker.pickImage(source: source);
       if (image == null) return;
@@ -62,17 +63,60 @@ class EditProfileController extends GetxController {
     } on PlatformException catch (e) {
       ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
     }
+  }*/
+
+  Future pickFile({required ImageSource source}) async {
+    try {
+      XFile? image = await _imagePicker.pickImage(source: source);
+      if (image == null) return;
+
+      Get.back();
+
+      if (kIsWeb) {
+        // ✅ On Web → image.path is a Blob URL, use it directly
+        profileImage.value = image.path;
+      } else {
+        // ✅ On Mobile → use local file path
+        profileImage.value = image.path;
+      }
+
+    } on PlatformException catch (e) {
+      ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
+    }
   }
+
 
   updateProfile() async {
     ShowToastDialog.showLoader("please_wait".tr);
-    if (Constant().hasValidUrl(profileImage.value) == false &&
+   /* if (Constant().hasValidUrl(profileImage.value) == false &&
         profileImage.value.isNotEmpty) {
       profileImage.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
       );
+    }*/
+    if (!Constant().hasValidUrl(profileImage.value) && profileImage.value.isNotEmpty) {
+      if (kIsWeb) {
+        /// ✅ WEB — read bytes and upload
+        final XFile webImage = XFile(profileImage.value);
+
+        Uint8List bytes = await webImage.readAsBytes();
+
+        profileImage.value = await Constant.uploadUserImageToFireStorageWeb(
+          bytes,
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          webImage.name, // ✅ correct file name
+        );
+
+      } else {
+        /// ✅ MOBILE — use File()
+        profileImage.value = await Constant.uploadUserImageToFireStorage(
+          File(profileImage.value),
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          File(profileImage.value).path.split('/').last,
+        );
+      }
     }
 
     UserModel userModelData = userModel.value;

@@ -332,6 +332,19 @@ class ProfileScreenOwner extends StatelessWidget {
                             },
                             themeChange: themeChange,
                           ),
+                          menuItemWidgetPng(
+                            title: "Dashboard".tr,
+                            pngImage: "assets/icon/dashboard.png",
+                            onTap: () async {
+                              final Uri url =
+                              Uri.parse("https://test.phista.ca/");
+                              if (!await launchUrl(url)) {
+                                throw Exception(
+                                    'Could not launch ${Constant.supportURL.toString()}'.tr);
+                              }
+                            },
+                            themeChange: themeChange,
+                          ),
                           const Divider(
                               color: AppThemData.grey04, thickness: 1),
                           menuItemWidget(
@@ -390,7 +403,7 @@ class ProfileScreenOwner extends StatelessWidget {
       trailing: const Icon(Icons.arrow_forward_ios, size: 18),
       leading: SvgPicture.asset(
         svgImage,
-        color: title == "Log Out"
+        color: title == "Log Out".tr
             ? AppThemData.error08
             : themeChange.getThem()
                 ? AppThemData.grey01
@@ -402,11 +415,44 @@ class ProfileScreenOwner extends StatelessWidget {
         style: TextStyle(
             fontSize: 16,
             fontFamily: AppThemData.medium,
-            color: title == "Log Out"
+            color: title == "Log Out".tr
                 ? AppThemData.error08
                 : themeChange.getThem()
                     ? AppThemData.grey01
                     : AppThemData.grey09),
+      ),
+    );
+  }
+  Widget menuItemWidgetPng({
+    required String pngImage,
+    required String title,
+    required VoidCallback onTap,
+    required themeChange,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+      horizontalTitleGap: 6,
+      onTap: onTap,
+      trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+      leading:Image.asset(
+        pngImage,
+        height: 22,
+        color: title == "Log Out".tr
+            ? AppThemData.error08
+            : themeChange.getThem()
+            ? AppThemData.grey01
+            : AppThemData.grey09,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16,
+            fontFamily: AppThemData.medium,
+            color: title == "Log Out".tr
+                ? AppThemData.error08
+                : themeChange.getThem()
+                ? AppThemData.grey01
+                : AppThemData.grey09),
       ),
     );
   }

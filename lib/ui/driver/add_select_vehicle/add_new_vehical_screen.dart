@@ -31,7 +31,7 @@ class AddNewVehicleScreen extends StatelessWidget {
                 child: Container(
                   color:themeChange.getThem()
                       ? AppThemData.grey01
-                      : AppThemData.grey10,
+                      : AppThemData.grey01,
                   width: kIsWeb ? Responsive.width(70, context) :Responsive.width(100, context,),
                   height: Responsive.height(100, context),
                   child: Padding(

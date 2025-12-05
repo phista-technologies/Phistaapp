@@ -31,7 +31,6 @@ import '../search/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -40,113 +39,106 @@ class HomeScreen extends StatelessWidget {
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 25),
+          preferredSize: const Size.fromHeight(80),
+          child: SafeArea(
             child: AppBar(
               elevation: 0,
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               automaticallyImplyLeading: false,
-              titleSpacing: 10,
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Expanded Search Field
-                  kIsWeb
-                      ? InkWell(
-                          onTap: () {
-                            Get.to(const SearchScreen());
-                          },
-                          child: searchField())
-                      : Expanded(
-                          flex: 2,
-                          child: InkWell(
-                            onTap: () {
-                              print(
-                                  "Constant.currentUserModel.value?.role :: - ${Constant.currentUserModel.value?.role}");
-                              Get.to(const SearchScreen());
-                            },
-                            child: searchField(),
-                          ),
-                        ),
+                  // Search field (limited width)
+                  SizedBox(
+                    width: kIsWeb ? 500 : Get.width * 0.75, // limit width
+                    child: InkWell(
+                      onTap: () {
+                        Get.to(const SearchScreen());
+                      },
+                      child: searchField(),
+                    ),
+                  ),
+
+                  // Spacing
                   const SizedBox(width: 10),
+
+                  // Switch profile icon
                   InkWell(
                     onTap: () {
                       showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return CustomDialogBox(
-                                title: "Alert".tr,
-                                descriptions: "do you want to switch as owner?".tr,
-                                img: Image.asset(
-                                  "assets/icon/switch_profile_ico.png",
-                                  height: 85,
-                                  width: 85,
-                                ),
-                                positiveString: "Ok".tr,
-                                negativeString: "Cancel".tr,
-                                positiveBgColor: AppThemData.success07,
-                                positiveClick: () async{
-                                  print("currentUserModel:-  ${Constant.currentUserModel.value?.role}");
-
-                                  if (Constant.currentUserModel.value?.role == "Guest"){
-                                    print("object1");
-                                    Get.back();
-                                    Get.to(LoginScreenOwner());
-                                    //Constant.isGustUser = true;
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: "Alert".tr,
+                            descriptions: "Do you want to switch as owner?".tr,
+                            img: Image.asset(
+                              "assets/icon/switch_profile_ico.png",
+                              height: 85,
+                              width: 85,
+                            ),
+                            positiveString: "Ok".tr,
+                            negativeString: "Cancel".tr,
+                            positiveBgColor: AppThemData.success07,
+                            positiveClick: ()async{
+                              print("currentUserModel:- ${Constant.currentUserModel.value?.role}");
+                              if(Constant.currentUserModel.value?.role=="Guest"){
+                                print("object1");
+                                Get.back();
+                                Get.to(LoginScreenOwner());//Constant.isGustUser=true;
+                              }
+                              else{
+                                bool isPlanExpire=false;
+                                if(Constant.currentUserModel.value?.subscriptionPlan?.id!=null){
+                                  if(Constant.currentUserModel.value?.subscriptionExpiryDate==null){
+                                    if(Constant.currentUserModel.value?.subscriptionPlan?.expiryDay=='-1'){
+                                      isPlanExpire=false;
+                                    }else{
+                                      isPlanExpire=true;
+                                    }
                                   }else{
-                                    bool isPlanExpire = false;
-                                    if (Constant.currentUserModel.value?.subscriptionPlan?.id != null) {
-                                      if (Constant.currentUserModel.value?.subscriptionExpiryDate == null) {
-                                        if (Constant.currentUserModel.value?.subscriptionPlan?.expiryDay == '-1') {
-                                          isPlanExpire = false;
-                                        } else {
-                                          isPlanExpire = true;
-                                        }
-                                      } else {
-                                        if (Constant.currentUserModel.value!.subscriptionExpiryDate != null){
-                                          DateTime expiryDate = Constant.currentUserModel.value!.subscriptionExpiryDate!.toDate();
-                                          isPlanExpire = expiryDate.isBefore(DateTime.now());
-                                        }
-                                      }
-                                    }
-                                    else {
-                                      isPlanExpire = true;
-                                    }
-                                    if ( Constant.currentUserModel.value?.subscriptionPlanId == null || isPlanExpire == true) {
-                                      if (Constant.adminCommission?.enable == false && Constant.isSubscriptionModelApplied == false) {
-                                        Get.offAll(const DashBoardScreenOwner());
-                                      } else {
-                                        Get.back();
-                                        Get.to(const SubscriptionPlanScreenOwner(isBack: true),);
-                                      }
-                                    }
-                                    else if (Constant.currentUserModel.value?.subscriptionPlan?.features?.ownerMobileApp == true) {
-
-                                      Get.offAll(const DashBoardScreenOwner());
-                                    } else {
-                                      Get.offAll(const AppNotAccessScreenOwner());
+                                    if(Constant.currentUserModel.value!.subscriptionExpiryDate!=null){
+                                      DateTime expiryDate = Constant.currentUserModel.value!.subscriptionExpiryDate!.toDate();
+                                      isPlanExpire = expiryDate.isBefore(DateTime.now());
                                     }
                                   }
-                                },
-                                negativeClick: () async {
-                                  Get.back();
+                                }else{
+                                  isPlanExpire=true;
+                                }if(Constant.currentUserModel.value?.subscriptionPlanId==null||isPlanExpire==true){
+                                  if(Constant.adminCommission?.enable==false&&Constant.isSubscriptionModelApplied==false){
+                                    Get.offAll(DashBoardScreenOwner());
+                                  }else{
+                                    Get.back();Get.to(SubscriptionPlanScreenOwner(isBack: true),
+                                    );
+                                  }
                                 }
-                            );
-                          });
+                                else if(Constant.currentUserModel.value?.subscriptionPlan?.features?.ownerMobileApp==true){
+                                  Get.offAll(DashBoardScreenOwner());
+                                }else{
+                              Get.offAll(AppNotAccessScreenOwner());
+                              }
+                            }
+                            },
 
+                            negativeClick: () => Get.back(),
+                          );
+                        },
+                      );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10, bottom: 10),
-                      child: Image.asset(
-                        'assets/icon/switch_profile_ico.png',
-                        height: kIsWeb ? 70 : 35, // adjust size as needed
-                        width: kIsWeb ? 70 : 35,
-                        color: themeChange.getThem()
-                            ? AppThemData.primary06
-                            : AppThemData.primary06,
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.orange,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/icon/switch_profile_ico.png',
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -381,7 +373,7 @@ class HomeScreen extends StatelessWidget {
                                                     child: Container(
                                                       color: themeChange
                                                               .getThem()
-                                                          ? AppThemData.grey10
+                                                          ? AppThemData.white
                                                           : AppThemData.white,
                                                       child: Stack(
                                                         children: [
@@ -401,12 +393,11 @@ class HomeScreen extends StatelessWidget {
                                                                       Alignment
                                                                           .topLeft,
                                                                   child: Text(
-                                                                      "Parking near you"
-                                                                          .tr,
+                                                                      "Parking near you".tr,
                                                                       style:
                                                                           TextStyle(
                                                                         color: themeChange.getThem()
-                                                                            ? AppThemData.grey01
+                                                                            ? AppThemData.grey10
                                                                             : AppThemData.grey10,
                                                                         fontSize:
                                                                             16,
@@ -465,7 +456,7 @@ class HomeScreen extends StatelessWidget {
                                                                                 Text(
                                                                               parkingModel.name.toString(),
                                                                               style: TextStyle(
-                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                                color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10,
                                                                                 fontSize: 16,
                                                                                 height: 1.57,
                                                                                 fontFamily: AppThemData.robotoBold,
@@ -566,7 +557,7 @@ class HomeScreen extends StatelessWidget {
                                                                               parkingModel.address.toString(),
                                                                               maxLines: 1,
                                                                               style: TextStyle(
-                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                                color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10,
                                                                                 fontSize: 12,
                                                                                 height: 1.57,
                                                                                 overflow: TextOverflow.ellipsis,
@@ -583,13 +574,13 @@ class HomeScreen extends StatelessWidget {
                                                                             children: [
                                                                               SvgPicture.asset(
                                                                                 parkingModel.parkingType == "2" ? "assets/icon/ic_bike.svg" : "assets/icon/ic_car_fill.svg",
-                                                                                color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                                color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10,
                                                                               ),
                                                                               Text(
                                                                                 " ${parkingModel.parkingType.toString()} wheel".tr,
                                                                                 maxLines: 1,
                                                                                 style: TextStyle(
-                                                                                  color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
+                                                                                  color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey10,
                                                                                   fontSize: 12,
                                                                                   height: 1.57,
                                                                                   overflow: TextOverflow.ellipsis,
@@ -1086,7 +1077,7 @@ class HomeScreen extends StatelessWidget {
                                                                           const SizedBox(
                                                                               width: 5),
                                                                           Text(
-                                                                            "available",
+                                                                            "available".tr,
                                                                             style:
                                                                                 const TextStyle(
                                                                               color: AppThemData.grey10,
@@ -1169,7 +1160,7 @@ class HomeScreen extends StatelessWidget {
                                                                           const SizedBox(
                                                                               width: 5),
                                                                           Text(
-                                                                            "available",
+                                                                            "available".tr,
                                                                             style:
                                                                                 const TextStyle(
                                                                               color: AppThemData.grey10,
@@ -1204,7 +1195,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget searchField() {
     return Container(
       margin: const EdgeInsets.only(left: 15, bottom: 10, top: 10),

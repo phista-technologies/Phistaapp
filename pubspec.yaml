@@ -1,13 +1,9 @@
 name: phista
 description: A new Flutter project.
-
 publish_to: "none"
-
-version: 1.0.2+17
-
+version: 1.0.2+18
 environment:
   sdk: ">=3.0.5 <4.0.0"
-
 dependencies:
   flutter:
     sdk: flutter
@@ -62,7 +58,8 @@ dependencies:
   flutter_osm_plugin: ^1.4.2
   flutter_email_sender: ^6.0.2
   flutter_html: ^3.0.0
-
+  flutter_stripe_web: ^6.5.1
+  flutter_google_places_sdk: ^0.4.0
 
 dependency_overrides:
   webview_flutter: ^4.8.0

@@ -39,6 +39,7 @@ class InformationController extends GetxController {
   final ImagePicker imagePicker = ImagePicker();
   RxString profileImage = "".obs;
   RxString profileImageTemp = "".obs;
+  Uint8List? profileImageBytes; // <-- only for web
   RxBool passwordVisible = true.obs;
   RxString gmailLogType = "".obs;
   RxString verificationIdAL = "".obs;
@@ -87,6 +88,7 @@ class InformationController extends GetxController {
 
   createAccount() async {
     String? fcmToken = "";
+    FocusManager.instance.primaryFocus?.unfocus();
     if (!kIsWeb){
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
@@ -97,18 +99,42 @@ class InformationController extends GetxController {
     }else{
       fcmToken = await NotificationService.getWebToken();
     }
-    if (profileImage.value.isNotEmpty) {
+   /* if (profileImage.value.isNotEmpty) {
       profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
       );
+    }*/
+
+    if (profileImage.value.isNotEmpty) {
+
+      if (kIsWeb) {
+        // ✅ Web: upload bytes instead of File
+        Uint8List fileBytes = await XFile(profileImage.value).readAsBytes();
+        String fileName = "profile_${DateTime.now().millisecondsSinceEpoch}.png";
+        profileImageTemp.value = await Constant.uploadUserImageToFireStorageWeb(
+          fileBytes,
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          fileName,
+        );
+
+      } else {
+        // ✅ Mobile: normal File upload
+        profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
+          File(profileImage.value),
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          File(profileImage.value).path.split('/').last,
+        );
+      }
     }
+
     if (referralCodeController.value.text.isNotEmpty) {
       await FireStoreUtils.checkReferralCodeValidOrNot(
               referralCodeController.value.text)
           .then((value) async {
         if (value == true) {
+          FocusManager.instance.primaryFocus?.unfocus();
           ShowToastDialog.showLoader("please_wait".tr);
           UserModel userModelData = userModel.value;
           userModelData.fullName = fullNameController.value.text;
@@ -175,6 +201,7 @@ class InformationController extends GetxController {
       });
     }
     else {
+      FocusManager.instance.primaryFocus?.unfocus();
       ShowToastDialog.showLoader("please_wait".tr);
       UserModel userModelData = userModel.value;
       userModelData.fullName = fullNameController.value.text;
@@ -239,13 +266,35 @@ class InformationController extends GetxController {
     }else{
       fcmToken = await NotificationService.getWebToken();
     }
-    if (profileImage.value.isNotEmpty) {
+   /* if (profileImage.value.isNotEmpty) {
       log("profileImage1:--${profileImage.value}");
       profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
       );
+    }*/
+
+    if (profileImage.value.isNotEmpty) {
+
+      if (kIsWeb) {
+        // ✅ Web: upload bytes instead of File
+        Uint8List fileBytes = await XFile(profileImage.value).readAsBytes();
+        String fileName = "profile_${DateTime.now().millisecondsSinceEpoch}.png";
+        profileImageTemp.value = await Constant.uploadUserImageToFireStorageWeb(
+          fileBytes,
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          fileName,
+        );
+
+      } else {
+        // ✅ Mobile: normal File upload
+        profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
+          File(profileImage.value),
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          File(profileImage.value).path.split('/').last,
+        );
+      }
     }
     log("profileImage2:--${profileImage.value}");
     if (referralCodeController.value.text.isNotEmpty) {
@@ -384,7 +433,7 @@ class InformationController extends GetxController {
     }
   }
 
-  Future pickFile({required ImageSource source}) async {
+ /* Future pickFile({required ImageSource source}) async {
     try {
       XFile? image = await imagePicker.pickImage(source: source);
       if (image == null) return;
@@ -393,7 +442,28 @@ class InformationController extends GetxController {
     } on PlatformException catch (e) {
       ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
     }
+  }*/
+
+  Future pickFile({required ImageSource source}) async {
+    try {
+      XFile? image = await imagePicker.pickImage(source: source);
+      if (image == null) return;
+
+      Get.back();
+
+      if (kIsWeb) {
+        profileImageBytes = await image.readAsBytes();
+        profileImage.value = image.path; // keep path only for preview
+      } else {
+        profileImage.value = image.path; // normal file path
+      }
+
+      update();
+    } catch (e) {
+      ShowToastDialog.showToast("Failed to pick image: $e");
+    }
   }
+
 
   Future<UserCredential?> createUserWithEmailPassword({
     required String email,

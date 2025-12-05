@@ -55,6 +55,7 @@ class BookingParkingDetailsController extends GetxController {
   @override
   void onInit() {
     Constant.globalParkingModel.value = null;
+
     getArgument();
     super.onInit();
 
@@ -67,7 +68,7 @@ class BookingParkingDetailsController extends GetxController {
       parkingModel.value = argumentData['parkingModel'];
       getParkingDetails();
     }
-
+    await setDefaultVehicle();
     startTimeController.value.text = DateFormat('HH:mm').format(startTime.value);
     Duration duration = Duration(hours: selectedDuration.value.toInt());
 
@@ -86,6 +87,14 @@ class BookingParkingDetailsController extends GetxController {
       }
     });
   }
+  setDefaultVehicle() async {
+    await FireStoreUtils.getUserVehicle().then((value) {
+      if (value != null && value.isNotEmpty) {
+        selectedVehicle.value = value.first;   // 👉 default 0 index
+      }
+    });
+  }
+
 
   calculateParkingAmount(String type,String noOfMonth) {
 

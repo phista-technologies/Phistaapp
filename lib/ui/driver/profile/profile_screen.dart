@@ -49,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                InkWell(
+                /*InkWell(
                   onTap: () {
                     Get.to(const InboxScreen());
                   },
@@ -60,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
                             ? AppThemData.grey01
                             : AppThemData.grey08),
                   ),
-                )
+                )*/
               ],
             ),
             body: controller.isLoading.value
@@ -199,7 +199,7 @@ class ProfileScreen extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return CustomDialogBox(
                                         title: "Alert".tr,
-                                        descriptions: "do you want to switch as owner?".tr,
+                                        descriptions: "Do you want to switch as owner?".tr,
                                         img: Image.asset(
                                           "assets/icon/switch_profile_ico.png",
                                           height: 85,
@@ -410,7 +410,7 @@ class ProfileScreen extends StatelessWidget {
       trailing: const Icon(Icons.arrow_forward_ios, size: 18),
       leading: SvgPicture.asset(
         svgImage,
-        color: title == "Log Out"
+        color: title == "Log Out".tr
             ? AppThemData.error08
             : themeChange.getThem()
                 ? AppThemData.grey01
@@ -422,7 +422,7 @@ class ProfileScreen extends StatelessWidget {
         style: TextStyle(
             fontSize: 16,
             fontFamily: AppThemData.medium,
-            color: title == "Log Out"
+            color: title == "Log Out".tr
                 ? AppThemData.error08
                 : themeChange.getThem()
                     ? AppThemData.grey01
@@ -479,7 +479,7 @@ class ProfileScreen extends StatelessWidget {
         style: TextStyle(
             fontSize: 16,
             fontFamily: AppThemData.medium,
-            color: title == "Log Out"
+            color: title == "Log Out".tr
                 ? AppThemData.primary07
                 : themeChange.getThem()
                 ? AppThemData.primary07

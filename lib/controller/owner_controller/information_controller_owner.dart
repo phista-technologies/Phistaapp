@@ -33,6 +33,8 @@ class InformationControllerOwner extends GetxController {
   RxString loginType = "".obs;
   final ImagePicker imagePicker = ImagePicker();
   RxString profileImage = "".obs;
+  //  Added for Flutter Web
+  Uint8List? profileImageBytes;
   RxString gmailLogType = "".obs;
   RxString verificationIdAL = "".obs;
   RxString otpTextAL = "".obs;
@@ -86,12 +88,30 @@ class InformationControllerOwner extends GetxController {
       fcmToken = await NotificationService.getWebToken();
     }
 
-    if (profileImage.value.isNotEmpty) {
+    /*if (profileImage.value.isNotEmpty) {
       profileImage.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
       );
+    }*/
+
+    if (profileImage.value.isNotEmpty) {
+      if (kIsWeb) {
+        // ✅ Upload using bytes on web
+        profileImage.value = await Constant.uploadUserImageBytesToFireStorage(
+          profileImageBytes!,
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          "profile.jpg",
+        );
+      } else {
+        // ✅ Mobile → same as before
+        profileImage.value = await Constant.uploadUserImageToFireStorage(
+          File(profileImage.value),
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          File(profileImage.value).path.split('/').last,
+        );
+      }
     }
 
     UserModel userModelData = userModel.value;
@@ -182,12 +202,30 @@ class InformationControllerOwner extends GetxController {
      fcmToken = await NotificationService.getWebToken();
     }
 
-    if (profileImage.value.isNotEmpty) {
+   /* if (profileImage.value.isNotEmpty) {
       profileImage.value = await Constant.uploadUserImageToFireStorage(
         File(profileImage.value),
         "profileImage/${FireStoreUtils.getCurrentUid()}",
         File(profileImage.value).path.split('/').last,
       );
+    }*/
+
+    if (profileImage.value.isNotEmpty) {
+      if (kIsWeb) {
+        // ✅ Upload using bytes on web
+        profileImage.value = await Constant.uploadUserImageBytesToFireStorage(
+          profileImageBytes!,
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          "profile.jpg",
+        );
+      } else {
+        // ✅ Mobile → same as before
+        profileImage.value = await Constant.uploadUserImageToFireStorage(
+          File(profileImage.value),
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          File(profileImage.value).path.split('/').last,
+        );
+      }
     }
 
     UserModel userModelData = userModel.value;
@@ -293,7 +331,7 @@ class InformationControllerOwner extends GetxController {
     }
   }
 
-  Future pickFile({required ImageSource source}) async {
+  /*Future pickFile({required ImageSource source}) async {
     try {
       XFile? image = await imagePicker.pickImage(source: source);
       if (image == null) return;
@@ -302,7 +340,30 @@ class InformationControllerOwner extends GetxController {
     } on PlatformException catch (e) {
       ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
     }
+  }*/
+  // ✅ Changed pickFile()
+  Future pickFile({required ImageSource source}) async {
+    try {
+      XFile? image = await imagePicker.pickImage(source: source);
+      if (image == null) return;
+
+      Get.back();
+
+      if (kIsWeb) {
+        // ✅ Use bytes for web
+        profileImageBytes = await image.readAsBytes();
+        profileImage.value = "web"; // Just a flag to show image
+      } else {
+        // ✅ Mobile → keep using file path
+        profileImage.value = image.path;
+      }
+
+      update();
+    } on PlatformException catch (e) {
+      ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
+    }
   }
+
 
   Future<UserCredential?> createUserWithEmailPassword({
     required String email,

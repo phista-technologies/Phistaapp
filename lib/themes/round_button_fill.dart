@@ -12,6 +12,8 @@ class RoundedButtonFill extends StatelessWidget {
   final Color? textColor;
   final Widget? icon;
   final bool? isRight;
+  final bool? isBorder;
+
   final Function()? onPress;
 
   const RoundedButtonFill(
@@ -25,7 +27,8 @@ class RoundedButtonFill extends StatelessWidget {
       this.icon,
       this.fontSizes,
       this.textColor,
-      this.isRight});
+      this.isRight,
+      this.isBorder,});
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +43,22 @@ class RoundedButtonFill extends StatelessWidget {
         decoration: ShapeDecoration(
           color: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius??200),
+            borderRadius: BorderRadius.circular(radius??10),
+            side: isBorder == true
+                ? const BorderSide(
+              color: AppThemData.black,
+              width: 1.5,
+            ) : BorderSide.none,
           ),
+
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(width: 15,),
             (isRight == false)
-                ? Padding(padding: const EdgeInsets.only(right: 5), child: icon)
+                ? Padding(padding: const EdgeInsets.only(right: 0), child: icon)
                 : const SizedBox(),
             Expanded(
               child: Text(
@@ -64,7 +74,7 @@ class RoundedButtonFill extends StatelessWidget {
               ),
             ),
             (isRight == true)
-                ? Padding(padding: const EdgeInsets.only(left: 5), child: icon)
+                ? Padding(padding: const EdgeInsets.only(left:5), child: icon)
                 : const SizedBox(),
           ],
         ),
@@ -139,3 +149,135 @@ class RoundedButtonFexiable extends StatelessWidget {
     );
   }
 }
+
+class RoundedPaymentButton extends StatelessWidget {
+  final String title;
+  final String? rightText;    // for showing 20$ etc.
+  final bool isSelected;
+  final VoidCallback onPress;
+  final Widget? leadingIcon;  // NEW: icon support
+
+  const RoundedPaymentButton({
+    super.key,
+    required this.title,
+    this.rightText,
+    required this.isSelected,
+    required this.onPress,
+    this.leadingIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPress,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: isSelected ? Colors.black : Colors.black.withOpacity(.4),
+            width: 1.3,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.08),
+              blurRadius: 4,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            // ICON LEFT (Wallet, Stripe, Apple Pay etc.)
+            if (leadingIcon != null) ...[
+              leadingIcon!,
+              const SizedBox(width: 12),
+            ],
+
+            // Title text
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+
+            // Right side amount (for wallet)
+            if (rightText != null)
+              Text(
+                rightText!,
+                style: const TextStyle(
+                  color: AppThemData.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RoundedPaymentButtonCenter extends StatelessWidget {
+  final String title;
+  final VoidCallback onPress;
+  final Widget? leadingIcon;
+  const RoundedPaymentButtonCenter({
+    super.key,
+    required this.title,
+    required this.onPress,
+    this.leadingIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPress,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 14),
+        decoration: BoxDecoration(
+          color: AppThemData.black,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.black,
+            width: 1.3,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.08),
+              blurRadius: 4,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (leadingIcon != null) ...[
+              leadingIcon!,
+              const SizedBox(width: 10),     // spacing between icon & text
+            ],
+
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppThemData.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+

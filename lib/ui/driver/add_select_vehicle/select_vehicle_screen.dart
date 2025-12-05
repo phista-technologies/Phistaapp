@@ -168,10 +168,8 @@ class SelectVehicleScreen extends StatelessWidget {
                                           Obx(
                                             () => Radio(
                                               value: userVehicleModel,
-                                              groupValue: controller
-                                                  .selectedVehicle.value,
-                                              activeColor:
-                                                  AppThemData.primary08,
+                                              groupValue: controller.selectedVehicle.value,
+                                              activeColor: AppThemData.primary08,
                                               onChanged: (val) {
                                                 if (val != null) {
                                                   controller.selectedVehicle

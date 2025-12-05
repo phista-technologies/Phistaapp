@@ -1,5 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,7 +35,7 @@ class SearchScreen extends StatelessWidget {
           appBar: AppBar(
             elevation: 0,
             backgroundColor:
-            themeChange.getThem() ? AppThemData.grey10 : AppThemData.white,
+                themeChange.getThem() ? AppThemData.grey10 : AppThemData.white,
             leading: InkWell(
                 onTap: () => Get.back(),
                 child: Icon(Icons.arrow_back_sharp,
@@ -42,18 +45,21 @@ class SearchScreen extends StatelessWidget {
             titleSpacing: -10,
             title: InkWell(
               onTap: () async {
-                if (Constant.selectedMapType == 'osm') {
-                  Get.to(() => const LocationPicker())?.then((value) {
+                if (Constant.selectedMapType == 'osm' || kIsWeb) {
+                  Get.to(() => const LocationPicker(
+                        initialPosition: LatLng(-33.8567844, 151.213108),
+                      ))?.then((value) {
+                    log("get parkings after locations pick  $value");
                     if (value != null) {
+                      log("get parkings after locations pick ${value["address"]}");
                       controller.searchController.value.text =
-                          value.displayName!.toString();
+                          value["address"];
                       controller.latLng.value = LocationLatLng(
-                          latitude: value.lat, longitude: value.lon);
+                          latitude: value["lat"], longitude: value["lng"]);
                       controller.getParking();
                     }
                   });
-                }
-                else {
+                } else {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -75,9 +81,7 @@ class SearchScreen extends StatelessWidget {
                         usePlaceDetailSearch: true,
                         zoomGesturesEnabled: true,
                         zoomControlsEnabled: true,
-                        resizeToAvoidBottomInset: false, // only works in page mode, less flickery, remove if wrong offsets
-
-
+                        resizeToAvoidBottomInset: false,
                       ),
                     ),
                   );
@@ -957,5 +961,3 @@ class SearchScreen extends StatelessWidget {
             ));
   }
 }
-
-

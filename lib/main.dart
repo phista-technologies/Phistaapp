@@ -1,5 +1,7 @@
 import 'dart:convert';
-
+import 'dart:developer';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,47 +14,43 @@ import 'package:phista/firebase_options.dart';
 import 'package:phista/model/language_model.dart';
 import 'package:phista/services/localization_service.dart';
 import 'package:phista/themes/styles.dart';
+import 'package:phista/ui/driver/booking_process/payment_select_screen.dart';
 import 'package:phista/ui/driver/splash_screen.dart';
+import 'package:phista/ui/owner/MyParkingBookingScreenOwnerForWeb/MyParkingBookingScreenOwnerForWeb.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('6Ldale0rAAAAACk2vxq67h1Is798truPDDvv2N7i'),
     androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.appAttest,
   );
-
   await Preferences.initPref();
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
-
   @override
+
   void initState() {
     getCurrentAppTheme();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Preferences.getString(
-        Preferences.languageCodeKey,
-      ).toString().isNotEmpty) {
+      if (Preferences.getString(Preferences.languageCodeKey,).toString().isNotEmpty){
         LanguageModel languageModel = Constant.getLanguage();
         LocalizationService().changeLocale(languageModel.code.toString());
-      } else {
+      }else{
         LanguageModel languageModel = LanguageModel(
           id: "cdc",
           code: "en",
@@ -65,10 +63,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }
     });
-
     super.initState();
   }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     getCurrentAppTheme();
@@ -107,10 +103,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               fallbackLocale: LocalizationService.locale,
               translations: LocalizationService(),
               builder: EasyLoading.init(),
+              initialRoute: '/',
+              getPages: [
+                GetPage(name: '/PaymentSelectScreen', page: () => PaymentSelectScreen()),
+              ],
               home: GetBuilder<GlobalSettingController>(
                 init: GlobalSettingController(),
                 builder: (context) {
                   return const SplashScreen();
+                  //return const MyParkingBookingScreenOwnerForWeb(isBack: false,);
                 },
               ),
             ),
@@ -119,4 +120,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ),
     );
   }
+  String _getInitialRoute() {
+    final uri = Uri.base; // e.g. https://myapp.web.app/home
+    final path = uri.path; // returns '/home'
+    if (path.isNotEmpty && path != '/') {
+      return path; // directly go to /home, /settings, etc.
+    }
+    return '/'; // default route (Splash)
+  }
+
 }
+
+
+
+
+
+
+
+
+

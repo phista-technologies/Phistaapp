@@ -173,7 +173,7 @@ class InboxScreenOwner extends StatelessWidget {
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             shrinkWrap: true,
             reverse: true,
-            onEmpty: Constant.showEmptyView(message: "No conversation found".tr),
+            onEmpty: Constant.showEmptyView(message: "No conversion found".tr),
             itemBuilder: (context, documentSnapshots, index) {
               InboxModelOwner inboxModel = InboxModelOwner.fromJson(documentSnapshots[index].data() as Map<String, dynamic>);
 

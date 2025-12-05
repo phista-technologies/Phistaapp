@@ -1346,6 +1346,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_email_sender (0.0.1):
     - Flutter
+  - flutter_google_places_sdk_ios (0.0.3):
+    - Flutter
+    - GooglePlaces (~> 8.5.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_osm_plugin (0.0.1):
@@ -1381,6 +1384,7 @@ PODS:
   - GoogleMaps/Base (8.4.0)
   - GoogleMaps/Maps (8.4.0):
     - GoogleMaps/Base
+  - GooglePlaces (8.5.0)
   - GoogleSignIn (8.0.0):
     - AppAuth (< 2.0, >= 1.7.3)
     - AppCheckCore (~> 11.0)
@@ -1623,6 +1627,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
+  - flutter_google_places_sdk_ios (from `.symlinks/plugins/flutter_google_places_sdk_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_osm_plugin (from `.symlinks/plugins/flutter_osm_plugin/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -1674,6 +1679,7 @@ SPEC REPOS:
     - Google-Maps-iOS-Utils
     - GoogleDataTransport
     - GoogleMaps
+    - GooglePlaces
     - GoogleSignIn
     - GoogleUtilities
     - "gRPC-C++"
@@ -1720,6 +1726,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_email_sender:
     :path: ".symlinks/plugins/flutter_email_sender/ios"
+  flutter_google_places_sdk_ios:
+    :path: ".symlinks/plugins/flutter_google_places_sdk_ios/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_osm_plugin:
@@ -1800,6 +1808,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: 50fc9ee147392943e492467db6b52759b0447037
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_email_sender: 10a22605f92809a11ef52b2f412db806c6082d40
+  flutter_google_places_sdk_ios: 76e1260ead0522ef09c206563a7288aa3c77202e
   flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
   flutter_osm_plugin: 60be722901333b6107275c9c51ffb79167b6d99d
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
@@ -1810,6 +1819,7 @@ SPEC CHECKSUMS:
   google_sign_in_ios: 7411fab6948df90490dc4620ecbcabdc3ca04017
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
+  GooglePlaces: 426efb69051e7b460e16300ba63598687d10fa1a
   GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   "gRPC-C++": cc207623316fb041a7a3e774c252cf68a058b9e8

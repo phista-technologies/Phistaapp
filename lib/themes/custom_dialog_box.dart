@@ -407,6 +407,7 @@ class CustomDialogPayAsGuest extends StatelessWidget {
   contentBox(context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return Container(
+      width: kIsWeb ? 400 : null,
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
       decoration: BoxDecoration(shape: BoxShape.rectangle, color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: Column(

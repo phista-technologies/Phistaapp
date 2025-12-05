@@ -27,7 +27,7 @@ class RoundedButtonGradiant extends StatelessWidget {
             colors: AppThemData.gradient03,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(200),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
         child: Center(

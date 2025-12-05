@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stripe Redirect</title>
+</head>
+<body>
+<script>
+    // Get the status from the URL ?status=success or ?status=cancel
+    const status = new URLSearchParams(window.location.search).get('status');
+
+    // Save status so Flutter app can read it
+    localStorage.setItem('stripe_result', status);
+
+    // ✅ Close the Stripe tab
+    window.close();
+</script>
+
+<p>You can close this window.</p>
+</body>
+</html>

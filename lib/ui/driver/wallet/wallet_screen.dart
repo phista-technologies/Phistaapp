@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,7 +32,7 @@ class WalletScreen extends StatelessWidget {
         builder: (controller) {
           return Scaffold(
             appBar:
-                UiInterface().customAppBar(context, themeChange, "wallet".tr),
+                UiInterface().customAppBar(context, themeChange, "Wallet".tr),
             body: controller.isLoading.value
                 ? Constant.loader()
                 : Padding(
@@ -40,91 +41,93 @@ class WalletScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: Responsive.width(100, context),
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: ExactAssetImage(
-                                    'assets/images/ic_wallet_bg.png'),
-                                fit: BoxFit.fill),
-                          ),
-                          child: Column(children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: Text(
-                                "Total Amount".tr,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: AppThemData.medium,
-                                    color: themeChange.getThem()
-                                        ? AppThemData.primary09
-                                        : AppThemData.primary09),
+                        Center(
+                          child: Container(
+                            width: Responsive.width(!kIsWeb?100:80, context),
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: ExactAssetImage(
+                                      'assets/images/ic_wallet_bg.png'),
+                                  fit: BoxFit.cover),
+                                borderRadius: BorderRadius.all(Radius.circular(30))
+                            ),
+                            child: Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Text(
+                                  "Total Amount".tr,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: AppThemData.medium,
+                                      color: themeChange.getThem()
+                                          ? AppThemData.primary09
+                                          : AppThemData.primary09),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                Constant.amountShow(
-                                    amount: controller
-                                        .userModel.value.walletAmount),
-                                style: TextStyle(
-                                    fontSize: 32,
-                                    fontFamily: AppThemData.bold,
-                                    color: themeChange.getThem()
-                                        ? AppThemData.primary11
-                                        : AppThemData.primary11),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  Constant.amountShow(
+                                      amount: controller.userModel.value.walletAmount),
+                                  style: TextStyle(
+                                      fontSize: 32,
+                                      fontFamily: AppThemData.bold,
+                                      color: themeChange.getThem()
+                                          ? AppThemData.primary11
+                                          : AppThemData.primary11),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            // Text(
-                            //   "Minimum Withdrawal will be a ${Constant.amountShow(amount: Constant.minimumAmountToWithdrawal.toString())}".tr,
-                            //   style: TextStyle(fontSize: 12, fontFamily: AppThemData.medium, color: themeChange.getThem() ? AppThemData.primary09 : AppThemData.primary09),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: RoundedButtonFill(
-                                      title: "Add Cash".tr,
-                                      color: AppThemData.white,
-                                      icon: const Icon(Icons.add,
-                                          color: AppThemData.grey11),
-                                      isRight: false,
-                                      onPress: () {
-                                        paymentMethodDialog(
-                                            context, controller, themeChange);
-                                      },
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              // Text(
+                              //   "Minimum Withdrawal will be a ${Constant.amountShow(amount: Constant.minimumAmountToWithdrawal.toString())}".tr,
+                              //   style: TextStyle(fontSize: 12, fontFamily: AppThemData.medium, color: themeChange.getThem() ? AppThemData.primary09 : AppThemData.primary09),
+                              // ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 20),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: RoundedButtonFill(
+                                        title: "Add Cash".tr,
+                                        color: AppThemData.white,
+                                        icon: const Icon(Icons.add,
+                                            color: AppThemData.grey11),
+                                        isRight: false,
+                                        onPress: () {
+                                          paymentMethodDialog(
+                                              context, controller, themeChange);
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  // Expanded(
-                                  //   child: RoundedButtonFill(
-                                  //     title: "Withdrawal".tr,
-                                  //     color: AppThemData.primary05,
-                                  //     onPress: () async {
-                                  //       if (double.parse(controller.userModel.value.walletAmount.toString()) <= double.parse(Constant.minimumAmountToWithdrawal.toString())) {
-                                  //         ShowToastDialog.showToast("Insufficient balance".tr);
-                                  //       } else {
-                                  //         ShowToastDialog.showLoader("Please wait".tr);
-                                  //         await FireStoreUtils.bankDetailsIsAvailable().then((value) {
-                                  //           ShowToastDialog.closeLoader();
-                                  //           if (value == true) {
-                                  //             withdrawalBottomSheet(context, controller, themeChange);
-                                  //           } else {
-                                  //             ShowToastDialog.showToast("Your bank details is not available.Please add bank details".tr);
-                                  //           }
-                                  //         });
-                                  //       }
-                                  //     },
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
-                            )
-                          ]),
+                                    // Expanded(
+                                    //   child: RoundedButtonFill(
+                                    //     title: "Withdrawal".tr,
+                                    //     color: AppThemData.primary05,
+                                    //     onPress: () async {
+                                    //       if (double.parse(controller.userModel.value.walletAmount.toString()) <= double.parse(Constant.minimumAmountToWithdrawal.toString())) {
+                                    //         ShowToastDialog.showToast("Insufficient balance".tr);
+                                    //       } else {
+                                    //         ShowToastDialog.showLoader("Please wait".tr);
+                                    //         await FireStoreUtils.bankDetailsIsAvailable().then((value) {
+                                    //           ShowToastDialog.closeLoader();
+                                    //           if (value == true) {
+                                    //             withdrawalBottomSheet(context, controller, themeChange);
+                                    //           } else {
+                                    //             ShowToastDialog.showToast("Your bank details is not available.Please add bank details".tr);
+                                    //           }
+                                    //         });
+                                    //       }
+                                    //     },
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              )
+                            ]),
+                          ),
                         ),
                         const SizedBox(
                           height: 10,

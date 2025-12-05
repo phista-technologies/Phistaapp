@@ -41,4 +41,39 @@ class UiInterface {
       actions: actions,
     );
   }
+  AppBar customAppBar1(
+      BuildContext context,
+      themeChange,
+      String title, {
+        bool isBack = true,
+        Color? backgroundColor,
+        Color iconColor = AppThemData.grey09,
+        Color textColor = AppThemData.grey09,
+        List<Widget>? actions,
+        Function()? onBackTap,
+        bool centerTile = false
+      }) {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+    return AppBar(
+      title: Text(
+        title,
+        style: TextStyle(color: themeChange.getThem() ? textColor : textColor, fontFamily: AppThemData.semiBold, fontSize:kIsWeb?22: 18),
+      ),
+      backgroundColor: themeChange.getThem() ? backgroundColor ?? AppThemData.grey10 : backgroundColor ?? AppThemData.white,
+      automaticallyImplyLeading: isBack,
+      elevation: 0,
+      centerTitle: centerTile,
+      titleSpacing: isBack == true ? 0 : 16,
+      leading: isBack
+          ? InkWell(
+        onTap: onBackTap ??
+                () {
+              Get.back();
+            },
+        child: Icon(Icons.arrow_back, color: themeChange.getThem() ? textColor : iconColor),
+      )
+          : null,
+      actions: actions,
+    );
+  }
 }

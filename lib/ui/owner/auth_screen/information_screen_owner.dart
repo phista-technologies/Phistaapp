@@ -42,6 +42,29 @@ class InformationScreenOwner extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   // Profile Image Circle
+                 /* ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: controller.profileImage.isEmpty
+                        ? Image.asset(
+                      Constant.userPlaceHolder,
+                      height: isWeb
+                          ? Responsive.width(15, context)
+                          : Responsive.width(30, context),
+                      width: isWeb
+                          ? Responsive.width(15, context)
+                          : Responsive.width(30, context),
+                      fit: BoxFit.cover,
+                    )
+                        : Image.file(File(controller.profileImage.value),
+                      height: isWeb
+                          ? Responsive.width(15, context)
+                          : Responsive.width(30, context),
+                      width: isWeb
+                          ? Responsive.width(15, context)
+                          : Responsive.width(30, context),
+                      fit: BoxFit.cover,
+                    ),
+                  ),*/
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: controller.profileImage.isEmpty
@@ -55,17 +78,23 @@ class InformationScreenOwner extends StatelessWidget {
                           : Responsive.width(30, context),
                       fit: BoxFit.cover,
                     )
+                        : isWeb
+                    // ✅ On Web → show image using bytes
+                        ? Image.memory(
+                      controller.profileImageBytes!, // <-- use Uint8List
+                      height: Responsive.width(15, context),
+                      width: Responsive.width(15, context),
+                      fit: BoxFit.cover,
+                    )
+                    // ✅ On Mobile → show file path
                         : Image.file(
                       File(controller.profileImage.value),
-                      height: isWeb
-                          ? Responsive.width(15, context)
-                          : Responsive.width(30, context),
-                      width: isWeb
-                          ? Responsive.width(15, context)
-                          : Responsive.width(30, context),
+                      height: Responsive.width(30, context),
+                      width: Responsive.width(30, context),
                       fit: BoxFit.cover,
                     ),
                   ),
+
 
                   // Bottom-left Edit Icon
                   Positioned(

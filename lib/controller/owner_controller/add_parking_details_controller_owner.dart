@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,6 @@ import '../../utils/fire_store_utils.dart';
 import '../../utils/utils.dart';
 import '../../widgets/geoflutterfire/src/geoflutterfire.dart';
 import '../../widgets/geoflutterfire/src/models/point.dart';
-
 
 class AddParkingDetailsControllerOwner extends GetxController {
   Rx<TextEditingController> nameController = TextEditingController().obs;
@@ -132,18 +132,40 @@ class AddParkingDetailsControllerOwner extends GetxController {
     String imageFileName = File(parkingImage.value).path
         .split('/')
         .last;
-
-    if (parkingImage.value.isNotEmpty &&
-        Constant().hasValidUrl(parkingImage.value) == false) {
+   /* if (parkingImage.value.isNotEmpty && Constant().hasValidUrl(parkingImage.value) == false) {
       parkingImage.value = await Constant.uploadUserImageToFireStorage(
           File(parkingImage.value),
           "parkingImages/${FireStoreUtils.getCurrentUid()}", imageFileName);
+    }*/
+
+    if (!Constant().hasValidUrl(parkingImage.value) && parkingImage.value.isNotEmpty) {
+      if (kIsWeb) {
+        /// ✅ WEB — read bytes and upload
+        final XFile webImage = XFile(parkingImage.value);
+
+        Uint8List bytes = await webImage.readAsBytes();
+
+        parkingImage.value = await Constant.uploadUserImageToFireStorageWeb(
+          bytes,
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          webImage.name, // ✅ correct file name
+        );
+
+      }
+      else {
+        /// ✅ MOBILE — use File()
+        parkingImage.value = await Constant.uploadUserImageToFireStorage(
+          File(parkingImage.value),
+          "profileImage/${FireStoreUtils.getCurrentUid()}",
+          File(parkingImage.value).path.split('/').last,
+        );
+      }
     }
+
 
     if (parkingModel.value.id == null || parkingModel.value.userId == null) {
       parkingModel.value.id = Constant.getUuid();
       parkingModel.value.userId = FireStoreUtils.getCurrentUid();
-
       parkingModel.value.subscriptionTotalOrders =
           userModel.value.subscriptionTotalOrders;
       parkingModel.value.subscriptionPlanId =
@@ -229,5 +251,6 @@ class AddParkingDetailsControllerOwner extends GetxController {
     final minute = int.parse(parts[1]);
     return TimeOfDay(hour: hour, minute: minute);
   }
+
 
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -46,7 +47,7 @@ class AddWatchmenDetailsScreenOwner extends StatelessWidget {
               Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  Center(
+                 /* Center(
                       child: controller.profileImage.isEmpty
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(60),
@@ -74,8 +75,50 @@ class AddWatchmenDetailsScreenOwner extends StatelessWidget {
                                     height: Responsive.width(30, context),
                                     width: Responsive.width(30, context),
                                   ),
-                                )),
-                  Positioned(
+                                )),*/
+          Center(
+          child: ClipRRect(
+          borderRadius: BorderRadius.circular(60),
+          child: Obx(() {
+            if (controller.webImage.value != null && kIsWeb) {
+              return Image.memory(
+                controller.webImage.value!,
+                height: Responsive.width(30, context),
+                width: Responsive.width(30, context),
+                fit: BoxFit.cover,
+              );
+            }
+
+            if (controller.profileImage.isEmpty) {
+              return Image.asset(
+                Constant.userPlaceHolder,
+                height: Responsive.width(30, context),
+                width: Responsive.width(30, context),
+                fit: BoxFit.cover,
+              );
+            }
+
+            if (Constant().hasValidUrl(controller.profileImage.value)) {
+              return NetworkImageWidget(
+                imageUrl: controller.profileImage.value,
+                height: Responsive.width(30, context),
+                width: Responsive.width(30, context),
+              );
+            }
+
+            // mobile only
+            return Image.file(
+              File(controller.profileImage.value),
+              height: Responsive.width(30, context),
+              width: Responsive.width(30, context),
+              fit: BoxFit.cover,
+            );
+          }),
+        ),
+        ),
+
+
+        Positioned(
                     right: Responsive.width(34, context),
                     child: InkWell(
                       onTap: () {

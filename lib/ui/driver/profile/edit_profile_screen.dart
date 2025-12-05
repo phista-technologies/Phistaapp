@@ -62,37 +62,43 @@ class EditProfileScreen extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           children: [
             Center(
-                child: controller.profileImage.isEmpty
-                    ? ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
-                  child: Image.asset(
-                    Constant.userPlaceHolder,
-                    height:kIsWeb?200:Responsive.width(30, context),
-                    width:kIsWeb?200: Responsive.width(30, context),
-                    fit: BoxFit.fill,
-                  ),
+              child: controller.profileImage.isEmpty
+                  ? ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: Image.asset(
+                  Constant.userPlaceHolder,
+                  height: kIsWeb ? 200 : Responsive.width(30, context),
+                  width: kIsWeb ? 200 : Responsive.width(30, context),
+                  fit: BoxFit.fill,
+                ),
+              )
+                  : Constant().hasValidUrl(controller.profileImage.value) == false
+                  ? ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: kIsWeb
+                // ✅ On Web use Image.network even for local selected files
+                    ? Image.network(
+                  controller.profileImage.value,
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.fill,
                 )
-                    : Constant().hasValidUrl(
-                    controller.profileImage.value) ==
-                    false
-                    ? ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
-                  child: Image.file(
-                    File(controller.profileImage.value),
-                    height:kIsWeb?200: Responsive.width(30, context),
-                    width:kIsWeb?200: Responsive.width(30, context),
-                    fit: BoxFit.fill,
-                  ),
-                )
-                    : ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
-                      child: NetworkImageWidget(
-                                        imageUrl:
-                                        controller.profileImage.value.toString(),
-                                        height:kIsWeb?200: Responsive.width(30, context),
-                                        width:kIsWeb?200: Responsive.width(30, context),
-                                      ),
-                    )),
+                    : Image.file(
+                  File(controller.profileImage.value),
+                  height: Responsive.width(30, context),
+                  width: Responsive.width(30, context),
+                  fit: BoxFit.fill,
+                ),
+              )
+                  : ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: NetworkImageWidget(
+                  imageUrl: controller.profileImage.value,
+                  height: kIsWeb ? 200 : Responsive.width(30, context),
+                  width: kIsWeb ? 200 : Responsive.width(30, context),
+                ),
+              ),
+            ),
             Positioned(
               right: Responsive.width(34, context),
               child: InkWell(

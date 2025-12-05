@@ -42,8 +42,8 @@ class OnBoardingScreen extends StatelessWidget {
                                             ? "assets/images/onBoarding_bg2.png"
                                             : "assets/images/onBoarding_bg2.png"
                                         : themeChange.getThem()
-                                            ? "assets/images/onBoarding_bg3.png"
-                                            : "assets/images/onBoarding_bg3.png"),
+                                            ? "assets/images/onbording_screen_New.png"
+                                            : "assets/images/onbording_screen_New.png"),
                               fit: isWeb ? BoxFit.fitWidth : BoxFit.cover,
                              alignment:  Alignment.center,
                             )),

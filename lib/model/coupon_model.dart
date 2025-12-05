@@ -8,8 +8,9 @@ class CouponModel {
   String? id;
   Timestamp? validity;
   String? type;
+  String? parkingId;
 
-  CouponModel({this.title, this.amount, this.code, this.enable, this.id, this.validity, this.type});
+  CouponModel({this.title, this.amount, this.code, this.enable, this.id, this.validity, this.type , this.parkingId});
 
   CouponModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];
@@ -19,6 +20,7 @@ class CouponModel {
     id = json['id'];
     validity = json['validity'];
     type = json['type'];
+    parkingId = json['parkingId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -30,6 +32,7 @@ class CouponModel {
     data['id'] = id;
     data['validity'] = validity;
     data['type'] = type;
+    data['parkingId'] = parkingId;
     return data;
   }
 }

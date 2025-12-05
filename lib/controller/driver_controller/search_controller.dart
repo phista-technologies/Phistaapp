@@ -32,6 +32,7 @@ class SearchScreenController extends GetxController {
   RxList<ParkingModel> parkingList = <ParkingModel>[].obs;
 
   getParking() {
+    log("getParking1");
     FireStoreUtils()
         .getParkingNearest(
             latitude:
@@ -45,6 +46,7 @@ class SearchScreenController extends GetxController {
   }
 
   filterParking() {
+    log("filterParking");
     isLoading.value = true;
     parkingList.clear();
     FireStoreUtils()

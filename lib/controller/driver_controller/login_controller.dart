@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -66,7 +67,7 @@ class LoginController extends GetxController {
     });
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
+  /*Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -117,6 +118,63 @@ class LoginController extends GetxController {
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
       return userCredential;
+    } catch (e) {
+      debugPrint("signInWithGoogle error: $e");
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast("Something went wrong. Try again.");
+      return null;
+    }
+  }*/
+
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+        final userCredential = await FirebaseAuth.instance.signInWithPopup(googleProvider);
+        debugPrint("✅ Google Web Sign-in success: ${userCredential.user?.email}");
+        return userCredential;
+      } else {
+        // 📱 Mobile flow (Android/iOS)
+        final GoogleSignIn googleSignIn = GoogleSignIn();
+
+        // Force logout old session to always show account picker
+        if (await googleSignIn.isSignedIn()) {
+          await googleSignIn.disconnect();
+          await googleSignIn.signOut();
+        }
+
+        final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+        if (googleUser == null) {
+          ShowToastDialog.closeLoader();
+          ShowToastDialog.showToast("Login cancelled");
+          return null;
+        }
+
+        final credentials = await FireStoreUtils.getUserPasswordByEmail(googleUser.email);
+        if (credentials != null && credentials['password'] != null && credentials['password']!.isNotEmpty) {
+          try {
+            final value = await FirebaseAuth.instance.signInWithEmailAndPassword(
+              email: googleUser.email.trim(),
+              password: credentials['password']!,
+            );
+            ShowToastDialog.closeLoader();
+            return value;
+          } catch (e) {
+            debugPrint("Firebase Email/Password Sign-in failed: $e");
+          }
+        }
+
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        debugPrint("✅ Google Mobile Sign-in success: ${userCredential.user?.email}");
+        return userCredential;
+      }
     } catch (e) {
       debugPrint("signInWithGoogle error: $e");
       ShowToastDialog.closeLoader();

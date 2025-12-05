@@ -38,7 +38,7 @@ class FireStoreUtils {
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
   static String getCurrentUid() {
-    return FirebaseAuth.instance.currentUser!.uid;
+    return FirebaseAuth.instance.currentUser!.uid; //"rtRikL1sDQOA6kV0zEswqS0PoZu2"
   }
 
   static Future<bool> isLogin() async {
@@ -502,7 +502,7 @@ class FireStoreUtils {
   //   return null;
   // }
 
-  Future<PaymentModel?> getPayment1() async {
+  Future<PaymentModel?> getPayment() async {
     PaymentModel? paymentModel;
     await fireStore
         .collection(CollectionName.settings)
@@ -514,7 +514,7 @@ class FireStoreUtils {
     return paymentModel;
   }
 
-  Future<PaymentModel?> getPayment() async {
+  Future<PaymentModel?> getPayment1() async {
     try {
       log("Fetching payment settings...");
       final doc = await FirebaseFirestore.instance

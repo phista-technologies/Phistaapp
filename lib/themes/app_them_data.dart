@@ -17,6 +17,7 @@ class AppThemData {
   static const Color blueLight07 = Color(0xFF0BA4EB);
   static const Color blueLight01 = Color(0xFF36BFF9);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color BookingBGColor = Color(0xFFC4CCD9);
   static const Color grey01 = Color(0xFFEEF2F4);
   static const Color grey02 = Color(0xFFD5DDE2);
   static const Color grey03 = Color(0xFFABBBCB);
@@ -28,6 +29,9 @@ class AppThemData {
   static const Color grey09 = Color(0xFF192933);
   static const Color grey10 = Color(0xFF111E27);
   static const Color grey11 = Color(0xFF0A1318);
+  static const Color darkBule = Color(0xFF0C1431);
+  static const Color grey12 = Color(0xFF6D7B8F);
+  static const Color black = Color(0xFF000000);
   static const Color error02 = Color(0xFFFEF3F2);
   static const Color error08 = Color(0xFFD92C20);
   static const Color error07 = Color(0xFFF04437);

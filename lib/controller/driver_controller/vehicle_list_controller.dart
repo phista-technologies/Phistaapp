@@ -43,12 +43,13 @@ class VehicleListController extends GetxController {
   Rx<UserVehicleModel> selectedVehicle = UserVehicleModel().obs;
 
   getVehicleList() async {
-    isLoading.value = true;
+    isLoading.value = false;
     userVehicle.clear();
     await FireStoreUtils.getUserVehicle().then((value) {
       if (value != null) {
-        userVehicle.value = value;
-        // selectedVehicle.value = userVehicle.first;
+         userVehicle.value = value;
+         selectedVehicle.value = userVehicle.first;
+         isLoading.value = false;
       }
     });
     isLoading.value = false;

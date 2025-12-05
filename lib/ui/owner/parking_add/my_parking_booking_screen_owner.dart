@@ -199,13 +199,11 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                       DateTime.now(),
                                       height: 95,
                                       width: 76,
-                                      initialSelectedDate:
-                                          controller.selectedDateTime.value,
+                                      initialSelectedDate: controller.selectedDateTime.value,
                                       selectionColor: AppThemData.primary07,
                                       selectedTextColor: AppThemData.primary11,
                                       onDateChange: (date) {
-                                        controller.selectedDateTime.value =
-                                            date;
+                                        controller.selectedDateTime.value = date;
                                       },
                                     ),
                                     const SizedBox(
@@ -251,8 +249,7 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                 children: [
                                   StreamBuilder<QuerySnapshot>(
                                     stream: FirebaseFirestore.instance
-                                        .collection(
-                                            CollectionName.bookedParkingOrder)
+                                        .collection(CollectionName.bookedParkingOrder)
                                         .where('status', whereIn: [Constant.placed, Constant.onGoing
                                         ])
                                         //.where('bookingDate', isEqualTo: Utils.formatTimestampToIST(Timestamp.fromDate(controller.selectedDateTime.value)))
@@ -673,13 +670,7 @@ class MyParkingBooingScreenOwner extends StatelessWidget {
                                                                             .primary06,
                                                                         height: 5.5,
                                                                         onPress: () {
-                                                                          Get.to(
-                                                                                  () =>
-                                                                              const MySummaryScreenOwner(),
-                                                                              arguments: {
-                                                                                "orderModel":
-                                                                                order
-                                                                              });
+                                                                          Get.to(() => const MySummaryScreenOwner(), arguments: {"orderModel": order});
                                                                         },
                                                                       ),
                                                                     ),

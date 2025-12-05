@@ -223,7 +223,7 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           child: SizedBox(
             height: Responsive.height(20, context),
             width: Responsive.width(90, context),
-            child: ClipRRect(
+            /*child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Constant().hasValidUrl(controller.parkingImage.value) == false
                   ? Image.file(
@@ -238,7 +238,32 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                 height: Responsive.height(20, context),
                 width: Responsive.width(80, context),
               ),
-            ),
+            )*/
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                child: controller.parkingImage.value.isEmpty
+                    ? const SizedBox()
+                    : Constant().hasValidUrl(controller.parkingImage.value)
+                    ? NetworkImageWidget(
+                  imageUrl: controller.parkingImage.value,
+                  fit: BoxFit.fill,
+                  height: Responsive.height(20, context),
+                  width: Responsive.width(80, context),
+                )
+                    : kIsWeb
+                    ? Image.network(
+                  controller.parkingImage.value,
+                  fit: BoxFit.fill,
+                  height: Responsive.height(20, context),
+                  width: Responsive.width(80, context),
+                )
+                    : Image.file(
+                  File(controller.parkingImage.value),
+                  fit: BoxFit.fill,
+                  height: Responsive.height(20, context),
+                  width: Responsive.width(80, context),
+                ),
+              ),
           ),
         )
             : InkWell(
@@ -255,7 +280,7 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
             color: AppThemData.primary08,
             child: Container(
                 color: AppThemData.primary01,
-                height: Responsive.height(20, context),
+                height: Responsive.height(kIsWeb ?40:20, context),
                 width: Responsive.width(90, context),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -291,13 +316,29 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         ),
         InkWell(
           onTap: () async {
-            if (Constant.selectedMapType == 'osm') {
-              Get.to(() => const LocationPicker())?.then((value) {
+            if (Constant.selectedMapType == 'osm'|| kIsWeb) {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LocationPicker(
+                      initialPosition: LatLng(-33.8567844, 151.213108)
+                  ),
+                ),
+              );
+
+              if (result != null) {
+                controller.addressController.value.text = result["address"];
+                controller.locationLatLng.value = LocationLatLng(
+                  latitude: result["lat"],
+                  longitude: result["lng"],
+                );
+              }
+             /* Get.to(() => const LocationPicker(initialPosition: LatLng(-33.8567844, 151.213108),))?.then((value) {
                 if (value != null) {
                   controller.addressController.value.text = value.displayName!.toString();
                   controller.locationLatLng.value = LocationLatLng(latitude: value.lat, longitude: value.lon);
                 }
-              });
+              });*/
             } else {
               Navigator.push(
                 context,
@@ -319,7 +360,6 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                     usePlaceDetailSearch: true,
                     zoomGesturesEnabled: true,
                     zoomControlsEnabled: true,
-
                     resizeToAvoidBottomInset: false, // only works in page mode, less flickery, remove if wrong offsets
                   ),
                 ),
@@ -517,7 +557,7 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        _saveButton(themeChange, controller)
+        !kIsWeb?SizedBox():_saveButton(themeChange, controller)
       ],
     );
   }

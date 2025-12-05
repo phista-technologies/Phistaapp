@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' as maths;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
@@ -31,7 +32,10 @@ import 'package:phista/payment/xenditScreen.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/utils/fire_store_utils.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../utils/web_stripe_checkout_screen.dart';
 
 class WalletController extends GetxController {
   Rx<TextEditingController> amountController = TextEditingController().obs;
@@ -64,7 +68,7 @@ class WalletController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();
+          Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
           Stripe.merchantIdentifier = 'Phista';
           Stripe.instance.applySettings();
         }
@@ -164,7 +168,7 @@ class WalletController extends GetxController {
   }
 
   // Strip
-  Future<void> stripeMakePayment({required String amount}) async {
+  Future<void> stripeMakePayment1({required String amount}) async {
     log(double.parse(amount).toStringAsFixed(0));
     try {
       Map<String, dynamic>? paymentIntentData =
@@ -200,6 +204,64 @@ class WalletController extends GetxController {
     }
   }
 
+  Future<void> stripeMakePayment({required String amount}) async {
+    log("amount :-- $amount");
+
+    try {
+      // 🌐 --- WEB FLOW ---
+      if (kIsWeb) {
+        // On web, open the Stripe checkout screen you created
+        final result = await Get.to(() => WebStripeCheckoutScreen(amount: amount, secretKey: paymentModel.value.strip!.stripeSecret!,));
+
+        print("stripe result when payment done");
+
+        if (result?['status'] == 'success') {
+          print("result success");
+          walletTopUp();
+        } else {
+          ShowToastDialog.showToast("Payment cancelled");
+        }
+
+        return;
+      }
+
+      // 📱 --- MOBILE FLOW ---
+      Map<String, dynamic>? paymentIntentData = await createStripeIntent(amount: amount);
+      log("paymentIntentData['client_secret']:-- ${paymentIntentData?['client_secret']}");
+
+      if (paymentIntentData == null || paymentIntentData.containsKey("error")) {
+        Get.back();
+        ShowToastDialog.showToast("Something went wrong, please contact admin.");
+        return;
+      }
+      else {
+        await Stripe.instance.initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+                paymentIntentClientSecret: paymentIntentData['client_secret'],
+                allowsDelayedPaymentMethods: false,
+                googlePay: PaymentSheetGooglePay(
+                  merchantCountryCode: 'CA',
+                  testEnv: paymentModel.value.strip?.isSandbox == true
+                      ? true
+                      : false,
+                  currencyCode: "CAD",
+                ),
+                style: ThemeMode.system,
+                appearance: const PaymentSheetAppearance(
+                  colors: PaymentSheetAppearanceColors(
+                    primary: AppThemData.primary06,
+                  ),
+                ),
+                merchantDisplayName: 'Phista'));
+        displayStripePaymentSheet(amount: amount);
+      }
+    } catch (e, s) {
+      log("$e \n$s");
+      ShowToastDialog.showToast("exception: $e \n$s");
+    }
+  }
+
+
   displayStripePaymentSheet({required String amount}) async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) {
@@ -231,7 +293,7 @@ class WalletController extends GetxController {
         "shipping[address][country]": "CA",
       };
 
-      var stripeSecret = paymentModel.value.strip!.stripeSecret;
+      var stripeSecret = paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
       log(stripeSecret!);
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
@@ -383,7 +445,7 @@ class WalletController extends GetxController {
 
   String? _ref;
 
-  setRef() {
+ /* setRef() {
     maths.Random numRef = maths.Random();
     int year = DateTime.now().year;
     int refNumber = numRef.nextInt(20000);
@@ -392,6 +454,25 @@ class WalletController extends GetxController {
     } else if (Platform.isIOS) {
       _ref = "IOSRef$year$refNumber";
     }
+  }*/
+  void setRef() {
+    maths.Random numRef = maths.Random();
+    int year = DateTime.now().year;
+    int refNumber = numRef.nextInt(20000);
+
+    if (kIsWeb) {
+      // ✅ Web-safe version
+      _ref = "WebRef$year$refNumber";
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      _ref = "AndroidRef$year$refNumber";
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _ref = "IOSRef$year$refNumber";
+    } else {
+      // ✅ fallback (for desktop or other platforms)
+      _ref = "OtherRef$year$refNumber";
+    }
+
+    debugPrint("Generated Ref: $_ref");
   }
 
   // payFast

@@ -49,7 +49,34 @@ class InformationScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  controller.profileImage.isEmpty
+        controller.profileImage.isEmpty
+        ? ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+            child: Image.asset(
+        Constant.userPlaceHolder,
+        height: profileSize,
+        width: profileSize,
+        fit: BoxFit.cover,
+        ),
+        )
+            : ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: kIsWeb
+        ? Image.memory(
+        controller.profileImageBytes!,
+        height: profileSize,
+        width: profileSize,
+        fit: BoxFit.cover,
+        )
+            : Image.file(
+        File(controller.profileImage.value),
+        height: profileSize,
+        width: profileSize,
+        fit: BoxFit.cover,
+        ),
+        ),
+
+        /*controller.profileImage.isEmpty
                       ? ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.asset(
@@ -67,8 +94,8 @@ class InformationScreen extends StatelessWidget {
                       width: profileSize,
                       fit: BoxFit.cover,
                     ),
-                  ),
-                  Positioned(
+                  ),*/
+        Positioned(
                     bottom: 6,
                     right: 6,
                     // bottom: 0,

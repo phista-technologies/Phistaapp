@@ -129,7 +129,7 @@ class MyWatchmenListOwner extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  "Parking : ",
+                                                  "Parking :".tr,
                                                   style: TextStyle(
                                                       color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey07,
                                                       fontSize: 12,

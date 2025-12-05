@@ -22,7 +22,7 @@ class ReviewSummaryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print("Constant.bookingTypeConst:--> ${Constant.bookingTypeConst}");
+    log("Constant.bookingTypeConst:--> ${Constant.bookingTypeConst}");
     getArgument();
   }
 
@@ -43,30 +43,71 @@ class ReviewSummaryController extends GetxController {
         if (orderModel.value.coupon != null) {
           if (orderModel.value.coupon!.id != null) {
             if (orderModel.value.coupon!.type == "fix") {
-              couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
+              if (selectedCouponModel.value.parkingId == ""){
+                couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
+              }
+              else{
+                if (selectedCouponModel.value.parkingId == orderModel.value.parkingId){
+                  couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
+                }
+                else{
+
+                }
+              }
+
             } else {
-              couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+              if (selectedCouponModel.value.parkingId == ""){
+                couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+              }
+              else{
+                if (selectedCouponModel.value.parkingId == orderModel.value.parkingId){
+                  couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+                }
+                else{
+
+                }
+              }
+
             }
           }
         }
       getUserDetail();
       getParkingDetail(orderModel.value.parkingId??"");
-
-
-
-
     }
     update();
   }
 
   double calculateAmount() {
-
     if (orderModel.value.coupon != null) {
       if (orderModel.value.coupon!.id != null) {
         if (orderModel.value.coupon!.type == "fix") {
-          couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
-        } else {
-          couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+          if (selectedCouponModel.value.parkingId == ""){
+            couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
+          }
+          else{
+            if (selectedCouponModel.value.parkingId == orderModel.value.parkingId){
+              couponAmount.value = double.parse(orderModel.value.coupon!.amount.toString());
+            }
+            else{
+              orderModel.value.coupon = null;
+              couponAmount.value = 0.0;
+            }
+          }
+        }
+        else {
+          if (selectedCouponModel.value.parkingId == ""){
+            couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+          }
+          else{
+            if (selectedCouponModel.value.parkingId == orderModel.value.parkingId){
+              couponAmount.value = double.parse(orderModel.value.subTotal.toString()) * double.parse(orderModel.value.coupon!.amount.toString()) / 100;
+            }
+            else{
+              orderModel.value.coupon = null;
+              couponAmount.value = 0.0;
+            }
+          }
+
         }
       }
     }
@@ -189,6 +230,22 @@ class ReviewSummaryController extends GetxController {
       }
     });
 
+    Map<String,dynamic> senMap = {
+      "hostFullName":ownerUserModel.value.fullName,
+      "address":orderModel.value.parkingDetails?.address??"",
+      "clientFullName" :Constant.currentUserModel.value?.fullName,
+      "vehicleLicensePlate" :orderModel.value.userVehicle?.vehicleNumber??""
+    };
+
+    print("senMap :- $senMap");
+
+    await  Utils.sendEmailWithTemplateWithAllPlatForms(toEmail: Constant.currentUserModel.value?.email??"",
+        templateId: ENV.templateIdSendWithoutPay,
+        dynamicTemplateData: senMap).then((value) {
+      print("Sending templateIdSendWithoutPay");
+      ShowToastDialog.closeLoader();
+    },);
+
     if(orderModel.value.bookingType.toString() == "3"){
       await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
@@ -199,7 +256,6 @@ class ReviewSummaryController extends GetxController {
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);
 
     }
-
     await FireStoreUtils.setOrder(orderModel.value).then((value) async {
       if (value == true) {
         //Constant.bookingTypeConst = "hourly";
@@ -223,9 +279,8 @@ class ReviewSummaryController extends GetxController {
           ShowToastDialog.closeLoader();
           log("Exception :-- ",error: e.toString());
         }
-
-        Get.to(() => const ParkingTicketScreen(),
-            arguments: {"orderModel": orderModel.value});
+        log("orderModel.value :-- ${orderModel.value}");
+        Get.to(() => const ParkingTicketScreen(),arguments: {"orderModel": orderModel.value});
       }
     });
 

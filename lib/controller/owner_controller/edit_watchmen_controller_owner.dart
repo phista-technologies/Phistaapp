@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -34,6 +35,8 @@ class EditWatchmenControllerOwner extends GetxController {
 
   Rx<ParkingModel> selectedParkingModel = ParkingModel().obs;
   RxList<ParkingModel> parkingList = <ParkingModel>[].obs;
+
+  Rx<Uint8List?> webImage = Rx<Uint8List?>(null);
 
   GlobalKey<FormFieldState> key = GlobalKey<FormFieldState>();
 
@@ -97,7 +100,7 @@ class EditWatchmenControllerOwner extends GetxController {
   final ImagePicker _imagePicker = ImagePicker();
   RxString profileImage = "".obs;
 
-  Future pickFile({required ImageSource source}) async {
+ /* Future pickFile({required ImageSource source}) async {
     try {
       XFile? image = await _imagePicker.pickImage(source: source);
       if (image == null) return;
@@ -106,7 +109,28 @@ class EditWatchmenControllerOwner extends GetxController {
     } on PlatformException catch (e) {
       ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
     }
+  }*/
+
+  Future pickFile({required ImageSource source}) async {
+    try {
+      XFile? image = await _imagePicker.pickImage(source: source);
+      if (image == null) return;
+
+      Get.back();
+
+      if (kIsWeb) {
+        // on web → use bytes
+        webImage.value = await image.readAsBytes();
+        profileImage.value = ""; // clear path, because it's not valid on web
+      } else {
+        // mobile → use file path
+        profileImage.value = image.path;
+      }
+    } catch (e) {
+      ShowToastDialog.showToast("Failed to pick image: $e");
+    }
   }
+
 
   addWatchmen() async {
     ShowToastDialog.showLoader("Please wait".tr);
@@ -136,12 +160,37 @@ class EditWatchmenControllerOwner extends GetxController {
         }
       }
 
-      if (Constant().hasValidUrl(profileImage.value) == false && profileImage.value.isNotEmpty) {
+     /* if (Constant().hasValidUrl(profileImage.value) == false && profileImage.value.isNotEmpty) {
         profileImage.value = await Constant.uploadUserImageToFireStorage(
           File(profileImage.value),
           "watchmenImage/${FireStoreUtils.getCurrentUid()}",
           File(profileImage.value).path.split('/').last,
         );
+      }*/
+
+
+      if (!Constant().hasValidUrl(profileImage.value) && profileImage.value.isNotEmpty) {
+        if (kIsWeb) {
+          /// ✅ WEB — read bytes and upload
+          final XFile webImage = XFile(profileImage.value);
+
+          Uint8List bytes = await webImage.readAsBytes();
+
+          profileImage.value = await Constant.uploadUserImageToFireStorageWeb(
+            bytes,
+            "watchmenImage/${FireStoreUtils.getCurrentUid()}",
+            webImage.name, // ✅ correct file name
+          );
+
+        }
+        else {
+          /// ✅ MOBILE — use File()
+          profileImage.value = await Constant.uploadUserImageToFireStorage(
+            File(profileImage.value),
+            "watchmenImage/${FireStoreUtils.getCurrentUid()}",
+            File(profileImage.value).path.split('/').last,
+          );
+        }
       }
 
       watchmenModelData.fullName = fullNameController.value.text;

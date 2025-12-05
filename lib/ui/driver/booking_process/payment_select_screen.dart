@@ -31,10 +31,11 @@ class PaymentSelectScreen extends StatelessWidget {
         init: PaymentSelectController(),
         builder: (controller) {
           return Scaffold(
+            backgroundColor: AppThemData.grey02,
             appBar: UiInterface()
-                .customAppBar(context, themeChange,"Select Payment Method".tr),
+                .customAppBar1(context, themeChange,"Select Payment Method".tr,backgroundColor:AppThemData.white,textColor: AppThemData.black),
             body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: !kIsWeb?16:120),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,23 +43,331 @@ class PaymentSelectScreen extends StatelessWidget {
                     controller.isLoading.value
                         ? Constant.loader()
                         : Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.only(left: !kIsWeb?10:100,right: !kIsWeb?10:100 ),
                             child: Column(
                               children: [
                                 Visibility(
-                                  visible: controller.paymentModel.value.cash !=
-                                          null &&
-                                      controller.paymentModel.value.cash
-                                              ?.enable ==
+                                  visible: controller.paymentModel.value.cash != null &&
+                                      controller.paymentModel.value.cash?.enable == true,
+                                  child: RoundedPaymentButton(title: controller.paymentModel.value.cash?.name ?? '',
+                                      leadingIcon: Image.asset(
+                                        "assets/images/wallet.png",
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                      isSelected: false,
+                                      onPress: (){
+                                        controller.completeCashOrder();
+                                      })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.wallet != null && controller.paymentModel.value.wallet?.enable == true,
+                                  child: RoundedPaymentButton(title: controller.paymentModel.value.wallet?.name ?? '',
+                                        rightText: Constant.amountShow(
+                                          amount: controller.userModel.value.walletAmount ?? "0",
+                                        ),
+                                        leadingIcon: Image.asset(
+                                        "assets/images/wallet.png",
+                                        width: 30,
+                                        height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: () async {
+                                          if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
+                                            ShowToastDialog.showLoader("Please wait..");
+                                            WalletTransactionModel transactionModel = WalletTransactionModel(
+                                                id: Constant.getUuid(),
+                                                amount: "-${controller.calculateAmount().toString()}",
+                                                createdDate: Timestamp.now(),
+                                                paymentType: controller.selectedPaymentMethod.value,
+                                                transactionId: controller.orderModel.value.id,
+                                                note: "Parking amount debit".tr,
+                                                userId: FireStoreUtils.getCurrentUid(),
+                                                isCredit: false);
+                                               await FireStoreUtils.setWalletTransaction(transactionModel).then((value) async {
+                                              if (value == true) {
+                                                await FireStoreUtils.updateUserWallet(
+                                                    amount: "-${controller.calculateAmount().toString()}")
+                                                    .then((value) {
+                                                  controller.completeOrder();
+                                                });
+                                              }
+                                            });
+
+                                            ShowToastDialog.closeLoader();
+                                          }
+                                          else {
+                                            ShowToastDialog.closeLoader();
+                                            ShowToastDialog.showToast(
+                                                "Wallet Amount Insufficient".tr);
+                                          }
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible: controller.paymentModel.value.strip != null && controller.paymentModel.value.strip?.enable == true,
+                                    child: RoundedPaymentButton(title: controller.paymentModel.value.strip?.name ??' ',
+                                        leadingIcon: Image.network(
+                                          controller.paymentModel.value.strip?.image ?? '', // your logo URL
+                                          width: 30,
+                                          height: 30,
+                                          errorBuilder: (context, error, stack) => Icon(Icons.error),
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.isFromApple.value = false;
+                                          controller.stripeMakePayment(
+                                              amount: controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!));
+                                        }
+                                        )
+                                ),
+                                !kIsWeb && Platform.isIOS ?SizedBox(height: 18,):SizedBox.shrink(),
+                                Visibility(
+                                  visible: !kIsWeb && controller.paymentModel.value.strip != null &&
+                                      controller.paymentModel.value.strip?.enable == true && Platform.isIOS,
+                                    child: RoundedPaymentButtonCenter(
+                                        title: controller.APPLE_PAY,
+                                        leadingIcon: Image.asset(
+                                          "assets/icon/apple-pay_white.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        onPress: (){
+                                          controller.isFromGoogle.value = false;
+                                          controller.isFromApple.value = true;
+                                          controller.stripeMakePayment(
+                                              amount: controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!));
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible: controller.paymentModel.value.strip != null &&
+                                      controller.paymentModel.value.strip?.enable == true,
+                                    child: RoundedPaymentButtonCenter(
+                                        title: controller.GOOGLE_PAY,
+                                        leadingIcon: Image.asset(
+                                          "assets/images/google_pay_icon.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        onPress: (){
+                                          controller.isFromApple.value = false;
+                                          controller.isFromGoogle.value = true;
+                                          controller.stripeMakePayment(
+                                              amount: controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!));
+                                        })
+
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.paypal != null && controller.paymentModel.value.paypal?.enable == true,
+                                    child: RoundedPaymentButton(title: controller.paymentModel.value.paypal?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/paypal.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.paypalPaymentSheet(
+                                              controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!),
+                                              context);
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.payStack != null && controller.paymentModel.value.payStack?.enable == true,
+                                    child: RoundedPaymentButton(title: controller.paymentModel.value.payStack?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/paystack.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.payStackPayment(controller
+                                              .calculateAmount()
+                                              .toStringAsFixed(
+                                              Constant.currencyModel!.decimalDigits!));
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible: controller
+                                      .paymentModel.value.mercadoPago != null && controller.paymentModel.value.mercadoPago?.enable == true,
+                                    child: RoundedPaymentButton(title: controller.paymentModel.value.mercadoPago?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "aassets/images/mercadopogo.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.mercadoPagoMakePayment(
+                                              context: context,
+                                              amount: controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!));
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible: controller
+                                      .paymentModel.value.flutterWave !=
+                                      null &&
+                                      controller.paymentModel.value.flutterWave
+                                          ?.enable ==
                                           true,
+                                    child: RoundedPaymentButton(title: controller.paymentModel.value.flutterWave?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/flutterwave.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.flutterWaveInitiatePayment(
+                                              context: context,
+                                              amount: controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!));
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.payfast != null && controller.paymentModel.value.payfast?.enable == true,
+                                    child: RoundedPaymentButton(title: controller.paymentModel.value.payfast?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/payfast.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.payFastPayment(
+                                              context: context,
+                                              amount: controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!));
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.razorpay !=
+                                      null &&
+                                      controller.paymentModel.value
+                                          .razorpay!.enable ==
+                                          true,
+                                    child: RoundedPaymentButton(title:controller.paymentModel.value.razorpay?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/rezorpay.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          RazorPayController()
+                                              .createOrderRazorPay(
+                                              amount: controller.calculateAmount().toInt(),
+                                              razorpayModel:
+                                              controller.paymentModel.value.razorpay)
+                                              .then((value) {
+                                            if (value == null) {
+                                              Get.back();
+                                              ShowToastDialog.showToast(
+                                                  "Something went wrong, please contact admin.".tr);
+                                            } else {
+                                              CreateRazorPayOrderModel result = value;
+                                              controller.openCheckout(
+                                                  amount: controller.calculateAmount().toInt(),
+                                                  orderId: result.id);
+                                            }
+                                          });
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.xendit !=
+                                      null &&
+                                      controller.paymentModel.value.xendit
+                                          ?.enable ==
+                                          true,
+                                    child: RoundedPaymentButton(title:controller.paymentModel.value.xendit?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/xendit.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.xenditPayment(
+                                              context, controller.calculateAmount());
+                                        })
+
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.orangePay !=
+                                      null &&
+                                      controller.paymentModel.value
+                                          .orangePay?.enable ==
+                                          true,
+                                    child: RoundedPaymentButton(title:controller.paymentModel.value.orangePay?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/orangeMoney.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.orangeMakePayment(
+                                              amount: controller.calculateAmount().toString(),
+                                              context: context);
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+                                Visibility(
+                                  visible:
+                                  controller.paymentModel.value.midtrans !=
+                                      null &&
+                                      controller.paymentModel.value.midtrans
+                                          ?.enable ==
+                                          true,
+                                    child: RoundedPaymentButton(title:controller.paymentModel.value.midtrans?.name ?? '',
+                                        leadingIcon: Image.asset(
+                                          "assets/images/midtrans.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        isSelected: false,
+                                        onPress: (){
+                                          controller.midtransMakePayment(
+                                              amount: controller.calculateAmount().toString(),
+                                              context: context);
+                                        })
+                                ),
+                                SizedBox(height: 18,),
+
+                                /// start
+                              /*
+                               Visibility(
+                                  visible: controller.paymentModel.value.cash != null &&
+                                      controller.paymentModel.value.cash?.enable == true,
                                   child: cardDecoration(
                                       controller,
-                                      controller
-                                              .paymentModel.value.cash?.name ??
-                                          '',
-                                      themeChange,
-                                      "assets/images/wallet.png"),
+                                      controller.paymentModel.value.cash?.name ?? '',
+                                      themeChange, "assets/images/wallet.png"),
                                 ),
+
                                 Visibility(
                                   visible:
                                       controller.paymentModel.value.wallet !=
@@ -78,16 +387,12 @@ class PaymentSelectScreen extends StatelessWidget {
                                   visible: controller.paymentModel.value.strip != null && controller.paymentModel.value.strip?.enable == true,
                                   child: cardDecoration(
                                       controller,
-                                      controller
-                                              .paymentModel.value.strip?.name ??
-                                          '',
+                                      controller.paymentModel.value.strip?.name ??'',
                                       themeChange,
-                                      controller.paymentModel.value.strip
-                                              ?.image ??
+                                      controller.paymentModel.value.strip?.image ??
                                           "assets/images/strip.png"),
                                 ),
                                 //Apple pay
-
                                 Visibility(
                                   visible: !kIsWeb && controller.paymentModel.value.strip != null &&
                                       controller.paymentModel.value.strip?.enable == true && Platform.isIOS,
@@ -245,7 +550,9 @@ class PaymentSelectScreen extends StatelessWidget {
                                           '',
                                       themeChange,
                                       "assets/images/midtrans.png"),
-                                ),
+                                ),*/
+
+                                //// end
 
                               ],
                             ),
@@ -254,7 +561,7 @@ class PaymentSelectScreen extends StatelessWidget {
                 ),
               ),
             ),
-            bottomNavigationBar: Container(
+           /* bottomNavigationBar: Container(
               height: Constant.currentUserModel.value?.role != "Guest"?95:165,
               color: themeChange.getThem()
                   ? AppThemData.grey10
@@ -370,8 +677,6 @@ class PaymentSelectScreen extends StatelessWidget {
                                 "Wallet Amount Insufficient".tr);
                           }
                         }
-
-
                         else if (controller.selectedPaymentMethod.value == controller.paymentModel.value.cash?.name) {
                           controller.completeCashOrder();
                         }
@@ -448,12 +753,12 @@ class PaymentSelectScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
+            ),*/
           );
         });
   }
 
-  cardDecoration(PaymentSelectController controller, String value, themeChange,
+ /* cardDecoration(PaymentSelectController controller, String value, themeChange,
       String image)
   {
     return Obx(
@@ -538,5 +843,47 @@ class PaymentSelectScreen extends StatelessWidget {
         ],
       ),
     );
+  }*/
+  Widget cardDecoration(
+      PaymentSelectController controller,
+      String value,
+      themeChange,
+      String image,
+      ) {
+    return Obx(() {
+      bool isSelected = controller.selectedPaymentMethod.value == value;
+      // Right side text (Wallet only)
+      String? walletAmount;
+      if (value.toLowerCase() == "wallet") {
+        walletAmount = Constant.amountShow(
+          amount: controller.userModel.value.walletAmount ?? "0",
+        );
+      }
+      // Leading icon logic
+      Widget iconWidget = value.toLowerCase() == "cash"
+          ? const Icon(Icons.money, size: 26)
+          : (Constant.isValidUrl(image)
+          ? NetworkImageWidget(
+        imageUrl: image,
+        width: 30,
+        height: 30,
+        fit: BoxFit.contain,
+      )
+          : Image.asset(image, width: 30, height: 30));
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: RoundedPaymentButton(
+          title: value,
+          rightText: walletAmount,
+          isSelected: isSelected,
+          leadingIcon: iconWidget,
+          onPress: () {
+            controller.selectedPaymentMethod.value = value;
+          },
+        ),
+      );
+    });
   }
+
+
 }

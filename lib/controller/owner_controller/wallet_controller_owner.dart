@@ -17,6 +17,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../constant/constant.dart';
 import '../../constant/show_toast_dialog.dart';
+import '../../env.dart';
 import '../../model/bank_details_model.dart';
 import '../../model/payment/xenditModel.dart';
 import '../../model/payment_method_model.dart';
@@ -67,8 +68,7 @@ class WalletControllerOwner extends GetxController {
       if (value != null) {
         paymentModel.value = value;
        if (!kIsWeb) {
-         Stripe.publishableKey =
-             paymentModel.value.strip!.clientpublishableKey.toString();
+         Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
          Stripe.merchantIdentifier = 'Phista';
          Stripe.instance.applySettings();
        }
@@ -241,7 +241,7 @@ class WalletControllerOwner extends GetxController {
         "shipping[address][country]": "CA",
       };
       log(paymentModel.value.strip!.stripeSecret.toString());
-      var stripeSecret = paymentModel.value.strip!.stripeSecret;
+      var stripeSecret = paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         body: body,

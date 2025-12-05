@@ -113,7 +113,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontFamily: AppThemData.semiBold,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -133,7 +133,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(
                                               color: AppThemData.grey07,
-                                              fontSize: 14,
+                                              fontSize: 12,
                                               fontFamily: AppThemData.medium,
                                             ),
                                           ),
@@ -188,7 +188,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: 20,
+                            height: 8,
                           ),
                           SizedBox(
                             height: 40,
@@ -208,50 +208,50 @@ class ParkingDetailsScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(
-                            height: 20,
+                            height: 8,
                           ),
                           const Divider(color: AppThemData.grey04, thickness: 1),
                           const SizedBox(
-                            height: 24,
+                            height: 5,
                           ),
                           Text(
                             'About'.tr,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontFamily: AppThemData.medium,
                               fontWeight: FontWeight.w700,
                               color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey09,
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           Text(
                             controller.parkingModel.value.description.toString(),
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               fontFamily: AppThemData.regular,
                               color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
                             ),
                           ),
                           const SizedBox(
-                            height: 24,
+                            height: 8,
                           ),
                           const Divider(color: AppThemData.grey04, thickness: 1),
                           const SizedBox(
-                            height: 24,
+                            height: 8,
                           ),
                           Text(
                             'Facilities'.tr,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontFamily: AppThemData.medium,
                               fontWeight: FontWeight.w700,
                               color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey09,
                             ),
                           ),
                           const SizedBox(
-                            height: 12,
+                            height: 5,
                           ),
                           Wrap(
                             spacing: 6.0,
@@ -275,7 +275,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                                     Text(
                                       parkingFacility.name.toString(),
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         fontFamily: AppThemData.medium,
                                         color: themeChange.getThem() ? AppThemData.blueLight07 : AppThemData.blueLight07,
                                       ),
@@ -286,11 +286,11 @@ class ParkingDetailsScreen extends StatelessWidget {
                             }),
                           ),
                           const SizedBox(
-                            height: 24,
+                            height: 5,
                           ),
                           const Divider(color: AppThemData.grey04, thickness: 1),
                           const SizedBox(
-                            height: 24,
+                            height: 5,
                           ),
                           Container(
                             width: Get.width,
@@ -304,17 +304,17 @@ class ParkingDetailsScreen extends StatelessWidget {
                                     children: [
                                       Text("Per hour".tr,
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 12,
                                             fontFamily: AppThemData.medium,
                                             color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
                                           )),
                                       const SizedBox(
-                                        height: 8,
+                                        height: 5,
                                       ),
                                       Text(
                                         Constant.amountShow(amount: controller.parkingModel.value.perHrPrice.toString()),
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontFamily: AppThemData.semiBold,
                                           color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                         ),
@@ -328,17 +328,17 @@ class ParkingDetailsScreen extends StatelessWidget {
                                     children: [
                                       Text("Per day".tr,
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 12,
                                             fontFamily: AppThemData.medium,
                                             color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
                                           )),
                                       const SizedBox(
-                                        height: 8,
+                                        height: 5,
                                       ),
                                       Text(
                                         Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString()),
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontFamily: AppThemData.semiBold,
                                           color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                         ),
@@ -352,17 +352,17 @@ class ParkingDetailsScreen extends StatelessWidget {
                                     children: [
                                       Text("Per month".tr,
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 12,
                                             fontFamily: AppThemData.medium,
                                             color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
                                           )),
                                       const SizedBox(
-                                        height: 8,
+                                        height: 5,
                                       ),
                                       Text(
                                         Constant.amountShow(amount: controller.parkingModel.value.monthlyPrice.toString()),
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontFamily: AppThemData.semiBold,
                                           color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey10,
                                         ),

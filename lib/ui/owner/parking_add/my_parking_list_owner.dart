@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -90,7 +91,7 @@ class MyParkingListOwner extends StatelessWidget {
                                 });
                               },
                               child: Container(
-                                height: Responsive.height(15, context),
+                                height: Responsive.height(!kIsWeb?15:30, context),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
                                   color: themeChange.getThem()
@@ -107,8 +108,8 @@ class MyParkingListOwner extends StatelessWidget {
                                       child: NetworkImageWidget(
                                         fit: BoxFit.cover,
                                         imageUrl: parkingModel.image.toString(),
-                                        height:Responsive.height(15, context),
-                                        width: 100,
+                                        height:Responsive.height(!kIsWeb?15:30, context),
+                                        width:!kIsWeb?100:200 ,
                                       ),
                                     ),
                                     const SizedBox(
@@ -116,11 +117,9 @@ class MyParkingListOwner extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical:10),
+                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical:10),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Row(
                                               children: [
@@ -133,17 +132,21 @@ class MyParkingListOwner extends StatelessWidget {
                                                               .getThem()
                                                           ? AppThemData.grey01
                                                           : AppThemData.grey10,
-                                                      fontSize: 14,
+                                                      fontSize: !kIsWeb?14:25,
                                                       fontFamily:
                                                           AppThemData.semiBold,
                                                     ),
                                                   ),
                                                 ),
-                                                const Icon(
-                                                  Icons.edit,
-                                                  color: AppThemData.warning08,
+                                                SizedBox(
+                                                  height: 30,
+                                                  width: 30,
+                                                  child: const Icon(
+                                                    Icons.edit,
+                                                    color: AppThemData.warning08,
+                                                  ),
                                                 ),
-                                                SizedBox(width: 5,),
+                                                SizedBox(width:!kIsWeb?5:10,),
                                                  InkWell(
                                                    onTap: ()async{
                                                      bool isBooked = await FireStoreUtils.parkingBookedOrNot(parkingModel.id);
@@ -179,13 +182,10 @@ class MyParkingListOwner extends StatelessWidget {
                                                                img: SvgPicture.asset('assets/images/ic_delete_image.svg'),
                                                              );
                                                            });
-
-
                                                      }else{
                                                        print("booking on going");
                                                        showDialog(context: context, builder: (BuildContext context){
                                                          return CustomDialogBoxOnlyOk(
-
                                                            title: "Alert".tr,
                                                            descriptions: "You can't delete this parking due to ongoing booking.".tr,
                                                            buttonText: "Okay",
@@ -196,29 +196,28 @@ class MyParkingListOwner extends StatelessWidget {
                                                            img: SvgPicture.asset('assets/icon/alert_ico.svg'),
                                                          );
                                                        });
-
                                                      }
-
-
-
-
                                                    },
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    color: AppThemData.warning08,
+                                                  child: SizedBox(
+                                                    height: 30,
+                                                    width: 30,
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      color: AppThemData.warning08,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                             const SizedBox(
-                                              height: 5,
+                                              height: !kIsWeb?5:10,
                                             ),
                                             Text(
                                               parkingModel.address.toString(),
                                               maxLines: 2,
                                               style: const TextStyle(
                                                   color: AppThemData.grey07,
-                                                  fontSize: 12,
+                                                  fontSize: !kIsWeb?12:24,
                                                   fontFamily:
                                                       AppThemData.regular,
                                                   overflow:
@@ -233,7 +232,7 @@ class MyParkingListOwner extends StatelessWidget {
                                                   style: const TextStyle(
                                                     color:
                                                         AppThemData.blueLight07,
-                                                    fontSize: 12,
+                                                    fontSize: !kIsWeb?12:24,
                                                     fontFamily:
                                                         AppThemData.semiBold,
                                                   ),

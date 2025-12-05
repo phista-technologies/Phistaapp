@@ -28,3 +28,4 @@ class OsmSearchPlaceController extends GetxController {
     }
   }
 }
+

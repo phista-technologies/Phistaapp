@@ -100,6 +100,17 @@ class Constant {
 
   }
 
+  static Future<String> uploadUserImageBytesToFireStorage(
+      Uint8List data,
+      String path,
+      String fileName,
+      ) async {
+    final ref = FirebaseStorage.instance.ref().child(path).child(fileName);
+    await ref.putData(data);
+    return await ref.getDownloadURL();
+  }
+
+
 
 
   double calculateTax({String? amount, TaxModel? taxModel}) {
@@ -225,6 +236,19 @@ class Constant {
         await (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
     return downloadUrl.toString();
   }
+
+  static Future<String> uploadUserImageToFireStorageWeb(
+      Uint8List bytes,
+      String folderPath,
+      String fileName,
+      ) async {
+    final ref = FirebaseStorage.instance.ref().child("$folderPath/$fileName");
+    await ref.putData(bytes);
+    return await ref.getDownloadURL();
+  }
+
+
+
 
   static Future<void> makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(

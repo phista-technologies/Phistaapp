@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -35,193 +36,255 @@ class ReviewSummaryScreen extends StatelessWidget {
         init: ReviewSummaryController(),
         builder: (controller) {
           return Scaffold(
+            backgroundColor: AppThemData.grey02,
             appBar: UiInterface()
-                .customAppBar(context, themeChange, "review_summary".tr),
+                .customAppBar1(context, themeChange, "review_summary".tr,backgroundColor:AppThemData.white,textColor: AppThemData.black),
             body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    color: themeChange.getThem()
-                        ? AppThemData.grey09
-                        : AppThemData.grey10,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Parking ID'.tr,
-                                  style: const TextStyle(
-                                    color: AppThemData.grey07,
-                                    fontSize: 14,
-                                    fontFamily: AppThemData.regular,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 6,
-                                ),
-                                Text(
-                                  '#${controller.orderModel.value.id}',
-                                  style: const TextStyle(
-                                    color: AppThemData.grey02,
-                                    fontSize: 14,
-                                    fontFamily: AppThemData.medium,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              FlutterClipboard.copy(
-                                  controller.orderModel.value.id.toString())
-                                  .then((value) {
-                                ShowToastDialog.showToast(
-                                    "Parking ID copied".tr);
-                              });
-                            },
-                            child: SvgPicture.asset(
-                              "assets/icon/ic_content_copy.svg",
-                              height: 24,
-                              width: 24,
-                            ),
-                          )
-                        ],
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: !kIsWeb?5:120),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(13),
+                      decoration: BoxDecoration(
+                        color: themeChange.getThem()
+                            ? AppThemData.white
+                            : AppThemData.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: AppThemData.grey10,width: 1),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: themeChange.getThem()
-                                ? AppThemData.grey10
-                                : AppThemData.white,
-                            borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Parking Info'.tr,
-                                  style: const TextStyle(
-                                    color: AppThemData.grey07,
-                                    fontSize: 16,
-                                    fontFamily: AppThemData.medium,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  decoration: ShapeDecoration(
-                                    color: controller.orderModel.value
-                                        .paymentCompleted ==
-                                        true
-                                        ? AppThemData.success02
-                                        : AppThemData.error02,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(200),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Parking ID'.tr,
+                                    style: const TextStyle(
+                                      color: AppThemData.grey07,
+                                      fontSize: 14,
+                                      fontFamily: AppThemData.regular,
                                     ),
                                   ),
-                                  child: Text(
-                                    controller.orderModel.value
-                                        .paymentCompleted ==
-                                        true
-                                        ? "Payment completed".tr
-                                        : 'Payment Incomplete'.tr,
-                                    style: TextStyle(
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text(
+                                    '#${controller.orderModel.value.id}',
+                                    style: const TextStyle(
+                                      color: AppThemData.grey07,
+                                      fontSize: 13,
+                                      fontFamily: AppThemData.medium,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                FlutterClipboard.copy(
+                                    controller.orderModel.value.id.toString())
+                                    .then((value) {
+                                  ShowToastDialog.showToast(
+                                      "Parking ID copied".tr);
+                                });
+                              },
+                              child: SvgPicture.asset(
+                                "assets/icon/ic_content_copy.svg",
+                                height: 24,
+                                width: 24,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: themeChange.getThem()
+                                  ? AppThemData.white
+                                  : AppThemData.white,
+                              borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Parking Info'.tr,
+                                    style: const TextStyle(
+                                      color: AppThemData.grey07,
+                                      fontSize: 16,
+                                      fontFamily: AppThemData.medium,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    decoration: ShapeDecoration(
                                       color: controller.orderModel.value
                                           .paymentCompleted ==
                                           true
-                                          ? AppThemData.success08
-                                          : AppThemData.error08,
-                                      fontSize: 12,
-                                      fontFamily: 'Golos Text',
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 24,
-                                ),
-                                Text(
-                                  controller
-                                      .orderModel.value.parkingDetails!.name
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: themeChange.getThem()
-                                        ? AppThemData.grey06
-                                        : AppThemData.grey09,
-                                    fontSize: 18,
-                                    fontFamily: AppThemData.semiBold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on_outlined,
-                                      color: AppThemData.grey07,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        controller.orderModel.value
-                                            .parkingDetails!.address
-                                            .toString(),
-                                        style: const TextStyle(
-                                          color: AppThemData.grey07,
-                                          fontSize: 14,
-                                          fontFamily: AppThemData.regular,
-                                        ),
+                                          ? AppThemData.success02
+                                          : AppThemData.error02,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(200),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          const Icon(Icons.local_parking,
-                                              color: AppThemData.grey07,
-                                              size: 20),
-                                          const SizedBox(
-                                            width: 10,
+                                    child: Text(
+                                      controller.orderModel.value
+                                          .paymentCompleted ==
+                                          true
+                                          ? "Payment completed".tr
+                                          : 'Payment Incomplete'.tr,
+                                      style: TextStyle(
+                                        color: controller.orderModel.value
+                                            .paymentCompleted ==
+                                            true
+                                            ? AppThemData.success08
+                                            : AppThemData.error08,
+                                        fontSize: 12,
+                                        fontFamily: 'Golos Text',
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 24,
+                                  ),
+                                  Text(
+                                    controller
+                                        .orderModel.value.parkingDetails!.name
+                                        .toString(),
+                                    style: TextStyle(
+                                      color: themeChange.getThem()
+                                          ? AppThemData.grey06
+                                          : AppThemData.grey09,
+                                      fontSize: 18,
+                                      fontFamily: AppThemData.semiBold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on_outlined,
+                                        color: AppThemData.grey07,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          controller.orderModel.value
+                                              .parkingDetails!.address
+                                              .toString(),
+                                          style: const TextStyle(
+                                            color: AppThemData.grey07,
+                                            fontSize: 14,
+                                            fontFamily: AppThemData.regular,
                                           ),
-                                          Expanded(
-                                            child: Column(
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            const Icon(Icons.local_parking,
+                                                color: AppThemData.grey07,
+                                                size: 20),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    controller.orderModel.value
+                                                        .parkingSlotId
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      color: themeChange.getThem()
+                                                          ? AppThemData.grey06
+                                                          : AppThemData.grey09,
+                                                      fontSize: 16,
+                                                      fontFamily:
+                                                      AppThemData.medium,
+                                                        overflow: TextOverflow.ellipsis
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "Parking Slot".tr,
+                                                    style: const TextStyle(
+                                                      color: AppThemData.grey07,
+                                                      fontSize: 12,
+                                                      fontFamily:
+                                                      AppThemData.regular,
+                                                      overflow: TextOverflow.ellipsis
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            SvgPicture.asset(
+                                                "assets/icon/ic_car_image.svg",
+                                                height: 24,
+                                                width: 24),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Column(
                                               crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  controller.orderModel.value
-                                                      .parkingSlotId
+                                                  controller
+                                                      .orderModel
+                                                      .value
+                                                      .userVehicle!
+                                                      .vehicleModel!
+                                                      .name
                                                       .toString(),
                                                   style: TextStyle(
                                                     color: themeChange.getThem()
@@ -230,166 +293,32 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                     fontSize: 16,
                                                     fontFamily:
                                                     AppThemData.medium,
-                                                      overflow: TextOverflow.ellipsis
                                                   ),
                                                 ),
                                                 const SizedBox(
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "Parking Slot".tr,
+                                                  "vehicle Detail".tr,
                                                   style: const TextStyle(
                                                     color: AppThemData.grey07,
                                                     fontSize: 12,
                                                     fontFamily:
                                                     AppThemData.regular,
-                                                    overflow: TextOverflow.ellipsis
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          SvgPicture.asset(
-                                              "assets/icon/ic_car_image.svg",
-                                              height: 24,
-                                              width: 24),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                controller
-                                                    .orderModel
-                                                    .value
-                                                    .userVehicle!
-                                                    .vehicleModel!
-                                                    .name
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily:
-                                                  AppThemData.medium,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "vehicle Detail".tr,
-                                                style: const TextStyle(
-                                                  color: AppThemData.grey07,
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                  AppThemData.regular,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                Constant.currentUserModel.value?.role != "Guest"?controller.vehicleDriverName.value:"Guest",
-                                                style: TextStyle(
-                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily: AppThemData.medium,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "Vehicle Driver Name".tr,
-                                                style: const TextStyle(
-                                                  color: AppThemData.grey07,
-                                                  fontSize: 12,
-                                                  fontFamily: AppThemData.regular,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                controller.orderModel.value.userVehicle!.vehicleNumber.toString(),
-                                                style: TextStyle(
-                                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily: AppThemData.medium,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "Vehicle Number".tr,
-                                                style: const TextStyle(
-                                                  color: AppThemData.grey07,
-                                                  fontSize: 12,
-                                                  fontFamily: AppThemData.regular,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    if (controller.vehicleDriverNumber.value != "")
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
                                       Expanded(
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +331,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  controller.vehicleDriverNumber.value,
+                                                  Constant.currentUserModel.value?.role != "Guest"?controller.vehicleDriverName.value:"Guest",
                                                   style: TextStyle(
                                                     color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
                                                     fontSize: 16,
@@ -413,7 +342,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "Vehicle Driver Number".tr,
+                                                  "Vehicle Driver Name".tr,
                                                   style: const TextStyle(
                                                     color: AppThemData.grey07,
                                                     fontSize: 12,
@@ -426,124 +355,287 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-
-                                  ],
-                                ),
-
-
-
-                                /*Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          const Icon(Icons.access_time_rounded,
-                                              color: AppThemData.grey07,
-                                              size: 20),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Constant.bookingTypeConst != "monthly"?Text(
-                                                "${controller.orderModel.value
-                                                    .duration
-                                                    .toString()} hours",
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily:
-                                                  AppThemData.medium,
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  controller.orderModel.value.userVehicle!.vehicleNumber.toString(),
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily: AppThemData.medium,
+                                                  ),
                                                 ),
-                                              ):Text(
-                                                "Monthly Booking",
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily:
-                                                  AppThemData.medium,
+                                                const SizedBox(
+                                                  height: 5,
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-
-                                              if(Constant.bookingTypeConst != "monthly")
-                                              Text(
-                                                "Time Durations".tr,
-                                                style: const TextStyle(
-                                                  color: AppThemData.grey07,
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                  AppThemData.regular,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),*/
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                if(Constant.bookingTypeConst == "hourly")
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          const Icon(Icons.calendar_today,
-                                              color: AppThemData.grey07,
-                                              size: 20),
-                                          const SizedBox(width: 10,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
-                                            children: [
-                                              Text(Constant.timestampToDate(
-                                                  Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!)),
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
-                                                  fontFamily: AppThemData
-                                                      .medium,),),
-                                              const SizedBox(height: 5,),
-
-                                              if(Constant.bookingTypeConst == "hourly")
-                                                Text("${Constant.timestampToTime(
-                                                    controller.orderModel.value
-                                                        .bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
+                                                Text(
+                                                  "Vehicle Number".tr,
                                                   style: const TextStyle(
                                                     color: AppThemData.grey07,
                                                     fontSize: 12,
-                                                    fontFamily: AppThemData
-                                                        .regular,),)
-                                            ],),
-                                        ],),
-                                    ),
-                                  ],
-                                ),
+                                                    fontFamily: AppThemData.regular,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
 
-                                if(Constant.bookingTypeConst == "monthly")
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Row(
+
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      if (controller.vehicleDriverNumber.value != "")
+                                        Expanded(
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    controller.vehicleDriverNumber.value,
+                                                    style: TextStyle(
+                                                      color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey09,
+                                                      fontSize: 16,
+                                                      fontFamily: AppThemData.medium,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "Vehicle Driver Number".tr,
+                                                    style: const TextStyle(
+                                                      color: AppThemData.grey07,
+                                                      fontSize: 12,
+                                                      fontFamily: AppThemData.regular,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
+                                            ],
+                                          ),
+                                        ),
+
+                                    ],
+                                  ),
+
+
+
+                                  /*Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            const Icon(Icons.access_time_rounded,
+                                                color: AppThemData.grey07,
+                                                size: 20),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Constant.bookingTypeConst != "monthly"?Text(
+                                                  "${controller.orderModel.value
+                                                      .duration
+                                                      .toString()} hours",
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey06
+                                                        : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily:
+                                                    AppThemData.medium,
+                                                  ),
+                                                ):Text(
+                                                  "Monthly Booking",
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey06
+                                                        : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily:
+                                                    AppThemData.medium,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+
+                                                if(Constant.bookingTypeConst != "monthly")
+                                                Text(
+                                                  "Time Durations".tr,
+                                                  style: const TextStyle(
+                                                    color: AppThemData.grey07,
+                                                    fontSize: 12,
+                                                    fontFamily:
+                                                    AppThemData.regular,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),*/
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  if(Constant.bookingTypeConst == "hourly")
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            const Icon(Icons.calendar_today,
+                                                color: AppThemData.grey07,
+                                                size: 20),
+                                            const SizedBox(width: 10,),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Text(Constant.timestampToDate(
+                                                    Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!)),
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey06
+                                                        : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily: AppThemData
+                                                        .medium,),),
+                                                const SizedBox(height: 5,),
+
+                                                if(Constant.bookingTypeConst == "hourly")
+                                                  Text("${Constant.timestampToTime(
+                                                      controller.orderModel.value
+                                                          .bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
+                                                    style: const TextStyle(
+                                                      color: AppThemData.grey07,
+                                                      fontSize: 12,
+                                                      fontFamily: AppThemData
+                                                          .regular,),)
+                                              ],),
+                                          ],),
+                                      ),
+                                    ],
+                                  ),
+
+                                  if(Constant.bookingTypeConst == "monthly")
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            const Icon(Icons.calendar_today,
+                                                color: AppThemData.grey07,
+                                                size: 20),
+                                            const SizedBox(width: 10,),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Text(Constant.timestampToDate(
+                                                    Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList()[0])),
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey06
+                                                        : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily: AppThemData
+                                                        .medium,),),
+                                                const SizedBox(height: 5,),
+
+                                              ],),
+                                          ],),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text("To",
+                                          style: TextStyle(
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey06
+                                                : AppThemData.grey09,
+                                            fontSize: 16,
+                                            fontFamily: AppThemData
+                                                .medium,),
+                                        textAlign: TextAlign.center,),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            const Icon(Icons.calendar_today,
+                                                color: AppThemData.grey07,
+                                                size: 20),
+                                            const SizedBox(width: 10,),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Text(Constant.timestampToDate(
+                                                    Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList()[1])),
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey06
+                                                        : AppThemData.grey09,
+                                                    fontSize: 16,
+                                                    fontFamily: AppThemData
+                                                        .medium,),),
+
+                                              ],),
+                                          ],),
+                                      ),
+                                    ],
+                                  ),
+                                  if(Constant.bookingTypeConst == "daily")
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: Get.width/2,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                      childAspectRatio: 3.5, // Adjust based on design
+                                    ),
+                                    itemCount: controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList().length,
+                                    itemBuilder: (_, index) {
+                                      var dateList = controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList();
+                                      print(dateList[index]);
+                                     var tempDate= controller.sortDateStrings(dateList);
+                                      return Row(
                                         crossAxisAlignment: CrossAxisAlignment
                                             .start,
                                         children: [
@@ -556,7 +648,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                 .start,
                                             children: [
                                               Text(Constant.timestampToDate(
-                                                  Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList()[0])),
+                                                  Utils.stringToTimeStamp(tempDate[index])),
                                                 style: TextStyle(
                                                   color: themeChange.getThem()
                                                       ? AppThemData.grey06
@@ -566,639 +658,550 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       .medium,),),
                                               const SizedBox(height: 5,),
 
-                                            ],),
-                                        ],),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text("To",
-                                        style: TextStyle(
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey06
-                                              : AppThemData.grey09,
-                                          fontSize: 16,
-                                          fontFamily: AppThemData
-                                              .medium,),
-                                      textAlign: TextAlign.center,),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          const Icon(Icons.calendar_today,
-                                              color: AppThemData.grey07,
-                                              size: 20),
-                                          const SizedBox(width: 10,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
-                                            children: [
-                                              Text(Constant.timestampToDate(
-                                                  Utils.stringToTimeStamp(controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList()[1])),
-                                                style: TextStyle(
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.grey06
-                                                      : AppThemData.grey09,
-                                                  fontSize: 16,
+                                              Constant.bookingTypeConst == "hourly"?
+                                              Text("${Constant.timestampToTime(
+                                                  controller.orderModel.value
+                                                      .bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
+                                                style: const TextStyle(
+                                                  color: AppThemData.grey07,
+                                                  fontSize: 12,
                                                   fontFamily: AppThemData
-                                                      .medium,),),
+                                                      .regular,),):
 
+                                              Text("Full day",
+                                                style: const TextStyle(
+                                                  color: AppThemData.grey07,
+                                                  fontSize: 12,
+                                                  fontFamily: AppThemData
+                                                      .regular,),),
                                             ],),
-                                        ],),
-                                    ),
-                                  ],
-                                ),
-                                if(Constant.bookingTypeConst == "daily")
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: Get.width/2,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 10,
-                                    childAspectRatio: 3.5, // Adjust based on design
+                                        ],);
+
+                                    },
+
                                   ),
-                                  itemCount: controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList().length,
-                                  itemBuilder: (_, index) {
-                                    var dateList = controller.orderModel.value.bookingDate!.split(',').map((e) => e.trim()).toList();
-                                    print(dateList[index]);
-                                   var tempDate= controller.sortDateStrings(dateList);
-                                    return Row(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Visibility(
+                                    visible: controller.orderModel.value.status ==
+                                        Constant.placed ||
+                                        controller.orderModel.value.status ==
+                                            Constant.onGoing,
+                                    child: Row(
                                       children: [
-                                        const Icon(Icons.calendar_today,
-                                            color: AppThemData.grey07,
-                                            size: 20),
-                                        const SizedBox(width: 10,),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text(Constant.timestampToDate(
-                                                Utils.stringToTimeStamp(tempDate[index])),
-                                              style: TextStyle(
-                                                color: themeChange.getThem()
-                                                    ? AppThemData.grey06
-                                                    : AppThemData.grey09,
-                                                fontSize: 16,
-                                                fontFamily: AppThemData
-                                                    .medium,),),
-                                            const SizedBox(height: 5,),
-
-                                            Constant.bookingTypeConst == "hourly"?
-                                            Text("${Constant.timestampToTime(
-                                                controller.orderModel.value
-                                                    .bookingStartTime!)} - ${Constant.timestampToTime(controller.orderModel.value.bookingEndTime!)}",
-                                              style: const TextStyle(
-                                                color: AppThemData.grey07,
-                                                fontSize: 12,
-                                                fontFamily: AppThemData
-                                                    .regular,),):
-
-                                            Text("Full day",
-                                              style: const TextStyle(
-                                                color: AppThemData.grey07,
-                                                fontSize: 12,
-                                                fontFamily: AppThemData
-                                                    .regular,),),
-                                          ],),
-                                      ],);
-
-                                  },
-
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Visibility(
-                                  visible: controller.orderModel.value.status ==
-                                      Constant.placed ||
-                                      controller.orderModel.value.status ==
-                                          Constant.onGoing,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: RoundedButtonFill(
-                                          title: "Chat US".tr,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey09
-                                              : AppThemData.grey03,
-                                          textColor: themeChange.getThem()
-                                              ? AppThemData.grey01
-                                              : AppThemData.grey09,
-                                          icon: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 5),
-                                            child: SvgPicture.asset(
-                                                "assets/icon/ic_chat_icon.svg",
-                                                color: themeChange.getThem()
-                                                    ? AppThemData.grey01
-                                                    : AppThemData.grey10),
-                                          ),
-                                          isRight: false,
-                                          onPress: () async {
-                                            await FireStoreUtils.getUserProfile(
-                                                controller.orderModel.value
-                                                    .parkingDetails!.userId
-                                                    .toString())
-                                                .then((value) {
-                                              UserModel userModel = value!;
-                                              Get.to(const ChatScreen(),
-                                                  arguments: {
-                                                    "receiverModel": userModel
-                                                  });
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: RoundedButtonFill(
-                                          title: "Call Now".tr,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey09
-                                              : AppThemData.grey03,
-                                          textColor: themeChange.getThem()
-                                              ? AppThemData.grey01
-                                              : AppThemData.grey09,
-                                          isRight: false,
-                                          icon: SvgPicture.asset(
-                                              "assets/icon/ic_call_support.svg",
-                                              color: themeChange.getThem()
-                                                  ? AppThemData.grey01
-                                                  : AppThemData.grey10),
-                                          onPress: () async {
-                                            ShowToastDialog.showLoader(
-                                                "Please wait".tr);
-                                            UserModel? userModel =
-                                            await FireStoreUtils
-                                                .getUserProfile(controller
-                                                .orderModel
-                                                .value
-                                                .parkingDetails!
-                                                .userId!
-                                                .toString());
-                                            ShowToastDialog.closeLoader();
-                                            Constant.makePhoneCall(
-                                                "${userModel!
-                                                    .countryCode}${userModel
-                                                    .phoneNumber}");
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        // if (controller.orderModel.value.paymentCompleted == false && controller.orderModel.value.paymentType.toString().toLowerCase() == 'cash'.toLowerCase())
-                        Visibility(
-                          visible:
-                          controller.orderModel.value.paymentCompleted ==
-                              true
-                              ? false
-                              : true,
-                          child: Visibility(
-                            visible:
-                            controller.orderModel.value.paymentCompleted ==
-                                false &&
-                                controller.orderModel.value.paymentType
-                                    .toString()
-                                    .toLowerCase() ==
-                                    'cash'.toLowerCase()
-                                ? false
-                                : true,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Text('Apply Coupon Code'.tr,
-                                            style: const TextStyle(
-                                                fontFamily: AppThemData.medium,
-                                                fontSize: 14,
-                                                color: AppThemData.grey07))),
-                                    InkWell(
-                                        onTap: () {
-                                          showCouponCode(context, controller);
-                                        },
-                                        child: Text('View All'.tr,
-                                            style: const TextStyle(
-                                                fontFamily: AppThemData.medium,
-                                                fontSize: 14,
-                                                color: AppThemData.primary07)))
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextFormField(
-                                  keyboardType: TextInputType.text,
-                                  textCapitalization:
-                                  TextCapitalization.sentences,
-                                  controller: controller
-                                      .couponCodeTextFieldController.value,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: themeChange.getThem()
-                                          ? AppThemData.grey01
-                                          : AppThemData.grey08,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: AppThemData.medium),
-                                  decoration: InputDecoration(
-                                      errorStyle:
-                                      const TextStyle(color: Colors.red),
-                                      isDense: true,
-                                      filled: true,
-                                      fillColor: themeChange.getThem()
-                                          ? AppThemData.grey10
-                                          : AppThemData.grey03,
-                                      contentPadding:
-                                      const EdgeInsets.symmetric(
-                                          vertical: 16, horizontal: 16),
-                                      suffixIcon: Padding(
-                                        padding: const EdgeInsets.only(top: 14),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            if (controller
-                                                .couponCodeTextFieldController
-                                                .value
-                                                .text
-                                                .isNotEmpty) {
-                                              ShowToastDialog.showLoader(
-                                                  "Please wait".tr);
-                                              await FireStoreUtils.fireStore
-                                                  .collection(
-                                                  CollectionName.coupon)
-                                                  .where('code',
-                                                  isEqualTo: controller
-                                                      .couponCodeTextFieldController
-                                                      .value
-                                                      .text)
-                                                  .where('enable',
-                                                  isEqualTo: true)
-                                                  .where('validity',
-                                                  isGreaterThanOrEqualTo:
-                                                  Timestamp.now())
-                                                  .get()
-                                                  .then((value) {
-                                                ShowToastDialog.closeLoader();
-                                                if (value.docs.isNotEmpty) {
-                                                  controller.selectedCouponModel
-                                                      .value =
-                                                      CouponModel.fromJson(value
-                                                          .docs.first
-                                                          .data());
-                                                  controller
-                                                      .couponCodeTextFieldController
-                                                      .value
-                                                      .text =
-                                                      controller
-                                                          .selectedCouponModel
-                                                          .value
-                                                          .code
-                                                          .toString();
-                                                  if (controller
-                                                      .selectedCouponModel
-                                                      .value
-                                                      .type ==
-                                                      "fix") {
-                                                    controller.couponAmount
-                                                        .value =
-                                                        double.parse(controller
-                                                            .selectedCouponModel
-                                                            .value
-                                                            .amount
-                                                            .toString());
-                                                  } else {
-                                                    controller.couponAmount
-                                                        .value = double.parse(
-                                                        controller
-                                                            .orderModel
-                                                            .value
-                                                            .subTotal
-                                                            .toString()) *
-                                                        double.parse(controller
-                                                            .selectedCouponModel
-                                                            .value
-                                                            .amount
-                                                            .toString()) /
-                                                        100;
-                                                  }
-                                                  ShowToastDialog.closeLoader();
-                                                  ShowToastDialog.showToast(
-                                                      "Coupon Applied".tr);
-                                                } else {
-                                                  ShowToastDialog.closeLoader();
-                                                  ShowToastDialog.showToast(
-                                                      "Coupon code is Invalid"
-                                                          .tr);
-                                                }
-                                              }).catchError((error) {
-                                                ShowToastDialog.closeLoader();
-                                                log(error.toString());
-                                              });
-                                            } else {
-                                              ShowToastDialog.closeLoader();
-                                              ShowToastDialog.showToast(
-                                                  "Please Enter coupon code"
-                                                      .tr);
-                                            }
-                                          },
-                                          child: Text("Apply".tr,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: themeChange.getThem()
-                                                      ? AppThemData.secondary07
-                                                      : AppThemData.secondary07,
-                                                  fontFamily:
-                                                  AppThemData.medium)),
-                                        ),
-                                      ),
-                                      disabledBorder: UnderlineInputBorder(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12)),
-                                        borderSide: BorderSide(
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey04
-                                                : AppThemData.grey04,
-                                            width: 1),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12)),
-                                        borderSide: BorderSide(
+                                        Expanded(
+                                          child: RoundedButtonFill(
+                                            radius: 10,
+                                            title: "Chat US".tr,
                                             color: themeChange.getThem()
                                                 ? AppThemData.primary06
                                                 : AppThemData.primary06,
-                                            width: 1),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12)),
-                                        borderSide: BorderSide(
+                                            textColor: themeChange.getThem()
+                                                ? AppThemData.grey09
+                                                : AppThemData.grey09,
+                                           /* icon: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 5),
+                                              child: SvgPicture.asset(
+                                                  "assets/icon/ic_chat_icon.svg",
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey01
+                                                      : AppThemData.grey10),
+                                            ),*/
+                                            isRight: true,
+                                            onPress: () async {
+                                              await FireStoreUtils.getUserProfile(
+                                                  controller.orderModel.value
+                                                      .parkingDetails!.userId
+                                                      .toString())
+                                                  .then((value) {
+                                                UserModel userModel = value!;
+                                                Get.to(const ChatScreen(),
+                                                    arguments: {
+                                                      "receiverModel": userModel
+                                                    });
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: RoundedButtonFill(
+                                            radius: 10,
+                                            title: "Call Now".tr,
                                             color: themeChange.getThem()
-                                                ? AppThemData.grey04
-                                                : AppThemData.grey04,
-                                            width: 1),
-                                      ),
-                                      errorBorder: UnderlineInputBorder(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12)),
-                                        borderSide: BorderSide(
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey04
-                                                : AppThemData.grey04,
-                                            width: 1),
-                                      ),
-                                      border: UnderlineInputBorder(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12)),
-                                        borderSide: BorderSide(
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey04
-                                                : AppThemData.grey04,
-                                            width: 1),
-                                      ),
-                                      hintText: "Enter Coupon code".tr,
-                                      hintStyle: TextStyle(
-                                          fontSize: 14,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey06
-                                              : AppThemData.grey06,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: AppThemData.medium)),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
+                                                ? AppThemData.primary06
+                                                : AppThemData.primary06,
+                                            textColor: themeChange.getThem()
+                                                ? AppThemData.grey09
+                                                : AppThemData.grey09,
+                                            isRight: true,
+                                           /* icon: SvgPicture.asset(
+                                                "assets/icon/ic_call_support.svg",
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.grey01
+                                                    : AppThemData.grey10),*/
+                                            onPress: () async {
+                                              ShowToastDialog.showLoader(
+                                                  "Please wait".tr);
+                                              UserModel? userModel =
+                                              await FireStoreUtils
+                                                  .getUserProfile(controller
+                                                  .orderModel
+                                                  .value
+                                                  .parkingDetails!
+                                                  .userId!
+                                                  .toString());
+                                              ShowToastDialog.closeLoader();
+                                              Constant.makePhoneCall(
+                                                  "${userModel!
+                                                      .countryCode}${userModel
+                                                      .phoneNumber}");
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: themeChange.getThem()
-                                ? AppThemData.grey10
-                                : AppThemData.white,
-                            borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
+                          const SizedBox(
+                            height: 20,
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 5),
-                                  child: Row(
+                          // if (controller.orderModel.value.paymentCompleted == false && controller.orderModel.value.paymentType.toString().toLowerCase() == 'cash'.toLowerCase())
+                          Visibility(
+                            visible:
+                            controller.orderModel.value.paymentCompleted ==
+                                true
+                                ? false
+                                : true,
+                            child: Visibility(
+                              visible:
+                              controller.orderModel.value.paymentCompleted ==
+                                  false &&
+                                  controller.orderModel.value.paymentType
+                                      .toString()
+                                      .toLowerCase() ==
+                                      'cash'.toLowerCase()
+                                  ? false
+                                  : true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
                                     children: [
                                       Expanded(
-                                        child: Text(
-                                          'Sub Total'.tr,
-                                          style: TextStyle(
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey03
-                                                : AppThemData.grey07,
-                                            fontSize: 17,
-                                            fontFamily: AppThemData.medium,
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        Constant.amountShow(
-                                            amount: controller
-                                                .orderModel.value.subTotal
-                                                .toString()),
-                                        style: TextStyle(
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey03
-                                              : AppThemData.grey07,
-                                          fontSize: 18,
-                                          fontFamily: AppThemData.semiBold,
-                                        ),
-                                      ),
+                                          child: Text('Apply Coupon Code'.tr,
+                                              style: const TextStyle(
+                                                  fontFamily: AppThemData.medium,
+                                                  fontSize: 14,
+                                                  color: AppThemData.grey07))),
+                                      InkWell(
+                                          onTap: () {
+                                            showCouponCode(context, controller);
+                                          },
+                                          child: Text('View All'.tr,
+                                              style: const TextStyle(
+                                                  fontFamily: AppThemData.medium,
+                                                  fontSize: 14,
+                                                  color: AppThemData.primary07)))
                                     ],
                                   ),
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 5),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          'Coupon Applied'.tr,
-                                          style: TextStyle(
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey03
-                                                : AppThemData.grey07,
-                                            fontSize: 17,
-                                            fontFamily: AppThemData.medium,
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        Constant.amountShow(
-                                            amount: controller.couponAmount
-                                                .toString()),
-                                        style: TextStyle(
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey03
-                                              : AppThemData.grey07,
-                                          fontSize: 18,
-                                          fontFamily: AppThemData.semiBold,
-                                        ),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    height: 5,
                                   ),
-                                ),
-                                controller.orderModel.value.taxList == null
-                                    ? const SizedBox()
-                                    : ListView.builder(
-                                    itemCount: controller.orderModel.value.taxList!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      TaxModel taxModel = controller.orderModel.value.taxList![index];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 5),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                "${taxModel.title.toString()} (${taxModel.type == "fix"
-                                                    ? Constant.amountShow(
-                                                    amount: taxModel.tax)
-                                                    : "${taxModel.tax}%"})",
+                                  TextFormField(
+                                    keyboardType: TextInputType.text,
+                                    textCapitalization:
+                                    TextCapitalization.sentences,
+                                    controller: controller.couponCodeTextFieldController.value,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: themeChange.getThem()
+                                            ? AppThemData.grey01
+                                            : AppThemData.grey08,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: AppThemData.medium),
+                                    decoration: InputDecoration(
+                                        errorStyle:
+                                        const TextStyle(color: Colors.red),
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: themeChange.getThem()
+                                            ? AppThemData.grey10
+                                            : AppThemData.grey03,
+                                        contentPadding:
+                                        const EdgeInsets.symmetric(
+                                            vertical: 16, horizontal: 16),
+                                        suffixIcon: Padding(
+                                          padding: const EdgeInsets.only(top: 14),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              controller.couponAmount.value = 0.0;
+                                              if (controller.couponCodeTextFieldController.value.text.isNotEmpty) {
+                                                ShowToastDialog.showLoader("Please wait".tr);
+                                                await FireStoreUtils.fireStore.collection(CollectionName.coupon)
+                                                    .where('code',isEqualTo: controller.couponCodeTextFieldController.value.text)
+                                                    .where('enable', isEqualTo: true)
+                                                    .where('validity', isGreaterThanOrEqualTo: Timestamp.now())
+                                                    .get()
+                                                    .then((value) {
+                                                  ShowToastDialog.closeLoader();
+                                                  if (value.docs.isNotEmpty) {
+                                                    controller.selectedCouponModel.value = CouponModel.fromJson(value.docs.first.data());
+                                                    controller.couponCodeTextFieldController.value.text = controller.selectedCouponModel.value.code.toString();
+                                                    if (controller.selectedCouponModel.value.type == "fix") {
+                                                      if (controller.selectedCouponModel.value.parkingId == ""){
+                                                        controller.couponAmount.value = double.parse(controller.selectedCouponModel.value.amount.toString());
+                                                        ShowToastDialog.closeLoader();
+                                                        ShowToastDialog.showToast("Coupon Applied".tr);
+                                                      }
+                                                      else{
+                                                      if (controller.selectedCouponModel.value.parkingId == controller.orderModel.value.parkingId){
+                                                        controller.couponAmount.value = double.parse(controller.selectedCouponModel.value.amount.toString());
+                                                        ShowToastDialog.closeLoader();
+                                                        ShowToastDialog.showToast(
+                                                            "Coupon Applied".tr);
+                                                      }
+                                                      else{
+                                                        ShowToastDialog.closeLoader();
+                                                        ShowToastDialog.showToast(
+                                                            "Coupon code is Invalid".tr);
+                                                      }
+                                                      }
+                                                    }
+                                                    else {
+                                                      if (controller.selectedCouponModel.value.parkingId == ""){
+                                                        controller.couponAmount.value = double.parse(controller.orderModel.value.subTotal.toString()) *
+                                                            double.parse(controller.selectedCouponModel.value.amount.toString()) / 100;
+                                                        ShowToastDialog.closeLoader();
+                                                        ShowToastDialog.showToast(
+                                                            "Coupon Applied".tr);
+                                                      }
+                                                      else{
+                                                        if (controller.selectedCouponModel.value.parkingId == controller.orderModel.value.parkingId){
+                                                          controller.couponAmount.value = double.parse(controller.orderModel.value.subTotal.toString()) *
+                                                              double.parse(controller.selectedCouponModel.value.amount.toString()) / 100;
+                                                          ShowToastDialog.closeLoader();
+                                                          ShowToastDialog.showToast(
+                                                              "Coupon Applied".tr);
+                                                        }
+                                                        else{
+                                                          ShowToastDialog.closeLoader();
+                                                          ShowToastDialog.showToast(
+                                                              "Coupon code is Invalid".tr);
+                                                        }
+                                                      }
+                                                    }
+
+                                                  } else {
+                                                    ShowToastDialog.closeLoader();
+                                                    ShowToastDialog.showToast(
+                                                        "Coupon code is Invalid".tr);
+                                                  }
+                                                }).catchError((error) {
+                                                  ShowToastDialog.closeLoader();
+                                                  log(error.toString());
+                                                });
+                                              } else {
+                                                ShowToastDialog.closeLoader();
+                                                ShowToastDialog.showToast(
+                                                    "Please Enter coupon code"
+                                                        .tr);
+                                              }
+                                            },
+                                            child: Text("Apply".tr,
                                                 style: TextStyle(
-                                                  color: themeChange
-                                                      .getThem()
-                                                      ? AppThemData.grey03
-                                                      : AppThemData.grey07,
-                                                  fontSize: 17,
-                                                  fontFamily:
-                                                  AppThemData.medium,
+                                                    fontSize: 14,
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.secondary07
+                                                        : AppThemData.secondary07,
+                                                    fontFamily:
+                                                    AppThemData.medium)),
+                                          ),
+                                        ),
+                                        disabledBorder: UnderlineInputBorder(
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12)),
+                                          borderSide: BorderSide(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey04
+                                                  : AppThemData.grey04,
+                                              width: 1),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12)),
+                                          borderSide: BorderSide(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.primary06
+                                                  : AppThemData.primary06,
+                                              width: 1),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12)),
+                                          borderSide: BorderSide(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey04
+                                                  : AppThemData.grey04,
+                                              width: 1),
+                                        ),
+                                        errorBorder: UnderlineInputBorder(
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12)),
+                                          borderSide: BorderSide(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey04
+                                                  : AppThemData.grey04,
+                                              width: 1),
+                                        ),
+                                        border: UnderlineInputBorder(
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12)),
+                                          borderSide: BorderSide(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey04
+                                                  : AppThemData.grey04,
+                                              width: 1),
+                                        ),
+                                        hintText: "Enter Coupon code".tr,
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey06
+                                                : AppThemData.grey06,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: AppThemData.medium)),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: themeChange.getThem()
+                                  ? AppThemData.white
+                                  : AppThemData.white,
+                              border: Border.all(color: AppThemData.grey07,width: 1),
+                              borderRadius: const BorderRadius.all(Radius.circular(10),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            'Sub Total'.tr,
+                                            style: TextStyle(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                              fontSize: 17,
+                                              fontFamily: AppThemData.medium,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          Constant.amountShow(
+                                              amount: controller
+                                                  .orderModel.value.subTotal
+                                                  .toString()),
+                                          style: TextStyle(
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey07
+                                                : AppThemData.grey07,
+                                            fontSize: 18,
+                                            fontFamily: AppThemData.semiBold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            'Coupon Applied'.tr,
+                                            style: TextStyle(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                              fontSize: 17,
+                                              fontFamily: AppThemData.medium,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          Constant.amountShow(
+                                              amount: controller.couponAmount
+                                                  .toString()),
+                                          style: TextStyle(
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey07
+                                                : AppThemData.grey07,
+                                            fontSize: 18,
+                                            fontFamily: AppThemData.semiBold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  controller.orderModel.value.taxList == null
+                                      ? const SizedBox()
+                                      : ListView.builder(
+                                      itemCount: controller.orderModel.value.taxList!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        TaxModel taxModel = controller.orderModel.value.taxList![index];
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 5),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  "${taxModel.title.toString()} (${taxModel.type == "fix"
+                                                      ? Constant.amountShow(
+                                                      amount: taxModel.tax)
+                                                      : "${taxModel.tax}%"})",
+                                                  style: TextStyle(
+                                                    color: themeChange
+                                                        .getThem()
+                                                        ? AppThemData.grey07
+                                                        : AppThemData.grey07,
+                                                    fontSize: 17,
+                                                    fontFamily:
+                                                    AppThemData.medium,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            if (controller.couponAmount <= double.parse(controller.orderModel.value.subTotal.toString()))
-                                            Text(
-                                              "${Constant.amountShow(
-                                                  amount: Constant()
-                                                      .calculateTax(
-                                                      amount: (double.parse(
-                                                          controller.orderModel
-                                                              .value.subTotal
-                                                              .toString()) -
-                                                          double.parse(
-                                                              controller
-                                                                  .couponAmount
-                                                                  .value
-                                                                  .toString()))
-                                                          .toString(),
-                                                      taxModel: taxModel)
-                                                      .toStringAsFixed(
-                                                      Constant.currencyModel!
-                                                          .decimalDigits!)
-                                                      .toString())} ",
-                                              style: TextStyle(
-                                                color: themeChange.getThem()
-                                                    ? AppThemData.grey03
-                                                    : AppThemData.grey07,
-                                                fontSize: 18,
-                                                fontFamily:
-                                                AppThemData.semiBold,
-                                              ),
-                                            ),
-                                            if (controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString()))
+                                              if (controller.couponAmount <= double.parse(controller.orderModel.value.subTotal.toString()))
                                               Text(
-                                                "0.00\$ ",
+                                                "${Constant.amountShow(
+                                                    amount: Constant()
+                                                        .calculateTax(
+                                                        amount: (double.parse(
+                                                            controller.orderModel
+                                                                .value.subTotal
+                                                                .toString()) -
+                                                            double.parse(
+                                                                controller
+                                                                    .couponAmount
+                                                                    .value
+                                                                    .toString()))
+                                                            .toString(),
+                                                        taxModel: taxModel)
+                                                        .toStringAsFixed(
+                                                        Constant.currencyModel!
+                                                            .decimalDigits!)
+                                                        .toString())} ",
                                                 style: TextStyle(
                                                   color: themeChange.getThem()
-                                                      ? AppThemData.grey03
+                                                      ? AppThemData.grey07
                                                       : AppThemData.grey07,
                                                   fontSize: 18,
                                                   fontFamily:
                                                   AppThemData.semiBold,
                                                 ),
                                               ),
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                                Divider(
-                                  thickness: 1,
-                                  color: themeChange.getThem()
-                                      ? AppThemData.grey09
-                                      : AppThemData.grey03,
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 5),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          'Total'.tr,
-                                          style: TextStyle(
-                                            color: themeChange.getThem()
-                                                ? AppThemData.grey03
-                                                : AppThemData.grey07,
-                                            fontSize: 17,
-                                            fontFamily: AppThemData.medium,
+                                              if (controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString()))
+                                                Text(
+                                                  "0.00\$ ",
+                                                  style: TextStyle(
+                                                    color: themeChange.getThem()
+                                                        ? AppThemData.grey07
+                                                        : AppThemData.grey07,
+                                                    fontSize: 18,
+                                                    fontFamily:
+                                                    AppThemData.semiBold,
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                  Divider(
+                                    thickness: 1,
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey09
+                                        : AppThemData.grey03,
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            'Total'.tr,
+                                            style: TextStyle(
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                              fontSize: 17,
+                                              fontFamily: AppThemData.medium,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Text(
-                                        Constant.amountShow(
-                                            amount: controller.calculateAmount()
-                                                .toString()),
-                                        style: TextStyle(
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey03
-                                              : AppThemData.grey07,
-                                          fontSize: 18,
-                                          fontFamily: AppThemData.semiBold,
+                                        Text(
+                                          Constant.amountShow(
+                                              amount: controller.calculateAmount()
+                                                  .toString()),
+                                          style: TextStyle(
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey07
+                                                : AppThemData.grey07,
+                                            fontSize: 18,
+                                            fontFamily: AppThemData.semiBold,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        )
-                      ],
+                          SizedBox(height:20,)
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             bottomNavigationBar: Container(
               color: themeChange.getThem()
-                  ? AppThemData.grey10
-                  : AppThemData.grey11,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  ? AppThemData.white
+                  : AppThemData.white,
+              padding: const EdgeInsets.symmetric(horizontal: !kIsWeb?16:120, vertical: 16),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: controller.orderModel.value.status == Constant.completed
@@ -1271,6 +1274,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                   },
                 )
                     : RoundedButtonFill(
+                  radius: 10,
                   title:controller.couponAmount >= double.parse(controller.orderModel.value.subTotal.toString())?"Confirm".tr:"Go to payment".tr,
                   color: AppThemData.primary06,
                   onPress: () {
@@ -1410,16 +1414,9 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                           .end,
                                                       children: [
                                                         Text(
-                                                          couponModel.type ==
-                                                              "fix"
-                                                              ? Constant
-                                                              .amountShow(
-                                                              amount: couponModel
-                                                                  .amount
-                                                                  .toString())
-                                                              : "${couponModel
-                                                              .amount
-                                                              .toString()}%",
+                                                          couponModel.type == "fix" ?
+                                                          Constant.amountShow(amount: couponModel.amount.toString())
+                                                              : "${couponModel.amount.toString()}%",
                                                           style:
                                                           const TextStyle(
                                                             color: AppThemData
@@ -1466,43 +1463,54 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       height: 5,
                                                       fontSizes: 16,
                                                       onPress: () {
-                                                        controller
-                                                            .selectedCouponModel
-                                                            .value =
-                                                            couponModel;
-                                                        controller
-                                                            .couponCodeTextFieldController
-                                                            .value
-                                                            .text =
-                                                            controller
-                                                                .selectedCouponModel
-                                                                .value
-                                                                .code
-                                                                .toString();
-                                                        if (couponModel
-                                                            .type ==
-                                                            "fix") {
-                                                          controller
-                                                              .couponAmount
-                                                              .value =
-                                                              double.parse(
-                                                                  couponModel
-                                                                      .amount
-                                                                      .toString());
-                                                        } else {
-                                                          controller
-                                                              .couponAmount
-                                                              .value = double
-                                                              .parse(controller
-                                                              .orderModel
-                                                              .value
-                                                              .subTotal
-                                                              .toString()) *
-                                                              double.parse(
-                                                                  couponModel
-                                                                      .amount
-                                                                      .toString()) /
-                                                              100;
+                                                        controller.couponAmount.value = 0.0;
+                                                        controller.selectedCouponModel.value = couponModel;
+                                                        controller.couponCodeTextFieldController.value.text = controller.selectedCouponModel.value.code.toString();
+                                                        if (couponModel.type == "fix") {
+                                                          if (couponModel.parkingId == ""){
+                                                            controller.couponAmount.value = double.parse(couponModel.amount.toString());
+                                                            ShowToastDialog.closeLoader();
+                                                            ShowToastDialog.showToast(
+                                                                "Coupon Applied".tr);
+                                                          }
+                                                          else{
+                                                            if (couponModel.parkingId == controller.orderModel.value.parkingId){
+                                                              controller.couponAmount.value = double.parse(couponModel.amount.toString());
+                                                              ShowToastDialog.closeLoader();
+                                                              ShowToastDialog.showToast(
+                                                                  "Coupon Applied".tr);
+                                                            }
+                                                            else{
+                                                              print("P I equle");
+                                                              ShowToastDialog.closeLoader();
+                                                              ShowToastDialog.showToast(
+                                                                  "Coupon code is Invalid".tr);
+                                                            }
+                                                          }
+                                                        }
+                                                        else {
+                                                          if (couponModel.parkingId == ""){
+                                                            controller.couponAmount.value = double.parse(controller.orderModel.value.subTotal.toString()) *
+                                                                double.parse(couponModel.amount.toString()) / 100;
+                                                            ShowToastDialog.closeLoader();
+                                                            ShowToastDialog.showToast(
+                                                                "Coupon Applied".tr);
+                                                          }
+                                                          else{
+                                                            if (couponModel.parkingId == controller.orderModel.value.parkingId){
+                                                              controller.couponAmount.value = double.parse(controller.orderModel.value.subTotal.toString()) *
+                                                                  double.parse(couponModel.amount.toString()) / 100;
+                                                              ShowToastDialog.closeLoader();
+                                                              ShowToastDialog.showToast(
+                                                                  "Coupon Applied".tr);
+                                                            }
+                                                            else{
+                                                              print("P I equle");
+                                                              ShowToastDialog.closeLoader();
+                                                              ShowToastDialog.showToast(
+                                                                  "Coupon code is Invalid".tr);
+                                                            }
+                                                          }
                                                         }
                                                         Get.back();
                                                       },

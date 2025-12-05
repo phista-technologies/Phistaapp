@@ -34,8 +34,8 @@ class OnBoardingScreenOwner extends StatelessWidget {
                                       ? "assets/images/onBoarding_bg2.png"
                                       : "assets/images/onBoarding_bg2.png"
                                   : themeChange.getThem()
-                                      ? "assets/images/onBoarding_bg3.png"
-                                      : "assets/images/onBoarding_bg3.png"),fit: BoxFit.cover)),
+                                      ? "assets/images/onbording_screen_New.png"
+                                      : "assets/images/onbording_screen_New.png"),fit: BoxFit.cover)),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
                     child: Column(

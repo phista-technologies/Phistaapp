@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../constant/constant.dart';
 import '../../model/user_model.dart';
+import '../../ui/owner/MyParkingBookingScreenOwnerForWeb/MyParkingBookingScreenOwnerForWeb.dart';
 import '../../ui/owner/parking_add/my_parking_booking_screen_owner.dart';
 import '../../ui/owner/parking_add/my_parking_list_owner.dart';
 import '../../ui/owner/profile/profile_screen_owner.dart';
@@ -15,7 +17,7 @@ class DashboardScreenControllerOwner extends GetxController {
   Rx<UserModel> userModel = UserModel().obs;
 
   RxList pageList = [
-    const MyParkingBooingScreenOwner(isBack: false),
+    !kIsWeb ?const MyParkingBooingScreenOwner(isBack: false):const MyParkingBookingScreenOwnerForWeb(isBack: false),
     const MyParkingListOwner(isBack: false),
     const WalletScreenOwner(isBack: false),
     const ProfileScreenOwner(),
