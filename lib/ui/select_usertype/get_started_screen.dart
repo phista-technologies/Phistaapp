@@ -141,7 +141,7 @@ class GetStartedScreen extends StatelessWidget{
                                  print("parkingModel.value${controller.parkingModel.value}");
 
 
-                                 Get.to(() => const BookingParkingDetailsScreen(),arguments:{"parkingModel": controller.parkingModel.value});
+                                 Get.to(() => const BookingParkingDetailsScreen(),arguments:{"parkingModel": controller.parkingModel.value,"isFromTimerScreen": false});
 
                                },),
                            ),

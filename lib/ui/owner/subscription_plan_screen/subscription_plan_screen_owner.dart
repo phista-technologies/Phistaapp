@@ -107,6 +107,7 @@ class SubscriptionPlanScreenOwner extends StatelessWidget {
                                           controller.selectedPaymentMethod.value = 'free';
                                           controller.setOrder();
                                         } else {
+
                                           Get.to(const SelectPaymentScreenOwner());
                                         }
                                       }

@@ -28,7 +28,6 @@ import '../add_select_vehicle/select_vehicle_screen.dart';
 
 class BookingParkingDetailsScreen extends StatelessWidget {
   const BookingParkingDetailsScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -39,7 +38,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
           return Scaffold(
             backgroundColor:AppThemData.grey02,
             appBar: UiInterface()
-                .customAppBar1(context, themeChange, "Select Date and Time".tr,backgroundColor:AppThemData.white,textColor: AppThemData.black ),
+                .customAppBar1(context, themeChange,"Select Date and Time".tr,backgroundColor:AppThemData.white,textColor: AppThemData.black ),
             body: controller.isLoading.value
                 ? Constant.loader()
                 : SingleChildScrollView(
@@ -523,8 +522,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                     },
                                     child: TextFieldWidget(
                                       onPress: () {},
-                                      controller:
-                                          controller.startTimeController.value,
+                                      controller: controller.startTimeController.value,
                                       textInputType:
                                           const TextInputType.numberWithOptions(
                                               decimal: true, signed: true),
@@ -802,14 +800,12 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 controller.selectedDateTime.value.year,
                                 controller.selectedDateTime.value.month,
                                 controller.selectedDateTime.value.day)));
-
                         orderModel.bookingStartTime =
                             Timestamp.fromDate(controller.startTime.value.toUtc());
                         orderModel.bookingEndTime =
                             Timestamp.fromDate(controller.endTime.value.toUtc());
                         print("bookingStartTime (UTC): ${orderModel.bookingStartTime?.toDate().toUtc()}");
                       }
-
                       else if (controller.radioValue.value == "monthly") {
                         print(
                             "monthly date startDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.startDate}");
@@ -817,14 +813,11 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                             "monthly date endDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.endDate}");
                         DateTime? startDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.startDate;
                         DateTime? endDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.endDate;
-
                         List tempMonthDate = [];
                         Constant.bookingTypeConst = "monthly";
                         orderModel.bookingType = "3";
                         orderModel.bookingMonth = controller.bookingMonths.value.toString();
-
                         controller.selectedDuration.value = 24.0;
-
                         if (startDateMonthly != null) {
                           controller.startTime.value = DateTime(
                               startDateMonthly.year,
@@ -834,13 +827,11 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                               startDateMonthly.minute,
                               startDateMonthly.second);
                         }
-
                         Duration duration = Duration(
                             hours: controller.selectedDuration.value.toInt());
                         controller.endTime.value = controller.startTime.value.add(duration);
                         orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
                         orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-
                         if (startDateMonthly != null) {
                           tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
                               DateTime(
@@ -848,23 +839,18 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                   startDateMonthly.month,
                                   startDateMonthly.day))));
                         }
-
                         if (endDateMonthly != null) {
                           tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
                               DateTime(endDateMonthly.year,
                                   endDateMonthly.month, endDateMonthly.day))));
                         }
-
                         orderModel.bookingDate = tempMonthDate.join(',');
 
                         print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
                       }
-
-
                       orderModel.parkingDetails = controller.parkingModel.value;
                       orderModel.userVehicle = controller.vehicle.value;
-                      orderModel.duration =
-                          controller.selectedDuration.value.toString();
+                      orderModel.duration = controller.selectedDuration.value.toString();
 
                       orderModel.status = Constant.placed;
                       orderModel.userId = FireStoreUtils.getCurrentUid();
@@ -875,16 +861,31 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                       orderModel.taxList = Constant.taxList;
                       orderModel.userVehicle = controller.selectedVehicle.value;
                       print("orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
-                     var selectedParkingSlot = await controller.selectParkingSlot(controller.radioValue.value,orderModel);
-
-                     print("selectedParkingSlot :- ${selectedParkingSlot}");
-                      ShowToastDialog.closeLoader();
-                     if(selectedParkingSlot.isEmpty){
-                       controller.showPopUp("Alert".tr,"Sorry, you cannot park here, this location is full, all the spots are reserved".tr);
+                     if(controller.isFromTimerScreen.value){
+                       var slotId = controller.orderModel.value.parkingSlotId;
+                       var selectedParkingSlot = await controller.selectParkingSlot(controller.radioValue.value,orderModel,fixedSlotId:slotId,);
+                       print("selectedParkingSlot :- ${selectedParkingSlot}");
+                       ShowToastDialog.closeLoader();
+                       if(selectedParkingSlot.isEmpty){
+                         controller.showPopUp("Alert".tr,"Sorry, you cannot park here, this location is full, all the spots are reserved".tr);
+                       }
+                       else{
+                         orderModel.parkingSlotId = selectedParkingSlot;
+                         Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": orderModel});
+                         // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
+                       }
                      }else{
-                       orderModel.parkingSlotId = selectedParkingSlot;
-                       Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": orderModel});
-                      // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
+                       var selectedParkingSlot = await controller.selectParkingSlot(controller.radioValue.value,orderModel);
+                       print("selectedParkingSlot :- ${selectedParkingSlot}");
+                       ShowToastDialog.closeLoader();
+                       if(selectedParkingSlot.isEmpty){
+                         controller.showPopUp("Alert".tr,"Sorry, you cannot park here, this location is full, all the spots are reserved".tr);
+                       }
+                       else{
+                         orderModel.parkingSlotId = selectedParkingSlot;
+                         Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": orderModel});
+                         // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
+                       }
                      }
                     }
                   },

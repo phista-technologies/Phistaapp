@@ -95,7 +95,6 @@ class SubscriptionControllerOwner extends GetxController {
             days: selectedSubscriptionPlan.value.expiryDay,
             date: Timestamp.now(),
           );
-
     SubscriptionHistoryModel subscriptionHistoryData = SubscriptionHistoryModel(
       id: Constant.getUuid(),
       createdAt: Timestamp.now(),

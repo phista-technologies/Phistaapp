@@ -335,12 +335,11 @@ class ProfileScreenOwner extends StatelessWidget {
                           menuItemWidgetPng(
                             title: "Dashboard".tr,
                             pngImage: "assets/icon/dashboard.png",
-                            onTap: () async {
+                            onTap:()async{
                               final Uri url =
-                              Uri.parse("https://test.phista.ca/");
+                              Uri.parse("https://app.phista.ca");
                               if (!await launchUrl(url)) {
-                                throw Exception(
-                                    'Could not launch ${Constant.supportURL.toString()}'.tr);
+                                throw Exception('Could not launch ${Constant.supportURL.toString()}'.tr);
                               }
                             },
                             themeChange: themeChange,

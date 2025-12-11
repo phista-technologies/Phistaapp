@@ -26,6 +26,7 @@ class MySummaryControllerOwner extends GetxController {
   Rx<ReviewModel> reviewModel = ReviewModel().obs;
   Rx<UserModel> otherUserModel = UserModel().obs;
   var vehicleDriverName = "".obs;
+  var vehicleDriverId = "".obs;
   var vehicleDriverNumber = "".obs;
   var vehicleDriverRole = "".obs;
   RxDouble couponAmount = 0.0.obs;
@@ -66,6 +67,7 @@ class MySummaryControllerOwner extends GetxController {
       if (value != null) {
        vehicleDriverName.value = value.fullName.toString() ?? "";
        vehicleDriverRole.value = value.role.toString()?? "";
+       vehicleDriverId.value = value.id.toString()?? "";
        if ((value.phoneNumber ?? "").isNotEmpty) {
          vehicleDriverNumber.value = value.phoneNumber.toString();
        }

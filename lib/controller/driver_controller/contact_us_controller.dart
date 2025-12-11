@@ -11,6 +11,7 @@ class ContactUsController extends GetxController {
   Rx<TextEditingController> emailController = TextEditingController().obs;
   Rx<TextEditingController> feedbackController = TextEditingController().obs;
 
+
   @override
   void onInit() {
     getContactUsInformation();

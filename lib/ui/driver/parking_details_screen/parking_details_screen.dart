@@ -427,7 +427,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                                           },
                                           negativeClick: () async {
                                             Get.back();
-                                            Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value});
+                                            Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value,"isFromTimerScreen": false});
                                           },
                                         );
                                       });
@@ -470,7 +470,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                       if (controller.parkingModel.value.userId == FireStoreUtils.getCurrentUid()) {
                         ShowToastDialog.showToast("You can't book your own parking.");
                       } else {
-                        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value});
+                        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": controller.parkingModel.value,"isFromTimerScreen": false});
                       }
                     }
 

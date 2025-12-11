@@ -103,8 +103,7 @@ class SelectPaymentScreenOwner extends StatelessWidget {
                                               true,
                                   child: cardDecoration(
                                       controller,
-                                      controller
-                                              .paymentModel.value.strip?.name ??
+                                      controller.paymentModel.value.strip?.name ??
                                           '',
                                       themeChange,
                                       controller.paymentModel.value.strip

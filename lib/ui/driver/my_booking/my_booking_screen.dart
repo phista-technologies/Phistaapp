@@ -11,6 +11,7 @@ import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/themes/common_ui.dart';
 import 'package:phista/themes/responsive.dart';
 import 'package:phista/themes/round_button_fill.dart';
+import 'package:phista/ui/driver/OngoingBookingTimerScreen/OngoingBookingTimerScreen.dart';
 import 'package:phista/ui/driver/my_booking/parking_ticket_screen.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:phista/utils/fire_store_utils.dart';
@@ -243,10 +244,8 @@ class MyBookingScreen extends StatelessWidget {
                                         : AppThemData.grey09,
                                     height: 5,
                                     onPress: () {
-                                      Get.to(() => const ParkingTicketScreen(),
-                                          arguments: {
-                                            "orderModel": orderModel
-                                          });
+                                     // Get.to(() => const ParkingTicketScreen(),arguments: {"orderModel": orderModel});
+                                      Get.to(() => const OngoingBookingTimerScreen(),arguments: {"orderModel": orderModel});
                                     },
                                   ),
                                 ),

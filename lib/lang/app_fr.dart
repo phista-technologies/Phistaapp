@@ -10,10 +10,13 @@ const Map<String, String> trFR = {
   "Licence Plate Number": "Numéro de plaque d’immatriculation",
   "Enter Licence Plate Number": "Entrez le numéro de plaque d’immatriculation",
   "Save": "Enregistrer",
+  "Add more time": "Ajouter plus de temps",
   "Enter Plate Number": "Entrer le numéro de plaque",
   "Select Vehicle": "Sélectionner un véhicule",
   "No vehicle Found": "Aucun véhicule trouvé",
   "Add Vehicle": "Ajouter un véhicule",
+  "Remaining Time": "Temps restant",
+  "Remaining Days": "Jours restants",
   "QR Code Successfully Scanned": "Code QR scanné avec succès",
   "Success! Your QR code has been scanned, and you're all set to enjoy your parking experience. Have a great stay!":
       "Succès ! Votre code QR a été scanné, vous êtes prêt à profiter de votre expérience de stationnement. Passez un agréable moment !",

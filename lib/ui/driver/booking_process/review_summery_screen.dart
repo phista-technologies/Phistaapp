@@ -390,8 +390,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-
-
                                     ],
                                   ),
                                   const SizedBox(
@@ -684,10 +682,8 @@ class ReviewSummaryScreen extends StatelessWidget {
                                     height: 10,
                                   ),
                                   Visibility(
-                                    visible: controller.orderModel.value.status ==
-                                        Constant.placed ||
-                                        controller.orderModel.value.status ==
-                                            Constant.onGoing,
+                                    visible: controller.orderModel.value.status == Constant.placed ||
+                                             controller.orderModel.value.status == Constant.onGoing,
                                     child: Row(
                                       children: [
                                         Expanded(

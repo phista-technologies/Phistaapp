@@ -184,8 +184,7 @@ class InboxScreenOwner extends StatelessWidget {
                     ShowToastDialog.showLoader("Please wait".tr);
                     await FireStoreUtils.getUserProfile(
                       controller.senderUserModel.value.id == inboxModel.senderId.toString()
-                          ? inboxModel.receiverId.toString()
-                          : inboxModel.senderId.toString(),
+                          ? inboxModel.receiverId.toString() : inboxModel.senderId.toString(),
                     ).then((value) {
                       ShowToastDialog.closeLoader();
                       if (value != null) {

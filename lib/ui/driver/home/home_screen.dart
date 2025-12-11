@@ -354,13 +354,10 @@ class HomeScreen extends StatelessWidget {
                                                           cameraUpdate);
                                                 }
                                               },
-                                              itemCount:
-                                                  controller.parkingList.length,
+                                              itemCount: controller.parkingList.length,
                                               scrollDirection: Axis.horizontal,
                                               itemBuilder: (context, index) {
-                                                ParkingModel parkingModel =
-                                                    controller
-                                                        .parkingList[index];
+                                                ParkingModel parkingModel = controller.parkingList[index];
                                                 return Padding(
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 10,
@@ -661,7 +658,7 @@ class HomeScreen extends StatelessWidget {
                                                                                                         negativeClick: () async {
                                                                                                           Get.back();
                                                                                                           Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                                                                            "parkingModel": parkingModel
+                                                                                                            "parkingModel": parkingModel,"isFromTimerScreen": false
                                                                                                           });
                                                                                                         },
                                                                                                       );
@@ -672,7 +669,7 @@ class HomeScreen extends StatelessWidget {
                                                                                                 } else {
                                                                                                   print("else BookingParkingDetailsScreen");
                                                                                                   Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                                                                    "parkingModel": parkingModel
+                                                                                                    "parkingModel": parkingModel,"isFromTimerScreen": false
                                                                                                   });
                                                                                                 }
                                                                                               }
@@ -715,19 +712,20 @@ class HomeScreen extends StatelessWidget {
                                                                                                 ShowToastDialog.showToast("You can't book your own parking.");
                                                                                               } else {
                                                                                                 Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                                                                  "parkingModel": parkingModel
+                                                                                                  "parkingModel": parkingModel,"isFromTimerScreen": false
                                                                                                 });
                                                                                               }
                                                                                             }
                                                                                           },
                                                                                         );
                                                                                       });
-                                                                                } else {
+                                                                                }
+                                                                                else {
                                                                                   if (parkingModel.userId == FireStoreUtils.getCurrentUid()) {
                                                                                     ShowToastDialog.showToast("You can't book your own parking.");
                                                                                   } else {
                                                                                     Get.to(() => const BookingParkingDetailsScreen(), arguments: {
-                                                                                      "parkingModel": parkingModel
+                                                                                      "parkingModel": parkingModel,"isFromTimerScreen": false
                                                                                     });
                                                                                   }
                                                                                 }

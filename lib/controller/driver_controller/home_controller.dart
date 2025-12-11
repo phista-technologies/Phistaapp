@@ -53,7 +53,7 @@ class HomeController extends GetxController {
     Future.delayed(Duration.zero,() {
       if(Constant.globalParkingModel.value != null){
         log("Constant.globalParkingModel.value is not null");
-        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": Constant.globalParkingModel.value});
+        Get.to(() => const BookingParkingDetailsScreen(), arguments: {"parkingModel": Constant.globalParkingModel.value,"isFromTimerScreen": false});
       }
         getCurrentUser();
         getLocation();

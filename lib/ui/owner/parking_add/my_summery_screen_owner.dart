@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:phista/ui/owner/chat/chat_screen_owner.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constant/constant.dart';
 import '../../../constant/show_toast_dialog.dart';
 import '../../../controller/owner_controller/my_summary_controller_owner.dart';
 import '../../../model/tax_model.dart';
+import '../../../model/user_model.dart';
 import '../../../themes/app_them_data.dart';
 import '../../../themes/common_ui.dart';
 import '../../../themes/responsive.dart';
 import '../../../themes/round_button_fill.dart';
 import '../../../utils/dark_theme_provider.dart';
+import '../../../utils/fire_store_utils.dart';
 import '../../../utils/network_image_widget.dart';
 import '../../../utils/utils.dart';
 
@@ -534,6 +537,55 @@ class MySummaryScreenOwner extends StatelessWidget {
                                           ),
                                         ],
                                       ),
+
+                                      /// this is temp
+
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Visibility(
+                                        visible: controller.orderModel.value.status ==
+                                            Constant.placed ||
+                                            controller.orderModel.value.status == Constant.onGoing,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: RoundedButtonFill(
+                                                radius: 10,
+                                                title: "Chat US".tr,
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.primary06
+                                                    : AppThemData.primary06,
+                                                textColor: themeChange.getThem()
+                                                    ? AppThemData.grey09
+                                                    : AppThemData.grey09,
+                                                /* icon: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 5),
+                                              child: SvgPicture.asset(
+                                                  "assets/icon/ic_chat_icon.svg",
+                                                  color: themeChange.getThem()
+                                                      ? AppThemData.grey01
+                                                      : AppThemData.grey10),
+                                            ),*/
+                                                isRight: true,
+                                                onPress: () async {
+                                                  await FireStoreUtils.getUserProfile(
+                                                      controller.vehicleDriverId.value.toString())
+                                                      .then((value) {
+                                                        print("value?.email :-- ${value?.email.toString()}");
+                                                    UserModel userModel = value!;
+                                                    Get.to(const ChatScreenOwner(),
+                                                        arguments: {
+                                                          "receiverModel": userModel
+                                                        });
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
