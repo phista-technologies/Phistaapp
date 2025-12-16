@@ -25,7 +25,7 @@ class DashBoardScreenOwner extends StatelessWidget {
               currentIndex: controller.selectedIndex.value,
               backgroundColor: themeChange.getThem() ? AppThemData.grey11 : AppThemData.grey11,
               selectedItemColor: themeChange.getThem() ? AppThemData.primary06 : AppThemData.primary06,
-              unselectedItemColor: themeChange.getThem() ? AppThemData.grey08 : AppThemData.grey08,
+              unselectedItemColor: themeChange.getThem() ? AppThemData.grey04 : AppThemData.grey04,
               onTap: (int index) {
                 controller.selectedIndex.value = index;
               },
@@ -77,8 +77,8 @@ class DashBoardScreenOwner extends StatelessWidget {
                   ? AppThemData.primary06
                   : AppThemData.primary06
               : themeChange.getThem()
-                  ? AppThemData.grey08
-                  : AppThemData.grey08,
+                  ? AppThemData.grey04
+                  : AppThemData.grey04,
         ),
       ),
       label: label,

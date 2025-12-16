@@ -16,7 +16,7 @@ import '../../utils/debouncer.dart';
 import '../../utils/fire_store_utils.dart';
 import '../../utils/utils.dart';
 class MyParkingBookingControllerOwnerForWeb extends GetxController {
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
   Rx<ParkingModel> selectedParkingModel = ParkingModel().obs;
   RxList<ParkingModel> parkingList = <ParkingModel>[].obs;
   Rx<DateTime> selectedDateTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;

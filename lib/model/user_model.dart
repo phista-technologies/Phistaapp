@@ -5,6 +5,7 @@ import 'package:phista/model/subscription_plan_model.dart';
 class UserModel {
   String? fullName;
   String? id;
+  String? stripeCustomerId;
   String? email;
   String? loginType;
   String? profilePic;
@@ -30,6 +31,7 @@ class UserModel {
   UserModel(
       {this.fullName,
       this.id,
+      this.stripeCustomerId,
       this.isActive,
       this.dateOfBirth,
       this.email,
@@ -55,6 +57,7 @@ class UserModel {
   UserModel.fromJson(Map<String, dynamic> json) {
     fullName = json['fullName'];
     id = json['id'];
+    stripeCustomerId = json['stripeCustomerId'];
     email = json['email'];
     loginType = json['loginType'];
     profilePic = json['profilePic'];
@@ -86,6 +89,7 @@ class UserModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['fullName'] = fullName;
     data['id'] = id;
+    data['stripeCustomerId'] = stripeCustomerId;
     data['email'] = email;
     data['loginType'] = loginType;
     data['profilePic'] = profilePic;

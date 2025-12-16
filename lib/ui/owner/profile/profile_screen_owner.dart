@@ -245,8 +245,7 @@ class ProfileScreenOwner extends StatelessWidget {
                           ),
                           const Divider(
                               color: AppThemData.grey04, thickness: 1),
-                          (Constant.isSubscriptionModelApplied == true ||
-                                  Constant.adminCommission?.enable == true)
+                          (Constant.isSubscriptionModelApplied == true || Constant.adminCommission?.enable == true)
                               ? menuItemWidget(
                                   title: "Subscription Packages".tr,
                                   svgImage: "assets/icon/ic_subscription.svg",
@@ -336,8 +335,7 @@ class ProfileScreenOwner extends StatelessWidget {
                             title: "Dashboard".tr,
                             pngImage: "assets/icon/dashboard.png",
                             onTap:()async{
-                              final Uri url =
-                              Uri.parse("https://app.phista.ca");
+                              final Uri url = Uri.parse("https://app.phista.ca");
                               if (!await launchUrl(url)) {
                                 throw Exception('Could not launch ${Constant.supportURL.toString()}'.tr);
                               }

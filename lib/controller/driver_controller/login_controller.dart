@@ -21,6 +21,7 @@ import '../../constant/extension_data.dart';
 import '../../model/payment/AppleUserDataModel.dart';
 import '../../ui/driver/auth_screen/information_screen.dart';
 import '../../ui/driver/auth_screen/otp_screen.dart';
+import '../../utils/utils.dart';
 
 
 class LoginController extends GetxController {
@@ -293,6 +294,13 @@ class LoginController extends GetxController {
             if (userExists) {
               UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
               if (userModel != null) {
+                if (userModel.stripeCustomerId == null || userModel.stripeCustomerId == "") {
+                  String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel);
+                  if (newStripeId != null && newStripeId.isNotEmpty) {
+                    userModel.stripeCustomerId = newStripeId;
+                    await FireStoreUtils.updateUser(userModel);
+                  }
+                }
                 if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
 
                   Constant.currentUserModel.value?.role = userModel.role;
@@ -397,6 +405,13 @@ class LoginController extends GetxController {
             UserModel? userModel = await FireStoreUtils.getUserProfile(userCredential.user!.uid);
 
             if (userModel != null) {
+              if (userModel.stripeCustomerId == null || userModel.stripeCustomerId == "") {
+                String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel);
+                if (newStripeId != null && newStripeId.isNotEmpty) {
+                  userModel.stripeCustomerId = newStripeId;
+                  await FireStoreUtils.updateUser(userModel);
+                }
+              }
               if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
                 Constant.currentUserModel.value?.role = userModel.role;
                 Get.delete<DashboardScreenController>();
@@ -439,6 +454,13 @@ class LoginController extends GetxController {
             ShowToastDialog.closeLoader();
             if (userExit == true) {
               UserModel? userModel = await FireStoreUtils.getUserProfile(value.user!.uid);
+              if (userModel?.stripeCustomerId == null || userModel?.stripeCustomerId == "") {
+                String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel!);
+                if (newStripeId != null && newStripeId.isNotEmpty) {
+                  userModel.stripeCustomerId = newStripeId;
+                  await FireStoreUtils.updateUser(userModel);
+                }
+              }
               if (userModel != null) {
                 if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
                   Constant.currentUserModel.value?.role = userModel.role;

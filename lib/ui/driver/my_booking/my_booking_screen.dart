@@ -231,7 +231,7 @@ class MyBookingScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  width: 5,
                                 ),
                                 Expanded(
                                   child: RoundedButtonFill(
@@ -244,7 +244,25 @@ class MyBookingScreen extends StatelessWidget {
                                         : AppThemData.grey09,
                                     height: 5,
                                     onPress: () {
-                                     // Get.to(() => const ParkingTicketScreen(),arguments: {"orderModel": orderModel});
+                                      Get.to(() => const ParkingTicketScreen(),arguments: {"orderModel": orderModel});
+
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  child: RoundedButtonFill(
+                                    title: "Timer".tr,
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey09
+                                        : AppThemData.grey03,
+                                    textColor: themeChange.getThem()
+                                        ? AppThemData.grey03
+                                        : AppThemData.grey09,
+                                    height: 5,
+                                    onPress: () {
                                       Get.to(() => const OngoingBookingTimerScreen(),arguments: {"orderModel": orderModel});
                                     },
                                   ),

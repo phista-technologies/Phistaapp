@@ -275,8 +275,7 @@ class InformationScreen extends StatelessWidget {
                       password: controller.passwordController.value.text.trim(),
                     );
                     if (userCred != null) {
-                      controller
-                          .createAccountWithEmailNew(userCred.user!.uid);
+                      controller.createAccountWithEmailNew(userCred.user!.uid);
                     }
                   }
                 }

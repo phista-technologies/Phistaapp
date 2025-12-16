@@ -956,6 +956,19 @@ class PaymentSelectController extends GetxController {
         'currency': "CAD",
         'payment_method_types[]': 'card',
         "description": "Strip Payment",
+        "customer":userModel.value.stripeCustomerId,
+        "shipping[name]": userModel.value.fullName,
+        "shipping[address][line1]": "510 Townsend St",
+        "shipping[address][postal_code]": "98140",
+        "shipping[address][city]": "San Francisco",
+        "shipping[address][state]": "AB",
+        "shipping[address][country]": "CA",
+      };
+      Map<String, dynamic> bodyGuest = {
+        'amount': ((double.parse(amount) * 100).round()).toString(),
+        'currency': "CAD",
+        'payment_method_types[]': 'card',
+        "description": "Strip Payment",
         "shipping[name]": userModel.value.fullName,
         "shipping[address][line1]": "510 Townsend St",
         "shipping[address][postal_code]": "98140",
@@ -964,11 +977,12 @@ class PaymentSelectController extends GetxController {
         "shipping[address][country]": "CA",
       };
 
+
       var stripeSecret = paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
       log(stripeSecret.toString());
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
-          body: body,
+          body:userModel.value.role != "Guest"?body:bodyGuest,
           headers: {
             'Authorization': 'Bearer $stripeSecret',
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -979,15 +993,60 @@ class PaymentSelectController extends GetxController {
     }
   }
 
+ /* createStripeIntent({required String amount}) async {
+    try {
+      var stripeSecret = ENV.skTestSecretKey;//paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
+      // -------------------------------------------------------
+      // STEP 1: Create Customer
+      // -------------------------------------------------------
+      var customerRes = await http.post(
+        Uri.parse('https://api.stripe.com/v1/customers'),
+        headers: {
+          'Authorization': 'Bearer $stripeSecret',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          "name": userModel.value.fullName,
+          "email": userModel.value.email ?? "",
+        },
+      );
+      var customerId = jsonDecode(customerRes.body)["id"];
+
+      Map<String, dynamic> body = {
+        'amount': ((double.parse(amount) * 100).round()).toString(),
+        'currency': "CAD",
+        'payment_method_types[]': 'card',
+        "description": "Stripe Payment",
+        // Attach customer
+        "customer": customerId,
+        // Shipping info (optional)
+        "shipping[name]": userModel.value.fullName,
+        "shipping[address][line1]": "510 Townsend St",
+        "shipping[address][postal_code]": "98140",
+        "shipping[address][city]": "San Francisco",
+        "shipping[address][state]": "AB",
+        "shipping[address][country]": "CA",
+      };
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        body: body,
+        headers: {
+          'Authorization': 'Bearer $stripeSecret',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+      return jsonDecode(response.body);
+    } catch (e) {
+      log("Stripe Error: $e");
+    }
+  }*/
   //mercadoo
   mercadoPagoMakePayment(
-      {required BuildContext context, required String amount}) async
-  {
+      {required BuildContext context, required String amount}) async {
     final headers = {
       'Authorization': 'Bearer ${paymentModel.value.mercadoPago!.accessToken}',
       'Content-Type': 'application/json',
     };
-
     final body = jsonEncode({
       "items": [
         {
@@ -1007,13 +1066,11 @@ class PaymentSelectController extends GetxController {
       "auto_return":
           "approved" // Automatically return after payment is approved
     });
-
     final response = await http.post(
       Uri.parse("https://api.mercadopago.com/checkout/preferences"),
       headers: headers,
       body: body,
     );
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
       final bool isDone = await Navigator.push(
@@ -1028,10 +1085,12 @@ class PaymentSelectController extends GetxController {
       } else {
         ShowToastDialog.showToast("Payment UnSuccessful!!");
       }
-    } else {
+    }
+    else {
       print('Error creating preference: ${response.body}');
       return null;
     }
+
   }
 
   flutterWaveInitiatePayment(
@@ -1083,6 +1142,9 @@ class PaymentSelectController extends GetxController {
       return null;
     }
   }
+
+
+
 
   ///PayStack Payment Method
   payStackPayment(String totalAmount) async {
@@ -1239,7 +1301,6 @@ class PaymentSelectController extends GetxController {
     }
     return false;
   }
-
   ///Paytm payment function
   // getPaytmCheckSum(context, {required double amount}) async {
   //   final String orderId = DateTime.now().millisecondsSinceEpoch.toString();

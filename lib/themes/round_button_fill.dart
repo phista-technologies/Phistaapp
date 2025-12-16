@@ -56,7 +56,7 @@ class RoundedButtonFill extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(width: 15,),
+            //SizedBox(width: 15,),
             (isRight == false)
                 ? Padding(padding: const EdgeInsets.only(right: 0), child: icon)
                 : const SizedBox(),

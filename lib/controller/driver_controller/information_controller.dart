@@ -148,6 +148,7 @@ class InformationController extends GetxController {
           userModelData.role = Constant.roleTypeForCustomer;
           userModelData.lastLoginType = Constant.roleTypeForCustomer;
           userModelData.password = passwordController.value.text;
+          userModelData.stripeCustomerId = await Utils.createStripeCustomerIfNotExists(userModelData);
           FireStoreUtils.getReferralUserByCode(
                   referralCodeController.value.text.trim())
               .then((value) async {
@@ -215,6 +216,7 @@ class InformationController extends GetxController {
       userModelData.role = Constant.roleTypeForCustomer;
       userModelData.lastLoginType = Constant.roleTypeForCustomer;
       userModelData.password = passwordController.value.text;
+      userModelData.stripeCustomerId = await Utils.createStripeCustomerIfNotExists(userModelData);
       ReferralModel referralModel = ReferralModel(
           id: FireStoreUtils.getCurrentUid(),
           referralBy: "",
@@ -253,6 +255,7 @@ class InformationController extends GetxController {
       });
     }
   }
+
   createAccountWithEmailNew(String uid) async {
     log("profileImage:--${profileImage.value}");
     String? fcmToken = "";
@@ -307,8 +310,8 @@ class InformationController extends GetxController {
           userModelData.id = uid;
           userModelData.fullName = fullNameController.value.text;
           userModelData.email = emailController.text.trim();
-           userModelData.countryCode = "CA";
-           userModelData.phoneNumber = "";
+          userModelData.countryCode = "CA";
+          userModelData.phoneNumber = "";
           userModelData.profilePic = profileImage.value;
           userModelData.fcmToken = fcmToken;
           userModelData.createdAt = Timestamp.now();
@@ -316,6 +319,7 @@ class InformationController extends GetxController {
           userModelData.role = Constant.roleTypeForCustomer;
           userModelData.lastLoginType = Constant.roleTypeForCustomer;
           userModelData.password = passwordController.value.text;
+          userModelData.stripeCustomerId = await Utils.createStripeCustomerIfNotExists(userModelData);
 
           FireStoreUtils.getReferralUserByCode(
               referralCodeController.value.text.trim())
@@ -381,6 +385,7 @@ class InformationController extends GetxController {
       userModelData.role = Constant.roleTypeForCustomer;
       userModelData.lastLoginType = Constant.roleTypeForCustomer;
       userModelData.password = passwordController.value.text;
+      userModelData.stripeCustomerId = await Utils.createStripeCustomerIfNotExists(userModelData);
       ReferralModel referralModel = ReferralModel(
           id: FireStoreUtils.getCurrentUid(),
           referralBy: "",
@@ -642,9 +647,7 @@ class InformationController extends GetxController {
                            }
                          }
 
-
                        }
-
                        ShowToastDialog.closeLoader();
                        ShowToastDialog.showToast("Verification successful");
                        // Navigate to next screen or do login success logic
@@ -662,9 +665,6 @@ class InformationController extends GetxController {
              },
            );
          }
-
-
-
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     )

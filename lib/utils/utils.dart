@@ -5,6 +5,7 @@ import 'dart:math' as MATH;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:location/location.dart';
@@ -14,8 +15,13 @@ import 'package:phista/constant/show_toast_dialog.dart';
 import 'package:http/http.dart' as http;
 
 import '../env.dart';
+import '../model/payment_method_model.dart';
+import '../model/user_model.dart';
+import 'fire_store_utils.dart';
 
 class Utils {
+
+
   static Future<Position?> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -437,6 +443,57 @@ class Utils {
     print("Formatted Local Time: $formatted");
     return formatted;
   }
+
+  static Future<String?> createStripeCustomerIfNotExists(UserModel user) async {
+    try {
+      // Fetch Stripe Keys from Firestore
+      PaymentModel? paymentModel = await FireStoreUtils().getPayment();
+      if (paymentModel == null || paymentModel.strip == null) {
+        print("Error: Stripe keys not found in Firestore.");
+        return null;
+      }
+
+      String stripeSecret = paymentModel.strip!.stripeSecret ?? "";//ENV.skTestSecretKey;
+      if (stripeSecret.isEmpty) {
+        print("Error: Stripe secret key is empty.");
+        return null;
+      }
+
+      // If customer already exists → return it
+      if (user.stripeCustomerId != null && user.stripeCustomerId!.isNotEmpty) {
+        return user.stripeCustomerId;
+      }
+
+      // Create Stripe Customer
+      var response = await http.post(
+        Uri.parse("https://api.stripe.com/v1/customers"),
+        headers: {
+          "Authorization": "Bearer $stripeSecret",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: {
+          "name": user.fullName ?? "",
+          "email": user.email ?? "",
+        },
+      );
+
+      var data = jsonDecode(response.body);
+
+      if (data["id"] != null) {
+        String customerId = data["id"];
+        print("Stripe Customer Created: $customerId");
+        return customerId;
+      } else {
+        print("Stripe Error Response: ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      print("Stripe Error: $e");
+      return null;
+    }
+  }
+
+
 
 
 }

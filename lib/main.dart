@@ -28,6 +28,7 @@ Future<void> main() async {
     webProvider: ReCaptchaV3Provider('6Ldale0rAAAAACk2vxq67h1Is798truPDDvv2N7i'),
     androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.appAttest,
+    //appleProvider: AppleProvider.deviceCheck,
   );
   await Preferences.initPref();
   runApp(const MyApp());
