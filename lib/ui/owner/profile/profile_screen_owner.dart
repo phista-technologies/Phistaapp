@@ -19,6 +19,7 @@ import '../../../utils/dark_theme_provider.dart';
 import '../../../utils/network_image_widget.dart';
 import '../../driver/dashboard_screen.dart';
 import '../../select_usertype/select_usertypescreen.dart';
+import '../MyParkingBookingScreenOwnerForWeb/MyParkingBookingScreenOwnerForWeb.dart';
 import '../auth_screen/login_screen_owner.dart';
 import '../bank_details/bank_details_screen_owner.dart';
 import '../chat/inbox_screen_owner.dart';
@@ -335,10 +336,7 @@ class ProfileScreenOwner extends StatelessWidget {
                             title: "Dashboard".tr,
                             pngImage: "assets/icon/dashboard.png",
                             onTap:()async{
-                              final Uri url = Uri.parse("https://app.phista.ca");
-                              if (!await launchUrl(url)) {
-                                throw Exception('Could not launch ${Constant.supportURL.toString()}'.tr);
-                              }
+                              Get.to(() =>  MyParkingBookingScreenOwnerForWeb(isBack: true,));
                             },
                             themeChange: themeChange,
                           ),
@@ -353,9 +351,7 @@ class ProfileScreenOwner extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return CustomDialogBox(
                                       title: "Signing out for now?".tr,
-                                      descriptions:
-                                          "Ensure your account's security with a quick log out. Your parking solutions will be here when you return!"
-                                              .tr,
+                                      descriptions: "Ensure your account's security with a quick log out. Your parking solutions will be here when you return!".tr,
                                       positiveString: "Log out".tr,
                                       negativeString: "Cancel".tr,
                                       positiveClick: () async {
@@ -386,7 +382,6 @@ class ProfileScreenOwner extends StatelessWidget {
                 );
         });
   }
-
   Widget menuItemWidget({
     required String svgImage,
     required String title,

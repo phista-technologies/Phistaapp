@@ -396,8 +396,7 @@ class FireStoreUtils {
         Constant.mapAPIKey = event.data()!["googleMapKey"];
         Constant.radius = event.data()!["radius"];
         Constant.distanceType = event.data()!["distanceType"];
-        Constant.isSubscriptionModelApplied =
-            event.data()!['subscription_model'];
+        Constant.isSubscriptionModelApplied = event.data()!['subscription_model'];
       }
     });
 

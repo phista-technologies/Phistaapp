@@ -135,7 +135,7 @@ class PaymentSelectController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
+          STRIPE.Stripe.publishableKey = ENV.pkTestPublishableKey;//paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
           STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";
           STRIPE.Stripe.instance.applySettings();
         }

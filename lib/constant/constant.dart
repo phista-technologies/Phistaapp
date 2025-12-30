@@ -41,8 +41,7 @@ class Constant {
 
 
   static String bookingTypeConst = "hourly";
-  static bool isSubscriptionModelApplied =
-      false; //Check SubscriptionModel is Active or Not in the Admin Panel.
+  static bool isSubscriptionModelApplied = false; //Check SubscriptionModel is Active or Not in the Admin Panel.
 
   static String mapAPIKey = "AIzaSyBWpknhgETEcPdExDw13FsmKIbazhH-BpI";
   static String senderId = '';
@@ -151,8 +150,7 @@ class Constant {
 
   static Widget showEmptyView({required String message}) {
     return Center(
-      child: Text(message,
-          style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 18),textAlign: TextAlign.center,),
+      child: Text(message,style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 18,color:AppThemData.black),textAlign: TextAlign.center,),
     );
   }
 

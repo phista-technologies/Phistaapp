@@ -50,10 +50,7 @@ class SubscriptionControllerOwner extends GetxController {
   }
 
   getInitPlanSettings() async {
-    userModel.value =
-        await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()) ??
-        UserModel();
-
+    userModel.value = await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()) ?? UserModel();
     await getSubscriptionPlanList();
     getPaymentSettings();
   }
@@ -65,6 +62,7 @@ class SubscriptionControllerOwner extends GetxController {
         planId: Constant.commissionSubscriptionID,
       ).then((value) {
         if (value != null) {
+          print("adminCommission");
           subscriptionPlanList.add(value);
         }
       });
@@ -73,6 +71,7 @@ class SubscriptionControllerOwner extends GetxController {
     if (Constant.isSubscriptionModelApplied) {
       await FireStoreUtils.getAllSubscriptionPlans().then((value) {
         for (var element in value) {
+          print("AllSubscription");
           subscriptionPlanList.add(element);
         }
       });
@@ -119,8 +118,7 @@ class SubscriptionControllerOwner extends GetxController {
       );
 
       await FireStoreUtils.setWalletTransaction(transactionModel);
-      userModel.value.walletAmount =
-          (double.parse(userModel.value.walletAmount.toString()) -
+      userModel.value.walletAmount = (double.parse(userModel.value.walletAmount.toString()) -
                   totalAmount.value)
               .toString();
     }
@@ -175,7 +173,7 @@ class SubscriptionControllerOwner extends GetxController {
       if (value != null) {
         paymentModel.value = value;
 
-        Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
+        Stripe.publishableKey = ENV.pkTestPublishableKey;//paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
         Stripe.merchantIdentifier = 'Phista';
         Stripe.instance.applySettings();
         setRef();
@@ -300,7 +298,7 @@ class SubscriptionControllerOwner extends GetxController {
         "shipping[address][country]": "CA",
       };
       log(paymentModel.value.strip!.stripeSecret.toString());
-      var stripeSecret = paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
+      var stripeSecret = ENV.skTestSecretKey;//paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         body: body,

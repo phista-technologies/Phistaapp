@@ -436,7 +436,7 @@ class MyParkingBookingScreenOwnerForWeb extends StatelessWidget {
 
 }*/
 
-class MyParkingBookingScreenOwnerForWeb extends StatelessWidget {
+/*class MyParkingBookingScreenOwnerForWeb extends StatelessWidget {
   final bool isBack;
 
   const MyParkingBookingScreenOwnerForWeb({required this.isBack, super.key});
@@ -860,7 +860,520 @@ class MyParkingBookingScreenOwnerForWeb extends StatelessWidget {
       );
     });
   }
+}*/
+
+class MyParkingBookingScreenOwnerForWeb extends StatelessWidget {
+  final bool isBack;
+
+  const MyParkingBookingScreenOwnerForWeb({required this.isBack, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+
+    return GetX<MyParkingBookingControllerOwnerForWeb>(
+      init: MyParkingBookingControllerOwnerForWeb(),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: AppThemData.white,
+          appBar: UiInterface().customAppBar(
+            isBack: isBack,
+            context,
+            themeChange,
+            "My Booking List".tr,
+          ),
+          body: controller.isLoading.value
+              ? Constant.loader()
+              : SingleChildScrollView(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isDesktop = constraints.maxWidth >= 1200;
+                return Center(
+                  child: ConstrainedBox(
+                    constraints:
+                    const BoxConstraints(maxWidth: 1400),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          /// ================= SELECT PARKING =================
+                          Align(
+                            alignment: isDesktop
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: SizedBox(
+                              width: isDesktop ? 400 : double.infinity,
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Select Parking".tr,
+                                    style: TextStyle(
+                                      color: AppThemData.grey11,
+                                      fontFamily:
+                                      AppThemData.robotoBold,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Obx(() {
+                                    final hasParking =
+                                        controller.parkingList.isNotEmpty;
+
+                                    return DropdownButtonFormField<
+                                        ParkingModel>(
+                                      isExpanded: true,
+                                      decoration:
+                                      _dropdownDecoration(themeChange),
+                                      value: hasParking &&
+                                          controller
+                                              .selectedParkingModel
+                                              .value
+                                              .id !=
+                                              null
+                                          ? controller
+                                          .selectedParkingModel.value
+                                          : null,
+                                      hint: Text(
+                                        hasParking
+                                            ? "Select Parking".tr
+                                            : "No Parking Available".tr,
+                                        style: const TextStyle(
+                                            color: Colors.grey),
+                                      ),
+                                      onChanged: hasParking
+                                          ? (value) {
+                                        controller
+                                            .selectedParkingModel
+                                            .value = value!;
+                                      }
+                                          : null,
+                                      items: hasParking
+                                          ? controller.parkingList
+                                          .map((item) {
+                                        return DropdownMenuItem<
+                                            ParkingModel>(
+                                          value: item,
+                                          child: Text(
+                                              item.name.toString()),
+                                        );
+                                      }).toList()
+                                          : [],
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          /// ================= SUMMARY TITLE =================
+                          Text(
+                            "Today's Summary".tr,
+                            style: TextStyle(
+                              color: AppThemData.grey11,
+                              fontFamily:
+                              AppThemData.semiBold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          /// ================= SUMMARY DATA =================
+                          Obx(() {
+                            if (controller.parkingList.isEmpty ||
+                                controller.selectedParkingModel.value.id ==
+                                    null) {
+                              return _zeroBookingUI(
+                                  context, controller);
+                            }
+
+                            return StreamBuilder<QuerySnapshot>(
+                              key: ValueKey(controller
+                                  .selectedDateTime.value),
+                              stream: FirebaseFirestore.instance
+                                  .collection(CollectionName
+                                  .bookedParkingOrder)
+                                  .where(
+                                'parkingId',
+                                isEqualTo: controller
+                                    .selectedParkingModel
+                                    .value
+                                    .id,
+                              )
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting &&
+                                    !snapshot.hasData) {
+                                  return Constant.loader();
+                                }
+
+                                final docs =
+                                    snapshot.data?.docs ?? [];
+
+                                controller
+                                    .checkAndAutoUpdateBookings(
+                                    docs);
+
+                                final activeDocs = docs
+                                    .where((d) =>
+                                d['status'] ==
+                                    Constant.placed ||
+                                    d['status'] ==
+                                        Constant.onGoing)
+                                    .toList();
+
+                                final completedDocs = docs
+                                    .where((d) =>
+                                d['status'] ==
+                                    Constant.completed)
+                                    .toList();
+
+                                final cancelledDocs = docs
+                                    .where((d) =>
+                                d['status'] ==
+                                    Constant.canceled)
+                                    .toList();
+
+                                final onGoingList = controller
+                                    .getOnGoingModelList(
+                                  activeDocs,
+                                  Utils.formatTimestampToIST(
+                                    Timestamp.fromDate(controller
+                                        .selectedDateTime.value),
+                                  ),
+                                );
+
+                                final upcomingList = controller
+                                    .getUpcomingBookings(
+                                  activeDocs,
+                                  Utils.formatTimestampToIST(
+                                    Timestamp.fromDate(controller
+                                        .selectedDateTime.value),
+                                  ),
+                                );
+
+                                return _bookingUI(
+                                  context,
+                                  controller,
+                                  docs.length,
+                                  completedDocs.length,
+                                  onGoingList.length,
+                                  cancelledDocs.length,
+                                  upcomingList.length,
+                                  docs,
+                                  completedDocs,
+                                  activeDocs,
+                                  cancelledDocs,
+                                );
+                              },
+                            );
+                          }),
+                          const SizedBox(height: 32),
+                          /// ================= CALENDAR =================
+                          Align(
+                            alignment: isDesktop
+                                ? Alignment.centerRight
+                                : Alignment.center,
+                            child: SizedBox(
+                              width: isDesktop ? 330 : 380,
+                              height: 300,
+                              child: buildCalendar(controller),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  InputDecoration _dropdownDecoration(DarkThemeProvider themeChange) {
+    return InputDecoration(
+      isDense: true,
+      filled: true,
+      fillColor: themeChange.getThem()
+          ? AppThemData.grey10
+          : AppThemData.grey03,
+      contentPadding:
+      const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+
+  Widget _zeroBookingUI(
+      BuildContext context,
+      MyParkingBookingControllerOwnerForWeb controller,
+      ) {
+    return _bookingUI(
+      context,
+      controller,
+      0,
+      0,
+      0,
+      0,
+      0,
+      [],
+      [],
+      [],
+      [],
+    );
+  }
+
+
+  Widget _bookingUI(
+      BuildContext context,
+      MyParkingBookingControllerOwnerForWeb controller,
+      int total,
+      int completed,
+      int active,
+      int cancelled,
+      int upcoming,
+      List<QueryDocumentSnapshot> docs,
+      List<QueryDocumentSnapshot> completedDocs,
+      List<QueryDocumentSnapshot> activeDocs,
+      List<QueryDocumentSnapshot> cancelledDocs,
+      ) {
+    return Column(
+      children: [
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            bookingDetailBox(
+              "TotalBookings".tr,
+              "TotalBookingicon.png",
+              total.toString(),
+              docs,
+              context,
+              controller,
+            ),
+            bookingDetailBox(
+              "CompletedBookings".tr,
+              "CompleteBookingicon.png",
+              completed.toString(),
+              completedDocs,
+              context,
+              controller,
+            ),
+            bookingDetailBox(
+              "ActiveBookings".tr,
+              "PlacedBookingicon.png",
+              active.toString(),
+              activeDocs,
+              context,
+              controller,
+            ),
+            bookingDetailBox(
+              "CanceledBookings".tr,
+              "CancelBookingicon.png",
+              cancelled.toString(),
+              cancelledDocs,
+              context,
+              controller,
+            ),
+            bookingDetailBox(
+              "UpcomingBookings".tr,
+              "CancelBookingicon.png",
+              upcoming.toString(),
+              activeDocs,
+              context,
+              controller,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 24),
+
+        /// ================= EARNINGS =================
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            totalEarningDetailBox(
+              "TotalEarnings".tr,
+              "CancelBookingicon.png",
+              "\$${controller.totalEarnings.value}",
+              context,
+            ),
+            totalEarningDetailBox(
+              "MonthlyEarnings".tr,
+              "CancelBookingicon.png",
+              "\$${controller.monthlyEarnings.value}",
+              context,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+
+  Widget buildCalendar(
+      MyParkingBookingControllerOwnerForWeb controller) {
+    return Obx(() {
+      return SfDateRangePicker(
+        enablePastDates: false,
+        controller: controller.sfDateRangePickerCtrl,
+        selectionMode: DateRangePickerSelectionMode.single,
+        onSelectionChanged: controller.onDateSelected,
+        initialSelectedDate: controller.selectedDateTime.value,
+        selectionColor: AppThemData.primary06,
+        showNavigationArrow: true,
+      );
+    });
+  }
+
+
+  Widget bookingDetailBox(
+      String type,
+      String img,
+      String count,
+      List<QueryDocumentSnapshot> docs,
+      BuildContext context,
+      MyParkingBookingControllerOwnerForWeb controller,
+      ) {
+    return InkWell(
+      onTap: () {
+        List<OrderModel> orderList = [];
+
+        if (type == "ActiveBookings".tr) {
+          orderList = controller.getOnGoingModelList(
+            docs,
+            Utils.formatTimestampToIST(
+              Timestamp.fromDate(controller.selectedDateTime.value),
+            ),
+          );
+        } else if (type == "UpcomingBookings".tr) {
+          orderList = controller.getUpcomingBookings(
+            docs,
+            Utils.formatTimestampToIST(
+              Timestamp.fromDate(controller.selectedDateTime.value),
+            ),
+          );
+        } else {
+          orderList = controller.convertDocsToOrderModel(docs);
+        }
+
+        Get.to(
+              () => const BookingDetailsWebScreen_Owner(),
+          arguments: {"orderList": orderList},
+        );
+      },
+      child: Container(
+        width: 260,
+        height: 120,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppThemData.BookingBGColor,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              "assets/icon/$img",
+              width: 50,
+              height: 50,
+            ),
+            const SizedBox(width: 12),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  type,
+                  style: TextStyle(
+                    color: AppThemData.grey09,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  count,
+                  style: TextStyle(
+                    color: AppThemData.grey12,
+                    fontSize: 26,
+                    fontFamily: AppThemData.robotoBold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+  Widget totalEarningDetailBox(
+      String type,
+      String img,
+      String amt,
+      BuildContext context,
+      ) {
+    return Container(
+      width: 380,
+      height: 120,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppThemData.BookingBGColor,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            "assets/icon/$img",
+            width: 50,
+            height: 50,
+          ),
+          const SizedBox(width: 12),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                type,
+                style: TextStyle(
+                  color: AppThemData.grey09,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                amt,
+                style: TextStyle(
+                  color: AppThemData.grey12,
+                  fontSize: 26,
+                  fontFamily: AppThemData.robotoBold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+
 }
+
 
 
 
