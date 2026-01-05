@@ -101,7 +101,7 @@ class ChatScreenOwner extends StatelessWidget {
                           maxLines: 1,
                           textInputAction: TextInputAction.done,
                           style: TextStyle(
-                              fontSize: 14, color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey02, fontWeight: FontWeight.w500, fontFamily: AppThemData.medium),
+                              fontSize: 14, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07, fontWeight: FontWeight.w500, fontFamily: AppThemData.medium),
                           decoration: InputDecoration(
                               errorStyle: const TextStyle(color: Colors.red),
                               isDense: true,
@@ -145,7 +145,7 @@ class ChatScreenOwner extends StatelessWidget {
                               hintText: "Type Message".tr,
                               hintStyle: TextStyle(
                                   fontSize: 14,
-                                  color: themeChange.getThem() ? AppThemData.grey06 : AppThemData.grey07,
+                                  color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: AppThemData.medium)),minLines: null,
                         ),

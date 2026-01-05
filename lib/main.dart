@@ -121,16 +121,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ),
     );
   }
+
   String _getInitialRoute() {
-    final uri = Uri.base; // e.g. https://myapp.web.app/home
-    final path = uri.path; // returns '/home'
+    final uri = Uri.base;
+    final path = uri.path;
     if (path.isNotEmpty && path != '/') {
-      return path; // directly go to /home, /settings, etc.
+      return path;
     }
-    return '/'; // default route (Splash)
+    return '/';
   }
 
 }
+
+
 
 
 

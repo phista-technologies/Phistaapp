@@ -28,8 +28,9 @@ class UserModel {
   SubscriptionPlanModel? subscriptionPlan;
   AdminCommission? adminCommission;
 
-  UserModel(
-      {this.fullName,
+
+  UserModel({
+      this.fullName,
       this.id,
       this.stripeCustomerId,
       this.isActive,
@@ -52,9 +53,12 @@ class UserModel {
       this.subscriptionTotalOrders,
       this.subscriptionExpiryDate,
       this.subscriptionPlan,
-      this.adminCommission});
+      this.adminCommission
+      });
 
-  UserModel.fromJson(Map<String, dynamic> json) {
+
+
+        UserModel.fromJson(Map<String, dynamic> json) {
     fullName = json['fullName'];
     id = json['id'];
     stripeCustomerId = json['stripeCustomerId'];
@@ -85,7 +89,7 @@ class UserModel {
         : null;
   }
 
-  Map<String, dynamic> toJson() {
+        Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['fullName'] = fullName;
     data['id'] = id;
@@ -117,4 +121,6 @@ class UserModel {
     }
     return data;
   }
+
+
 }

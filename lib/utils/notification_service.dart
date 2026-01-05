@@ -15,7 +15,6 @@ Future<void> firebaseMessageBackgroundHandle(RemoteMessage message) async {
 
 class NotificationService {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   initInfo() async {
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,

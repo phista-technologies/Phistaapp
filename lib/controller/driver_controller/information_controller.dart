@@ -119,7 +119,8 @@ class InformationController extends GetxController {
           fileName,
         );
 
-      } else {
+      }
+      else {
         // ✅ Mobile: normal File upload
         profileImageTemp.value = await Constant.uploadUserImageToFireStorage(
           File(profileImage.value),
