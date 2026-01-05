@@ -440,14 +440,15 @@ class PaymentSelectController extends GetxController {
     }
 
     if(orderModel.value.bookingType.toString() == "3"){
-      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
+
+     /* await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays);
 
       await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
           templateId: ENV.templateIdRemainder, dynamicTemplateData: {},numberOfDays: numberOfDays-3);
 
      await Utils.sendRemainderEmailWithTemplateWithAllPlateForm(toEmail: Constant.currentUserModel.value?.email??"",
-          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);
+          templateId: ENV.templateIdRemainder, dynamicTemplateData: {},mintSend:10);*/
 
     }
 

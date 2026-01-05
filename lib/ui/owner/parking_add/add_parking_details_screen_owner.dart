@@ -464,6 +464,29 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Min 4 months".tr,
+              style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+            ),
+            SizedBox(
+              width: 40,
+              height: 20,
+              child: Switch(
+                value: controller.isMin4Open.value,
+                onChanged: (value) {
+                  controller.isMin4Open(value);
+                },
+                activeColor: AppThemData.primary06,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         ListTile(leading:SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
           title:Text(
             "Availability".tr,
@@ -473,8 +496,6 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
           trailing: const Icon(Icons.arrow_forward_ios, size: 18),
           onTap: () async {
-
-
             if(controller.parkingModel.value.id != null){
               var isBooked =  await FireStoreUtils.parkingBookedOrNot(controller.parkingModel.value.id);
               print("isBooked:--> $isBooked");

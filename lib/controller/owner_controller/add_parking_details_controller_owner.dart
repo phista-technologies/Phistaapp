@@ -42,6 +42,7 @@ class AddParkingDetailsControllerOwner extends GetxController {
   RxList<ParkingFacilitiesModel> selectedParkingFacilitiesList = <ParkingFacilitiesModel>[].obs;
 
   RxBool isOpen = true.obs;
+  RxBool isMin4Open = false.obs;
   RxBool isLoading = true.obs;
 
   RxString parkingType = "4".obs;
@@ -181,6 +182,7 @@ class AddParkingDetailsControllerOwner extends GetxController {
     parkingModel.value.address = addressController.value.text;
     parkingModel.value.image = parkingImage.value;
     parkingModel.value.isEnable = isOpen.value;
+    parkingModel.value.isMin4Month = isMin4Open.value;
     parkingModel.value.location = locationLatLng.value;
     parkingModel.value.facilities = selectedParkingFacilitiesList;
     parkingModel.value.perHrPrice = priceController.value.text;

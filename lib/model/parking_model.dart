@@ -10,6 +10,7 @@ class ParkingModel {
   String? id;
   String? userId;
   bool? isEnable;
+  bool? isMin4Month;
   LocationLatLng? location;
   Positions? position;
   String? address;
@@ -36,6 +37,7 @@ class ParkingModel {
       {this.id,
         this.userId,
         this.isEnable,
+        this.isMin4Month,
         this.location,
         this.position,
         this.address,
@@ -76,6 +78,7 @@ class ParkingModel {
     userId = json['userId'];
     address = json['address'] ?? '';
     isEnable = json['isEnable'] ?? false;
+    isMin4Month = json['isMin4Month'] ?? false;
     image = json['image'] ?? '';
     bookmarkedUser = json['bookmarkedUser'] ?? [];
     perHrPrice = json['perHrPrice'] ?? "";
@@ -109,6 +112,7 @@ class ParkingModel {
     data['description'] = description;
     data['address'] = address;
     data['isEnable'] = isEnable;
+    data['isMin4Month'] = isMin4Month;
     data['image'] = image;
     data['bookmarkedUser'] = bookmarkedUser;
     data['perHrPrice'] = perHrPrice;
