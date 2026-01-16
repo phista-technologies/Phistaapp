@@ -138,8 +138,7 @@ class PaymentSelectScreen extends StatelessWidget {
                                         onPress: (){
                                           controller.isFromGoogle.value = false;
                                           controller.isFromApple.value = true;
-                                          controller.stripeMakePayment(
-                                              amount: controller.calculateAmount().toStringAsFixed(
+                                          controller.stripeMakePayment(amount: controller.calculateAmount().toStringAsFixed(
                                                   Constant.currencyModel!.decimalDigits!));
                                         })
                                 ),

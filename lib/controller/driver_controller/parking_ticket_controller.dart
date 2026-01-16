@@ -29,6 +29,8 @@ class ParkingTicketController extends GetxController {
   RxBool isLoading = true.obs;
 
   RxDouble couponAmount = 0.0.obs;
+  RxDouble serviceFee = 0.0.obs;
+
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
@@ -39,7 +41,7 @@ class ParkingTicketController extends GetxController {
     update();
   }
 
-  double calculateAmount() {
+  /*double calculateAmount() {
     if (orderModel.value.coupon != null) {
       if (orderModel.value.coupon!.id != null) {
         if (orderModel.value.coupon!.type == "fix") {
@@ -64,7 +66,55 @@ class ParkingTicketController extends GetxController {
       return (double.parse(orderModel.value.subTotal.toString()) -
           couponAmount.value) + double.parse(taxAmount.value);
     }
+  }*/
+
+  double calculateAmount() {
+    double subTotal = double.parse(orderModel.value.subTotal.toString());
+
+    // ---------- COUPON ----------
+    couponAmount.value = 0.0;
+    if (orderModel.value.coupon != null &&
+        orderModel.value.coupon!.id != null) {
+      if (orderModel.value.coupon!.type == "fix") {
+        couponAmount.value =
+            double.parse(orderModel.value.coupon!.amount.toString());
+      } else {
+        couponAmount.value = subTotal *
+            double.parse(orderModel.value.coupon!.amount.toString()) /
+            100;
+      }
+    }
+
+    if (couponAmount.value >= subTotal) {
+      serviceFee.value = 0.0;
+      return 0.0;
+    }
+
+    // ---------- TAX ----------
+    double taxAmount = 0.0;
+    if (orderModel.value.taxList != null) {
+      for (var element in orderModel.value.taxList!) {
+        taxAmount += Constant().calculateTax(
+          amount: (subTotal - couponAmount.value).toString(),
+          taxModel: element,
+        );
+      }
+    }
+
+    // ---------- CURRENT TOTAL (OLD TOTAL) ----------
+    double currentTotal = (subTotal - couponAmount.value) + taxAmount;
+
+    // ---------- SERVICE FEES ----------
+    double finalTotal = currentTotal / 0.96;
+    serviceFee.value = finalTotal - currentTotal;
+
+    return double.parse(
+      finalTotal.toStringAsFixed(
+        Constant.currencyModel!.decimalDigits!,
+      ),
+    );
   }
+
 
   canceledOrderWallet() async {
     WalletTransactionModel transactionModel = WalletTransactionModel(

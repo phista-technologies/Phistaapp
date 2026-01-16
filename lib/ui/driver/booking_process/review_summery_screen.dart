@@ -1069,7 +1069,35 @@ class ReviewSummaryScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  controller.orderModel.value.taxList == null
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            'Service Fees'.tr,
+                                            style: TextStyle(
+                                              color: AppThemData.grey07,
+                                              fontSize: 17,
+                                              fontFamily: AppThemData.medium,
+                                            ),
+                                          ),
+                                        ),
+                                        Obx(() => Text(
+                                          Constant.amountShow(
+                                            amount: controller.serviceFee.value.toString(),
+                                          ),
+                                          style: TextStyle(
+                                            color: AppThemData.grey07,
+                                            fontSize: 18,
+                                            fontFamily: AppThemData.semiBold,
+                                          ),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+
+                                  /*   controller.orderModel.value.taxList == null
                                       ? const SizedBox()
                                       : ListView.builder(
                                       itemCount: controller.orderModel.value.taxList!.length,
@@ -1142,7 +1170,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             ],
                                           ),
                                         );
-                                      }),
+                                      }),*/
                                   Divider(
                                     thickness: 1,
                                     color: themeChange.getThem()
@@ -1287,7 +1315,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                             "taxList" : controller.orderModel.value.taxList
                           });
                     }
-
                   },
                 ),
               ),

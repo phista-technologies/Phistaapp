@@ -402,7 +402,7 @@ packages:
     source: hosted
     version: "5.15.2"
   firebase_core:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: firebase_core
       sha256: c6e8a6bf883d8ddd0dec39be90872daca65beaa6f4cff0051ed3b16c56b82e9f
@@ -450,7 +450,7 @@ packages:
     source: hosted
     version: "0.2.6+15"
   firebase_messaging:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: firebase_messaging
       sha256: "0f3363f97672eb9f65609fa00ed2f62cc8ec93e7e2d4def99726f9165d3d8a73"

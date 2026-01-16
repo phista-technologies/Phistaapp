@@ -13,6 +13,7 @@ import 'package:phista/utils/preferences.dart';
 
 import '../../constant/version_checker.dart';
 import '../../ui/select_usertype/select_usertypescreen.dart';
+import '../../utils/notification_service.dart';
 
 class SplashController extends GetxController {
   @override
@@ -20,7 +21,6 @@ class SplashController extends GetxController {
 
   void onInit() {
     try {
-
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if(!kIsWeb){
           var updateAvailable = await VersionChecker.checkForUpdate(Get.context!);

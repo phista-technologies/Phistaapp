@@ -20,6 +20,7 @@ import '../../ui/owner/auth_screen/otp_screen_owner.dart';
 import '../../ui/owner/dashboard_screen_owner.dart';
 import '../../ui/owner/subscription_plan_screen/subscription_plan_screen_owner.dart';
 import '../../utils/fire_store_utils.dart';
+import '../../utils/utils.dart';
 
 
 class LoginControllerOwner extends GetxController {
@@ -316,6 +317,13 @@ class LoginControllerOwner extends GetxController {
     // Fetch profile
     UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
 
+    if (userModel?.stripeCustomerId == null || userModel?.stripeCustomerId == "") {
+      String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel!);
+      if (newStripeId != null && newStripeId.isNotEmpty) {
+        userModel?.stripeCustomerId = newStripeId;
+        await FireStoreUtils.updateUser(userModel!);
+      }
+    }
     if (userModel == null) {
       await FirebaseAuth.instance.signOut();
       ShowToastDialog.showToast("User profile not found.".tr);
@@ -457,7 +465,14 @@ class LoginControllerOwner extends GetxController {
     });
   }
 
-  void navigateUserBasedOnAccess(UserModel userModel) {
+  Future<void> navigateUserBasedOnAccess(UserModel userModel) async {
+    if (userModel.stripeCustomerId == null || userModel.stripeCustomerId == "") {
+      String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel);
+      if (newStripeId != null && newStripeId.isNotEmpty) {
+        userModel.stripeCustomerId = newStripeId;
+        await FireStoreUtils.updateUser(userModel);
+      }
+    }
     if (userModel.role != "owner" && userModel.role != "customer") {
       FirebaseAuth.instance.signOut();
       ShowToastDialog.showToast("please enter valid credentials".tr);
@@ -505,6 +520,13 @@ class LoginControllerOwner extends GetxController {
           ShowToastDialog.closeLoader();
             UserModel? userModel = await FireStoreUtils.getUserProfile(
                 value.user!.uid);
+          if (userModel?.stripeCustomerId == null || userModel?.stripeCustomerId == "") {
+            String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel!);
+            if (newStripeId != null && newStripeId.isNotEmpty) {
+              userModel.stripeCustomerId = newStripeId;
+              await FireStoreUtils.updateUser(userModel);
+            }
+          }
             if (userModel != null) {
               if (userModel.isActive == true &&
                   (userModel.role == "customer" || userModel.role == "owner")) {

@@ -68,7 +68,7 @@ class WalletController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          Stripe.publishableKey = ENV.pkTestPublishableKey;//paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
+          Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
           Stripe.merchantIdentifier = 'Phista';
           Stripe.instance.applySettings();
         }

@@ -35,7 +35,7 @@ class GlobalSettingControllerOwner extends GetxController {
 
   notificationInit() {
     notificationService.initInfo().then((value) async {
-      String token = await NotificationService.getToken();
+      String token = await NotificationService.getToken()?? "";
       log(":::::::TOKEN:::::: $token");
       if (FirebaseAuth.instance.currentUser != null) {
         await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) {

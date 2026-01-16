@@ -86,7 +86,6 @@ class SelectUserTypeScreen extends StatelessWidget{
                       title: "Find a parking space".tr,
                       onPress: () {
                         controller.createGuestUser();
-
                       },
                     ),
                   ),

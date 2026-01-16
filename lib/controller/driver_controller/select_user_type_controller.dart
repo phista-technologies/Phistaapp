@@ -44,9 +44,7 @@ class SelectUserTypeController extends GetxController{
         getLanguage();
       },);
     }
-    FireStoreUtils.deleteGuestUsersIfAllBookingsCompleted();
-
-
+    //FireStoreUtils.deleteGuestUsersIfAllBookingsCompleted();
   }
 
  /* getLanguage() async {
@@ -123,8 +121,6 @@ class SelectUserTypeController extends GetxController{
     ShowToastDialog.showLoader("please_wait".tr);
     final userCredential = await FirebaseAuth.instance.signInAnonymously();
     final uid = userCredential.user?.uid;
-
-
     UserModel userModelData = UserModel();
     userModelData.id = uid;
     userModelData.fullName = "Guest User";

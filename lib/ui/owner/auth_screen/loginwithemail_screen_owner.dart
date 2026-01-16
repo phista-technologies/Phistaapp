@@ -235,8 +235,6 @@ class LoginWithEmailOwner extends StatelessWidget {
   }
 }
 */
-
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -263,7 +261,6 @@ class LoginWithEmailOwner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
-
     return GetX<LoginControllerOwner>(
       init: LoginControllerOwner(),
       builder: (controller) {

@@ -277,8 +277,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                                         style: const TextStyle(
                                                           color: AppThemData.grey07,
                                                           fontSize: 14,
-                                                          fontFamily:
-                                                          AppThemData.medium,
+                                                          fontFamily: AppThemData.medium,
                                                         ),
                                                       ),
                                                     ),
@@ -328,7 +327,35 @@ class ParkingTicketScreen extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
-                                              controller.orderModel.value.taxList ==
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        'Service Fees'.tr,
+                                                        style: const TextStyle(
+                                                          color: AppThemData.grey07,
+                                                          fontSize: 14,
+                                                          fontFamily: AppThemData.medium,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Obx(() => Text(
+                                                      Constant.amountShow(
+                                                        amount: controller.serviceFee.value.toString(),
+                                                      ),
+                                                      style: const TextStyle(
+                                                        color: AppThemData.grey08,
+                                                        fontSize: 14,
+                                                        fontFamily: AppThemData.semiBold,
+                                                      ),
+                                                    )),
+                                                  ],
+                                                ),
+                                              ),
+
+                                              /*controller.orderModel.value.taxList ==
                                                   null
                                                   ? const SizedBox()
                                                   : ListView.builder(
@@ -387,7 +414,7 @@ class ParkingTicketScreen extends StatelessWidget {
                                                         ],
                                                       ),
                                                     );
-                                                  }),
+                                                  }),*/
                                             ],
                                           ),
 

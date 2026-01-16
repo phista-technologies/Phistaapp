@@ -127,7 +127,7 @@ class InformationControllerOwner extends GetxController {
     userModelData.lastLoginType = Constant.roleTypeForOwner;
     userModelData.adminCommission = Constant.adminCommission;
     userModelData.password = passwordController.value.text;
-
+    userModelData.stripeCustomerId = await Utils.createStripeCustomerIfNotExists(userModelData);
     await linkUserWithEmail(emailController.value.text.trim(),passwordController.value.text.trim());
     if(verificationIdAL.value.isNotEmpty){
       await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationIdAL.value,
@@ -242,6 +242,7 @@ class InformationControllerOwner extends GetxController {
     userModelData.lastLoginType = Constant.roleTypeForOwner;
     userModelData.adminCommission = Constant.adminCommission;
     userModelData.password = passwordController.value.text;
+    userModelData.stripeCustomerId = await Utils.createStripeCustomerIfNotExists(userModelData);
     await linkUserWithEmailToPhone(FirebaseAuth.instance.currentUser,  verificationIdAL.value,
         otpTextAL.value);
    // await linkUserWithEmail(emailController.value.text.trim(),passwordController.value.text.trim());

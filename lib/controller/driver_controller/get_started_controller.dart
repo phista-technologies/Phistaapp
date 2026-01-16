@@ -29,9 +29,6 @@ class GetStartedController extends GetxController{
     getArgument();
   }
 
-
-
-
   getArgument() async {
     log("object:--> ${Get.arguments}");
     dynamic argumentData = Get.arguments;
@@ -46,12 +43,12 @@ class GetStartedController extends GetxController{
   Future<void>createGuestUser()async{
     String fcmToken = "";
     if(Platform.isIOS){
-      fcmToken = await NotificationService.getToken();
+      fcmToken = await NotificationService.getToken()?? "";
     }else if (kIsWeb){
-      fcmToken = "await NotificationService.getToken()dsfdfdf";
+      fcmToken = await NotificationService.getToken();
     }
     else{
-      fcmToken = await NotificationService.getToken();
+      fcmToken = await NotificationService.getToken()?? "";
     }
     ShowToastDialog.showLoader("please_wait".tr);
     final userCredential = await FirebaseAuth.instance.signInAnonymously();

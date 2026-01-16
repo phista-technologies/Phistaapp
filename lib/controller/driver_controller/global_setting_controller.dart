@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/model/currency_model.dart';
@@ -13,7 +14,9 @@ import '../../constant/collection_name.dart';
 class GlobalSettingController extends GetxController {
   @override
   void onInit() {
-    notificationInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notificationInit(); // ✅ SAFE NOW
+    });
     getCurrentCurrency();
 
     super.onInit();
@@ -34,7 +37,7 @@ class GlobalSettingController extends GetxController {
 
   notificationInit() {
     notificationService.initInfo().then((value) async {
-      String token = await NotificationService.getToken();
+      String token = await NotificationService.getToken()?? "";
       log(":::::::TOKEN:::::: $token");
       if (FirebaseAuth.instance.currentUser != null) {
         await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) {

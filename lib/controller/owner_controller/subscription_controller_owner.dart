@@ -173,7 +173,7 @@ class SubscriptionControllerOwner extends GetxController {
       if (value != null) {
         paymentModel.value = value;
 
-        Stripe.publishableKey = ENV.pkTestPublishableKey;//paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
+        Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
         Stripe.merchantIdentifier = 'Phista';
         Stripe.instance.applySettings();
         setRef();
@@ -298,7 +298,7 @@ class SubscriptionControllerOwner extends GetxController {
         "shipping[address][country]": "CA",
       };
       log(paymentModel.value.strip!.stripeSecret.toString());
-      var stripeSecret = ENV.skTestSecretKey;//paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
+      var stripeSecret = paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         body: body,

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:phista/model/user_model.dart';
@@ -21,6 +23,7 @@ class NotificationService {
       badge: true,
       sound: true,
     );
+
     var request = await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
@@ -39,6 +42,50 @@ class NotificationService {
       setupInteractedMessage();
     }
   }
+
+/*  Future<void> initInfo() async {
+
+    // ✅ iOS ONLY
+    if (!kIsWeb && Platform.isIOS) {
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      final request = await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      if (request.authorizationStatus != AuthorizationStatus.authorized &&
+          request.authorizationStatus != AuthorizationStatus.provisional) {
+        return; // permission denied
+      }
+    }
+
+    // ✅ Notification plugin init (ALL platforms)
+    const AndroidInitializationSettings androidSettings =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings iosSettings =
+    DarwinInitializationSettings();
+
+    const InitializationSettings initSettings =
+    InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (response) {},
+    );
+
+    await setupInteractedMessage();
+  }*/
 
   Future<void> setupInteractedMessage() async {
     RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
@@ -77,8 +124,21 @@ class NotificationService {
 
   static getToken() async {
     String? token = await FirebaseMessaging.instance.getToken();
+    log("token:--> $token");
     return token!;
   }
+
+ /* static Future<String?> getToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      print("FCM TOKEN: $token");
+      return token;
+    } catch (e) {
+      print("FCM TOKEN ERROR: $e");
+      return null;
+    }
+  }*/
+
 
   static Future<String?> getWebToken() async {
     try {

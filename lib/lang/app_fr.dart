@@ -17,6 +17,7 @@ const Map<String, String> trFR = {
   "Add Vehicle": "Ajouter un véhicule",
   "Remaining Time": "Temps restant",
   "Remaining Days": "Jours restants",
+  "Services Fees": "Frais de services",
   "QR Code Successfully Scanned": "Code QR scanné avec succès",
   "Success! Your QR code has been scanned, and you're all set to enjoy your parking experience. Have a great stay!":
       "Succès ! Votre code QR a été scanné, vous êtes prêt à profiter de votre expérience de stationnement. Passez un agréable moment !",

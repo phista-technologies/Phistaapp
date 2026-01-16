@@ -258,16 +258,14 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                                 MaterialTapTargetSize
                                                     .shrinkWrap,
                                             onChanged: (value) {
-                                              controller
-                                                  .selectedDuration.value = 24;
-                                              controller.radioValue.value =
-                                                  value ?? "";
-                                              controller.setMonthValue(
-                                                  controller
-                                                      .startTimeMonthly.value,
-                                                  int.parse(controller
-                                                      .bookingMonths
-                                                      .value.toString()));
+                                              controller.selectedDuration.value = 24;
+                                              controller.radioValue.value = value ?? "";
+                                              // ONLY when isMin4Month == true → force minimum 4 months
+                                              if (controller.parkingModel.value.isMin4Month == true &&
+                                                  controller.bookingMonths.value < 4) {
+                                                controller.bookingMonths.value = 4;
+                                              }
+                                              controller.setMonthValue(controller.startTimeMonthly.value, int.parse(controller.bookingMonths.value.toString()));
                                             },
                                           ),
                                         ],
@@ -285,7 +283,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Booking Months'.tr,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold,color:AppThemData.grey07),
                                 ),
                                 const SizedBox(height: 8),
                                 Container(
@@ -299,13 +297,16 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.remove_circle_outline,color: AppThemData.grey07,),
+                                        icon: Icon(Icons.remove_circle_outline,color:AppThemData.grey07,),
                                         onPressed: () {
-                                          if (controller.bookingMonths.value > 1) {
+                                          /*if (controller.bookingMonths.value > 1) {
                                             controller.bookingMonths.value--;
-                                            controller.setMonthValue(
-                                              controller.startTimeMonthly.value,
-                                              controller.bookingMonths.value,
+                                            controller.setMonthValue(controller.startTimeMonthly.value,controller.bookingMonths.value,);
+                                          }*/
+                                          int minMonth = controller.parkingModel.value.isMin4Month == true ? 4 : 1;
+                                          if (controller.bookingMonths.value > minMonth) {
+                                            controller.bookingMonths.value--;
+                                            controller.setMonthValue(controller.startTimeMonthly.value, controller.bookingMonths.value,
                                             );
                                           }
                                         },
@@ -343,7 +344,6 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                             height: 10,
                           ),
                           if (controller.radioValue.value == "hourly")
-
                             ///show if hourly is selected
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -25,7 +25,7 @@ class ReviewSummaryController extends GetxController {
     log("Constant.bookingTypeConst:--> ${Constant.bookingTypeConst}");
     getArgument();
   }
-
+  RxDouble serviceFee = 0.0.obs;
   Rx<OrderModel> orderModel = OrderModel().obs;
   Rx<UserModel> ownerUserModel = UserModel().obs;
   var orderModelDailyList = <OrderModel>[].obs;
@@ -77,7 +77,7 @@ class ReviewSummaryController extends GetxController {
     update();
   }
 
-  double calculateAmount() {
+  /*double calculateAmount() {
     if (orderModel.value.coupon != null) {
       if (orderModel.value.coupon!.id != null) {
         if (orderModel.value.coupon!.type == "fix") {
@@ -126,7 +126,63 @@ class ReviewSummaryController extends GetxController {
       return (double.parse(orderModel.value.subTotal.toString()) - double.parse(couponAmount.toString())) + double.parse(taxAmount.value);
     }
 
+  }*/
+
+  double calculateAmount() {
+    double subTotal = double.parse(orderModel.value.subTotal.toString());
+    double coupon = 0.0;
+
+    // ---------------- COUPON ----------------
+    if (orderModel.value.coupon != null &&
+        orderModel.value.coupon!.id != null) {
+
+      bool validParking = selectedCouponModel.value.parkingId!.isEmpty ||
+          selectedCouponModel.value.parkingId == orderModel.value.parkingId;
+
+      if (validParking) {
+        if (orderModel.value.coupon!.type == "fix") {
+          coupon = double.parse(orderModel.value.coupon!.amount.toString());
+        } else {
+          coupon = subTotal *
+              double.parse(orderModel.value.coupon!.amount.toString()) /
+              100;
+        }
+      } else {
+        orderModel.value.coupon = null;
+      }
+    }
+
+    couponAmount.value = coupon > subTotal ? subTotal : coupon;
+
+    // ---------------- TAX ----------------
+    double tax = 0.0;
+    if (orderModel.value.taxList != null) {
+      for (var element in orderModel.value.taxList!) {
+        tax += Constant().calculateTax(
+          amount: (subTotal - couponAmount.value).toString(),
+          taxModel: element,
+        );
+      }
+    }
+
+    double currentTotal = (subTotal - couponAmount.value) + tax;
+
+    if (currentTotal <= 0) {
+      serviceFee.value = 0.0;
+      return 0.0;
+    }
+
+    // ---------------- SERVICE FEE ----------------
+    double finalTotal = currentTotal / 0.96;
+    serviceFee.value = finalTotal - currentTotal;
+
+    return double.parse(
+      finalTotal.toStringAsFixed(
+        Constant.currencyModel!.decimalDigits!,
+      ),
+    );
   }
+
 
   getUserDetail() async{
     await FireStoreUtils.getUserProfile(orderModel.value.userVehicle!.userId.toString()).then((value) {
