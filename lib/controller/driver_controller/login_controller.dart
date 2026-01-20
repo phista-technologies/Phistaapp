@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
@@ -21,6 +22,7 @@ import '../../constant/extension_data.dart';
 import '../../model/payment/AppleUserDataModel.dart';
 import '../../ui/driver/auth_screen/information_screen.dart';
 import '../../ui/driver/auth_screen/otp_screen.dart';
+import '../../utils/notification_service.dart';
 import '../../utils/utils.dart';
 
 
@@ -293,6 +295,15 @@ class LoginController extends GetxController {
           FireStoreUtils.userExistOrNot(uid).then((userExists) async {
             if (userExists) {
               UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
+              String fcmToken = "";
+              if(Platform.isIOS){
+                fcmToken = await NotificationService.getToken();
+              }else if (kIsWeb){
+                fcmToken = await NotificationService.getToken();
+              }
+              else{
+                fcmToken = await NotificationService.getToken();
+              }
               if (userModel != null) {
                 if (userModel.stripeCustomerId == null || userModel.stripeCustomerId == "") {
                   String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel);
@@ -301,6 +312,8 @@ class LoginController extends GetxController {
                     await FireStoreUtils.updateUser(userModel);
                   }
                 }
+                userModel.fcmToken = fcmToken;
+                await FireStoreUtils.updateUser(userModel);
                 if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
 
                   Constant.currentUserModel.value?.role = userModel.role;
@@ -403,7 +416,15 @@ class LoginController extends GetxController {
 
           if (userExists) {
             UserModel? userModel = await FireStoreUtils.getUserProfile(userCredential.user!.uid);
-
+            String fcmToken = "";
+            if(Platform.isIOS){
+              fcmToken = await NotificationService.getToken();
+            }else if (kIsWeb){
+              fcmToken = await NotificationService.getToken();
+            }
+            else{
+              fcmToken = await NotificationService.getToken();
+            }
             if (userModel != null) {
               if (userModel.stripeCustomerId == null || userModel.stripeCustomerId == "") {
                 String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel);
@@ -412,6 +433,8 @@ class LoginController extends GetxController {
                   await FireStoreUtils.updateUser(userModel);
                 }
               }
+              userModel.fcmToken = fcmToken;
+              await FireStoreUtils.updateUser(userModel);
               if (userModel.isActive == true && (userModel.role == "customer" || userModel.role == "owner")) {
                 Constant.currentUserModel.value?.role = userModel.role;
                 Get.delete<DashboardScreenController>();
@@ -452,6 +475,15 @@ class LoginController extends GetxController {
           password: passwordController.value.text.trim()).then((value) async {
           await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
             ShowToastDialog.closeLoader();
+            String fcmToken = "";
+            if(Platform.isIOS){
+              fcmToken = await NotificationService.getToken();
+            }else if (kIsWeb){
+              fcmToken = await NotificationService.getToken();
+            }
+            else{
+              fcmToken = await NotificationService.getToken();
+            }
             if (userExit == true) {
               UserModel? userModel = await FireStoreUtils.getUserProfile(value.user!.uid);
               if (userModel?.stripeCustomerId == null || userModel?.stripeCustomerId == "") {
@@ -461,6 +493,8 @@ class LoginController extends GetxController {
                   await FireStoreUtils.updateUser(userModel);
                 }
               }
+              userModel?.fcmToken = fcmToken;
+              await FireStoreUtils.updateUser(userModel!);
               if (userModel != null) {
                 if (userModel.isActive == true &&  (userModel.role == "customer" || userModel.role == "owner")) {
                   Constant.currentUserModel.value?.role = userModel.role;

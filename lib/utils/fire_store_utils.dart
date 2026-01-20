@@ -1167,6 +1167,8 @@ class FireStoreUtils {
     return isAdded;
   }
 
+
+
   static Future<bool?> updateUserWallet({required String amount}) async {
     bool isAdded = false;
     await getUserProfile(FireStoreUtils.getCurrentUid()).then((value) async {

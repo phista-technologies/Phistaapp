@@ -382,6 +382,24 @@ class PaymentSelectController extends GetxController {
     );
   }
 
+  double getOwnerWalletCreditAmount() {
+    double subTotal = double.parse(orderModel.value.subTotal.toString());
+    double coupon = couponAmount.value;
+
+    double ownerAmount = subTotal - coupon;
+
+    if (ownerAmount < 0) {
+      ownerAmount = 0;
+    }
+
+    return double.parse(
+      ownerAmount.toStringAsFixed(
+        Constant.currencyModel!.decimalDigits!,
+      ),
+    );
+  }
+
+
   completeOrder({int? index}) async {
     ShowToastDialog.showLoader("Please wait..");
     int numberOfDays= await getDifferenceBetweenStartAndEndDate(orderModel.value.bookingDate??"");
@@ -395,9 +413,10 @@ class PaymentSelectController extends GetxController {
    orderModel.value.adminCommission =  Constant.adminCommission;
    orderModel.value.createdAt = Timestamp.now();
    orderModel.value.updateAt = Timestamp.now();
+   double ownerCreditAmount = getOwnerWalletCreditAmount();
    WalletTransactionModel transactionModel = WalletTransactionModel(
         id: Constant.getUuid(),
-        amount: calculateAmount().toString(),
+        amount: ownerCreditAmount.toString(),//calculateAmount().toString(),
         createdDate: Timestamp.now(),
         paymentType: selectedPaymentMethod.value,
         transactionId: orderModel.value.id,
@@ -409,7 +428,7 @@ class PaymentSelectController extends GetxController {
         .then((value) async {
       if (value == true) {
         await FireStoreUtils.updateOtherUserWallet(
-            amount: calculateAmount().toString(),
+            amount: ownerCreditAmount.toString(),//calculateAmount().toString(),
             id: orderModel.value.parkingDetails!.userId.toString());
       }
     });

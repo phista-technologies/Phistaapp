@@ -112,7 +112,6 @@ class OtpScreen extends StatelessWidget {
                                 String? fcmToken = "";
                                 if (!kIsWeb){
                                 if(Platform.isIOS){
-                                  //fcmToken ="sdsadsdsd54545645sdas4dsa4dsd564sdas";
                                   fcmToken = await NotificationService.getToken();
                                 }else{
                                   fcmToken = await NotificationService.getToken();
@@ -155,7 +154,8 @@ class OtpScreen extends StatelessWidget {
                                             ShowToastDialog.showToast("This user is disable please contact administrator".tr);
                                           }
                                         }
-                                      } else {
+                                      }
+                                      else {
                                         UserModel userModel = UserModel();
                                         userModel.id = value.user!.uid;
                                         userModel.countryCode = controller.countryCode.value;

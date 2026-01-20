@@ -203,13 +203,9 @@ class WalletScreenOwner extends StatelessWidget {
                                           : ListView.builder(
                                               padding: const EdgeInsets.only(
                                                   top: 20),
-                                              itemCount: controller
-                                                  .transactionList.length,
+                                              itemCount: controller.transactionList.length,
                                               itemBuilder: (context, index) {
-                                                WalletTransactionModel
-                                                    walletTractionModel =
-                                                    controller
-                                                        .transactionList[index];
+                                                WalletTransactionModel walletTractionModel = controller.transactionList[index];
                                                 return transactionCard(
                                                     controller,
                                                     themeChange,
@@ -1186,18 +1182,14 @@ class WalletScreenOwner extends StatelessWidget {
                               ShowToastDialog.showLoader("Please wait".tr);
                               WithdrawModel withdrawModel = WithdrawModel();
                               withdrawModel.id = Constant.getUuid();
-                              withdrawModel.userId =
-                                  FireStoreUtils.getCurrentUid();
+                              withdrawModel.userId = FireStoreUtils.getCurrentUid();
                               withdrawModel.paymentStatus = "pending";
-                              withdrawModel.amount = controller
-                                  .withdrawalAmountController.value.text;
-                              withdrawModel.note =
-                                  controller.noteController.value.text;
+                              withdrawModel.amount = controller.withdrawalAmountController.value.text;
+                              withdrawModel.note = controller.noteController.value.text;
                               withdrawModel.createdDate = Timestamp.now();
 
                               await FireStoreUtils.updateUserWallet(
-                                  amount:
-                                      "-${controller.withdrawalAmountController.value.text}");
+                                  amount: "-${controller.withdrawalAmountController.value.text}");
 
                               await FireStoreUtils.setWithdrawRequest(
                                       withdrawModel)

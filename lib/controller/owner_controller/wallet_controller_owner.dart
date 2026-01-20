@@ -65,8 +65,10 @@ class WalletControllerOwner extends GetxController {
     await getTraction();
     await getUser();
     await FireStoreUtils().getPayment().then((value) {
+      log("value:--> $value");
       if (value != null) {
         paymentModel.value = value;
+
        if (!kIsWeb) {
          Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
          Stripe.merchantIdentifier = 'Phista';

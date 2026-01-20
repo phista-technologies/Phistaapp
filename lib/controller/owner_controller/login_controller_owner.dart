@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
@@ -20,6 +21,7 @@ import '../../ui/owner/auth_screen/otp_screen_owner.dart';
 import '../../ui/owner/dashboard_screen_owner.dart';
 import '../../ui/owner/subscription_plan_screen/subscription_plan_screen_owner.dart';
 import '../../utils/fire_store_utils.dart';
+import '../../utils/notification_service.dart';
 import '../../utils/utils.dart';
 
 
@@ -316,7 +318,15 @@ class LoginControllerOwner extends GetxController {
 
     // Fetch profile
     UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
-
+    String fcmToken = "";
+    if(Platform.isIOS){
+      fcmToken = await NotificationService.getToken();
+    }else if (kIsWeb){
+      fcmToken = await NotificationService.getToken();
+    }
+    else{
+      fcmToken = await NotificationService.getToken();
+    }
     if (userModel?.stripeCustomerId == null || userModel?.stripeCustomerId == "") {
       String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel!);
       if (newStripeId != null && newStripeId.isNotEmpty) {
@@ -324,6 +334,8 @@ class LoginControllerOwner extends GetxController {
         await FireStoreUtils.updateUser(userModel!);
       }
     }
+    userModel?.fcmToken = fcmToken;
+    await FireStoreUtils.updateUser(userModel!);
     if (userModel == null) {
       await FirebaseAuth.instance.signOut();
       ShowToastDialog.showToast("User profile not found.".tr);
@@ -466,6 +478,15 @@ class LoginControllerOwner extends GetxController {
   }
 
   Future<void> navigateUserBasedOnAccess(UserModel userModel) async {
+    String fcmToken = "";
+    if(Platform.isIOS){
+      fcmToken = await NotificationService.getToken();
+    }else if (kIsWeb){
+      fcmToken = await NotificationService.getToken();
+    }
+    else{
+      fcmToken = await NotificationService.getToken();
+    }
     if (userModel.stripeCustomerId == null || userModel.stripeCustomerId == "") {
       String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel);
       if (newStripeId != null && newStripeId.isNotEmpty) {
@@ -473,6 +494,8 @@ class LoginControllerOwner extends GetxController {
         await FireStoreUtils.updateUser(userModel);
       }
     }
+    userModel.fcmToken = fcmToken;
+    await FireStoreUtils.updateUser(userModel);
     if (userModel.role != "owner" && userModel.role != "customer") {
       FirebaseAuth.instance.signOut();
       ShowToastDialog.showToast("please enter valid credentials".tr);
@@ -520,6 +543,15 @@ class LoginControllerOwner extends GetxController {
           ShowToastDialog.closeLoader();
             UserModel? userModel = await FireStoreUtils.getUserProfile(
                 value.user!.uid);
+          String fcmToken = "";
+          if(Platform.isIOS){
+            fcmToken = await NotificationService.getToken();
+          }else if (kIsWeb){
+            fcmToken = await NotificationService.getToken();
+          }
+          else{
+            fcmToken = await NotificationService.getToken();
+          }
           if (userModel?.stripeCustomerId == null || userModel?.stripeCustomerId == "") {
             String? newStripeId = await Utils.createStripeCustomerIfNotExists(userModel!);
             if (newStripeId != null && newStripeId.isNotEmpty) {
@@ -527,6 +559,8 @@ class LoginControllerOwner extends GetxController {
               await FireStoreUtils.updateUser(userModel);
             }
           }
+          userModel?.fcmToken = fcmToken;
+          await FireStoreUtils.updateUser(userModel!);
             if (userModel != null) {
               if (userModel.isActive == true &&
                   (userModel.role == "customer" || userModel.role == "owner")) {
