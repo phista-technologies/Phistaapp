@@ -51,13 +51,23 @@ class ChatScreenOwner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      controller.getFirstName(controller.receiverUserModel.value.fullName.toString()),
+                      style: TextStyle(
+                        color: themeChange.getThem()
+                            ? AppThemData.grey02
+                            : AppThemData.grey09,
+                        fontFamily: AppThemData.semiBold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    /*Text(
                       controller.receiverUserModel.value.fullName.toString(),
                       style: TextStyle(color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey09, fontFamily: AppThemData.semiBold, fontSize: 14),
-                    ),
-                    Text(
+                    ),*/
+                    /*Text(
                       controller.receiverUserModel.value.email.toString(),
                       style: TextStyle(color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey09, fontFamily: AppThemData.medium, fontSize: 12),
-                    )
+                    )*/
                   ],
                 )
               ],
@@ -129,9 +139,19 @@ class ChatScreenOwner extends StatelessWidget {
                                 borderSide: BorderSide(color: themeChange.getThem() ? AppThemData.grey09 : AppThemData.grey09, width: 1),
                               ),
                               suffixIcon: InkWell(
-                                onTap: () async {
+                               /* onTap: () {
                                   if (controller.messageTextEditorController.value.text.isNotEmpty) {
-                                    await controller.sendMessage();
+                                     controller.sendMessage();
+                                    controller.messageTextEditorController.value.clear();
+                                  } else {
+                                    ShowToastDialog.showToast("Please enter message".tr);
+                                  }
+                                },*/
+                                onTap: () {
+                                  String message = controller.messageTextEditorController.value.text.trim();
+
+                                  if (message.isNotEmpty) {
+                                    controller.sendMessage(message);
                                     controller.messageTextEditorController.value.clear();
                                   } else {
                                     ShowToastDialog.showToast("Please enter message".tr);

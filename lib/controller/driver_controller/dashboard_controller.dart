@@ -21,7 +21,7 @@ class DashboardScreenController extends GetxController {
     const HomeScreen(),
     const SavedScreen(),
     const MyBookingScreen(isBack: false),
-    const InboxScreen(),
+    const InboxScreen(isBack: false),
     const ProfileScreen(),
   ].obs;
 

@@ -655,7 +655,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   fontFamily: AppThemData
                                                       .medium,),),
                                               const SizedBox(height: 5,),
-
                                               Constant.bookingTypeConst == "hourly"?
                                               Text("${Constant.timestampToTime(
                                                   controller.orderModel.value
@@ -665,7 +664,6 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                   fontSize: 12,
                                                   fontFamily: AppThemData
                                                       .regular,),):
-
                                               Text("Full day",
                                                 style: const TextStyle(
                                                   color: AppThemData.grey07,
@@ -674,9 +672,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                                       .regular,),),
                                             ],),
                                         ],);
-
                                     },
-
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -696,7 +692,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                             textColor: themeChange.getThem()
                                                 ? AppThemData.grey09
                                                 : AppThemData.grey09,
-                                           /* icon: Padding(
+                                                /* icon: Padding(
                                               padding: const EdgeInsets.symmetric(
                                                   horizontal: 5),
                                               child: SvgPicture.asset(

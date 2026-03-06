@@ -621,6 +621,20 @@ class BookingParkingDetailsController extends GetxController {
     endTimeController.value.text = DateFormat('HH:mm').format(endTime.value);
   }
 
+  int getMinMonth() {
+    int minMonth = 1;
+
+    if (parkingModel.value.isMin2Month == true) {
+      minMonth = 2;
+    }
+
+    if (parkingModel.value.isMin4Month == true) {
+      minMonth = 4;
+    }
+
+    return minMonth;
+  }
+
   getParkingDetails() async {
     final value = await FireStoreUtils.getParkingDetails(parkingModel.value.id.toString());
     if (value != null) {

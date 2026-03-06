@@ -1059,7 +1059,7 @@ class WalletScreenOwner extends StatelessWidget {
                                   width: 10,
                                 ),
                                 Text(
-                                  "Maximum withdrawal amount will be a  ${Constant.amountShow(amount: Constant.minimumAmountToWithdrawal.toString())}"
+                                  "Minimum withdrawal amount will be a  ${Constant.amountShow(amount: Constant.minimumAmountToWithdrawal.toString())}"
                                       .tr,
                                   style: TextStyle(
                                       fontSize: 14,

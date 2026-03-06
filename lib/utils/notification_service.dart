@@ -122,8 +122,45 @@ class NotificationService {
     await FirebaseMessaging.instance.subscribeToTopic("phista");
   }
 
-  static getToken() async {
+/*  static getToken() async {
     String? token = await FirebaseMessaging.instance.getToken();
+    log("token:--> $token");
+    return token!;
+  }*/
+  static Future<String?> getToken() async {
+    try {
+      if (!kIsWeb && Platform.isIOS) {
+        // Wait until APNS token is available
+        String? apnsToken;
+        int retry = 0;
+
+        while (apnsToken == null && retry < 10) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          retry++;
+          print("111111 apns:---$apnsToken");
+        }
+
+        if (apnsToken == null) {
+          log("APNS token not available yet");
+          return null;
+        }
+
+        log("APNS Token: $apnsToken");
+      }
+
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      log("FCM Token: $fcmToken");
+
+      return fcmToken;
+    } catch (e) {
+      log("FCM Token Error: $e");
+      return null;
+    }
+  }
+
+  static getTokenIos() async {
+    String? token = await FirebaseMessaging.instance.getAPNSToken();
     log("token:--> $token");
     return token!;
   }

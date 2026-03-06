@@ -177,6 +177,11 @@ class ChatController extends GetxController {
     return sendMail;
   }
 
+  String getFirstName(String? fullName) {
+    if (fullName == null || fullName.trim().isEmpty) return '';
+    return fullName.trim().split(' ').first;
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose

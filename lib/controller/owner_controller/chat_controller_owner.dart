@@ -99,7 +99,7 @@ class ChatControllerOwner extends GetxController {
     isLoading.value = false;
   }
 
-  sendMessage() async {
+ /* sendMessage() async {
     InboxModelOwner inboxModel = InboxModelOwner(
         archive: false,
         lastMessage: messageTextEditorController.value.text.trim(),
@@ -178,6 +178,94 @@ class ChatControllerOwner extends GetxController {
       // ShowToastDialog.closeLoader();
      },);
      return sendMail;
+  }*/
+
+  sendMessage(String message) async {
+
+    InboxModelOwner inboxModel = InboxModelOwner(
+        archive: false,
+        lastMessage: message,
+        mediaUrl: "",
+        receiverId: receiverUserModel.value.id.toString(),
+        seen: false,
+        senderId: senderUserModel.value.id.toString(),
+        timestamp: Timestamp.now(),
+        type: "text"
+    );
+
+    await FireStoreUtils.fireStore
+        .collection(CollectionName.chat)
+        .doc(senderUserModel.value.id.toString())
+        .collection("inbox")
+        .doc(receiverUserModel.value.id.toString())
+        .set(inboxModel.toJson());
+
+    await FireStoreUtils.fireStore
+        .collection(CollectionName.chat)
+        .doc(receiverUserModel.value.id.toString())
+        .collection("inbox")
+        .doc(senderUserModel.value.id.toString())
+        .set(inboxModel.toJson());
+
+    await sendMsgEmail(message);
+
+    ChatModelOwner chatModel = ChatModelOwner(
+      type: "text",
+      timestamp: Timestamp.now(),
+      senderId: senderUserModel.value.id.toString(),
+      seen: false,
+      receiverId: receiverUserModel.value.id.toString(),
+      mediaUrl: "",
+      chatID: Constant.getUuid(),
+      message: message,
+    );
+
+    await FireStoreUtils.fireStore
+        .collection(CollectionName.chat)
+        .doc(senderUserModel.value.id.toString())
+        .collection(receiverUserModel.value.id.toString())
+        .doc(chatModel.chatID)
+        .set(chatModel.toJson());
+
+    await FireStoreUtils.fireStore
+        .collection(CollectionName.chat)
+        .doc(receiverUserModel.value.id.toString())
+        .collection(senderUserModel.value.id.toString())
+        .doc(chatModel.chatID)
+        .set(chatModel.toJson());
+
+    Map<String, dynamic> playLoad = {
+      "type": "chat",
+      "senderId": senderUserModel.value.id.toString(),
+      "receiverId": receiverUserModel.value.id.toString(),
+    };
+
+    await SendNotification.sendOneNotification(
+        token: receiverUserModel.value.fcmToken.toString(),
+        title: receiverUserModel.value.fullName.toString(),
+        body: message,
+        payload: playLoad
+    );
+  }
+  Future<bool> sendMsgEmail(String message) async {
+    bool sendMail = false;
+
+    await Utils.sendEmailWithTemplateWithAllPlatForms(
+      toEmail: receiverUserModel.value.email!,
+      templateId: ENV.templateIdSendMsg,
+      dynamicTemplateData: {
+        "message": message
+      },
+    ).then((value) {
+      sendMail = true;
+    });
+
+    return sendMail;
+  }
+
+  String getFirstName(String? fullName) {
+    if (fullName == null || fullName.trim().isEmpty) return '';
+    return fullName.trim().split(' ').first;
   }
 
 

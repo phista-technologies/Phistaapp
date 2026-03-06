@@ -41,7 +41,7 @@ class GetStartedController extends GetxController{
   }
 
   Future<void>createGuestUser()async{
-    String fcmToken = "";
+    String? fcmToken = "";
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
     }else if (kIsWeb){
@@ -62,7 +62,7 @@ class GetStartedController extends GetxController{
     userModelData.countryCode = "N/A";
     userModelData.phoneNumber = "N/A";
     userModelData.profilePic = "N/A";
-    userModelData.fcmToken = fcmToken;
+    userModelData.fcmToken = fcmToken ?? "";
     userModelData.createdAt = Timestamp.now();
     userModelData.isActive = true;
     userModelData.role = "Guest";

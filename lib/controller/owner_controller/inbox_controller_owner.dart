@@ -21,4 +21,9 @@ class InboxControllerOwner extends GetxController {
     });
     isLoading.value = false;
   }
+
+  String getFirstName(String? fullName) {
+    if (fullName == null || fullName.trim().isEmpty) return '';
+    return fullName.trim().split(' ').first;
+  }
 }

@@ -51,13 +51,23 @@ class ChatScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      controller.getFirstName(controller.receiverUserModel.value.fullName.toString()),
+                      style: TextStyle(
+                        color: themeChange.getThem()
+                            ? AppThemData.grey02
+                            : AppThemData.grey09,
+                        fontFamily: AppThemData.semiBold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    /*Text(
                       controller.receiverUserModel.value.fullName.toString(),
                       style: TextStyle(color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey09, fontFamily: AppThemData.semiBold, fontSize: 14),
-                    ),
-                    Text(
+                    ),*/
+                   /* Text(
                       controller.receiverUserModel.value.email.toString(),
                       style: TextStyle(color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey09, fontFamily: AppThemData.medium, fontSize: 12),
-                    )
+                    )*/
                   ],
                 )
               ],
@@ -130,12 +140,12 @@ class ChatScreen extends StatelessWidget {
                                 borderSide: BorderSide(color: themeChange.getThem() ? AppThemData.grey09 : AppThemData.grey09, width: 1),
                               ),
                               suffixIcon: InkWell(
-                                  onTap: () async {
+                                  onTap: () {
                                     if ((controller.receiverUserModel.value.subscriptionExpiryDate != null &&
                                             controller.receiverUserModel.value.subscriptionExpiryDate?.toDate().isBefore(DateTime.now()) == false) ||
                                         controller.receiverUserModel.value.subscriptionPlan?.features?.chat == true) {
                                       if (controller.messageTextEditorController.value.text.isNotEmpty) {
-                                        await controller.sendMessage(controller.messageTextEditorController.value.text);
+                                        controller.sendMessage(controller.messageTextEditorController.value.text);
                                         controller.messageTextEditorController.value.clear();
                                       } else {
                                         ShowToastDialog.showToast("Please enter message".tr);
@@ -144,7 +154,7 @@ class ChatScreen extends StatelessWidget {
                                       ShowToastDialog.showToast("Chat feature is currently unavailable for this owner.".tr);
                                     }
                                   },
-                                  child: Padding(
+                              child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: ((controller.receiverUserModel.value.subscriptionExpiryDate != null &&
                                                 controller.receiverUserModel.value.subscriptionExpiryDate?.toDate().isBefore(DateTime.now()) == false) ||
@@ -242,4 +252,5 @@ class ChatScreen extends StatelessWidget {
             ],
           );
   }
+
 }

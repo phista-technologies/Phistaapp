@@ -110,7 +110,9 @@ class SelectUserTypeController extends GetxController{
     String? fcmToken = "";
     if (!kIsWeb) {
     if (Platform.isIOS) {
+      print("ios");
       fcmToken = await NotificationService.getToken();
+     // fcmToken = await NotificationService.getTokenIos()();
     }
     else {
       fcmToken = await NotificationService.getToken();

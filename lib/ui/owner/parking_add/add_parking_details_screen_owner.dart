@@ -185,10 +185,10 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           height: 10,
         ),
         Row(
-          children: [
+          children:[
             Expanded(
                 child: Row(
-                  children: [
+                  children:[
                     SvgPicture.asset("assets/icon/ic_car_fill.svg", color: AppThemData.grey08),
                     const SizedBox(
                       width: 10,
@@ -307,10 +307,10 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           controller: controller.nameController.value,
           hintText: 'Enter Parking Name'.tr,
           prefix: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: SvgPicture.asset(
+            padding:const EdgeInsets.all(12.0),
+            child:SvgPicture.asset(
               "assets/icon/ic_parking_p.svg",
-              colorFilter: const ColorFilter.mode(AppThemData.grey07, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(AppThemData.grey07, BlendMode.srcIn),
             ),
           ),
         ),
@@ -478,6 +478,29 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                 value: controller.isMin4Open.value,
                 onChanged: (value) {
                   controller.isMin4Open(value);
+                },
+                activeColor: AppThemData.primary06,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Min 2 months".tr,
+              style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+            ),
+            SizedBox(
+              width: 40,
+              height: 20,
+              child: Switch(
+                value: controller.isMin2Open.value,
+                onChanged: (value) {
+                  controller.isMin2Open(value);
                 },
                 activeColor: AppThemData.primary06,
               ),

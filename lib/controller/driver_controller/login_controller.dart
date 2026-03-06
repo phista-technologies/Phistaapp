@@ -295,7 +295,7 @@ class LoginController extends GetxController {
           FireStoreUtils.userExistOrNot(uid).then((userExists) async {
             if (userExists) {
               UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
-              String fcmToken = "";
+              String? fcmToken = "";
               if(Platform.isIOS){
                 fcmToken = await NotificationService.getToken();
               }else if (kIsWeb){
@@ -416,7 +416,7 @@ class LoginController extends GetxController {
 
           if (userExists) {
             UserModel? userModel = await FireStoreUtils.getUserProfile(userCredential.user!.uid);
-            String fcmToken = "";
+            String? fcmToken = "";
             if(Platform.isIOS){
               fcmToken = await NotificationService.getToken();
             }else if (kIsWeb){
@@ -475,7 +475,7 @@ class LoginController extends GetxController {
           password: passwordController.value.text.trim()).then((value) async {
           await FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
             ShowToastDialog.closeLoader();
-            String fcmToken = "";
+            String? fcmToken = "";
             if(Platform.isIOS){
               fcmToken = await NotificationService.getToken();
             }else if (kIsWeb){

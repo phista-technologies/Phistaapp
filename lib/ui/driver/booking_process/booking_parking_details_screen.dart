@@ -261,9 +261,17 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                               controller.selectedDuration.value = 24;
                                               controller.radioValue.value = value ?? "";
                                               // ONLY when isMin4Month == true → force minimum 4 months
-                                              if (controller.parkingModel.value.isMin4Month == true &&
+                                             /* if (controller.parkingModel.value.isMin4Month == true &&
                                                   controller.bookingMonths.value < 4) {
                                                 controller.bookingMonths.value = 4;
+                                              }
+                                              else if (controller.parkingModel.value.isMin2Month == true &&
+                                                  controller.bookingMonths.value < 2){
+                                                controller.bookingMonths.value = 2;
+                                              }*/
+                                              int minMonth = controller.getMinMonth();
+                                              if (controller.bookingMonths.value < minMonth) {
+                                                controller.bookingMonths.value = minMonth;
                                               }
                                               controller.setMonthValue(controller.startTimeMonthly.value, int.parse(controller.bookingMonths.value.toString()));
                                             },
@@ -303,7 +311,9 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                             controller.bookingMonths.value--;
                                             controller.setMonthValue(controller.startTimeMonthly.value,controller.bookingMonths.value,);
                                           }*/
-                                          int minMonth = controller.parkingModel.value.isMin4Month == true ? 4 : 1;
+                                          //int minMonth = controller.parkingModel.value.isMin4Month == true ? 4 : 1;
+                                          int minMonth = controller.getMinMonth();
+
                                           if (controller.bookingMonths.value > minMonth) {
                                             controller.bookingMonths.value--;
                                             controller.setMonthValue(controller.startTimeMonthly.value, controller.bookingMonths.value,

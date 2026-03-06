@@ -332,8 +332,8 @@ const Map<String, String> trFR = {
   "Daily Price": "Prix par jour (5h+)",
   "Monthly Price": "Prix par mois",
   "Enter Note": "Entrez une note",
-  "Maximum withdrawal amount will be a":
-      "Le montant maximum de retrait sera de",
+  "Maximum withdrawal amount will be a": "Le montant maximum de retrait sera de",
+  "Minimum withdrawal amount will be a": "Le montant minimum de retrait sera de",
   "Withdraw amount must be greater or equal to ":
       "Le montant du retrait doit être supérieur ou égal à ",
   "Request sent to admin": "Demande envoyée à l’administrateur",

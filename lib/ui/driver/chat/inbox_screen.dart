@@ -18,7 +18,8 @@ import 'chat_screen.dart';
 import 'model/inbox_model.dart';
 
 class InboxScreen extends StatelessWidget {
-  const InboxScreen({super.key});
+  final bool isBack;
+  const InboxScreen({required this.isBack ,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class InboxScreen extends StatelessWidget {
           appBar: UiInterface().customAppBar(
             context,
             themeChange,
-            isBack: true,
+            isBack: isBack,
             'Inbox'.tr,
           ),
           body: controller.isLoading.value
@@ -45,7 +46,6 @@ class InboxScreen extends StatelessWidget {
                   shrinkWrap: true,
                   reverse: true,
                   onEmpty: Constant.showEmptyView(message: "No conversion found".tr),
-
                   itemBuilder: (context, documentSnapshots, index) {
                     InboxModel inboxModel = InboxModel.fromJson(documentSnapshots[index].data() as Map<String, dynamic>);
                     return Container(
@@ -95,13 +95,22 @@ class InboxScreen extends StatelessWidget {
                                                   Row(
                                                     children: [
                                                       Expanded(
-                                                        child: Text(
+                                                        child:Text(
+                                                          controller.getFirstName(userModel?.fullName),
+                                                          style: TextStyle(
+                                                            color: themeChange.getThem()
+                                                                ? AppThemData.grey02
+                                                                : AppThemData.grey09,
+                                                            fontFamily: AppThemData.semiBold,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ) /*Text(
                                                           userModel?.fullName ?? '',
                                                           style: TextStyle(
                                                               color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey09,
                                                               fontFamily: AppThemData.semiBold,
                                                               fontSize: 16),
-                                                        ),
+                                                        )*/,
                                                       ),
                                                       Text(
                                                         Constant.timestampToDateChat(inboxModel.timestamp!),
@@ -111,10 +120,16 @@ class InboxScreen extends StatelessWidget {
                                                     ],
                                                   ),
                                                   Text(
+                                                    inboxModel.lastMessage ?? '',
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                                                  ),
+                                                  /*Text(
                                                     userModel?.email ?? '',
                                                     style: TextStyle(
                                                         color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08, fontFamily: AppThemData.medium, fontSize: 14),
-                                                  ),
+                                                  ),*/
                                                 ],
                                               ),
                                             ),

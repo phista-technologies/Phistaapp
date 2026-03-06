@@ -18,6 +18,7 @@ import 'package:phista/ui/driver/booking_process/payment_select_screen.dart';
 import 'package:phista/ui/driver/splash_screen.dart';
 import 'package:phista/ui/owner/MyParkingBookingScreenOwnerForWeb/MyParkingBookingScreenOwnerForWeb.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
+import 'package:phista/utils/notification_service.dart';
 import 'package:phista/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }
     });
+    Firebase.initializeApp();
     super.initState();
   }
   @override
@@ -122,7 +124,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  String _getInitialRoute() {
+  String _getInitialRoute(){
     final uri = Uri.base;
     final path = uri.path;
     if (path.isNotEmpty && path != '/') {
@@ -130,7 +132,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     return '/';
   }
-
 }
 
 

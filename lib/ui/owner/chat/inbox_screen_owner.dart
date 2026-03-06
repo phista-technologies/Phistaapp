@@ -231,14 +231,23 @@ class InboxScreenOwner extends StatelessWidget {
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: Text(
+                                        child:Text(
+                                          controller.getFirstName(userModel.fullName),
+                                          style: TextStyle(
+                                            color: themeChange.getThem()
+                                                ? AppThemData.grey02
+                                                : AppThemData.grey09,
+                                            fontFamily: AppThemData.semiBold,
+                                            fontSize: 16,
+                                          ),
+                                        ) /* Text(
                                           userModel.fullName ?? '',
                                           style: TextStyle(
                                             color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey09,
                                             fontFamily: AppThemData.semiBold,
                                             fontSize: 16,
                                           ),
-                                        ),
+                                        )*/,
                                       ),
                                       Text(
                                         inboxModel.timestamp != null
@@ -253,13 +262,19 @@ class InboxScreenOwner extends StatelessWidget {
                                     ],
                                   ),
                                   Text(
+                                    inboxModel.lastMessage ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                                  ),
+                                 /* Text(
                                     userModel.email ?? '',
                                     style: TextStyle(
                                       color: themeChange.getThem() ? AppThemData.grey02 : AppThemData.grey08,
                                       fontFamily: AppThemData.medium,
                                       fontSize: 14,
                                     ),
-                                  ),
+                                  ),*/
                                 ],
                               ),
                             ),

@@ -43,6 +43,7 @@ class AddParkingDetailsControllerOwner extends GetxController {
 
   RxBool isOpen = true.obs;
   RxBool isMin4Open = false.obs;
+  RxBool isMin2Open = false.obs;
   RxBool isLoading = true.obs;
 
   RxString parkingType = "4".obs;
@@ -90,6 +91,8 @@ class AddParkingDetailsControllerOwner extends GetxController {
           parkingImage.value = value.image.toString();
           locationLatLng.value = value.location!;
           isOpen.value = value.isEnable!;
+          isMin4Open.value = value.isMin4Month!;
+          isMin2Open.value = value.isMin2Month!;
 
           priceController.value.text = value.perHrPrice.toString();
           dailyPriceController.value.text = value.dailyPrice.toString();
@@ -183,6 +186,7 @@ class AddParkingDetailsControllerOwner extends GetxController {
     parkingModel.value.image = parkingImage.value;
     parkingModel.value.isEnable = isOpen.value;
     parkingModel.value.isMin4Month = isMin4Open.value;
+    parkingModel.value.isMin2Month = isMin2Open.value;
     parkingModel.value.location = locationLatLng.value;
     parkingModel.value.facilities = selectedParkingFacilitiesList;
     parkingModel.value.perHrPrice = priceController.value.text;

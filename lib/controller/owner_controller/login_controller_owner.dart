@@ -318,7 +318,7 @@ class LoginControllerOwner extends GetxController {
 
     // Fetch profile
     UserModel? userModel = await FireStoreUtils.getUserProfile(uid);
-    String fcmToken = "";
+    String? fcmToken = "";
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
     }else if (kIsWeb){
@@ -478,7 +478,7 @@ class LoginControllerOwner extends GetxController {
   }
 
   Future<void> navigateUserBasedOnAccess(UserModel userModel) async {
-    String fcmToken = "";
+    String? fcmToken = "";
     if(Platform.isIOS){
       fcmToken = await NotificationService.getToken();
     }else if (kIsWeb){
@@ -543,7 +543,7 @@ class LoginControllerOwner extends GetxController {
           ShowToastDialog.closeLoader();
             UserModel? userModel = await FireStoreUtils.getUserProfile(
                 value.user!.uid);
-          String fcmToken = "";
+          String? fcmToken = "";
           if(Platform.isIOS){
             fcmToken = await NotificationService.getToken();
           }else if (kIsWeb){

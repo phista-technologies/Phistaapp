@@ -10,6 +10,10 @@ import 'package:phista/themes/text_field_widget.dart';
 import 'package:phista/utils/dark_theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../model/user_model.dart';
+import '../../../utils/fire_store_utils.dart';
+import '../chat/chat_screen.dart';
+
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
 
@@ -82,7 +86,7 @@ class ContactUsScreen extends StatelessWidget {
                                     padding: const EdgeInsets.only(top: 20),
                                     child: Column(
                                       children: [
-                                        InkWell(
+                                       /* InkWell(
                                           onTap: () {
                                             Constant.makePhoneCall(controller.phone.value);
                                           },
@@ -98,11 +102,34 @@ class ContactUsScreen extends StatelessWidget {
                                               )
                                             ],
                                           ),
-                                        ),
-                                        const SizedBox(
+                                        ),*/
+                                       /* const SizedBox(
                                           height: 10,
                                         ),
-                                        const Divider(),
+                                        const Divider(),*/
+                                        RoundedButtonFill(
+                                          radius: 10,
+                                          title: "Chat US".tr,
+                                          color: themeChange.getThem()
+                                              ? AppThemData.primary06
+                                              : AppThemData.primary06,
+                                          textColor: themeChange.getThem()
+                                              ? AppThemData.grey09
+                                              : AppThemData.grey09,
+                                          isRight: true,
+                                          onPress: () async {
+                                            await FireStoreUtils.getUserProfile(
+                                                "imXiU7CxVUZMmIct9Py5b65yQyr1")
+                                                .then((value) {
+                                              UserModel userModel = value!;
+                                              Get.to(const ChatScreen(),
+                                                  arguments: {
+                                                    "receiverModel": userModel
+                                                  });
+                                            });
+
+                                          },
+                                        ),
                                         const SizedBox(
                                           height: 10,
                                         ),

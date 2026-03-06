@@ -1066,7 +1066,7 @@ class HomeScreen extends StatelessWidget {
                                                                       child:
                                                                           Row(
                                                                         children: [
-                                                                          Text("$available of $total",style:
+                                                                          Text("$available",style:
                                                                                 const TextStyle(
                                                                               color: AppThemData.bookNowTextColor,
                                                                               fontFamily: AppThemData.robotoBold,
@@ -1148,7 +1148,7 @@ class HomeScreen extends StatelessWidget {
                                                                           Row(
                                                                         children: [
                                                                           Text(
-                                                                            "$available of $total",
+                                                                            "$available",
                                                                             style:
                                                                                 const TextStyle(
                                                                               color: AppThemData.bookNowTextColor,
@@ -1171,7 +1171,6 @@ class HomeScreen extends StatelessWidget {
                                                                   ),
                                                                 );
                                                               }
-
                                                               return const SizedBox();
                                                             },
                                                           )
