@@ -521,7 +521,7 @@ class BookingParkingDetailsController extends GetxController {
   Rx<TextEditingController> endTimeController = TextEditingController().obs;
   Rx<TextEditingController> bookingMonthsController = TextEditingController(text: "1").obs;
   Rx<UserVehicleModel> selectedVehicle = UserVehicleModel().obs;
-  Rx<String> radioValue = "hourly".obs; // "hourly" | "daily" | "monthly"
+  Rx<String> radioValue = "monthly".obs; // "hourly" | "daily" | "monthly"
   Rx<DateTime> startTimeMonthly = DateTime.now().obs;
   RxInt bookingMonths = 1.obs;
 
@@ -534,6 +534,11 @@ class BookingParkingDetailsController extends GetxController {
 
   @override
   void onInit() {
+   // startTimeMonthly.value = DateTime.now();
+    if (radioValue.value == "monthly") {
+      setMonthValue(startTimeMonthly.value,
+          int.parse(bookingMonths.value.toString()));
+    }
     Constant.globalParkingModel.value = null;
     super.onInit();
     // Make sure we await argument processing before UI relies on values
@@ -624,13 +629,14 @@ class BookingParkingDetailsController extends GetxController {
   int getMinMonth() {
     int minMonth = 1;
 
-    if (parkingModel.value.isMin2Month == true) {
+    /*if (parkingModel.value.isMin2Month == true) {
       minMonth = 2;
     }
 
     if (parkingModel.value.isMin4Month == true) {
       minMonth = 4;
-    }
+    }*/
+    minMonth = int.parse(parkingModel.value.rentalPeriod!);
 
     return minMonth;
   }

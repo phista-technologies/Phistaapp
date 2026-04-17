@@ -358,6 +358,7 @@ class HomeController extends GetxController {
   @override
   void dispose() {
     FireStoreUtils().getNearestOrderRequestController!.close();
+    otpController.close();
     super.dispose();
   }
 }

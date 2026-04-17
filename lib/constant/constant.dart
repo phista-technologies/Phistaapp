@@ -34,14 +34,14 @@ class Constant {
   static const String appleLoginType = "apple";
   static const String roleTypeForCustomer = "customer";
   static const String roleTypeForOwner = "owner";
-  static  bool isGustUser = false;
-  static  bool isFormParking = false;
-  static  bool isLanguagePopupShow = false;
-  static  bool isFromParkNow = false;
-
+  static bool isGustUser = false;
+  static bool isFormParking = false;
+  static bool isLanguagePopupShow = false;
+  static bool isFromParkNow = false;
 
   static String bookingTypeConst = "hourly";
-  static bool isSubscriptionModelApplied = false; //Check SubscriptionModel is Active or Not in the Admin Panel.
+  static bool isSubscriptionModelApplied =
+      false; //Check SubscriptionModel is Active or Not in the Admin Panel.
 
   static String mapAPIKey = "AIzaSyBWpknhgETEcPdExDw13FsmKIbazhH-BpI";
   static String senderId = '';
@@ -79,16 +79,13 @@ class Constant {
   /// This is Write New For Owner
   static const commissionSubscriptionID = "J0RwvxCWhZzQQD7Kc2Ll";
 
-
-
   /// end
   static var currentUserModel = Rxn<UserModel>();
 
   static var globalParkingModel = Rxn<ParkingModel?>();
 
-
   static String amountShow({required String? amount}) {
-    if (amount != ""){
+    if (amount != "") {
       if (Constant.currencyModel!.symbolAtRight == true) {
         return "${double.parse(amount.toString()).toStringAsFixed(Constant.currencyModel!.decimalDigits!)}${Constant.currencyModel!.symbol.toString()}";
       } else {
@@ -96,21 +93,17 @@ class Constant {
       }
     }
     return "";
-
   }
 
   static Future<String> uploadUserImageBytesToFireStorage(
-      Uint8List data,
-      String path,
-      String fileName,
-      ) async {
+    Uint8List data,
+    String path,
+    String fileName,
+  ) async {
     final ref = FirebaseStorage.instance.ref().child(path).child(fileName);
     await ref.putData(data);
     return await ref.getDownloadURL();
   }
-
-
-
 
   double calculateTax({String? amount, TaxModel? taxModel}) {
     double taxAmount = 0.0;
@@ -150,7 +143,14 @@ class Constant {
 
   static Widget showEmptyView({required String message}) {
     return Center(
-      child: Text(message,style: const TextStyle(fontFamily: AppThemData.medium, fontSize: 18,color:AppThemData.black),textAlign: TextAlign.center,),
+      child: Text(
+        message,
+        style: const TextStyle(
+            fontFamily: AppThemData.medium,
+            fontSize: 18,
+            color: AppThemData.black),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
@@ -191,7 +191,6 @@ class Constant {
     }
   }
 
-
   String? validateRequired(String? value, String type) {
     if (value!.isEmpty) {
       return '$type required';
@@ -225,8 +224,7 @@ class Constant {
   }
 
   static Future<String> uploadUserImageToFireStorage(
-      File image, String filePath, String fileName)
-  async {
+      File image, String filePath, String fileName) async {
     Reference upload =
         FirebaseStorage.instance.ref().child('$filePath/$fileName');
     UploadTask uploadTask = upload.putFile(image);
@@ -236,17 +234,14 @@ class Constant {
   }
 
   static Future<String> uploadUserImageToFireStorageWeb(
-      Uint8List bytes,
-      String folderPath,
-      String fileName,
-      ) async {
+    Uint8List bytes,
+    String folderPath,
+    String fileName,
+  ) async {
     final ref = FirebaseStorage.instance.ref().child("$folderPath/$fileName");
     await ref.putData(bytes);
     return await ref.getDownloadURL();
   }
-
-
-
 
   static Future<void> makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
@@ -276,8 +271,7 @@ class Constant {
   }
 
   static Future<MapModel?> getDurationDistance(
-      LatLng departureLatLong, LatLng destinationLatLong)
-  async {
+      LatLng departureLatLong, LatLng destinationLatLong) async {
     String url = 'https://maps.googleapis.com/maps/api/distancematrix/json';
     http.Response restaurantToCustomerTime = await http.get(Uri.parse(
         '$url?units=metric&origins=${departureLatLong.latitude},'
@@ -296,12 +290,12 @@ class Constant {
     return null;
   }
 
-  static Future<TimeOfDay?> selectTime(context,TimeOfDay? selectedTime) async {
+  static Future<TimeOfDay?> selectTime(context, TimeOfDay? selectedTime) async {
     FocusScope.of(context).requestFocus(FocusNode()); //remove focus
     TimeOfDay? newTime = await showTimePicker(
       context: context,
       initialEntryMode: TimePickerEntryMode.input,
-      initialTime: selectedTime??TimeOfDay.now(),
+      initialTime: selectedTime ?? TimeOfDay.now(),
     );
     if (newTime != null) {
       return newTime;
@@ -364,22 +358,22 @@ class Constant {
       if (adminCommissionLocal.type == "fix") {
         taxAmount = double.parse(adminCommissionLocal.amount.toString());
       } else {
-        if(double.parse(adminCommissionLocal.amount.toString())> 0.0){
+        if (double.parse(adminCommissionLocal.amount.toString()) > 0.0) {
           taxAmount = (double.parse(amount.toString()) *
-              double.parse(adminCommissionLocal.amount!.toString())) / 100;
-        }else{
+                  double.parse(adminCommissionLocal.amount!.toString())) /
+              100;
+        } else {
           taxAmount = (double.parse(amount.toString()) *
-              double.parse(adminCommission!.amount!.toString())) / 100;
+                  double.parse(adminCommission!.amount!.toString())) /
+              100;
         }
-
       }
     }
     return taxAmount;
   }
 
   static Future<Map<String, dynamic>> getDurationOsmDistance(
-      LatLng departureLatLong, LatLng destinationLatLong)
-  async {
+      LatLng departureLatLong, LatLng destinationLatLong) async {
     String url = 'http://router.project-osrm.org/route/v1/driving';
     String coordinates =
         '${departureLatLong.longitude},${departureLatLong.latitude};${destinationLatLong.longitude},${destinationLatLong.latitude}';

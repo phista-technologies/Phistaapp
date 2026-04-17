@@ -11,7 +11,6 @@ import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
 import 'package:phista/controller/driver_controller/review_summary_controller.dart';
 import 'package:phista/model/coupon_model.dart';
-import 'package:phista/model/tax_model.dart';
 import 'package:phista/model/user_model.dart';
 import 'package:phista/themes/app_them_data.dart';
 import 'package:phista/themes/common_ui.dart';
@@ -995,8 +994,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 16),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1019,9 +1017,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                         ),
                                         Text(
                                           Constant.amountShow(
-                                              amount: controller
-                                                  .orderModel.value.subTotal
-                                                  .toString()),
+                                              amount: controller.orderModel.value.subTotal.toString()),
                                           style: TextStyle(
                                             color: themeChange.getThem()
                                                 ? AppThemData.grey07
@@ -1032,6 +1028,61 @@ class ReviewSummaryScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
+                                  ),
+                                  if(controller.orderModel.value.parkingDetails!.lastMonthDeposit == true)
+                                  Obx(
+                                   () {
+                                     log("controller.orderModel.value.bookingType :-- ${controller.orderModel.value.bookingType}");
+                                     if (!controller.isFirstBooking.value || controller.orderModel.value.bookingType != "3") {
+                                       return const SizedBox();
+                                     }
+                                      return Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'Last Month deposit (Last Month Parking)'.tr,
+                                                    style: TextStyle(
+                                                      color: themeChange.getThem()
+                                                          ? AppThemData.grey07
+                                                          : AppThemData.grey07,
+                                                      fontSize: 17,
+                                                      fontFamily: AppThemData.medium,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'one month deposit required for new rentals. This deposit will be applied to your final month of parking when you end your rental'.tr,
+                                                    style: TextStyle(
+                                                      color: themeChange.getThem()
+                                                          ? AppThemData.grey07
+                                                          : AppThemData.grey07,
+                                                      fontSize: 12,
+                                                      fontFamily: AppThemData.medium,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              Constant.amountShow(
+                                                  amount: controller.calculateMonthlyPrice().toStringAsFixed(2)),
+                                              style: TextStyle(
+                                                color: themeChange.getThem()
+                                                    ? AppThemData.grey07
+                                                    : AppThemData.grey07,
+                                                fontSize: 18,
+                                                fontFamily: AppThemData.semiBold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
                                   ),
                                   Padding(
                                     padding:
@@ -1052,8 +1103,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                                         ),
                                         Text(
                                           Constant.amountShow(
-                                              amount: controller.couponAmount
-                                                  .toString()),
+                                              amount: controller.couponAmount.toString()),
                                           style: TextStyle(
                                             color: themeChange.getThem()
                                                 ? AppThemData.grey07
@@ -1237,10 +1287,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                   },
                 )
                     : controller.orderModel.value.paymentCompleted == false &&
-                    controller.orderModel.value.paymentType
-                        .toString()
-                        .toLowerCase() ==
-                        'cash'.toLowerCase()
+                    controller.orderModel.value.paymentType.toString().toLowerCase() == 'cash'.toLowerCase()
                     ? RoundedButtonFill(
                   title: "Navigate to parking".tr,
                   color: AppThemData.primary06,
@@ -1303,6 +1350,7 @@ class ReviewSummaryScreen extends StatelessWidget {
                      controller.completeOrder();
                     }else{
                       controller.orderModel.value.coupon = controller.selectedCouponModel.value;
+                      log("total amount :-- ${controller.calculateAmount().toString()}");
                       Get.to(() => const PaymentSelectScreen(),
                           arguments: {
                             "orderModel": controller.orderModel.value,

@@ -51,7 +51,7 @@ class WebStripeController extends GetxController {
 
   Future<void> openStripeCheckoutWeb({required String amount,required String secretKey}) async {
     try {
-      String stripeSecretKey = secretKey;//ENV.skTestSecretKey;
+      String stripeSecretKey = secretKey; //ENV.skTestSecretKey;
 
       final response = await http.post(
         Uri.parse("https://api.stripe.com/v1/checkout/sessions"),

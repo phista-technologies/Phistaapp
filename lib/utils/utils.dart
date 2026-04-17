@@ -453,7 +453,7 @@ class Utils {
         return null;
       }
 
-      String stripeSecret = paymentModel.strip!.stripeSecret ?? "";//ENV.skTestSecretKey;
+      String stripeSecret = paymentModel.strip!.stripeSecret ?? ""; //ENV.skTestSecretKey;
       if (stripeSecret.isEmpty) {
         print("Error: Stripe secret key is empty.");
         return null;

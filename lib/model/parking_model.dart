@@ -12,6 +12,8 @@ class ParkingModel {
   bool? isEnable;
   bool? isMin4Month;
   bool? isMin2Month;
+  bool? lastMonthDeposit;
+  String? rentalPeriod;
   LocationLatLng? location;
   Positions? position;
   String? address;
@@ -40,6 +42,8 @@ class ParkingModel {
         this.isEnable,
         this.isMin4Month,
         this.isMin2Month,
+        this.lastMonthDeposit,
+        this.rentalPeriod,
         this.location,
         this.position,
         this.address,
@@ -82,6 +86,8 @@ class ParkingModel {
     isEnable = json['isEnable'] ?? false;
     isMin4Month = json['isMin4Month'] ?? false;
     isMin2Month = json['isMin2Month'] ?? false;
+    lastMonthDeposit = json['lastMonthDeposit'] ?? false;
+    rentalPeriod = json['rentalPeriod'] ?? '1';
     image = json['image'] ?? '';
     bookmarkedUser = json['bookmarkedUser'] ?? [];
     perHrPrice = json['perHrPrice'] ?? "";
@@ -117,6 +123,8 @@ class ParkingModel {
     data['isEnable'] = isEnable;
     data['isMin4Month'] = isMin4Month;
     data['isMin2Month'] = isMin2Month;
+    data['lastMonthDeposit'] = lastMonthDeposit ?? false;
+    data['rentalPeriod'] = rentalPeriod ?? "1";
     data['image'] = image;
     data['bookmarkedUser'] = bookmarkedUser;
     data['perHrPrice'] = perHrPrice;

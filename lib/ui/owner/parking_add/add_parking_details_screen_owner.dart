@@ -8,9 +8,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+// import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
-
 import '../../../constant/constant.dart';
 import '../../../constant/show_toast_dialog.dart';
 import '../../../controller/owner_controller/add_parking_details_controller_owner.dart';
@@ -25,8 +24,8 @@ import '../../../utils/dark_theme_provider.dart';
 import '../../../utils/fire_store_utils.dart';
 import '../../../utils/network_image_widget.dart';
 import '../../../utils/place_picker_osm.dart';
+import '../../driver/search/location_search_map_screen.dart';
 import 'availibility_screen_owner.dart';
-
 
 class AddParkingDetailsScreenOwner extends StatelessWidget {
   const AddParkingDetailsScreenOwner({super.key});
@@ -39,40 +38,43 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         builder: (controller) {
           return Scaffold(
             appBar: UiInterface().customAppBar(
-              context,
-              themeChange,
-              'add_parking'.tr,
-              centerTile: kIsWeb?true:false
-            ),
+                context, themeChange, 'add_parking'.tr,
+                centerTile: kIsWeb ? true : false),
             body: controller.isLoading.value
                 ? Constant.loader()
                 : SingleChildScrollView(
-                    child: kIsWeb?Center(
-                      child: Container(
-                        alignment: Alignment.center,
-                        constraints: const BoxConstraints(maxWidth: 900),
-                        margin: const EdgeInsets.all(20),
-                        child: Card(
-                          elevation: 7,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
+                    child: kIsWeb
+                        ? Center(
+                            child: Container(
+                            alignment: Alignment.center,
+                            constraints: const BoxConstraints(maxWidth: 900),
+                            margin: const EdgeInsets.all(20),
+                            child: Card(
+                              elevation: 7,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: _parkingDetailView(
+                                    controller, context, themeChange),
+                              ),
+                            ),
+                          ))
+                        : Padding(
                             padding: const EdgeInsets.all(20),
-                            child: _parkingDetailView(controller, context, themeChange),
+                            child: _parkingDetailView(
+                                controller, context, themeChange),
                           ),
-                      ),
-                    )):Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: _parkingDetailView(controller, context, themeChange),
-                    ),
                   ),
-            bottomNavigationBar:kIsWeb?null:_saveButton(themeChange, controller),
+            bottomNavigationBar:
+                kIsWeb ? null : _saveButton(themeChange, controller),
           );
         });
   }
 
-  buildBottomSheet(BuildContext context, AddParkingDetailsControllerOwner controller) {
+  buildBottomSheet(
+      BuildContext context, AddParkingDetailsControllerOwner controller) {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -102,7 +104,8 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(source: ImageSource.camera),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.camera),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -124,7 +127,8 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(source: ImageSource.gallery),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.gallery),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,
@@ -147,12 +151,17 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           });
         });
   }
-  
-  Widget _parkingDetailView(AddParkingDetailsControllerOwner controller, BuildContext context, DarkThemeProvider themeChange){
+
+  Widget _parkingDetailView(AddParkingDetailsControllerOwner controller,
+      BuildContext context, DarkThemeProvider themeChange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Parking For'.tr, style: const TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: AppThemData.grey07)),
+        Text('Parking For'.tr,
+            style: const TextStyle(
+                fontFamily: AppThemData.semiBold,
+                fontSize: 16,
+                color: AppThemData.grey07)),
         const SizedBox(
           height: 10,
         ),
@@ -160,14 +169,18 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           children: [
             Expanded(
                 child: Row(
-                  children: [
-                    SvgPicture.asset("assets/icon/ic_bike.svg", color: AppThemData.grey08),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text("2 Wheel".tr, style: const TextStyle(color: AppThemData.grey08, fontFamily: AppThemData.medium)),
-                  ],
-                )),
+              children: [
+                SvgPicture.asset("assets/icon/ic_bike.svg",
+                    color: AppThemData.grey08),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text("2 Wheel".tr,
+                    style: const TextStyle(
+                        color: AppThemData.grey08,
+                        fontFamily: AppThemData.medium)),
+              ],
+            )),
             Radio<String>(
               value: "2",
               groupValue: controller.parkingType.value,
@@ -185,17 +198,21 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           height: 10,
         ),
         Row(
-          children:[
+          children: [
             Expanded(
                 child: Row(
-                  children:[
-                    SvgPicture.asset("assets/icon/ic_car_fill.svg", color: AppThemData.grey08),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text("4 Wheel".tr, style: const TextStyle(color: AppThemData.grey08, fontFamily: AppThemData.medium)),
-                  ],
-                )),
+              children: [
+                SvgPicture.asset("assets/icon/ic_car_fill.svg",
+                    color: AppThemData.grey08),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text("4 Wheel".tr,
+                    style: const TextStyle(
+                        color: AppThemData.grey08,
+                        fontFamily: AppThemData.medium)),
+              ],
+            )),
             Radio<String>(
               value: "4",
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -214,16 +231,16 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         ),
         controller.parkingImage.value.isNotEmpty
             ? InkWell(
-          onTap: () {
-            buildBottomSheet(
-              context,
-              controller,
-            );
-          },
-          child: SizedBox(
-            height: Responsive.height(20, context),
-            width: Responsive.width(90, context),
-            /*child: ClipRRect(
+                onTap: () {
+                  buildBottomSheet(
+                    context,
+                    controller,
+                  );
+                },
+                child: SizedBox(
+                  height: Responsive.height(20, context),
+                  width: Responsive.width(90, context),
+                  /*child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Constant().hasValidUrl(controller.parkingImage.value) == false
                   ? Image.file(
@@ -239,65 +256,70 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                 width: Responsive.width(80, context),
               ),
             )*/
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                child: controller.parkingImage.value.isEmpty
-                    ? const SizedBox()
-                    : Constant().hasValidUrl(controller.parkingImage.value)
-                    ? NetworkImageWidget(
-                  imageUrl: controller.parkingImage.value,
-                  fit: BoxFit.fill,
-                  height: Responsive.height(20, context),
-                  width: Responsive.width(80, context),
-                )
-                    : kIsWeb
-                    ? Image.network(
-                  controller.parkingImage.value,
-                  fit: BoxFit.fill,
-                  height: Responsive.height(20, context),
-                  width: Responsive.width(80, context),
-                )
-                    : Image.file(
-                  File(controller.parkingImage.value),
-                  fit: BoxFit.fill,
-                  height: Responsive.height(20, context),
-                  width: Responsive.width(80, context),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    child: controller.parkingImage.value.isEmpty
+                        ? const SizedBox()
+                        : Constant().hasValidUrl(controller.parkingImage.value)
+                            ? NetworkImageWidget(
+                                imageUrl: controller.parkingImage.value,
+                                fit: BoxFit.fill,
+                                height: Responsive.height(20, context),
+                                width: Responsive.width(80, context),
+                              )
+                            : kIsWeb
+                                ? Image.network(
+                                    controller.parkingImage.value,
+                                    fit: BoxFit.fill,
+                                    height: Responsive.height(20, context),
+                                    width: Responsive.width(80, context),
+                                  )
+                                : Image.file(
+                                    File(controller.parkingImage.value),
+                                    fit: BoxFit.fill,
+                                    height: Responsive.height(20, context),
+                                    width: Responsive.width(80, context),
+                                  ),
+                  ),
+                ),
+              )
+            : InkWell(
+                onTap: () {
+                  buildBottomSheet(
+                    context,
+                    controller,
+                  );
+                },
+                child: DottedBorder(
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(12),
+                  dashPattern: const [6, 6, 6, 6],
+                  color: AppThemData.primary08,
+                  child: Container(
+                      color: AppThemData.primary01,
+                      height: Responsive.height(kIsWeb ? 40 : 20, context),
+                      width: Responsive.width(90, context),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.image,
+                              color: AppThemData.primary08, size: 32),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Upload image".tr,
+                            style: TextStyle(
+                                fontFamily: AppThemData.medium,
+                                color: themeChange.getThem()
+                                    ? AppThemData.primary08
+                                    : AppThemData.primary08),
+                          )
+                        ],
+                      )),
                 ),
               ),
-          ),
-        )
-            : InkWell(
-          onTap: () {
-            buildBottomSheet(
-              context,
-              controller,
-            );
-          },
-          child: DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(12),
-            dashPattern: const [6, 6, 6, 6],
-            color: AppThemData.primary08,
-            child: Container(
-                color: AppThemData.primary01,
-                height: Responsive.height(kIsWeb ?40:20, context),
-                width: Responsive.width(90, context),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.image, color: AppThemData.primary08, size: 32),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Upload image".tr,
-                      style: TextStyle(fontFamily: AppThemData.medium, color: themeChange.getThem() ? AppThemData.primary08 : AppThemData.primary08),
-                    )
-                  ],
-                )),
-          ),
-        ),
         const SizedBox(
           height: 10,
         ),
@@ -307,22 +329,22 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           controller: controller.nameController.value,
           hintText: 'Enter Parking Name'.tr,
           prefix: Padding(
-            padding:const EdgeInsets.all(12.0),
-            child:SvgPicture.asset(
+            padding: const EdgeInsets.all(12.0),
+            child: SvgPicture.asset(
               "assets/icon/ic_parking_p.svg",
-              colorFilter: ColorFilter.mode(AppThemData.grey07, BlendMode.srcIn),
+              colorFilter:
+                  ColorFilter.mode(AppThemData.grey07, BlendMode.srcIn),
             ),
           ),
         ),
         InkWell(
           onTap: () async {
-            if (Constant.selectedMapType == 'osm'|| kIsWeb) {
+            if (Constant.selectedMapType == 'osm' || kIsWeb) {
               final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => LocationPicker(
-                      initialPosition: LatLng(-33.8567844, 151.213108)
-                  ),
+                      initialPosition: LatLng(-33.8567844, 151.213108)),
                 ),
               );
 
@@ -333,14 +355,14 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                   longitude: result["lng"],
                 );
               }
-             /* Get.to(() => const LocationPicker(initialPosition: LatLng(-33.8567844, 151.213108),))?.then((value) {
+              /* Get.to(() => const LocationPicker(initialPosition: LatLng(-33.8567844, 151.213108),))?.then((value) {
                 if (value != null) {
                   controller.addressController.value.text = value.displayName!.toString();
                   controller.locationLatLng.value = LocationLatLng(latitude: value.lat, longitude: value.lon);
                 }
               });*/
             } else {
-              Navigator.push(
+              /* Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => PlacePicker(
@@ -363,7 +385,23 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
                     resizeToAvoidBottomInset: false, // only works in page mode, less flickery, remove if wrong offsets
                   ),
                 ),
+              );*/
+
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LocationSearchMapScreen(),
+                ),
               );
+
+              if (result != null) {
+                controller.addressController.value.text = result["address"];
+
+                controller.locationLatLng.value = LocationLatLng(
+                  latitude: result["lat"],
+                  longitude: result["lng"],
+                );
+              }
             }
           },
           child: TextFieldWidget(
@@ -385,7 +423,8 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         TextFieldWidget(
           title: 'Hourly Price'.tr,
           onPress: () {},
-          textInputType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+          textInputType: const TextInputType.numberWithOptions(
+              decimal: true, signed: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp('[0-9]')),
           ],
@@ -393,13 +432,16 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           hintText: 'Enter Price'.tr,
           prefix: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(Constant.currencyModel!.symbol.toString(), style: const TextStyle(fontSize: 20, color: AppThemData.grey08)),
+            child: Text(Constant.currencyModel!.symbol.toString(),
+                style:
+                    const TextStyle(fontSize: 20, color: AppThemData.grey08)),
           ),
         ),
         TextFieldWidget(
           title: 'Daily Price'.tr,
           onPress: () {},
-          textInputType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+          textInputType: const TextInputType.numberWithOptions(
+              decimal: true, signed: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp('[0-9]')),
           ],
@@ -407,13 +449,16 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           hintText: 'Enter Price'.tr,
           prefix: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(Constant.currencyModel!.symbol.toString(), style: const TextStyle(fontSize: 20, color: AppThemData.grey08)),
+            child: Text(Constant.currencyModel!.symbol.toString(),
+                style:
+                    const TextStyle(fontSize: 20, color: AppThemData.grey08)),
           ),
         ),
         TextFieldWidget(
           title: 'Monthly Price'.tr,
           onPress: () {},
-          textInputType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+          textInputType: const TextInputType.numberWithOptions(
+              decimal: true, signed: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp('[0-9]')),
           ],
@@ -421,14 +466,17 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           hintText: 'Enter Price'.tr,
           prefix: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(Constant.currencyModel!.symbol.toString(), style: const TextStyle(fontSize: 20, color: AppThemData.grey08)),
+            child: Text(Constant.currencyModel!.symbol.toString(),
+                style:
+                    const TextStyle(fontSize: 20, color: AppThemData.grey08)),
           ),
         ),
         TextFieldWidget(
           title: 'Number Of Space'.tr,
           onPress: () {},
           controller: controller.parkingSpaceController.value,
-          textInputType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+          textInputType: const TextInputType.numberWithOptions(
+              decimal: true, signed: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp('[0-9]')),
           ],
@@ -437,7 +485,8 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: SvgPicture.asset(
               "assets/icon/ic_space.svg",
-              colorFilter: const ColorFilter.mode(AppThemData.grey07, BlendMode.srcIn),
+              colorFilter:
+                  const ColorFilter.mode(AppThemData.grey07, BlendMode.srcIn),
             ),
           ),
         ),
@@ -446,7 +495,12 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           children: [
             Text(
               "open_close".tr,
-              style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+              style: TextStyle(
+                  fontFamily: AppThemData.semiBold,
+                  fontSize: 16,
+                  color: themeChange.getThem()
+                      ? AppThemData.grey07
+                      : AppThemData.grey07),
             ),
             SizedBox(
               width: 40,
@@ -468,8 +522,41 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
+              "Last month deposit".tr,
+              style: TextStyle(
+                  fontFamily: AppThemData.semiBold,
+                  fontSize: 16,
+                  color: themeChange.getThem()
+                      ? AppThemData.grey07
+                      : AppThemData.grey07),
+            ),
+            SizedBox(
+              width: 40,
+              height: 20,
+              child: Switch(
+                value: controller.lastMonthDeposit.value,
+                onChanged: (value) {
+                  controller.lastMonthDeposit(value);
+                },
+                activeColor: AppThemData.primary06,
+              ),
+            ),
+          ],
+        ),
+        /* const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
               "Min 4 months".tr,
-              style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+              style: TextStyle(
+                  fontFamily: AppThemData.semiBold,
+                  fontSize: 16,
+                  color: themeChange.getThem()
+                      ? AppThemData.grey07
+                      : AppThemData.grey07),
             ),
             SizedBox(
               width: 40,
@@ -492,7 +579,12 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
           children: [
             Text(
               "Min 2 months".tr,
-              style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+              style: TextStyle(
+                  fontFamily: AppThemData.semiBold,
+                  fontSize: 16,
+                  color: themeChange.getThem()
+                      ? AppThemData.grey07
+                      : AppThemData.grey07),
             ),
             SizedBox(
               width: 40,
@@ -506,44 +598,125 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ),*/
         const SizedBox(
           height: 20,
         ),
-        ListTile(leading:SvgPicture.asset("assets/icon/ic_car_image.svg", height: 24, width: 24),
-          title:Text(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Minimum rental period",
+              style: TextStyle(
+                  fontFamily: AppThemData.semiBold,
+                  fontSize: 16,
+                  color: themeChange.getThem()
+                      ? AppThemData.grey07
+                      : AppThemData.grey07),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8,horizontal: 18),
+              decoration: BoxDecoration(
+                color: AppThemData.primary03,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Text("${controller.selectedMonth.value.toInt()} mo", style: TextStyle(
+                  fontFamily: AppThemData.semiBold,
+                  fontSize: 16,
+                  color: themeChange.getThem()
+                      ? AppThemData.grey07
+                      : AppThemData.grey07),),
+            )
+          ],
+        ),
+        SizedBox(height: 10),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Colors.orange,
+            inactiveTrackColor: Colors.grey.shade400,
+            thumbColor: Colors.orange,
+            overlayColor: Colors.orange.withOpacity(0.2),
+            trackHeight: 4,
+            thumbShape: const RoundSliderThumbShape(
+              enabledThumbRadius: 8,
+            ),
+          ),
+          child: Slider(
+            padding: EdgeInsets.zero,
+            value: controller.selectedMonth.value,
+            min: 1,
+            max: 12,
+            divisions: 11,
+            label: controller.selectedMonth.value.toInt().toString(),
+            onChanged: (value) {
+              controller.selectedMonth.value = value;
+            },
+          ),
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(
+            12,
+                (index) {
+              final value = index + 1;
+              return Text(
+                "$value",
+                style: TextStyle(
+                  color: controller.selectedMonth.value.toInt() == value
+                      ? Colors.orange
+                      : Colors.grey,
+                  fontWeight: controller.selectedMonth.value.toInt() == value
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 20),
+        ListTile(
+          leading: SvgPicture.asset("assets/icon/ic_car_image.svg",
+              height: 24, width: 24),
+          title: Text(
             "Availability".tr,
-            style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+            style: TextStyle(
+                fontFamily: AppThemData.semiBold,
+                fontSize: 16,
+                color: themeChange.getThem()
+                    ? AppThemData.grey07
+                    : AppThemData.grey07),
           ),
           horizontalTitleGap: 0,
           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
           trailing: const Icon(Icons.arrow_forward_ios, size: 18),
           onTap: () async {
-            if(controller.parkingModel.value.id != null){
-              var isBooked =  await FireStoreUtils.parkingBookedOrNot(controller.parkingModel.value.id);
+            if (controller.parkingModel.value.id != null) {
+              var isBooked = await FireStoreUtils.parkingBookedOrNot(
+                  controller.parkingModel.value.id);
               print("isBooked:--> $isBooked");
-              if (!isBooked){
+              if (!isBooked) {
                 Get.to(AvailibilityScreenOwner());
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomDialogBoxOnlyOk(
+                        title: "Alert".tr,
+                        descriptions:
+                            "You cannot do it due to ongoing booking.".tr,
+                        buttonText: "Okay",
+                        bgColor: AppThemData.error07,
+                        onButtonTap: () {
+                          Get.back();
+                        },
+                        img: SvgPicture.asset('assets/icon/alert_ico.svg'),
+                      );
+                    });
               }
-              else{
-                showDialog(context: context, builder: (BuildContext context){
-                  return CustomDialogBoxOnlyOk(
-                    title: "Alert".tr,
-                    descriptions: "You cannot do it due to ongoing booking.".tr,
-                    buttonText: "Okay",
-                    bgColor: AppThemData.error07,
-                    onButtonTap: (){
-                      Get.back();
-                    },
-                    img: SvgPicture.asset('assets/icon/alert_ico.svg'),
-                  );
-                });
-              }
-            }else{
+            } else {
               Get.to(AvailibilityScreenOwner());
             }
-
-
           },
         ),
         const SizedBox(
@@ -551,62 +724,77 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
         ),
         Text(
           'Select Features'.tr,
-          style: TextStyle(fontFamily: AppThemData.semiBold, fontSize: 16, color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07),
+          style: TextStyle(
+              fontFamily: AppThemData.semiBold,
+              fontSize: 16,
+              color: themeChange.getThem()
+                  ? AppThemData.grey07
+                  : AppThemData.grey07),
         ),
         ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: controller.parkingFacilitiesList
               .map((item) => CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            checkColor: themeChange.getThem() ? AppThemData.white : AppThemData.white,
-            activeColor: AppThemData.primary07,
-            value: controller.selectedParkingFacilitiesList.indexWhere((element) => element.id == item.id) == -1 ? false : true,
-            dense: true,
-            title: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: NetworkImageWidget(
-                    imageUrl: item.image.toString(),
-                    height: 20,
-                    width: 20,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  item.name.toString(),
-                  style: TextStyle(
-                    fontFamily: AppThemData.medium,
-                    fontSize: 16,
-                    color: themeChange.getThem() ? AppThemData.grey01 : AppThemData.grey09,
-                  ),
-                ),
-              ],
-            ),
-            onChanged: (value) {
-              if (value == true) {
-                controller.selectedParkingFacilitiesList.add(item);
-              } else {
-                controller.selectedParkingFacilitiesList
-                    .removeAt(controller.selectedParkingFacilitiesList.indexWhere((element) => element.id == item.id));
-              }
-            },
-          ))
+                    contentPadding: EdgeInsets.zero,
+                    checkColor: themeChange.getThem()
+                        ? AppThemData.white
+                        : AppThemData.white,
+                    activeColor: AppThemData.primary07,
+                    value: controller.selectedParkingFacilitiesList.indexWhere(
+                                (element) => element.id == item.id) ==
+                            -1
+                        ? false
+                        : true,
+                    dense: true,
+                    title: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: NetworkImageWidget(
+                            imageUrl: item.image.toString(),
+                            height: 20,
+                            width: 20,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          item.name.toString(),
+                          style: TextStyle(
+                            fontFamily: AppThemData.medium,
+                            fontSize: 16,
+                            color: themeChange.getThem()
+                                ? AppThemData.grey01
+                                : AppThemData.grey09,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onChanged: (value) {
+                      if (value == true) {
+                        controller.selectedParkingFacilitiesList.add(item);
+                      } else {
+                        controller.selectedParkingFacilitiesList.removeAt(
+                            controller.selectedParkingFacilitiesList.indexWhere(
+                                (element) => element.id == item.id));
+                      }
+                    },
+                  ))
               .toList(),
         ),
         const SizedBox(
           height: 20,
         ),
-        !kIsWeb?SizedBox():_saveButton(themeChange, controller)
+        !kIsWeb ? SizedBox() : _saveButton(themeChange, controller)
       ],
     );
   }
 
-  Widget _saveButton(DarkThemeProvider themeChange, AddParkingDetailsControllerOwner controller){
+  Widget _saveButton(DarkThemeProvider themeChange,
+      AddParkingDetailsControllerOwner controller) {
     return Container(
       color: themeChange.getThem() ? AppThemData.grey10 : AppThemData.grey11,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -620,21 +808,29 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
 
             if (controller.nameController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter parking name");
-            } else if (controller.addressController.value.text.isEmpty) {
+            }
+            else if (controller.addressController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter parking address");
-            } else if (controller.detailsController.value.text.isEmpty) {
+            }
+            else if (controller.detailsController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter parking description");
-            } else if (controller.priceController.value.text.isEmpty) {
+            }
+            else if (controller.priceController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter parking pr hours price");
-            }else if (controller.dailyPriceController.value.text.isEmpty) {
+            }
+            else if (controller.dailyPriceController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter parking pr day price");
-            }else if (controller.monthlyPriceController.value.text.isEmpty) {
+            }
+            else if (controller.monthlyPriceController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter parking pr month price");
-            } else if (controller.parkingSpaceController.value.text.isEmpty) {
+            }
+            else if (controller.parkingSpaceController.value.text.isEmpty) {
               ShowToastDialog.showToast("Please enter number of space");
-            } else if(!controller.checkAvailability(controller.weekList)){
+            }
+            else if (!controller.checkAvailability(controller.weekList)) {
               ShowToastDialog.showToast("Please add at least one availability");
-            } else {
+            }
+            else {
               controller.saveDetails();
             }
           },
@@ -642,5 +838,4 @@ class AddParkingDetailsScreenOwner extends StatelessWidget {
       ),
     );
   }
-
 }

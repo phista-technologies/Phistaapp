@@ -1021,35 +1021,17 @@ class HomeScreen extends StatelessWidget {
                                                               );
                                                             },
                                                           ),*/
-                                                          FutureBuilder<
-                                                              dynamic>(
-                                                            future: controller
-                                                                .getData(
-                                                              parkingModel.id ??
-                                                                  "",
-                                                              parkingModel
-                                                                  .parkingSpace,
+                                                          FutureBuilder<dynamic>(
+                                                            future: controller.getData(
+                                                              parkingModel.id ?? "", parkingModel.parkingSpace,
                                                             ),
-                                                            builder: (context,
-                                                                snapshot) {
-                                                              if (controller
-                                                                  .parkingDataCache
-                                                                  .containsKey(
-                                                                      parkingModel
-                                                                          .id)) {
-                                                                var data = controller
-                                                                        .parkingDataCache[
-                                                                    parkingModel
-                                                                        .id];
-                                                                int booked =
-                                                                    data['bookedSlots'] ??
-                                                                        0;
-                                                                int total =
-                                                                    data['totalSlots'] ??
-                                                                        0;
-                                                                int available =
-                                                                    total -
-                                                                        booked;
+                                                            builder: (context, snapshot) {
+                                                              if (controller.parkingDataCache.containsKey(
+                                                                      parkingModel.id)) {
+                                                                var data = controller.parkingDataCache[parkingModel.id];
+                                                                int booked = data['bookedSlots'] ?? 0;
+                                                                int total = data['totalSlots'] ?? 0;
+                                                                int available = total - booked;
 
                                                                 return Positioned(
                                                                   top: 42,

@@ -8,6 +8,7 @@ import 'package:phista/constant/constant.dart';
 import 'package:phista/model/coupon_model.dart';
 import 'package:phista/model/order_model.dart';
 
+import '../../constant/collection_name.dart';
 import '../../constant/send_notification.dart';
 import '../../constant/show_toast_dialog.dart';
 import '../../env.dart';
@@ -24,6 +25,7 @@ class ReviewSummaryController extends GetxController {
     super.onInit();
     log("Constant.bookingTypeConst:--> ${Constant.bookingTypeConst}");
     getArgument();
+    checkFirstBooking();
   }
   RxDouble serviceFee = 0.0.obs;
   Rx<OrderModel> orderModel = OrderModel().obs;
@@ -34,6 +36,7 @@ class ReviewSummaryController extends GetxController {
   String bookingTypeReview = "";
   var vehicleDriverName = "".obs;
   var vehicleDriverNumber = "".obs;
+  RxBool isFirstBooking = true.obs;
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
@@ -128,7 +131,7 @@ class ReviewSummaryController extends GetxController {
 
   }*/
 
-  double calculateAmount() {
+  double calculateAmount1() {
     double subTotal = double.parse(orderModel.value.subTotal.toString());
     double coupon = 0.0;
 
@@ -177,10 +180,88 @@ class ReviewSummaryController extends GetxController {
     serviceFee.value = finalTotal - currentTotal;
 
     return double.parse(
-      finalTotal.toStringAsFixed(
-        Constant.currencyModel!.decimalDigits!,
-      ),
+      finalTotal.toStringAsFixed(Constant.currencyModel!.decimalDigits!),
     );
+  }
+
+  double calculateAmount() {
+    double subTotal = double.parse(orderModel.value.subTotal.toString());
+    double coupon = 0.0;
+
+    // ---------------- COUPON ----------------
+    if (orderModel.value.coupon != null &&
+        orderModel.value.coupon!.id != null) {
+
+      bool validParking = selectedCouponModel.value.parkingId!.isEmpty ||
+          selectedCouponModel.value.parkingId == orderModel.value.parkingId;
+
+      if (validParking) {
+        if (orderModel.value.coupon!.type == "fix") {
+          coupon = double.parse(orderModel.value.coupon!.amount.toString());
+        } else {
+          coupon = subTotal *
+              double.parse(orderModel.value.coupon!.amount.toString()) /
+              100;
+        }
+      } else {
+        orderModel.value.coupon = null;
+      }
+    }
+
+    couponAmount.value = coupon > subTotal ? subTotal : coupon;
+
+    // ---------------- TAX ----------------
+    double tax = 0.0;
+    if (orderModel.value.taxList != null) {
+      for (var element in orderModel.value.taxList!) {
+        tax += Constant().calculateTax(
+          amount: (subTotal - couponAmount.value).toString(),
+          taxModel: element,
+        );
+      }
+    }
+
+    double currentTotal = (subTotal - couponAmount.value) + tax;
+
+    if (currentTotal <= 0) {
+      serviceFee.value = 0.0;
+      return 0.0;
+    }
+
+    // ---------------- SERVICE FEE ----------------
+    double finalTotal = currentTotal / 0.96;
+    serviceFee.value = finalTotal - currentTotal;
+
+    // ---------------- DEPOSIT ---------------- ✅ NEW
+    int months = int.tryParse(orderModel.value.bookingMonth.toString()) ?? 1;
+    double oneMonthRent = subTotal / (months <= 0 ? 1 : months);
+
+    log("shouldApplyDeposit $shouldApplyDeposit");
+
+    if (shouldApplyDeposit) {
+      finalTotal += oneMonthRent; // ✅ correct deposit
+    }
+
+    return double.parse(
+      finalTotal.toStringAsFixed(Constant.currencyModel!.decimalDigits!),
+    );
+  }
+
+  bool get shouldApplyDeposit {
+    log("first boking :- ${isFirstBooking.value}    bookingType :-- ${orderModel.value.bookingType}");
+    return isFirstBooking.value && orderModel.value.bookingType == "3" && orderModel.value.parkingDetails!.lastMonthDeposit == true;
+  }
+
+  double calculateMonthlyPrice() {
+
+    log("orderModel.value.bookingMonth:-- ${orderModel.value.bookingMonth}");
+    double subTotal = double.parse(orderModel.value.subTotal.toString());
+
+    int months = int.tryParse(orderModel.value.bookingMonth.toString()) ?? 1;
+
+    if (months <= 0) return subTotal;
+
+    return subTotal / months;
   }
 
 
@@ -361,6 +442,33 @@ class ReviewSummaryController extends GetxController {
       log("DifferenceBetweenStart Exception :- ",error:  e.toString());
     }
     return daysBetween;
+  }
+
+  Future<void> checkFirstBooking() async {
+    try {
+      String userId = Constant.currentUserModel.value!.id!;
+      String parkingId = orderModel.value.parkingId!;
+
+      log("booking userId :--$userId");
+      log("booking parkingId :--$parkingId");
+      log("booking parkingId :--${orderModel.value.id}");
+
+      QuerySnapshot booking = await FirebaseFirestore.instance
+          .collection(CollectionName.bookedParkingOrder)
+          .where('userId', isEqualTo: userId)
+          .where('parkingId', isEqualTo: parkingId)
+          .get();
+
+      log("booking :--$booking");
+
+      if (booking.docs.isEmpty) {
+        isFirstBooking.value = true;
+      } else {
+        isFirstBooking.value = false;
+      }
+    } catch (e) {
+      log("Error checking first booking: $e");
+    }
   }
 
 

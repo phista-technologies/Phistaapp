@@ -42,9 +42,11 @@ class AddParkingDetailsControllerOwner extends GetxController {
   RxList<ParkingFacilitiesModel> selectedParkingFacilitiesList = <ParkingFacilitiesModel>[].obs;
 
   RxBool isOpen = true.obs;
+  RxBool lastMonthDeposit = false.obs;
   RxBool isMin4Open = false.obs;
   RxBool isMin2Open = false.obs;
   RxBool isLoading = true.obs;
+  RxDouble selectedMonth = 1.0.obs;
 
   RxString parkingType = "4".obs;
   // Your new week list structure
@@ -91,8 +93,10 @@ class AddParkingDetailsControllerOwner extends GetxController {
           parkingImage.value = value.image.toString();
           locationLatLng.value = value.location!;
           isOpen.value = value.isEnable!;
-          isMin4Open.value = value.isMin4Month!;
-          isMin2Open.value = value.isMin2Month!;
+          lastMonthDeposit.value = value.lastMonthDeposit!;
+          selectedMonth.value = double.parse(value.rentalPeriod!);
+          // isMin4Open.value = value.isMin4Month!;
+          // isMin2Open.value = value.isMin2Month!;
 
           priceController.value.text = value.perHrPrice.toString();
           dailyPriceController.value.text = value.dailyPrice.toString();
@@ -185,8 +189,10 @@ class AddParkingDetailsControllerOwner extends GetxController {
     parkingModel.value.address = addressController.value.text;
     parkingModel.value.image = parkingImage.value;
     parkingModel.value.isEnable = isOpen.value;
-    parkingModel.value.isMin4Month = isMin4Open.value;
-    parkingModel.value.isMin2Month = isMin2Open.value;
+    parkingModel.value.lastMonthDeposit = lastMonthDeposit.value;
+    parkingModel.value.rentalPeriod = selectedMonth.value.toInt().toString();
+    // parkingModel.value.isMin4Month = isMin4Open.value;
+    // parkingModel.value.isMin2Month = isMin2Open.value;
     parkingModel.value.location = locationLatLng.value;
     parkingModel.value.facilities = selectedParkingFacilitiesList;
     parkingModel.value.perHrPrice = priceController.value.text;

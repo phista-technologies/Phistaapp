@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:phista/constant/constant.dart';
 import 'package:phista/constant/show_toast_dialog.dart';
 import 'package:phista/controller/driver_controller/search_controller.dart';
@@ -22,6 +23,7 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:phista/utils/place_picker_osm.dart';
 import 'package:provider/provider.dart';
 import '../parking_details_screen/parking_details_screen.dart';
+import 'location_search_map_screen.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -43,7 +45,41 @@ class SearchScreen extends StatelessWidget {
                         ? AppThemData.grey02
                         : AppThemData.grey08)),
             titleSpacing: -10,
-            title: InkWell(
+            title:/* GooglePlaceAutoCompleteTextField(
+              textEditingController: controller.searchController.value,
+              googleAPIKey: Constant.mapAPIKey,
+              boxDecoration: BoxDecoration(),
+              inputDecoration: const InputDecoration(
+                hintText: "Search location",
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                isDense: true,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              ),
+              countries: const ["us", "ca"],
+
+              isLatLngRequired: true,
+
+              getPlaceDetailWithLatLng: (prediction) {
+                double lat = double.parse(prediction.lat!);
+                double lng = double.parse(prediction.lng!);
+
+                // ✅ Set values directly (no navigation needed)
+                controller.searchController.value.text = prediction.description ?? "";
+
+                controller.latLng.value = LocationLatLng(latitude: lat, longitude: lng);
+
+                controller.getParking();
+              },
+
+              itemClick: (prediction) {
+                controller.searchController.value.text = prediction.description ?? "";
+              },
+            ),*/
+            InkWell(
               onTap: () async {
                 if (Constant.selectedMapType == 'osm' || kIsWeb) {
                   Get.to(() => const LocationPicker(
@@ -60,13 +96,31 @@ class SearchScreen extends StatelessWidget {
                     }
                   });
                 } else {
-                  Navigator.push(
+                  log("check search");
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LocationSearchMapScreen(),
+                    ),
+                  );
+
+                  if (result != null) {
+                    controller.searchController.value.text = result["address"];
+
+                    controller.latLng.value = LocationLatLng(
+                      latitude: result["lat"],
+                      longitude: result["lng"],
+                    );
+
+                    controller.getParking();
+                  }
+                  /*Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => PlacePicker(
                         apiKey: Constant.mapAPIKey,
                         onPlacePicked: (result) async {
-                          Get.back();
+                         Get.back();
                           controller.searchController.value.text =
                               result.formattedAddress.toString();
                           controller.latLng.value = LocationLatLng(
@@ -84,7 +138,7 @@ class SearchScreen extends StatelessWidget {
                         resizeToAvoidBottomInset: false,
                       ),
                     ),
-                  );
+                  );*/
                 }
               },
               child: TextFormField(
@@ -179,11 +233,8 @@ class SearchScreen extends StatelessWidget {
                                               ClipRRect(
                                                 borderRadius:
                                                     const BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(12),
-                                                        bottomLeft:
-                                                            Radius.circular(
-                                                                12)),
+                                                        topLeft: Radius.circular(12),
+                                                        bottomLeft: Radius.circular(12)),
                                                 child: NetworkImageWidget(
                                                   imageUrl: parkingModel.image
                                                       .toString(),
@@ -456,6 +507,7 @@ class SearchScreen extends StatelessWidget {
                                               ),
                                             ],
                                           ),
+                                          if(parkingModel.reviewCount != "0.0")
                                           Positioned(
                                             top: 10,
                                             left: 5,
@@ -466,31 +518,21 @@ class SearchScreen extends StatelessWidget {
                                                     Radius.circular(20)),
                                               ),
                                               child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 4),
+                                                  padding: const EdgeInsets.symmetric(
+                                                      horizontal: 10, vertical: 4),
                                                   child: Row(
                                                     children: [
                                                       const Icon(Icons.star,
                                                           size: 16,
-                                                          color: AppThemData
-                                                              .primary07),
+                                                          color: AppThemData.primary07),
                                                       const SizedBox(width: 5),
                                                       Text(
                                                         Constant.calculateReview(
-                                                            reviewCount:
-                                                                parkingModel
-                                                                    .reviewCount,
-                                                            reviewSum:
-                                                                parkingModel
-                                                                    .reviewSum),
+                                                            reviewCount: parkingModel.reviewCount,
+                                                            reviewSum: parkingModel.reviewSum),
                                                         style: const TextStyle(
-                                                            color: AppThemData
-                                                                .grey10,
-                                                            fontFamily:
-                                                                AppThemData
-                                                                    .semiBold),
+                                                            color: AppThemData.grey10,
+                                                            fontFamily: AppThemData.semiBold),
                                                       ),
                                                     ],
                                                   )),

@@ -70,7 +70,7 @@ class WalletControllerOwner extends GetxController {
         paymentModel.value = value;
 
        if (!kIsWeb) {
-         Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
+         Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString(); //ENV.pkTestPublishableKey;
          Stripe.merchantIdentifier = 'Phista';
          Stripe.instance.applySettings();
        }
@@ -243,7 +243,7 @@ class WalletControllerOwner extends GetxController {
         "shipping[address][country]": "CA",
       };
       log(paymentModel.value.strip!.stripeSecret.toString());
-      var stripeSecret = paymentModel.value.strip!.stripeSecret;//ENV.skTestSecretKey;
+      var stripeSecret = paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         body: body,

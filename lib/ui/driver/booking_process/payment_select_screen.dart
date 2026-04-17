@@ -63,8 +63,10 @@ class PaymentSelectScreen extends StatelessWidget {
                                 SizedBox(height: 18,),
                                 Visibility(
                                   visible:
-                                  controller.paymentModel.value.wallet != null && controller.paymentModel.value.wallet?.enable == true,
-                                  child: RoundedPaymentButton(title: controller.paymentModel.value.wallet?.name ?? '',
+                                  controller.paymentModel.value.wallet != null &&
+                                      controller.paymentModel.value.wallet?.enable == true,
+                                  child: RoundedPaymentButton(
+                                      title: controller.paymentModel.value.wallet?.name ?? '',
                                         rightText: Constant.amountShow(
                                           amount: controller.userModel.value.walletAmount ?? "0",
                                         ),
@@ -75,7 +77,8 @@ class PaymentSelectScreen extends StatelessWidget {
                                         ),
                                         isSelected: false,
                                         onPress: () async {
-                                          if (double.parse(controller.userModel.value.walletAmount.toString()) >= controller.calculateAmount()) {
+                                          if (double.parse(controller.userModel.value.walletAmount.toString()) >=
+                                              controller.calculateAmount()) {
                                             ShowToastDialog.showLoader("Please wait..");
                                             WalletTransactionModel transactionModel = WalletTransactionModel(
                                                 id: Constant.getUuid(),
@@ -138,8 +141,8 @@ class PaymentSelectScreen extends StatelessWidget {
                                         onPress: (){
                                           controller.isFromGoogle.value = false;
                                           controller.isFromApple.value = true;
-                                          controller.stripeMakePayment(amount: controller.calculateAmount().toStringAsFixed(
-                                                  Constant.currencyModel!.decimalDigits!));
+                                          controller.stripeMakePayment(amount: controller.totalAmountReview /*controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!)*/);
                                         })
                                 ),
                                 SizedBox(height: 18,),
@@ -157,8 +160,8 @@ class PaymentSelectScreen extends StatelessWidget {
                                           controller.isFromApple.value = false;
                                           controller.isFromGoogle.value = true;
                                           controller.stripeMakePayment(
-                                              amount: controller.calculateAmount().toStringAsFixed(
-                                                  Constant.currencyModel!.decimalDigits!));
+                                              amount:controller.totalAmountReview /*controller.calculateAmount().toStringAsFixed(
+                                                  Constant.currencyModel!.decimalDigits!)*/);
                                         })
 
                                 ),

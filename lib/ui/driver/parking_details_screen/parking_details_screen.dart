@@ -74,6 +74,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                                             : Icons.bookmark_border,
                                         color: AppThemData.white)),
                               ),
+                              controller.parkingModel.value.reviewCount != "0.0"?
                               Positioned(
                                 top: 10,
                                 left: 10,
@@ -96,6 +97,7 @@ class ParkingDetailsScreen extends StatelessWidget {
                                       )),
                                 ),
                               )
+                                  :SizedBox()
                             ],
                           ),
                           const SizedBox(

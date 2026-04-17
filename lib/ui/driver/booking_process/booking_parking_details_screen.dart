@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
@@ -34,16 +36,25 @@ class BookingParkingDetailsScreen extends StatelessWidget {
     return GetX(
         init: BookingParkingDetailsController(),
         builder: (controller) {
-          controller.startTimeMonthly.value = DateTime.now();
+        //  controller.startTimeMonthly.value = DateTime.now();
+
+          // if (controller.radioValue.value == "monthly") {
+          //   controller.setMonthValue(controller.startTimeMonthly.value,
+          //       int.parse(controller.bookingMonths.value.toString()));
+          // }
           return Scaffold(
-            backgroundColor:AppThemData.grey02,
-            appBar: UiInterface()
-                .customAppBar1(context, themeChange,"Select Date and Time".tr,backgroundColor:AppThemData.white,textColor: AppThemData.black ),
+            backgroundColor: AppThemData.grey02,
+            appBar: UiInterface().customAppBar1(
+                context, themeChange, "Select your starting date".tr,
+                backgroundColor: AppThemData.white,
+                textColor: AppThemData.black),
             body: controller.isLoading.value
                 ? Constant.loader()
                 : SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.symmetric( horizontal: !kIsWeb?16:100, vertical: !kIsWeb?10:50),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: !kIsWeb ? 16 : 100,
+                          vertical: !kIsWeb ? 10 : 50),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -61,134 +72,214 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           const SizedBox(
                             height: 5,
                           ),
-                          Constant.currentUserModel.value?.role.toString() == "Guest" || Constant.isFromParkNow ?SizedBox.shrink():Obx(() {
-                            final selectionMode = controller.selectionModeUser(controller.radioValue.value);
-                            return Container(
-                              margin: EdgeInsets.all(5),
-                              height: 250,
-                              decoration: BoxDecoration(
-                                  color: themeChange.getThem()
-                                      ? AppThemData.white
-                                      : AppThemData.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(color: AppThemData.grey10,width: 1.5),
-
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: SfDateRangePicker(
-                                  backgroundColor: AppThemData.white,
-                                  // 1️⃣ Header styling (Month-Year)
-                                  headerStyle: const DateRangePickerHeaderStyle(
-                                    backgroundColor: Colors.white,
-                                    textStyle: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                          Constant.currentUserModel.value?.role.toString() == "Guest" || Constant.isFromParkNow
+                              ? SizedBox.shrink()
+                              : Obx(() {
+                                  final selectionMode =
+                                      controller.selectionModeUser(controller.radioValue.value);
+                                  return Container(
+                                    margin: EdgeInsets.all(5),
+                                    height: 250,
+                                    decoration: BoxDecoration(
+                                      color: themeChange.getThem()
+                                          ? AppThemData.white
+                                          : AppThemData.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: AppThemData.grey10,
+                                          width: 1.5),
                                     ),
-                                  ),
-                                
-                                  // 2️⃣ Weekdays styling (S M T W T F S)
-                                  monthViewSettings: const DateRangePickerMonthViewSettings(
-                                    viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                                      textStyle: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: SfDateRangePicker(
+                                        backgroundColor: AppThemData.white,
+                                        // 1️⃣ Header styling (Month-Year)
+                                        headerStyle:
+                                            const DateRangePickerHeaderStyle(
+                                          backgroundColor: Colors.white,
+                                          textStyle: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+
+                                        // 2️⃣ Weekdays styling (S M T W T F S)
+                                        monthViewSettings:
+                                            const DateRangePickerMonthViewSettings(
+                                          viewHeaderStyle:
+                                              DateRangePickerViewHeaderStyle(
+                                            textStyle: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        monthCellStyle:
+                                            const DateRangePickerMonthCellStyle(
+                                          textStyle:
+                                              TextStyle(color: Colors.black),
+                                          todayTextStyle:
+                                              TextStyle(color: Colors.black),
+                                          rangeTextStyle:
+                                              TextStyle(color: Colors.black),
+                                          leadingDatesTextStyle:
+                                              TextStyle(color: Colors.black),
+                                          disabledDatesTextStyle:
+                                              TextStyle(color: Colors.black),
+                                        ),
+                                        yearCellStyle: const DateRangePickerYearCellStyle(
+                                          textStyle: TextStyle(color: Colors.black),
+                                          todayTextStyle: TextStyle(color: Colors.black),
+                                        ),
+                                        controller: controller.sfDateRangePickerCtrl,
+                                        selectionMode: selectionMode,
+                                        view: DateRangePickerView.month,
+                                        selectionColor: AppThemData.primary06,
+                                        startRangeSelectionColor:
+                                            AppThemData.primary06,
+                                        rangeSelectionColor:
+                                            AppThemData.primary06,
+                                        endRangeSelectionColor:
+                                            AppThemData.primary06,
+                                        initialSelectedDate: selectionMode == DateRangePickerSelectionMode.single
+                                            ? controller.selectedDateTime.value
+                                            : null,
+                                        initialSelectedDates: selectionMode == DateRangePickerSelectionMode.multiple
+                                            ? controller.selectedDatesDaily.value
+                                            : null,
+                                        selectionTextStyle: const TextStyle(
+                                            color: Colors.black),
+                                        onSelectionChanged: (args) {
+                                          switch (selectionMode) {
+                                            case DateRangePickerSelectionMode.single:
+                                              controller.selectedDateTime.value = args.value;
+                                              DateTime now = DateTime.now();
+                                              controller.startTime.value =
+                                                  DateTime(
+                                                      controller.selectedDateTime.value.year,
+                                                      controller.selectedDateTime.value.month,
+                                                      controller.selectedDateTime.value.day,
+                                                      now.hour, now.minute, now.second);
+                                              Duration duration = Duration(
+                                                  hours: controller.selectedDuration.value.toInt());
+                                              controller.endTime.value = controller.startTime.value.add(duration);
+                                              break;
+
+                                            case DateRangePickerSelectionMode.multiple:
+                                              controller.selectedDatesDaily.value = args.value;
+                                              break;
+
+                                            /*case DateRangePickerSelectionMode.range:
+                                              if (selectionMode == DateRangePickerSelectionMode.range) {
+                                                if (args.value is PickerDateRange) {
+                                                  final PickerDateRange range = args.value;
+                                                  final DateTime? startDate = range.startDate;
+                                                  controller.startTimeMonthly.value = range.startDate!;
+                                                  if (startDate != null) {
+                                                    controller.setMonthValue(controller.startTimeMonthly.value,
+                                                        int.parse(controller.bookingMonths.value
+                                                            .toString()));
+                                                  }
+                                                }
+                                              }
+                                              controller.selectedRangeMonth
+                                                  .refresh();
+                                              break;*/
+                                            case DateRangePickerSelectionMode.range:
+                                              if (args.value is PickerDateRange) {
+                                                final PickerDateRange range = args.value;
+                                                DateTime? startDate = range.startDate;
+                                                if (startDate != null) {
+                                                  controller.startTimeMonthly.value = startDate;
+                                                  int months = int.parse(controller.bookingMonths.value.toString());
+                                                  // 👉 Calculate end date
+                                                  DateTime endDate = DateTime(
+                                                    startDate.year,
+                                                    startDate.month + months,
+                                                    startDate.day,
+                                                  );
+                                                 // controller.endTimeMonthly.value = endDate;
+                                                  // 👉 Set auto range in picker UI
+                                                  controller.sfDateRangePickerCtrl.selectedRange =
+                                                      PickerDateRange(startDate, endDate);
+                                                }
+                                              }
+                                              break;
+
+                                            default:
+                                              break;
+                                          }
+                                        },
+                                        minDate: DateTime.now(),
                                       ),
                                     ),
-                                  ),
-                                  monthCellStyle: const DateRangePickerMonthCellStyle(
-                                    textStyle: TextStyle(color: Colors.black),
-                                    todayTextStyle: TextStyle(color: Colors.black),
-                                    rangeTextStyle: TextStyle(color: Colors.black),
-                                    leadingDatesTextStyle: TextStyle(color: Colors.black),
-                                    disabledDatesTextStyle: TextStyle(color: Colors.black),
-                                
-                                  ),
-                                  yearCellStyle: const DateRangePickerYearCellStyle(
-                                    textStyle: TextStyle(color: Colors.black),
-                                    todayTextStyle: TextStyle(color: Colors.black),
-                                  ),
-                                  controller: controller.sfDateRangePickerCtrl,
-                                  selectionMode: selectionMode,
-                                  view: DateRangePickerView.month,
-                                  selectionColor: AppThemData.primary06,
-                                  startRangeSelectionColor: AppThemData.primary06,
-                                  rangeSelectionColor: AppThemData.primary06,
-                                  endRangeSelectionColor: AppThemData.primary06,
-                                  initialSelectedDate: selectionMode ==
-                                          DateRangePickerSelectionMode.single
-                                      ? controller.selectedDateTime.value
-                                      : null,
-                                  initialSelectedDates: selectionMode ==
-                                          DateRangePickerSelectionMode.multiple
-                                      ? controller.selectedDatesDaily.value
-                                      : null,
-                                  selectionTextStyle:
-                                      const TextStyle(color: Colors.black),
-                                  onSelectionChanged: (args) {
-                                    switch (selectionMode) {
-                                      case DateRangePickerSelectionMode.single:
-                                        controller.selectedDateTime.value =
-                                            args.value;
-                                        DateTime now = DateTime.now();
-                                        controller.startTime.value = DateTime(
-                                            controller
-                                                .selectedDateTime.value.year,
-                                            controller
-                                                .selectedDateTime.value.month,
-                                            controller.selectedDateTime.value.day,
-                                            now.hour,
-                                            now.minute,
-                                            now.second);
-                                        Duration duration = Duration(
-                                            hours: controller
-                                                .selectedDuration.value
-                                                .toInt());
-                                        controller.endTime.value = controller
-                                            .startTime.value
-                                            .add(duration);
-                                        break;
-                                      case DateRangePickerSelectionMode.multiple:
-                                        controller.selectedDatesDaily.value =
-                                            args.value;
-                                        break;
-                                      case DateRangePickerSelectionMode.range:
-                                        if (selectionMode == DateRangePickerSelectionMode.range) {
-                                          if (args.value is PickerDateRange) {
-                                            final PickerDateRange range =
-                                                args.value;
-                                            final DateTime? startDate =
-                                                range.startDate;
-                                            controller.startTimeMonthly.value =
-                                                range.startDate!;
-                                            if (startDate != null) {
-                                              controller.setMonthValue(
-                                                  controller
-                                                      .startTimeMonthly.value,
-                                                  int.parse(controller
-                                                      .bookingMonths
-                                                      .value.toString()));
-                                            }
-                                          }
-                                        }
-                                        controller.selectedRangeMonth.refresh();
-                                        break;
-                                      default:
-                                        break;
-                                    }
-                                  },
-                                  minDate: DateTime.now(),
-                                ),
-                              ),
-                            );
-                          }),
+                                  );
+                                }),
                           const SizedBox(
                             height: 20,
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: Constant.currentUserModel.value?.role
+                                      .toString() ==
+                                      "Guest" ||
+                                      Constant.isFromParkNow
+                                      ? SizedBox()
+                                      : Column(
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Monthly'.tr,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily:
+                                              AppThemData.medium,
+                                              fontWeight: FontWeight.w700,
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                            ),
+                                          ),
+                                          Radio<String>(
+                                            value: "monthly",
+                                            groupValue: controller
+                                                .radioValue.value,
+                                            activeColor:
+                                            AppThemData.primary07,
+                                            materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                            onChanged: (value) {
+                                              controller.selectedDuration.value = 24;
+                                              controller.radioValue.value = value ?? "";
+                                              // ONLY when isMin4Month == true → force minimum 4 months
+                                               if (controller.parkingModel.value.isMin4Month == true &&
+                                                  controller.bookingMonths.value < 4) {
+                                                controller.bookingMonths.value = 4;
+                                              }
+                                              else if (controller.parkingModel.value.isMin2Month == true &&
+                                                  controller.bookingMonths.value < 2){
+                                                controller.bookingMonths.value = 2;
+                                              }
+                                              int minMonth = controller.getMinMonth();
+                                              if (controller.bookingMonths.value < minMonth) {
+                                                controller.bookingMonths.value = minMonth;
+                                              }
+                                              controller.setMonthValue(
+                                                  controller.startTimeMonthly.value,
+                                                  int.parse(controller.bookingMonths.value.toString()));
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
                               Expanded(
                                   flex: 1,
                                   child: Column(
@@ -229,57 +320,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                       ),
                                     ],
                                   )),
-                              Expanded(
-                                  flex: 1,
-                                  child:Constant.currentUserModel.value?.role.toString() == "Guest" || Constant.isFromParkNow ?SizedBox():
-                                  Column(
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'Monthly'.tr,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: AppThemData.medium,
-                                              fontWeight: FontWeight.w700,
-                                              color: themeChange.getThem()
-                                                  ? AppThemData.grey07
-                                                  : AppThemData.grey07,
-                                            ),
-                                          ),
-                                          Radio<String>(
-                                            value: "monthly",
-                                            groupValue:
-                                                controller.radioValue.value,
-                                            activeColor: AppThemData.primary07,
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
-                                            onChanged: (value) {
-                                              controller.selectedDuration.value = 24;
-                                              controller.radioValue.value = value ?? "";
-                                              // ONLY when isMin4Month == true → force minimum 4 months
-                                             /* if (controller.parkingModel.value.isMin4Month == true &&
-                                                  controller.bookingMonths.value < 4) {
-                                                controller.bookingMonths.value = 4;
-                                              }
-                                              else if (controller.parkingModel.value.isMin2Month == true &&
-                                                  controller.bookingMonths.value < 2){
-                                                controller.bookingMonths.value = 2;
-                                              }*/
-                                              int minMonth = controller.getMinMonth();
-                                              if (controller.bookingMonths.value < minMonth) {
-                                                controller.bookingMonths.value = minMonth;
-                                              }
-                                              controller.setMonthValue(controller.startTimeMonthly.value, int.parse(controller.bookingMonths.value.toString()));
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
+
                             ],
                           ),
                           const SizedBox(
@@ -291,21 +332,28 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Booking Months'.tr,
-                                  style: TextStyle(fontWeight: FontWeight.bold,color:AppThemData.grey07),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppThemData.grey07),
                                 ),
                                 const SizedBox(height: 8),
                                 Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: AppThemData.grey07),
+                                    border:
+                                        Border.all(color: AppThemData.grey07),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   height: 45,
                                   width: Responsive.width(35, context),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.remove_circle_outline,color:AppThemData.grey07,),
+                                        icon: Icon(
+                                          Icons.remove_circle_outline,
+                                          color: AppThemData.grey07,
+                                        ),
                                         onPressed: () {
                                           /*if (controller.bookingMonths.value > 1) {
                                             controller.bookingMonths.value--;
@@ -314,28 +362,36 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                           //int minMonth = controller.parkingModel.value.isMin4Month == true ? 4 : 1;
                                           int minMonth = controller.getMinMonth();
 
-                                          if (controller.bookingMonths.value > minMonth) {
+                                          if (controller.bookingMonths.value >
+                                              minMonth) {
                                             controller.bookingMonths.value--;
-                                            controller.setMonthValue(controller.startTimeMonthly.value, controller.bookingMonths.value,
+                                            controller.setMonthValue(
+                                              controller.startTimeMonthly.value,
+                                              controller.bookingMonths.value,
                                             );
                                           }
                                         },
                                       ),
                                       Obx(() => Text(
-                                        controller.bookingMonths.value.toString(),
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontFamily: AppThemData.medium,
-                                          fontWeight: FontWeight.w700,
-                                          color: themeChange.getThem()
-                                              ? AppThemData.grey07
-                                              : AppThemData.grey07,
-                                        ),
-                                      )),
+                                            controller.bookingMonths.value
+                                                .toString(),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: AppThemData.medium,
+                                              fontWeight: FontWeight.w700,
+                                              color: themeChange.getThem()
+                                                  ? AppThemData.grey07
+                                                  : AppThemData.grey07,
+                                            ),
+                                          )),
                                       IconButton(
-                                        icon: Icon(Icons.add_circle_outline,color: AppThemData.grey07,),
+                                        icon: Icon(
+                                          Icons.add_circle_outline,
+                                          color: AppThemData.grey07,
+                                        ),
                                         onPressed: () {
-                                          if (controller.bookingMonths.value < 12) {
+                                          if (controller.bookingMonths.value <
+                                              12) {
                                             controller.bookingMonths.value++;
                                             controller.setMonthValue(
                                               controller.startTimeMonthly.value,
@@ -350,10 +406,11 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                               ],
                             ),
                           if (controller.radioValue.value == "monthly")
-                          const SizedBox(
-                            height: 10,
-                          ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                           if (controller.radioValue.value == "hourly")
+
                             ///show if hourly is selected
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -425,40 +482,23 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (controller.radioValue.value == "hourly"
-                                  && controller.selectedDuration.value <= 5.0)
-                              Text(
-                                  Constant.amountShow(amount: ((double.tryParse(controller.parkingModel.value.perHrPrice.toString()) ?? 0.0) * controller.selectedDuration.value.toDouble()).toString()),
-                                  style: TextStyle(
-                                    color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
-                                    fontSize: 14,
-                                    height: 1.57,
-                                    fontFamily: AppThemData.medium,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                ),
-                              if (controller.radioValue.value == "hourly" && controller.selectedDuration.value > 5.0)
-                              Text(
-                                Constant.amountShow(amount: controller.parkingModel.value.dailyPrice.toString()),
-                                style: TextStyle(
-                                  color: themeChange.getThem()
-                                      ? AppThemData.grey07
-                                      : AppThemData.grey07,
-                                  fontSize: 14,
-                                  height: 1.57,
-                                  fontFamily: AppThemData.medium,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                              ),
-                              if (controller.radioValue.value == "monthly")
+                              if (controller.radioValue.value == "hourly" &&
+                                  controller.selectedDuration.value <= 5.0)
                                 Text(
-                                  Constant.amountShow(amount: ((double.tryParse(controller.parkingModel.value.monthlyPrice.toString()) ?? 0.0) * controller.bookingMonths.value.toDouble()).toString()),
+                                  Constant.amountShow(
+                                      amount: ((double.tryParse(controller
+                                                      .parkingModel
+                                                      .value
+                                                      .perHrPrice
+                                                      .toString()) ??
+                                                  0.0) *
+                                              controller.selectedDuration.value
+                                                  .toDouble())
+                                          .toString()),
                                   style: TextStyle(
-                                    color: themeChange.getThem() ? AppThemData.grey07 : AppThemData.grey07,
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
                                     fontSize: 14,
                                     height: 1.57,
                                     fontFamily: AppThemData.medium,
@@ -467,9 +507,52 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
                                 ),
-
+                              if (controller.radioValue.value == "hourly" &&
+                                  controller.selectedDuration.value > 5.0)
+                                Text(
+                                  Constant.amountShow(
+                                      amount: controller
+                                          .parkingModel.value.dailyPrice
+                                          .toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
+                                    fontSize: 14,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                ),
+                             /* if (controller.radioValue.value == "monthly")
+                                Text(
+                                  Constant.amountShow(
+                                      amount: ((double.tryParse(controller
+                                                      .parkingModel
+                                                      .value
+                                                      .monthlyPrice
+                                                      .toString()) ??
+                                                  0.0) *
+                                              controller.bookingMonths.value
+                                                  .toDouble())
+                                          .toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
+                                    fontSize: 14,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                ),*/
                             ],
                           ),
+                          if (controller.radioValue.value == "hourly")
                           const SizedBox(
                             height: 10,
                           ),
@@ -495,44 +578,49 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () async {
-                                     // if(Constant.currentUserModel.value?.role.toString() != "Guest"){
-                                       TimeOfDay timeSelected = controller.parseSelectedTime(controller.startTimeController.value.text);
-                                       TimeOfDay? startTime = await Constant.selectTime(context,timeSelected);
+                                      // if(Constant.currentUserModel.value?.role.toString() != "Guest"){
+                                      TimeOfDay timeSelected = controller
+                                          .parseSelectedTime(controller
+                                              .startTimeController.value.text);
+                                      TimeOfDay? startTime =
+                                          await Constant.selectTime(
+                                              context, timeSelected);
 
-                                       if (startTime != null) {
-                                         controller.startTime.value = DateTime(
-                                             controller
-                                                 .selectedDateTime.value.year,
-                                             controller
-                                                 .selectedDateTime.value.month,
-                                             controller
-                                                 .selectedDateTime.value.day,
-                                             startTime.hour,
-                                             startTime.minute);
+                                      if (startTime != null) {
+                                        controller.startTime.value = DateTime(
+                                            controller
+                                                .selectedDateTime.value.year,
+                                            controller
+                                                .selectedDateTime.value.month,
+                                            controller
+                                                .selectedDateTime.value.day,
+                                            startTime.hour,
+                                            startTime.minute);
 
-                                         controller.startTimeController.value
-                                             .text = DateFormat('HH:mm').format(
-                                             controller.startTime.value);
+                                        controller.startTimeController.value
+                                                .text =
+                                            DateFormat('HH:mm').format(
+                                                controller.startTime.value);
 
-                                         Duration duration = Duration(
-                                             hours: controller
-                                                 .selectedDuration.value
-                                                 .toInt());
+                                        Duration duration = Duration(
+                                            hours: controller
+                                                .selectedDuration.value
+                                                .toInt());
 
-                                         controller.endTime.value = controller
-                                             .startTime.value
-                                             .add(duration);
-                                         controller
-                                             .endTimeController.value.text =
-                                             DateFormat('HH:mm').format(
-                                                 controller.endTime.value);
-                                       }
-                                       //}
-
+                                        controller.endTime.value = controller
+                                            .startTime.value
+                                            .add(duration);
+                                        controller
+                                                .endTimeController.value.text =
+                                            DateFormat('HH:mm').format(
+                                                controller.endTime.value);
+                                      }
+                                      //}
                                     },
                                     child: TextFieldWidget(
                                       onPress: () {},
-                                      controller: controller.startTimeController.value,
+                                      controller:
+                                          controller.startTimeController.value,
                                       textInputType:
                                           const TextInputType.numberWithOptions(
                                               decimal: true, signed: true),
@@ -558,35 +646,43 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                   child: InkWell(
                                     onTap: () async {
                                       //if(Constant.currentUserModel.value?.role.toString() != "Guest") {
-                                        TimeOfDay timeSelected = controller.parseSelectedTime(
-                                            controller.endTimeController.value.text);
-                                        TimeOfDay? startTime =
-                                        await Constant.selectTime(context, timeSelected);
+                                      TimeOfDay timeSelected = controller
+                                          .parseSelectedTime(controller
+                                              .endTimeController.value.text);
+                                      TimeOfDay? startTime =
+                                          await Constant.selectTime(
+                                              context, timeSelected);
 
-                                        if (startTime != null) {
-                                          controller.endTime.value = DateTime(
-                                              controller
-                                                  .selectedDateTime.value.year,
-                                              controller
-                                                  .selectedDateTime.value.month,
-                                              controller
-                                                  .selectedDateTime.value.day,
-                                              startTime.hour,
-                                              startTime.minute);
+                                      if (startTime != null) {
+                                        controller.endTime.value = DateTime(
+                                            controller
+                                                .selectedDateTime.value.year,
+                                            controller
+                                                .selectedDateTime.value.month,
+                                            controller
+                                                .selectedDateTime.value.day,
+                                            startTime.hour,
+                                            startTime.minute);
 
-                                          controller
-                                              .endTimeController.value.text =
-                                              DateFormat('HH:mm').format(
-                                                  controller.endTime.value);
+                                        controller
+                                                .endTimeController.value.text =
+                                            DateFormat('HH:mm').format(
+                                                controller.endTime.value);
 
-                                          double duration = controller.timeHourDifference(
-                                              controller.startTimeController.value.text.trim(),
-                                              controller.endTimeController.value.text.trim());
-                                          print("duration:--- $duration");
-                                          controller.selectedDuration.value = duration;
-                                          controller.selectedDuration.refresh();
+                                        double duration =
+                                            controller.timeHourDifference(
+                                                controller.startTimeController
+                                                    .value.text
+                                                    .trim(),
+                                                controller.endTimeController
+                                                    .value.text
+                                                    .trim());
+                                        print("duration:--- $duration");
+                                        controller.selectedDuration.value =
+                                            duration;
+                                        controller.selectedDuration.refresh();
 
-                                          /*Duration duration = Duration(
+                                        /*Duration duration = Duration(
                                                                         hours: controller
                                                                             .selectedDuration.value
                                                                             .toInt());
@@ -598,7 +694,7 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                                                             .text =
                                                                         DateFormat('HH:mm').format(
                                                                             controller.startTime.value);*/
-                                        }
+                                      }
                                       //}
                                     },
                                     child: TextFieldWidget(
@@ -701,8 +797,12 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                       InkWell(
                                           onTap: () {
                                             VehicleListController
-                                                vehicleListController = Get.put(VehicleListController());
-                                            vehicleListController.selectedVehicle.value = controller.selectedVehicle.value;
+                                                vehicleListController = Get.put(
+                                                    VehicleListController());
+                                            vehicleListController
+                                                    .selectedVehicle.value =
+                                                controller
+                                                    .selectedVehicle.value;
                                             showBottomSheet(context);
                                           },
                                           child: Text(
@@ -721,8 +821,12 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                                 )
                               : InkWell(
                                   onTap: () {
-                                    VehicleListController vehicleListController = Get.put(VehicleListController());
-                                    vehicleListController.selectedVehicle.value = controller.selectedVehicle.value;
+                                    VehicleListController
+                                        vehicleListController =
+                                        Get.put(VehicleListController());
+                                    vehicleListController
+                                            .selectedVehicle.value =
+                                        controller.selectedVehicle.value;
                                     showBottomSheet(context);
                                   },
                                   child: SizedBox(
@@ -777,128 +881,359 @@ class BookingParkingDetailsScreen extends StatelessWidget {
                     ),
                   ),
             bottomNavigationBar: Container(
+              height: controller.radioValue.value == "monthly" ? MediaQuery.of(context).size.height/3.2 : 100,
               color: themeChange.getThem()
-                 /* ? AppThemData.grey10
+                  /* ? AppThemData.grey10
                   : AppThemData.grey11,*/
                   ? AppThemData.white
                   : AppThemData.white,
-              padding: const EdgeInsets.symmetric(horizontal: !kIsWeb?16:100, vertical: 16),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: !kIsWeb ? 16 : 100, vertical: 16),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: RoundedButtonFill(
-                  radius: 10,
-                  title: "Next".tr,
-                  color: AppThemData.primary06,
-                  onPress: () async {
-                    if (controller.selectedVehicle.value.id == null) {
-                      ShowToastDialog.showToast(
-                          "Please select your vehicle".tr);
-                    } else if (controller.selectedDuration.value < 1 &&
-                        controller.radioValue.value == "hourly") {
-                      ShowToastDialog.showToast(
-                          "Please select duration minimum one hour".tr);
-                    } else {
-                      ShowToastDialog.showLoader("Please wait..");
-                      print(controller.radioValue.value);
-                      OrderModel orderModel = OrderModel();
-                      if (controller.radioValue.value == "hourly") {
-                        Constant.bookingTypeConst = "hourly";
-                        orderModel.bookingType = "1";
-                        orderModel.bookingMonth = "";
-                        orderModel.bookingDate = Utils.formatTimestampToIST(
-                            Timestamp.fromDate(DateTime(
-                                controller.selectedDateTime.value.year,
-                                controller.selectedDateTime.value.month,
-                                controller.selectedDateTime.value.day)));
-                        orderModel.bookingStartTime =
-                            Timestamp.fromDate(controller.startTime.value.toUtc());
-                        orderModel.bookingEndTime =
-                            Timestamp.fromDate(controller.endTime.value.toUtc());
-                        print("bookingStartTime (UTC): ${orderModel.bookingStartTime?.toDate().toUtc()}");
-                      }
-                      else if (controller.radioValue.value == "monthly") {
-                        print(
-                            "monthly date startDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.startDate}");
-                        print(
-                            "monthly date endDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.endDate}");
-                        DateTime? startDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.startDate;
-                        DateTime? endDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.endDate;
-                        List tempMonthDate = [];
-                        Constant.bookingTypeConst = "monthly";
-                        orderModel.bookingType = "3";
-                        orderModel.bookingMonth = controller.bookingMonths.value.toString();
-                        controller.selectedDuration.value = 24.0;
-                        if (startDateMonthly != null) {
-                          controller.startTime.value = DateTime(
-                              startDateMonthly.year,
-                              startDateMonthly.month,
-                              startDateMonthly.day,
-                              startDateMonthly.hour,
-                              startDateMonthly.minute,
-                              startDateMonthly.second);
+                child: Column(
+                  children: [
+                    if (controller.radioValue.value == "monthly")
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Start Date & Time".tr,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w700,
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                ),
+                              ),
+                              Text(
+                                "${DateFormat('MMMM d, yyyy').format(controller.startTimeMonthly.value)} 12:00 AM",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w700,
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "End Date & Time".tr,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w700,
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                ),
+                              ),
+                              Text(
+                                "${DateFormat('MMMM d, yyyy').format(DateTime(
+                                  controller.startTimeMonthly.value.year,
+                                  controller.startTimeMonthly.value.month +
+                                      int.parse(controller.bookingMonths.value.toString()),
+                                  controller.startTimeMonthly.value.day,
+                                ))} 11:59 PM",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w700,
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Duration".tr,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w700,
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                ),
+                              ),
+                              Text(
+                                "${controller.bookingMonths.value} ${controller.bookingMonths.value == 1 ? "month" : "months"} ",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: AppThemData.medium,
+                                  fontWeight: FontWeight.w700,
+                                  color: themeChange.getThem()
+                                      ? AppThemData.grey07
+                                      : AppThemData.grey07,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Divider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                             /* if (controller.radioValue.value == "hourly" &&
+                                  controller.selectedDuration.value <= 5.0)
+                                Text(
+                                  Constant.amountShow(
+                                      amount: ((double.tryParse(controller
+                                          .parkingModel
+                                          .value
+                                          .perHrPrice
+                                          .toString()) ??
+                                          0.0) *
+                                          controller.selectedDuration.value
+                                              .toDouble())
+                                          .toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
+                                    fontSize: 14,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                ),
+                              if (controller.radioValue.value == "hourly" &&
+                                  controller.selectedDuration.value > 5.0)
+                                Text(
+                                  Constant.amountShow(
+                                      amount: controller
+                                          .parkingModel.value.dailyPrice
+                                          .toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
+                                    fontSize: 14,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                ),*/
+                              Text("Total".tr,style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: AppThemData.medium,
+                                fontWeight: FontWeight.w700,
+                                color: themeChange.getThem()
+                                    ? AppThemData.grey07
+                                    : AppThemData.grey07,
+                              ),),
+                                Text(
+                                  Constant.amountShow(
+                                      amount: ((double.tryParse(controller
+                                          .parkingModel
+                                          .value
+                                          .monthlyPrice
+                                          .toString()) ??
+                                          0.0) *
+                                          controller.bookingMonths.value
+                                              .toDouble())
+                                          .toString()),
+                                  style: TextStyle(
+                                    color: themeChange.getThem()
+                                        ? AppThemData.grey07
+                                        : AppThemData.grey07,
+                                    fontSize: 15,
+                                    height: 1.57,
+                                    fontFamily: AppThemData.medium,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                ),
+                            ],
+                          ),
+                          SizedBox(height: 20,)
+                        ],
+                      ),
+                    RoundedButtonFill(
+                      radius: 10,
+                      title: "Next".tr,
+                      color: AppThemData.primary06,
+                      onPress: () async {
+
+                        print("rentalPeriod :--${int.parse(controller.parkingModel.value.rentalPeriod!) > controller.bookingMonths.value}");
+                        print("rentalPeriod :;-- ${int.parse(controller.parkingModel.value.rentalPeriod!)}");
+                        print("rentalPeriod :;-- ${controller.bookingMonths.value}");
+
+                        if (controller.selectedVehicle.value.id == null) {
+                          ShowToastDialog.showToast(
+                              "Please select your vehicle".tr);
+                        } else if (controller.selectedDuration.value < 1 &&
+                            controller.radioValue.value == "hourly") {
+                          ShowToastDialog.showToast(
+                              "Please select duration minimum one hour".tr);
                         }
-                        Duration duration = Duration(
-                            hours: controller.selectedDuration.value.toInt());
-                        controller.endTime.value = controller.startTime.value.add(duration);
-                        orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
-                        orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
-                        if (startDateMonthly != null) {
-                          tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
-                              DateTime(
+                        else if (controller.radioValue.value == "monthly" &&
+                            controller.sfDateRangePickerCtrl.selectedRange?.startDate == null){
+                          ShowToastDialog.showToast("Please select start date".tr);
+                        }else if(controller.radioValue.value == "monthly" && controller.bookingMonths.value <
+                            int.parse(controller.parkingModel.value.rentalPeriod!)){
+                          print("Rental period :-- ${controller.parkingModel.value.rentalPeriod}");
+                          ShowToastDialog.showToast("You must book the parking for at least ${controller.parkingModel.value.rentalPeriod} months.".tr);
+                        } else {
+                          ShowToastDialog.showLoader("Please wait..");
+                          print(controller.radioValue.value);
+                          OrderModel orderModel = OrderModel();
+                          if (controller.radioValue.value == "hourly") {
+                            Constant.bookingTypeConst = "hourly";
+                            orderModel.bookingType = "1";
+                            orderModel.bookingMonth = "";
+                            orderModel.bookingDate = Utils.formatTimestampToIST(
+                                Timestamp.fromDate(DateTime(
+                                    controller.selectedDateTime.value.year,
+                                    controller.selectedDateTime.value.month,
+                                    controller.selectedDateTime.value.day)));
+                            orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value.toUtc());
+                            orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value.toUtc());
+                            print(
+                                "bookingStartTime (UTC): ${orderModel.bookingStartTime?.toDate().toUtc()}");
+                          }
+                          else if (controller.radioValue.value == "monthly") {
+                            print(
+                                "monthly date startDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.startDate}");
+                            print(
+                                "monthly date endDate:-- ${controller.sfDateRangePickerCtrl.selectedRange?.endDate}");
+                            DateTime? startDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.startDate;
+                            DateTime? endDateMonthly = controller.sfDateRangePickerCtrl.selectedRange?.endDate;
+                            List tempMonthDate = [];
+                            Constant.bookingTypeConst = "monthly";
+                            orderModel.bookingType = "3";
+                            orderModel.bookingMonth = controller.bookingMonths.value.toString();
+                            print("booking month :- ${orderModel.bookingMonth}");
+                            controller.selectedDuration.value = 24.0;
+                            if (startDateMonthly != null) {
+                              controller.startTime.value = DateTime(
                                   startDateMonthly.year,
                                   startDateMonthly.month,
-                                  startDateMonthly.day))));
-                        }
-                        if (endDateMonthly != null) {
-                          tempMonthDate.add(Utils.formatTimestampToIST(Timestamp.fromDate(
-                              DateTime(endDateMonthly.year,
-                                  endDateMonthly.month, endDateMonthly.day))));
-                        }
-                        orderModel.bookingDate = tempMonthDate.join(',');
+                                  startDateMonthly.day,
+                                  startDateMonthly.hour,
+                                  startDateMonthly.minute,
+                                  startDateMonthly.second);
+                            }
+                            Duration duration = Duration(hours:  controller.selectedDuration.value.toInt()) ;
+                            log("duration:--  $duration");
 
-                        print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
-                      }
-                      orderModel.parkingDetails = controller.parkingModel.value;
-                      orderModel.userVehicle = controller.vehicle.value;
-                      orderModel.duration = controller.selectedDuration.value.toString();
+                            DateTime start = controller.startTime.value;
 
-                      orderModel.status = Constant.placed;
-                      orderModel.userId = FireStoreUtils.getCurrentUid();
-                      orderModel.id = Constant.getUuid();
-                      orderModel.parkingId = controller.parkingModel.value.id;
-                      orderModel.subTotal = controller.calculateParkingAmount(controller.radioValue.value,
-                          controller.bookingMonths.value.toString()).toString();
-                      orderModel.taxList = Constant.taxList;
-                      orderModel.userVehicle = controller.selectedVehicle.value;
-                      print("orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
-                     if(controller.isFromTimerScreen.value){
-                       var slotId = controller.orderModel.value.parkingSlotId;
-                       var selectedParkingSlot = await controller.selectParkingSlot(controller.radioValue.value,orderModel,fixedSlotId:slotId,);
-                       print("selectedParkingSlot :- ${selectedParkingSlot}");
-                       ShowToastDialog.closeLoader();
-                       if(selectedParkingSlot.isEmpty){
-                         controller.showPopUp("Alert".tr,"Sorry, you cannot park here, this location is full, all the spots are reserved".tr);
-                       }
-                       else{
-                         orderModel.parkingSlotId = selectedParkingSlot;
-                         Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": orderModel});
-                         // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
-                       }
-                     }else{
-                       var selectedParkingSlot = await controller.selectParkingSlot(controller.radioValue.value,orderModel);
-                       print("selectedParkingSlot :- ${selectedParkingSlot}");
-                       ShowToastDialog.closeLoader();
-                       if(selectedParkingSlot.isEmpty){
-                         controller.showPopUp("Alert".tr,"Sorry, you cannot park here, this location is full, all the spots are reserved".tr);
-                       }
-                       else{
-                         orderModel.parkingSlotId = selectedParkingSlot;
-                         Get.to(() => const ReviewSummaryScreen(), arguments: {"orderModel": orderModel});
-                         // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
-                       }
-                     }
-                    }
-                  },
+                            DateTime endDate = DateTime(
+                              start.year,
+                              start.month +  int.parse(orderModel.bookingMonth.toString()),
+                              start.day,
+                              start.hour,
+                              start.minute,
+                              start.second,
+                            );
+
+                            controller.endTime.value = endDate;
+
+                           // controller.endTime.value = controller.startTime.value.add(duration);
+                            log("booking end time:--  ${controller.endTime.value}");
+                            orderModel.bookingStartTime = Timestamp.fromDate(controller.startTime.value);
+                            orderModel.bookingEndTime = Timestamp.fromDate(controller.endTime.value);
+                            log("orderModel.bookingEndTime:--  ${orderModel.bookingEndTime}");
+                            if (startDateMonthly != null) {
+                              tempMonthDate.add(Utils.formatTimestampToIST(
+                                  Timestamp.fromDate(DateTime(
+                                      startDateMonthly.year,
+                                      startDateMonthly.month,
+                                      startDateMonthly.day))));
+                            }
+                            if (endDateMonthly != null) {
+                              tempMonthDate.add(Utils.formatTimestampToIST(
+                                  Timestamp.fromDate(DateTime(
+                                      endDateMonthly.year,
+                                      endDateMonthly.month,
+                                      endDateMonthly.day))));
+                            }
+                            orderModel.bookingDate = tempMonthDate.join(',');
+
+                            print("orderModel.bookingDate month :- ${orderModel.bookingDate}");
+                          }
+                          orderModel.parkingDetails = controller.parkingModel.value;
+                          orderModel.userVehicle = controller.vehicle.value;
+                          orderModel.duration = controller.selectedDuration.value.toString();
+
+                          orderModel.status = Constant.placed;
+                          orderModel.userId = FireStoreUtils.getCurrentUid();
+                          orderModel.id = Constant.getUuid();
+                          orderModel.parkingId = controller.parkingModel.value.id;
+                          orderModel.subTotal = controller.calculateParkingAmount(
+                                  controller.radioValue.value,
+                              controller.bookingMonths.value.toString()).toString();
+                          orderModel.taxList = Constant.taxList;
+                          orderModel.userVehicle = controller.selectedVehicle.value;
+                          print("orderModel.subTotal :-- ${orderModel.subTotal} :-- ${controller.selectedDuration.value.toString()}");
+                          if (controller.isFromTimerScreen.value) {
+                            var slotId =
+                                controller.orderModel.value.parkingSlotId;
+                            var selectedParkingSlot =
+                                await controller.selectParkingSlot(
+                              controller.radioValue.value,
+                              orderModel,
+                              fixedSlotId: slotId,
+                            );
+                            print(
+                                "selectedParkingSlot :- ${selectedParkingSlot}");
+                            ShowToastDialog.closeLoader();
+                            if (selectedParkingSlot.isEmpty) {
+                              controller.showPopUp(
+                                  "Alert".tr,
+                                  "Sorry, you cannot park here, this location is full, all the spots are reserved"
+                                      .tr);
+                            } else {
+                              orderModel.parkingSlotId = selectedParkingSlot;
+                              Get.to(() => const ReviewSummaryScreen(),
+                                  arguments: {"orderModel": orderModel});
+                              // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
+                            }
+                          }
+                          else {
+                            var selectedParkingSlot =
+                                await controller.selectParkingSlot(
+                                    controller.radioValue.value, orderModel);
+                            print(
+                                "selectedParkingSlot :- ${selectedParkingSlot}");
+                            ShowToastDialog.closeLoader();
+                            if (selectedParkingSlot.isEmpty) {
+                              controller.showPopUp(
+                                  "Alert".tr,
+                                  "Sorry, you cannot park here, this location is full, all the spots are reserved"
+                                      .tr);
+                            } else {
+                              orderModel.parkingSlotId = selectedParkingSlot;
+                              Get.to(() => const ReviewSummaryScreen(),
+                                  arguments: {"orderModel": orderModel});
+                              // Get.to(() => const ParkingViewScreen(),arguments: {"orderModel": orderModel,"selectedParkingSlot" :selectedParkingSlot});
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),

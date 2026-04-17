@@ -34,6 +34,7 @@ import 'package:phista/utils/fire_store_utils.dart';
 import 'package:phista/utils/pdf_%20generater.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
+import '../../constant/collection_name.dart';
 import '../../env.dart';
 import '../../model/tax_model.dart';
 import '../../ui/driver/my_booking/parking_ticket_screen.dart';
@@ -72,6 +73,7 @@ class PaymentSelectController extends GetxController {
     super.onInit();
     getParkingDetail(orderModel.value.parkingId??"");
     createdPdf();
+    checkFirstBooking();
   }
 
 
@@ -135,7 +137,8 @@ class PaymentSelectController extends GetxController {
       if (value != null) {
         paymentModel.value = value;
         if (paymentModel.value.strip?.enable == true) {
-          STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();//ENV.pkTestPublishableKey;
+
+         STRIPE.Stripe.publishableKey = paymentModel.value.strip!.clientpublishableKey.toString();  //ENV.pkTestPublishableKey;
           STRIPE.Stripe.merchantIdentifier = "merchant.com.phista.ios";
           STRIPE.Stripe.instance.applySettings();
         }
@@ -165,6 +168,8 @@ class PaymentSelectController extends GetxController {
   }
 
   RxDouble couponAmount = 0.0.obs;
+  RxDouble serviceFee = 0.0.obs;
+  RxBool isFirstBooking = true.obs;
 
   /*double calculateAmount() {
     if (orderModel.value.coupon != null) {
@@ -201,7 +206,7 @@ class PaymentSelectController extends GetxController {
 
   }*/
 
-  double calculateAmount() {
+  double calculateAmount1() {
     double subTotal = double.parse(orderModel.value.subTotal.toString());
     double coupon = 0.0;
 
@@ -261,7 +266,99 @@ class PaymentSelectController extends GetxController {
     );
   }
 
+  double calculateAmount() {
+    double subTotal = double.parse(orderModel.value.subTotal.toString());
+    double coupon = 0.0;
 
+    // ---------------- COUPON ----------------
+    if (orderModel.value.coupon != null &&
+        orderModel.value.coupon!.id != null) {
+
+      bool validParking =
+          orderModel.value.coupon!.parkingId == null ||
+              orderModel.value.coupon!.parkingId == "" ||
+              orderModel.value.coupon!.parkingId == orderModel.value.parkingId;
+
+      if (validParking) {
+        if (orderModel.value.coupon!.type == "fix") {
+          coupon = double.parse(orderModel.value.coupon!.amount.toString());
+        } else {
+          coupon = subTotal *
+              double.parse(orderModel.value.coupon!.amount.toString()) /
+              100;
+        }
+      } else {
+        orderModel.value.coupon = null;
+      }
+    }
+
+    couponAmount.value = coupon > subTotal ? subTotal : coupon;
+
+    // ---------------- TAX ----------------
+    double tax = 0.0;
+    if (orderModel.value.taxList != null) {
+      for (var element in orderModel.value.taxList!) {
+        tax += Constant().calculateTax(
+          amount: (subTotal - couponAmount.value).toString(),
+          taxModel: element,
+        );
+      }
+    }
+
+    double currentTotal = (subTotal - couponAmount.value) + tax;
+
+    if (currentTotal <= 0) {
+      serviceFee.value = 0.0;
+      return 0.0;
+    }
+
+    // ---------------- SERVICE FEE ----------------
+    double finalTotal = currentTotal / 0.96;
+    serviceFee.value = finalTotal - currentTotal;
+
+    // ---------------- DEPOSIT ---------------- ✅ NEW
+    int months = int.tryParse(orderModel.value.bookingMonth.toString()) ?? 1;
+    double oneMonthRent = subTotal / (months <= 0 ? 1 : months);
+
+    if (shouldApplyDeposit) {
+      finalTotal += oneMonthRent; // ✅ correct deposit
+    }
+
+    return double.parse(
+      finalTotal.toStringAsFixed(Constant.currencyModel!.decimalDigits!),
+    );
+  }
+
+  Future<void> checkFirstBooking() async {
+    try {
+      String? userId = Constant.currentUserModel.value!.id;
+      String? parkingId = orderModel.value.parkingId;
+
+      log("booking userId :--$userId");
+      log("booking parkingId :--$parkingId");
+      log("booking parkingId :--${orderModel.value.id}");
+
+      QuerySnapshot booking = await FirebaseFirestore.instance
+          .collection(CollectionName.bookedParkingOrder)
+          .where('userId', isEqualTo: userId)
+          .where('parkingId', isEqualTo: parkingId)
+          .get();
+
+      log("booking :--$booking");
+
+      if (booking.docs.isEmpty) {
+        isFirstBooking.value = true;
+      } else {
+        isFirstBooking.value = false;
+      }
+    } catch (e) {
+      log("Error checking first booking: $e");
+    }
+  }
+
+  bool get shouldApplyDeposit {
+    return isFirstBooking.value && orderModel.value.bookingType == "3";
+  }
 
   completeCashOrder() async {
     ShowToastDialog.showLoader("Please wait..");
@@ -557,8 +654,7 @@ class PaymentSelectController extends GetxController {
         log("Exception :-- ",error: e.toString());
       }
       log("orderModel.value2 :-- ${orderModel.value}");
-        Get.to(() => const ParkingTicketScreen(),
-            arguments: {"orderModel": orderModel.value});
+        Get.to(() => const ParkingTicketScreen(), arguments: {"orderModel": orderModel.value});
       }
     });
   }
@@ -836,6 +932,7 @@ class PaymentSelectController extends GetxController {
 
       // 📱 --- MOBILE FLOW ---
       Map<String, dynamic>? paymentIntentData = await createStripeIntent(amount: amount);
+      log("paymentIntentData :-- $paymentIntentData");
       log("paymentIntentData['client_secret']:-- ${paymentIntentData?['client_secret']}");
 
       if (paymentIntentData == null || paymentIntentData.containsKey("error")) {
@@ -1059,7 +1156,7 @@ class PaymentSelectController extends GetxController {
       };
 
 
-      var stripeSecret = paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
+      var stripeSecret =  paymentModel.value.strip!.stripeSecret; //ENV.skTestSecretKey;
       log(stripeSecret.toString());
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
